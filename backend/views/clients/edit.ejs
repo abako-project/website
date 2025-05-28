@@ -1,0 +1,109 @@
+<link rel='stylesheet' type='text/css' href='/stylesheets/forms.css'/>
+
+<% const client = c; %>
+<h1>Edit Client Profile</h1>
+
+<form method="post" action="/clients/<%= client.id %>?_method=PUT" enctype="multipart/form-data">
+
+    <div class="card">
+
+        <div class="card-title">Client data</div>
+
+        <div class="form-group">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" value="<%= client.name %>" placeholder="name" autocomplete="off"/>
+        </div>
+
+
+        <div class="form-group">
+            <label for="company" class="itemNarrow">Company:</label>
+            <input type="text" class="itemWide" id="company" name="company" value="<%= client.company %>"
+                   placeholder="Company" autocomplete="off"/>
+        </div>
+
+        <div class="form-group">
+            <label for="department" class="itemNarrow">Department:</label>
+            <input type="text" class="itemWide" id="department" name="department" value="<%= client.department %>"
+                   placeholder="Department" autocomplete="off"/>
+        </div>
+
+        <div class="form-group">
+            <label for="website" class="itemNarrow">Web site:</label>
+            <input type="text" class="itemWide" id="website" name="website" value="<%= client.website %>"
+                   placeholder="Web Site" autocomplete="off"/>
+        </div>
+
+        <div class="form-group">
+            <label for="description" class="itemNarrow">Description:</label>
+            <textarea id="description" name="description" class="itemWide"><%= client.description %></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="city" class="itemNarrow">City:</label>
+            <input type="text" class="itemWide" id="city" name="city" value="<%= client.city %>" placeholder="City"
+                   autocomplete="off"/>
+        </div>
+
+        <div class="form-group">
+            <label for="country" class="itemNarrow">Country:</label>
+            <input type="text" class="itemWide" id="country" name="country" value="<%= client.country %>"
+                   placeholder="Country" autocomplete="off"/>
+        </div>
+    </div>
+
+    <div class="card">
+
+        <div class="card-title">Password</div>
+
+        <div class="form-group">
+            <p>
+                <span class="text-danger">Leave blank to not change the current password</span>
+            </p>
+
+            <ul>
+                <li>
+                    <label for="password" class="rem">Password:</label>
+                    <input type="password" id="password" name="password" autocomplete="off"/>
+                </li>
+
+                <li>
+                    <label for="confirm_password" class="rem">Confirm Password:</label>
+                    <input type="password" id="confirm_password" autocomplete="off"/>
+                </li>
+            </ul>
+        </div>
+
+
+    </div>
+
+    <div class="card">
+
+        <div class="card-title">Photo</div>
+
+        <div class="attachment">
+            <%- include("./_attachment", {client}) %>
+        </div>
+
+        <div class="form-group">
+            <label for="img">Attach file (Max size 2MB):</label>
+            <input type="file" id="img" name="image"/>
+        </div>
+
+
+    </div>
+
+    <div class="card">
+
+        <div class="card-title">actions</div>
+
+        <div class="form-group">
+            <input type="submit" value="Save"/>
+        </div>
+
+        <div class="form-group">
+            <a href="/"> Cancel </a>
+        </div>
+
+    </div>
+
+</form>

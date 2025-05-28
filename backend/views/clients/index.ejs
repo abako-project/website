@@ -1,0 +1,64 @@
+<h1>Clientes</h1>
+
+<table class="usersIndex">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Attachment</th>
+        <th>Email
+            <br/>
+            Name
+            <br/>
+            Password
+        </th>
+        <th>Company
+            <br/>
+            Department
+            <br/>
+            Web site
+        </th>
+        <th>Description</th>
+        <th>
+            City
+            <br/>
+            Country
+        </th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <% clients.forEach(client => { %>
+        <tr>
+            <td><%= client.id %></td>
+            <td>
+                <div class="attachment">
+                    <%- include("./_attachment", {client}) %>
+                </div>
+            </td>
+            <td><%= client.user.email %>
+                <br/>
+                <%= client.name %>
+                <br/>
+                <%= client.password ? "Si" : "No" %>
+            </td>
+            <td><%= client.company %>
+                <br/>
+                <%= client.department %>
+                <br/>
+                <%= client.website %>
+            </td>
+            <td><%= client.description ? "Si" : "No" %></td>
+            <td>
+                <%= client.city %>
+                <br/>
+                <%= client.country %>
+            </td>
+
+            <td class="actions">
+                <a href="/clients/<%= client.id %>/edit" class="button">Edit</a>
+            </td>
+        </tr>
+    <% }) %>
+    </tbody>
+</table>
+

@@ -1,0 +1,58 @@
+<h1>Projects</h1>
+
+
+<% if (client) { %>
+    <p>
+        <a href="" id="addproject">Crear nuevo proyecto</a>
+    </p>
+
+    <script>
+      document.getElementById("addproject").href = '/projects/new?clienttimezoneoffset=' + new Date().getTimezoneOffset();
+    </script>
+<% } %>
+
+
+<section>
+    <% for (let project of projects) { %>
+
+        <article class="projectsIndex">
+
+            <div class="title">
+                <%= project.title %>
+            </div>
+
+            <div class="user" id="client">
+                <small> <%= project.client ? project.client.name : 'N/A' %> </small>
+                <img class="attachment" src="/clients/<%= project.clientId %>/attachment">
+            </div>
+            <div class="user" id="consultant">
+                <small> <%= project.consultant ? project.consultant.name : 'N/A' %> </small>
+                <img class="attachment" src="/developers/<%= project.consultantId %>/attachment">
+            </div>
+
+            <div class="state">
+                <%= project.state ?? 'Unknown' %>
+            </div>
+
+            <div class="actions">
+                <button class="projectShow" data-project-id="<%= project.id %>">Show</button>
+
+                <script type="module">
+                  document.addEventListener("click", async ev => {
+
+                    const projectId = ev.target.dataset.projectId;
+
+                    if (ev.target.matches(".projectShow")) {
+                      ev.preventDefault();
+                      location.href = "/projects/" + projectId + "?clienttimezoneoffset=" + new Date().getTimezoneOffset();
+                    }
+                  })
+                </script>
+            </div>
+
+        </article>
+    <% } %>
+</section>
+
+
+

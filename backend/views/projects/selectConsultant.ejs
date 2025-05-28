@@ -1,0 +1,20 @@
+
+<h1>Seleccionar el consultor del proyecto <%= project.title %></h1>
+
+
+    <form method="post" action="/projects/<%= project.id %>/consultant">
+        <% for (const developer of allDevelopers) { %>
+            <p>
+                <input type="radio"
+                       name="consultantId"
+                       value="<%= developer.id %>"
+                />
+                <b><%= developer.name %></b>
+            </p>
+        <% } %>
+
+        <input type="submit" value="Seleccionar">
+    </form>
+</div>
+
+<a href="/project/<%= project.id %>/showAll" class="button">Cancel</a>

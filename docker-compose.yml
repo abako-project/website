@@ -1,0 +1,31 @@
+
+services:
+  virto-dev:
+    image: bavb/virto-dev
+    platform: linux/amd64
+    ports:
+      - "3000:3000"
+      - "12281:12281"
+    networks:
+      - virto-network
+    environment:
+      - SEED=eternal loyal question bunker behind kind future police illegal stumble weapon tenant
+      - WS_PROVIDER_URL=ws://localhost:12281
+      - SIGNING_SERVICE_URL=http://localhost:4000/sign
+      - KREIVO_PROVIDER=ws://localhost:12281
+
+#  virto-backend:
+#    build:
+#      context: .
+#      dockerfile: docker/Dockerfile
+#    platform: linux/amd64
+#    ports:
+#      - "3001:3001"
+#    networks:
+#      - virto-network
+#    depends_on:
+#      - virto-dev
+
+networks:
+  virto-network:
+    driver: bridge 

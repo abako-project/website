@@ -1,0 +1,50 @@
+
+.flash {
+    width: auto;
+    padding: 7px;
+    padding-bottom: 0;
+    margin-bottom: 20px;
+    background-color: #f0f0f0;
+    color: #000;
+}
+
+.flashinfo {
+    border: 2px solid blue;
+}
+
+.flashsuccess {
+    border: 2px solid green;
+}
+
+.flasherror {
+    border: 2px solid red;
+}
+
+.flash h3 {
+    text-align: left;
+    font-weight: bold;
+    padding: 5px 5px 5px 15px;
+    font-size: 12px;
+    margin: -7px;
+    margin-bottom: 0px;
+}
+
+.flashinfo h3 {
+    background-color: #00c;
+    color: #ffffff;
+}
+
+.flashsuccess h3 {
+    background-color: #0c0;
+}
+
+.flasherror h3 {
+    background-color: #c00;
+}
+
+.flash ul li {
+    margin: 5px 5px 5px 0px;
+    font-size: 12px;
+    list-style: square;
+}
+

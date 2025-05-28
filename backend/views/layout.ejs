@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>W3S</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel='stylesheet' type='text/css' href='/stylesheets/style.css'/>
+    <link rel='stylesheet' type='text/css' href='/stylesheets/flash.css'/>
+
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@virtonetwork/sdk@0.0.4-alpha.5/dist/esm/sdk.js"></script>
+
+</head>
+<body>
+<section id="appLeft">
+    <img src="/images/w.png" width="50%">
+    <p>Welcome in PolkaTalent</p>
+</section>
+
+<section id="appRight">
+    <header id="appHeader">
+        <div class="login">
+            <% if (!locals.loginUser) { %>
+                <a href="/auth/login">Login</a>
+                <a href="/auth/register">Registro</a>
+            <% } else { %>
+                <% if (locals.loginUser.isAdmin) { %>
+                    <span class="adminDAO">Admin</span>
+                <% } %>
+                <% if (locals.loginUser.developerId) { %>
+                    <img class="attachment" src="/developers/<%= loginUser.developerId %>/attachment">
+                    <a href="/developers/<%= loginUser.developerId %>/edit"><%= loginUser.email %></a>
+                <% } %>
+                <% if (locals.loginUser.clientId) { %>
+                    <img class="attachment" src="/clients/<%= loginUser.clientId %>/attachment">
+                    <a href="/clients/<%= loginUser.clientId %>/edit"><%= loginUser.email %></a>
+                <% } %>
+                <a href="/auth/logout?_method=DELETE">Logout</a>
+            <% } %>
+        </div>
+    </header>
+
+    <nav id="appNav" role="navigation">
+        <% if (locals.loginUser?.isAdmin) { %>
+            <a href="/projects">Proyectos</a>
+        <% } %>
+        <% if (locals.loginUser?.developerId) { %>
+            <a href="/developers/<%= loginUser.developerId %>/projects">Proyectos</a>
+        <% } %>
+        <% if (locals.loginUser?.clientId) { %>
+            <a href="/clients/<%= loginUser.clientId %>/projects">Proyectos</a>
+        <% } %>
+
+        <a href="/backdoor"><span class="adminDAO">BackDoor</span></a>
+    </nav>
+
+    <main id="appMain">
+
+        <% if (messages.info) { %>
+            <article class='flash flashinfo'>
+                <h3>Information of interest:</h3>
+                <ul>
+                    <% for (let msg of messages.info) { %>
+                        <li> <%= msg %> </li>
+                    <% } %>
+                </ul>
+            </article>
+        <% } %>
+
+        <% if (messages.success) { %>
+            <article class='flash flashsuccess'>
+                <h3>Tasks completed successfully:</h3>
+                <ul>
+                    <% for (let msg of messages.success) { %>
+                        <li> <%= msg %> </li>
+                    <% } %>
+                </ul>
+            </article>
+        <% } %>
+
+        <% if (messages.error) { %>
+            <article class='flash flasherror'>
+                <h3>Errors:</h3>
+                <ul>
+                    <% for (let msg of messages.error) { %>
+                        <li> <%= msg %> </li>
+                    <% } %>
+                </ul>
+            </article>
+        <% } %>
+
+        <%- body %>
+    </main>
+
+</section>
+</body>
+</html>

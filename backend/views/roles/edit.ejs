@@ -1,0 +1,14 @@
+<link rel='stylesheet' type='text/css' href='/stylesheets/forms.css'/>
+
+<h1>Editar Role</h1>
+
+<form action="/roles/<%= role.id %>?_method=PUT" method="POST">
+
+    <div class="card">
+        <%- include("./_form", {role}) %>
+    </div>
+
+</form>
+
+
+<a href="/roles">Volver al listado</a>

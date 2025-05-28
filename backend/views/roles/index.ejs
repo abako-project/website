@@ -1,0 +1,26 @@
+<h1>Roles</h1>
+
+
+<p>
+    <a href="/roles/new">Crear nuevo role</a>
+</p>
+
+<ul>
+    <% roles.forEach(role => { %>
+        <li>
+            <%= role.id %> -
+            <%= role.name %> -
+
+            <a href="/roles/<%= role.id %>"
+               class="button">Show</a>
+
+            <a href="/roles/<%= role.id %>/edit"
+               class="button">Edit</a>
+
+            <a href="/roles/<%= role.id %>?_method=DELETE"
+               onClick="return confirm('Delete: <%= role.name %>');"
+               class="button">Delete</a>
+        </li>
+    <% }) %>
+
+</ul>

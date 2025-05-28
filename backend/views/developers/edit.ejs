@@ -1,0 +1,139 @@
+<link rel='stylesheet' type='text/css' href='/stylesheets/forms.css'/>
+
+
+<h1>Edit Developer Profile</h1>
+
+<form method="post" action="/developers/<%= developer.id %>?_method=PUT" enctype="multipart/form-data">
+
+    <div class="card">
+
+        <div class="card-title">Developer data</div>
+
+        <div class="form-group">
+            <p>Email: <%= developer.name %></p>
+            <p>Blockchain Address: <%= developer.address %></p>
+        </div>
+
+        <div class="form-group">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" value="<%= developer.name %>" placeholder="name" autocomplete="off"/>
+        </div>
+
+        <div class="form-group">
+            <label for="bio">Bio:</label>
+            <textarea id="bio" name="bio"><%= developer.bio %></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="background">Background:</label>
+            <textarea id="background" name="background"><%= developer.background %></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="role">Role:</label>
+            <select id="role" name="roleId">
+                <option value="">None</option>
+                <% for (const role of allRoles) { %>
+                    <option value="<%= role.id %>"
+                            <%= developer.roleId === role.id && "selected" %>
+                    > <%= role.name %> %> </option>
+                <% } %>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="experienceLevel">Experience Level:</label>
+            <input type="text" id="experienceLevel" name="experienceLevel"
+                   value="<%= developer.experienceLevel %>"
+                   placeholder="Experience Level" autocomplete="off"/>
+        </div>
+
+        <div class="form-group">
+            <label for="githubUsername">Github Username:</label>
+            <input type="text" id="githubUsername" name="githubUsername" value="<%= developer.githubUsername %>"
+                   placeholder="Github Username" autocomplete="off"/>
+        </div>
+
+        <div class="form-group">
+            <label for="portfolioUrl">Portfolio Url:</label>
+            <input type="text" id="portfolioUrl" name="portfolioUrl" value="<%= developer.portfolioUrl %>"
+                   placeholder="Portfolio Url" autocomplete="off"/>
+        </div>
+
+        <div class="form-group">
+            <label for="city">City:</label>
+            <input type="text" id="city" name="city" value="<%= developer.city %>" placeholder="City"
+                   autocomplete="off"/>
+        </div>
+
+        <div class="form-group">
+            <label for="country">Country:</label>
+            <input type="text" id="country" name="country" value="<%= developer.country %>"
+                   placeholder="Country" autocomplete="off"/>
+        </div>
+
+        <div class="form-group">
+            <label for="availability">Availability:</label>
+            <input type="text" id="availability" name="availability" value="<%= developer.availability %>"
+                   placeholder="Availability" autocomplete="off"/>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-title">Languages</div>
+
+        <% for (let language of allLanguages) { %>
+                <input type="checkbox"
+                       name="<%= `languages[]` %>"
+                       value="<%= language.id %>"
+                        <%= developer.languages.map(i => i.id).includes(language.id) && "checked" %>
+                />
+            <b><%= language.code %> - <%= language.name %></b>
+          <br />
+        <% } %>
+    </div>
+
+    <div class="card">
+        <div class="card-title">Skills</div>
+
+        <% for (let skill of allSkills) { %>
+            <input type="checkbox"
+                   name="<%= `skills[]` %>"
+                   value="<%= skill.id %>"
+                    <%= developer.skills.map(s => s.id).includes(skill.id) && "checked" %>
+            />
+            <b><%= skill.name %></b>
+            <br />
+        <% } %>
+    </div>
+
+    <div class="card">
+
+        <div class="card-title">Photo</div>
+
+        <div class="form-group">
+            <label for="img">Attach file (Max size 2MB):</label>
+            <input type="file" id="img" name="image"/>
+        </div>
+
+
+    </div>
+
+    <div class="card">
+
+        <div class="card-title">actions</div>
+
+        <div class="form-group">
+            <input type="submit" value="Save"/>
+        </div>
+
+        <div class="form-group">
+            <a href="/"> Cancel </a>
+        </div>
+
+    </div>
+
+</form>
+
+
+

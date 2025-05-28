@@ -1,0 +1,31 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "scripts": {
+    "start2": "PORT=3001 node ./bin/www",
+    "start": "PORT=3001 supervisor ./bin/www",
+    "migrate": "sequelize db:migrate",
+    "seed": "sequelize db:seed:all",
+    "mss": "npm run migrate ; npm run seed ; npm start"
+  },
+  "dependencies": {
+    "@virtonetwork/sdk": "^0.0.4-alpha.5",
+    "base64url": "^3.0.1",
+    "connect-session-sequelize": "^8.0.0",
+    "ejs": "^3.1.8",
+    "express": "^4.18.2",
+    "express-flash": "^0.0.2",
+    "express-partials": "^0.3.0",
+    "express-session": "^1.17.3",
+    "method-override": "^3.0.0",
+    "multer": "^2.0.1",
+    "node-localstorage": "^3.0.5",
+    "passport": "^0.6.0",
+    "passport-local": "^1.0.0",
+    "sequelize": "^6.32.1",
+    "sequelize-cli": "^6.6.3",
+    "serve-favicon": "^2.5.0",
+    "sqlite3": "^5.1.6",
+    "supervisor": "^0.12.0"
+  }
+}

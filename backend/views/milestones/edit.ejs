@@ -1,0 +1,11 @@
+<link rel='stylesheet' type='text/css' href='/stylesheets/forms.css'/>
+
+<h1>Editar Milestone</h1>
+
+<form action="/projects/<%= project.id %>/milestones/<%= milestone.id %>?_method=PUT" method="POST">
+
+    <div class="card">
+        <%- include("./_form", {project, milestone, clientTimezoneOffset}) %>
+    </div>
+
+</form>

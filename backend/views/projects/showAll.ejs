@@ -1,0 +1,129 @@
+<link rel='stylesheet' type='text/css' href='/stylesheets/forms.css'/>
+
+<% if (locals.loginUser && locals.loginUser.isAdmin) { %>
+    <button class="right adminDAO projectDelete" data-project-id="<%= project.id %>">Delete</button>
+    <button class="right adminDAO projectReject" data-project-id="<%= project.id %>">Reject</button>
+    <button class="right adminDAO projectApprove" data-project-id="<%= project.id %>">Approve</button>
+    <button class="right adminDAO projectConsultant" data-project-id="<%= project.id %>">Select Consultant</button>
+<% } %>
+
+<h1><%= project.title %></h1>
+
+<% if (locals.loginUser && locals.loginUser.clientId === project.clientId) { %>
+
+    <% if (!project.state) { %>
+        <button class="projectEdit" data-project-id="<%= project.id %>">Review</button>
+    <% } %>
+
+    <% if (!project.state) { %>
+        <button class="projectSubmit" data-project-id="<%= project.id %>">Submit</button>
+    <% } %>
+
+    <% if (project.state && ["validationNeeded"].includes(project.state)) { %>
+        <button class="scopeAccept" data-project-id="<%= project.id %>">Accept Scope</button>
+        <button class="scopeReject" data-project-id="<%= project.id %>">Reject Scope</button>
+    <% } %>
+<% } %>
+
+
+<% if (locals.loginUser && locals.loginUser.developerId === project.consultantId) { %>
+
+    <% if (project.state && ["scopingInProgress"].includes(project.state)) { %>
+        <button class="projectEdit" data-project-id="<%= project.id %>">Review</button>
+    <% } %>
+
+    <% if (project.state && ["scopingInProgress"].includes(project.state)) { %>
+        <button class="scopeSubmit" data-project-id="<%= project.id %>">Submit</button>
+    <% } %>
+<% } %>
+
+
+
+
+<script type="module">
+  document.addEventListener("click", async ev => {
+
+    const projectId = ev.target.dataset.projectId;
+
+    if (ev.target.matches(".projectEdit")) {
+      ev.preventDefault();
+      location.href = "/projects/" + projectId + "/edit?clienttimezoneoffset=" + new Date().getTimezoneOffset();
+
+    } else if (ev.target.matches(".scopeSubmit")) {
+      ev.preventDefault();
+      location.href = "/projects/" + projectId + "/scopeSubmit?_method=PUT";
+
+    } else if (ev.target.matches(".projectSubmit")) {
+      ev.preventDefault();
+      location.href = "/projects/" + projectId + "/projectSubmit?_method=PUT";
+
+    } else if (ev.target.matches(".scopeAccept")) {
+      ev.preventDefault();
+      location.href = "/projects/" + projectId + "/scopeAccept?_method=PUT";
+
+    } else if (ev.target.matches(".scopeReject")) {
+      ev.preventDefault();
+      location.href = "/projects/" + projectId + "/scopeReject?_method=PUT";
+
+    } else if (ev.target.matches(".projectDelete")) {
+      ev.preventDefault();
+      location.href = "/projects/" + projectId + "?_method=DELETE";
+
+    } else if (ev.target.matches(".projectReject")) {
+      ev.preventDefault();
+      location.href = "/projects/" + projectId + "/reject?_method=PUT";
+
+    } else if (ev.target.matches(".projectApprove")) {
+      ev.preventDefault();
+      location.href = "/projects/" + projectId + "/approve?_method=PUT";
+
+    } else if (ev.target.matches(".projectConsultant")) {
+      ev.preventDefault();
+      location.href = "/projects/" + projectId + "/consultant/select";
+    }
+  })
+</script>
+
+
+<div class="card">
+
+    <div class="form-group">
+
+        <p><strong>State:</strong> <%= project.state %></p>
+        <p><strong>Summary:</strong> <%= project.summary %></p>
+        <p><strong>Description:</strong> <%= project.description %></p>
+        <p><strong>URL:</strong> <%= project.url %></p>
+        <p><strong>Budget:</strong> <%= project.budget %> <%= project.currency %></p>
+
+        <p>
+            <strong>Delivery Date::</strong>
+            <span id="deliveryDate"></span>
+        </p>
+        <script type="module">
+          document.getElementById("deliveryDate").innerHTML = new Date(<%= project.deliveryDate.valueOf() %>).toLocaleString();
+        </script>
+
+        <p>
+            <strong>Client:</strong> <%= project.client?.name %>
+            <img class="attachment" src="/clients/<%= project.clientId %>/attachment">
+        </p>
+
+        <p>
+            <strong>Consultant:</strong> <%= project.consultant?.name %>
+            <img class="attachment" src="/developers/<%= project.consultantId %>/attachment">
+        </p>
+    </div>
+
+</div>
+
+<div class="card">
+    <%- include("./_showObjectives", {project}) %>
+</div>
+
+<div class="card">
+    <%- include("./_showConstraints", {project}) %>
+</div>
+
+<div class="card">
+    <%- include("../milestones/_showAll", {milestones: project.milestones}) %>
+</div>

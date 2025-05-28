@@ -1,0 +1,22 @@
+<% const attachment = client?.attachment; %>
+
+<% if (attachment) { %>
+
+    <% if ( attachment.mime === "image/jpeg" ||
+            attachment.mime === "image/gif" ||
+            attachment.mime === "image/jpg" ||
+            attachment.mime === "image/png" ||
+            attachment.mime === "image/gif" ) { %>
+
+        <img src="/clients/<%= client.id %>/attachment" alt="Image"/>
+
+    <% } else { %>
+
+        <img src="/images/none.png" alt="Image"/>
+
+    <% } %>
+
+<% } else { %>
+    <img src="/images/none.png" />
+<% } %>
+

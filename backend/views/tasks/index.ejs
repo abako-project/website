@@ -1,0 +1,61 @@
+<link rel='stylesheet' type='text/css' href='/stylesheets/forms.css'/>
+
+
+<h1>Tasks</h1>
+
+
+<% if (locals.loginUser && locals.loginUser.developerId === project.consultantId) { %>
+    <p>
+        <a href="" id="addtask">Crear nueva Task</a>
+    </p>
+    <script>
+      document.getElementById("addtask").href = '/projects/<%= project.id %>/milestones/<%= milestone.id %>/tasks/new?clienttimezoneoffset=' + new Date().getTimezoneOffset();
+    </script>
+<% } %>
+
+<div class="card-title">Tasks</div>
+
+<% for (const task of milestone.tasks) { %>
+    <div class="card">
+
+        <%- include("./_show", {task}) %>
+
+        <br/>
+
+        <% if (locals.loginUser && locals.loginUser.developerId === project.consultantId) { %>
+
+            <button class="taskEdit"
+                    data-task-id="<%= task.id %>"
+                    data-milestone-id="<%= milestone.id %>"
+                    data-project-id="<%= project.id %>">Edit
+            </button>
+            <button class="taskDelete"
+                    data-task-id="<%= task.id %>"
+                    data-milestone-id="<%= milestone.id %>"
+                    data-project-id="<%= project.id %>">Delete
+            </button>
+
+        <% } %>
+    </div>
+<% } %>
+
+<script type="module">
+  document.addEventListener("click", async ev => {
+
+    const projectId = ev.target.dataset.projectId;
+    const milestoneId = ev.target.dataset.milestoneId;
+    const taskId = ev.target.dataset.taskId;
+
+    if (ev.target.matches(".taskEdit")) {
+      ev.preventDefault();
+      location.href = "/projects/" + projectId + "/milestones/" + milestoneId + "/tasks/" + taskId + "/edit?clienttimezoneoffset=" + new Date().getTimezoneOffset();
+    } else if (ev.target.matches(".taskDelete")) {
+      ev.preventDefault();
+      location.href = "/projects/" + projectId + "/milestones/" + milestoneId + "/tasks/" + taskId + "?_method=DELETE";
+    }
+  })
+</script>
+
+
+
+

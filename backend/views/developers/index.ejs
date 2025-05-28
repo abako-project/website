@@ -1,0 +1,69 @@
+<h1>Developers</h1>
+
+<table class="usersIndex">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Attachment</th>
+        <th>Email
+            <br/>
+            Name
+            <br/>
+            BC Address
+        </th>
+        <th>Bio
+            <br/>
+            Background
+        </th>
+        <th>Role</th>
+        <th>Experience</th>
+        <th>github</th>
+        <th>Portfolio</th>
+        <th>City
+            <br/>
+            Country
+        </th>
+        <th>Availability</th>
+        <th>Languages</th>
+        <th>Skills</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <% developers.forEach(developer => { %>
+        <tr>
+            <td><%= developer.id %></td>
+            <td>
+                <div class="attachment">
+                    <%- include("./_attachment", {developer}) %>
+                </div>
+            </td>
+            <td>
+                <%= developer.user.email %>
+                <br/>
+                <%= developer.name %>
+                <br/>
+                <small><%= developer.address %></small></td>
+            <td><%= developer.bio ? "Si" : "No" %>
+                <br/>
+                <%= developer.background ? "Si" : "No" %>
+            </td>
+            <td><%= developer.role?.name %></td>
+            <td><%= developer.experienceLevel %></td>
+            <td><%= developer.githubUsername %></td>
+            <td><%= developer.portfolioUrl ? "Si" : "No" %></td>
+            <td><%= developer.city %>
+                <br/>
+                <%= developer.country %></td>
+            <td><%= developer.availability %></td>
+            <td><%= developer.languages.map(l => l.code).join(", ") %></td>
+            <td><%= developer.skills.map(s => s.name).join(", ") %></td>
+
+            <td class="actions">
+                <a href="/developers/<%= developer.id %>/edit" class="button">Edit</a>
+            </td>
+        </tr>
+    <% }) %>
+    </tbody>
+</table>
+
