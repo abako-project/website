@@ -27,11 +27,13 @@
                     <span class="adminDAO">Admin</span>
                 <% } %>
                 <% if (locals.loginUser.developerId) { %>
-                    <img class="attachment" src="/developers/<%= loginUser.developerId %>/attachment">
+                    <img class="attachment" src="/developers/<%= loginUser.developerId %>/attachment"
+                         onerror="this.src='../images/none.png';this.onerror='';">
                     <a href="/developers/<%= loginUser.developerId %>/edit"><%= loginUser.email %></a>
                 <% } %>
                 <% if (locals.loginUser.clientId) { %>
-                    <img class="attachment" src="/clients/<%= loginUser.clientId %>/attachment">
+                    <img class="attachment" src="/clients/<%= loginUser.clientId %>/attachment"
+                         onerror="this.src='../images/none.png';this.onerror='';">
                     <a href="/clients/<%= loginUser.clientId %>/edit"><%= loginUser.email %></a>
                 <% } %>
                 <a href="/auth/logout?_method=DELETE">Logout</a>

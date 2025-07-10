@@ -105,12 +105,14 @@
 
         <p>
             <strong>Client:</strong> <%= project.client?.name %>
-            <img class="attachment" src="/clients/<%= project.clientId %>/attachment">
+            <img class="attachment" src="/clients/<%= project.clientId %>/attachment"
+                 onerror="this.src='../images/none.png';this.onerror='';">
         </p>
 
         <p>
             <strong>Consultant:</strong> <%= project.consultant?.name %>
-            <img class="attachment" src="/developers/<%= project.consultantId %>/attachment">
+            <img class="attachment" src="/developers/<%= project.consultantId %>/attachment"
+                 onerror="this.src='../images/none.png';this.onerror='';">
         </p>
     </div>
 

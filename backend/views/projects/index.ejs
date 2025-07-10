@@ -23,11 +23,15 @@
 
             <div class="user" id="client">
                 <small> <%= project.client ? project.client.name : 'N/A' %> </small>
-                <img class="attachment" src="/clients/<%= project.clientId %>/attachment">
+                <img class="attachment"
+                     src="/clients/<%= project.clientId %>/attachment"
+                     onerror="this.src='../images/none.png';this.onerror='';">
             </div>
             <div class="user" id="consultant">
                 <small> <%= project.consultant ? project.consultant.name : 'N/A' %> </small>
-                <img class="attachment" src="/developers/<%= project.consultantId %>/attachment">
+                <img class="attachment"
+                     src="/developers/<%= project.consultantId %>/attachment"
+                     onerror="this.src='../images/none.png';this.onerror='';">
             </div>
 
             <div class="state">
