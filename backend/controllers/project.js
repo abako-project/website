@@ -168,7 +168,7 @@ exports.new = (req, res, next) => {
   clienttimezoneoffset = Number.isNaN(clienttimezoneoffset) ? 0 : clienttimezoneoffset;
   const clientTimezoneOffset = clienttimezoneoffset * 60 * 1000;
 
-  res.render('projects/newBasic', {
+  res.render('projects/new', {
     project,
     clientTimezoneOffset,
   });
@@ -227,7 +227,7 @@ exports.create = async (req, res, next) => {
 };
 
 // Mostrar detalle de un proyecto
-exports.showAll = async (req, res, next) => {
+exports.show = async (req, res, next) => {
 
   const {project} = req.load;
 
@@ -237,7 +237,7 @@ exports.showAll = async (req, res, next) => {
   clienttimezoneoffset = Number.isNaN(clienttimezoneoffset) ? 0 : clienttimezoneoffset;
   const clientTimezoneOffset = clienttimezoneoffset * 60 * 1000;
 
-  res.render('projects/showAll', {
+  res.render('projects/show', {
     project,
     clientTimezoneOffset,
   });

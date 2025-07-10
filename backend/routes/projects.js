@@ -35,7 +35,7 @@ router.post('/',
 // Mostrar detalles de un proyecto
 router.get('/:projectId(\\d+)',
     authController.isAuthenticated,
-    projectController.showAll);
+    projectController.show);
 
 // Mostrar formulario de edición
 router.get('/:projectId(\\d+)/edit',
