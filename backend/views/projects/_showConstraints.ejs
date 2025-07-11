@@ -1,11 +1,13 @@
+<div class="card">
 
+    <div class="card-title">Constraints</div>
 
-<div class="card-title">Constraints</div>
+    <ul>
+        <% for (const constraint of project.constraints) { %>
+            <li>
+                <%= constraint.description %>
+            </li>
+        <% } %>
+    </ul>
 
-<ul>
-    <% for (const constraint of project.constraints) { %>
-        <li>
-            <%= constraint.description %>
-        </li>
-    <% } %>
-</ul>
+</div>

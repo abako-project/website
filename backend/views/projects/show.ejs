@@ -1,5 +1,7 @@
 <link rel='stylesheet' type='text/css' href='/stylesheets/forms.css'/>
 
+<%- include('../projectNav/_menu', {project})  %>
+
 <% if (locals.loginUser && locals.loginUser.isAdmin) { %>
     <button class="right adminDAO projectDelete" data-project-id="<%= project.id %>">Delete</button>
     <button class="right adminDAO projectReject" data-project-id="<%= project.id %>">Reject</button>
@@ -7,7 +9,6 @@
     <button class="right adminDAO projectConsultant" data-project-id="<%= project.id %>">Select Consultant</button>
 <% } %>
 
-<h1><%= project.title %></h1>
 
 <% if (locals.loginUser && locals.loginUser.clientId === project.clientId) { %>
 
@@ -30,10 +31,11 @@
 
     <% if (project.state && ["scopingInProgress"].includes(project.state)) { %>
         <button class="projectEdit" data-project-id="<%= project.id %>">Review</button>
+        <button class="scopeSubmit" data-project-id="<%= project.id %>">Submit</button>
     <% } %>
 
-    <% if (project.state && ["scopingInProgress"].includes(project.state)) { %>
-        <button class="scopeSubmit" data-project-id="<%= project.id %>">Submit</button>
+    <% if (project.state && ["taskingInProgress"].includes(project.state)) { %>
+        <button class="taskReview" data-project-id="<%= project.id %>">Review tasks</button>
     <% } %>
 <% } %>
 
@@ -80,52 +82,23 @@
     } else if (ev.target.matches(".projectConsultant")) {
       ev.preventDefault();
       location.href = "/projects/" + projectId + "/consultant/select";
+
+    } else if (ev.target.matches(".taskReview")) {
+      ev.preventDefault();
+      location.href = "/projects/" + projectId + "/tasks/edit";
     }
   })
 </script>
 
+<h1><%= project.title %></h1>
 
-<div class="card">
 
-    <div class="form-group">
+<%- include("./_showBasic", {project}) %>
 
-        <p><strong>State:</strong> <%= project.state %></p>
-        <p><strong>Summary:</strong> <%= project.summary %></p>
-        <p><strong>Description:</strong> <%= project.description %></p>
-        <p><strong>URL:</strong> <%= project.url %></p>
-        <p><strong>Budget:</strong> <%= project.budget %> <%= project.currency %></p>
+<%- include("./_showObjectives", {project}) %>
 
-        <p>
-            <strong>Delivery Date::</strong>
-            <span id="deliveryDate"></span>
-        </p>
-        <script type="module">
-          document.getElementById("deliveryDate").innerHTML = new Date(<%= project.deliveryDate.valueOf() %>).toLocaleString();
-        </script>
+<%- include("./_showConstraints", {project}) %>
 
-        <p>
-            <strong>Client:</strong> <%= project.client?.name %>
-            <img class="attachment" src="/clients/<%= project.clientId %>/attachment"
-                 onerror="this.src='../images/none.png';this.onerror='';">
-        </p>
-
-        <p>
-            <strong>Consultant:</strong> <%= project.consultant?.name %>
-            <img class="attachment" src="/developers/<%= project.consultantId %>/attachment"
-                 onerror="this.src='../images/none.png';this.onerror='';">
-        </p>
-    </div>
-
-</div>
-
-<div class="card">
-    <%- include("./_showObjectives", {project}) %>
-</div>
-
-<div class="card">
-    <%- include("./_showConstraints", {project}) %>
-</div>
-
-<div class="card">
-    <%- include("../milestones/_showAll", {milestones: project.milestones}) %>
-</div>
+<% if (project.milestones?.length) { %>
+    <%- include("./_showMilestonesAndTasks", {project}) %>
+<% } %>

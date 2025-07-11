@@ -1,11 +1,13 @@
+<div class="card">
 
+    <div class="card-title">Objectives</div>
 
-<div class="card-title">Objectives</div>
+    <ul>
+        <% for (const objective of project.objectives) { %>
+            <li>
+                <%= objective.description %>
+            </li>
+        <% } %>
+    </ul>
 
-<ul>
-    <% for (const objective of project.objectives) { %>
-        <li>
-            <%= objective.description %>
-        </li>
-    <% } %>
-</ul>
+</div>

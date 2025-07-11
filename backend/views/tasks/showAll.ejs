@@ -1,0 +1,30 @@
+<link rel='stylesheet' type='text/css' href='/stylesheets/forms.css'/>
+
+<%- include('../projectNav/_menu', {project})  %>
+
+<h1>Milestones &amp; Tasks</h1>
+
+
+<% for (const milestone of project.milestones) { %>
+
+    <div class="card">
+
+        <%- include("../milestones/_show", {milestone}) %>
+
+        <div class="card-subtitle">Tasks:</div>
+
+        <% for (const i in milestone.tasks) { %>
+            <% const task = milestone.tasks[i]; %>
+
+            <div class="subcard">
+
+                <div class="form-group">
+                    <%- include("./_show", {task}) %>
+                </div>
+
+            </div>
+        <% } %>
+
+    </div>
+
+<% } %>

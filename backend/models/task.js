@@ -22,9 +22,20 @@ module.exports = (sequelize) => {
     },
     deliveryDate: {
       type: DataTypes.DATE
+    },
+    displayOrder: {
+      type:        DataTypes.INTEGER,
+      allowNull:   false,
+      defaultValue: 0
     }
   }, {
     sequelize,
+  });
+
+  // Hook para asignar displayOrder automáticamente al crear
+  Task.beforeCreate(async task => {
+    const max = await Task.max('displayOrder');
+    task.displayOrder = (max || 0) + 1;
   });
 
   return Task;

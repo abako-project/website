@@ -1,0 +1,21 @@
+
+<nav id="appNav" role="navigation">
+    <a href="/backdoor"><span class="right adminDAO">BackDoor</span></a>
+
+    <a href="javascript:void(0)"><s>Dashboard</s></a>
+    <a href="javascript:void(0)"><s>Reputation</s></a>
+    <a href="javascript:void(0)"><s>Governance</s></a>
+
+    <% if (locals.loginUser?.isAdmin) { %>
+        <a href="/projects">Proyectos</a>
+    <% } %>
+    <% if (locals.loginUser?.developerId) { %>
+        <a href="/developers/<%= loginUser.developerId %>/projects">Proyectos</a>
+    <% } %>
+    <% if (locals.loginUser?.clientId) { %>
+        <a href="/clients/<%= loginUser.clientId %>/projects">Proyectos</a>
+    <% } %>
+
+    <a href="javascript:void(0)"><s>Payments</s></a>
+
+</nav>

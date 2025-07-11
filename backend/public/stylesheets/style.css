@@ -9,6 +9,23 @@ body {
     --secondary: #dfd88d;
     font: 16px "Lucida Grande", Helvetica, Arial, sans-serif;
 
+    margin: 0px;
+    padding: 0px;
+}
+
+#appOneColumn {
+    height: 100vh;
+    display: grid;
+    grid-template-rows: auto auto 1fr;
+
+    margin: 0px;
+    padding: 20px;
+
+    color: var(--primary);
+    background: white;
+}
+
+#appTwoColumns {
     height: 100vh;
     display: grid;
     grid-template-columns: 1fr 4fr;
@@ -29,6 +46,8 @@ body {
     display: grid;
     grid-template-rows: auto auto 1fr;
 
+    padding: 20px;
+
     color: var(--primary);
     background: white;
 }
@@ -43,8 +62,8 @@ body {
 #appNav {
     padding: 2px 7px;
     margin: 1px;
-    text-align: center;
-    border-bottom: 1px solid var(--secondary);
+    text-align: left;
+    border-bottom: 2px solid var(--secondary);
     border-right: 0px;
 }
 
@@ -52,8 +71,12 @@ body {
     padding: 2px;
     margin: 1px;
     padding: 0px 10px;
+}
+
+#appTwoColumns #appMain {
     place-content: center;
 }
+
 
 #appHeader h1 {
     margin: 8px;
@@ -302,3 +325,14 @@ article.projectsIndex div.state {
     background-color: lightgoldenrodyellow;
     color: darkgoldenrod;
 }
+
+/* ------------------------- */
+
+#projectNav {
+    padding: 10px 0px;
+    margin: 10px;
+    text-align: left;
+    border-right: 0px;
+}
+
+/* ------------------------- */

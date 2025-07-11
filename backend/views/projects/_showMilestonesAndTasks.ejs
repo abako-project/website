@@ -1,0 +1,28 @@
+<div class="card">
+
+    <div class="card-title">Milestones</div>
+
+    <ul>
+        <% for (const milestone of project.milestones) { %>
+
+            <li>
+                <%- include("../milestones/_show", {milestone}) %>
+            </li>
+
+            <% if (milestone.tasks?.length) { %>
+                <div class="subcard">
+                    <div class="card-title">Tasks</div>
+                    <ul>
+                        <% for (const task of milestone.tasks) { %>
+                            <li>
+                                <%- include("../tasks/_show", {task}) %>
+                            </li>
+                        <% } %>
+                    </ul>
+                </div>
+            <% } %>
+
+        <% } %>
+    </ul>
+
+</div>

@@ -2,7 +2,8 @@ const createError = require('http-errors');
 const Sequelize = require("sequelize");
 
 const {models: {Project, Client, User, Attachment,
-  ProjectObjective, ProjectConstraint, Milestone, Task}} = require('../models');
+  ProjectObjective, ProjectConstraint, Milestone, Task, Role}} = require('../models');
+const sequelize = require("../models");
 
 
 // Autoload la task asociado a :taskId
@@ -31,23 +32,37 @@ exports.load = async (req, res, next, taskId) => {
 };
 
 
-// Listar todos las tasks de un milestone
-exports.index = async (req, res, next) => {
+// Editar todos las tasks de todos los milestone del project5o
+exports.editAll = async (req, res, next) => {
 
   try {
-    const {project, milestone} = req.load;
+    const {project} = req.load;
 
-    res.render('tasks/index', {project, milestone});
+    res.render('tasks/editAll', {project});
   } catch (error) {
     next(error);
   }
 };
 
 
-// Mostrar formulario de creación de una task§ milestone
-exports.new = (req, res, next) => {
+// Mostrar todos las tasks de todos los milestone del project5o
+exports.showAll = async (req, res, next) => {
+
+  try {
+    const {project} = req.load;
+
+    res.render('tasks/showAll', {project});
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Mostrar formulario de creación de una task para un milestone
+exports.new = async (req, res, next) => {
 
   const {project, milestone} = req.load;
+
+  const allRoles = await Role.findAll();
 
   const task = {
     title: "",
@@ -55,7 +70,7 @@ exports.new = (req, res, next) => {
     budget: "",
     currency: "",
     deliveryDate: Date.now() + 60 * 60 * 1000,
-    roleId
+    roleId : 0
   };
 
   // Timezone offset del cliente
@@ -68,6 +83,7 @@ exports.new = (req, res, next) => {
     task,
     milestone,
     project,
+    allRoles,
     clientTimezoneOffset,
   });
 };
@@ -100,8 +116,10 @@ exports.create = async (req, res, next) => {
   try {
     // Save into the data base
     task = await task.save();
+
+    await milestone.addTask(task);
     console.log('Success: Task created successfully.');
-    res.redirect('/projects/' + projectId + '/milestones' + milestoneId + '/tasks');
+    res.redirect('/projects/' + project.id + '/tasks');
   } catch (error) {
     if (error instanceof Sequelize.ValidationError) {
       req.flash('error', 'Error: There are errors in the form:');
@@ -125,6 +143,8 @@ exports.edit = async (req, res) => {
 
   const {project, milestone, task} = req.load;
 
+  const allRoles = await Role.findAll();
+
   // Timezone offset del cliente
   let {clienttimezoneoffset} = req.query;
   clienttimezoneoffset = Number(clienttimezoneoffset);
@@ -136,6 +156,7 @@ exports.edit = async (req, res) => {
     task,
     milestone,
     project,
+    allRoles,
     clientTimezoneOffset,
   });
 };
@@ -161,7 +182,7 @@ exports.update = async (req, res) => {
   try {
     await task.save();
     console.log('Task edited successfully.');
-    res.redirect('/projects/' + project.id + '/milestones' + milestone.id + '/tasks');
+    res.redirect('/projects/' + project.id + '/tasks');
   } catch (error) {
     if (error instanceof Sequelize.ValidationError) {
       req.flash('error', 'Error: There are errors in the form:');
@@ -194,3 +215,40 @@ exports.destroy = async (req, res) => {
   }
 };
 
+
+
+// Intercambiar el orden de visualizacion de 2 tasks
+exports.swapOrder = async (req, res, next) => {
+
+  const {project} = req.load;
+
+  const transaction = await sequelize.transaction();
+  try {
+    const task1 = await Task.findByPk(req.params.id1, {transaction});
+    if (!task1) {
+      throw new Error('Task 1 not found.');
+    }
+
+    const task2 = await Task.findByPk(req.params.id2, {transaction});
+    if (!task2) {
+      throw new Error('Task 2 not found.');
+    }
+
+    const displayOrder1 = task1.displayOrder;
+    const displayOrder2 = task2.displayOrder;
+
+    // Intercambiamos posiciones
+    await task1.update({displayOrder: displayOrder2}, {transaction}),
+      await task2.update({displayOrder: displayOrder1}, {transaction})
+
+    console.log('Tasks swapped successfully.');
+    res.redirect('/projects/' + project.id + '/tasks');
+
+    await transaction.commit();
+
+  } catch
+    (error) {
+    await transaction.rollback();
+    next(error);
+  }
+};

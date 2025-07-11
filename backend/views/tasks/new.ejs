@@ -1,0 +1,11 @@
+<link rel='stylesheet' type='text/css' href='/stylesheets/forms.css'/>
+
+<h1>Crear Nueva Task</h1>
+
+<form action="/projects/<%= project.id %>/milestones/<%= milestone.id %>/tasks" method="POST">
+
+    <div class="card">
+        <%- include("./_form", {project, milestone, clientTimezoneOffset}) %>
+    </div>
+
+</form>

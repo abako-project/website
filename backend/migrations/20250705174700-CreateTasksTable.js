@@ -28,6 +28,11 @@ module.exports = {
         deliveryDate: {
           type: Sequelize.DATE
         },
+        displayOrder: {
+          type: Sequelize.INTEGER,
+          allowNull: false,
+          defaultValue: 0
+        },
         milestoneId: {
           type: Sequelize.INTEGER,
           references: {

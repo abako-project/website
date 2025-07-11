@@ -1,0 +1,94 @@
+<link rel='stylesheet' type='text/css' href='/stylesheets/forms.css'/>
+
+<%- include('../projectNav/_menu', {project})  %>
+
+<h1>Milestones &amp; Tasks</h1>
+
+
+<% for (const milestone of project.milestones) { %>
+
+    <div class="card">
+
+        <% if (locals.loginUser && locals.loginUser.developerId === project.consultantId) { %>
+            <button class="right addtask"
+                    data-milestone-id="<%= milestone.id %>"
+                    data-project-id="<%= project.id %>">
+                Add new task
+            </button>
+        <% } %>
+
+        <%- include("../milestones/_show", {milestone}) %>
+
+        <div class="card-subtitle">Tasks:</div>
+
+            <% for (const i in milestone.tasks) { %>
+                <% const task = milestone.tasks[i]; %>
+
+            <div class="subcard">
+
+                <% if (locals.loginUser && locals.loginUser.developerId === project.consultantId) { %>
+                    <div class="form-group">
+                        <button class="right taskEdit"
+                                data-task-id="<%= task.id %>"
+                                data-milestone-id="<%= milestone.id %>"
+                                data-project-id="<%= project.id %>">Edit
+                        </button>
+                        <button class="right taskDelete"
+                                data-task-id="<%= task.id %>"
+                                data-milestone-id="<%= milestone.id %>"
+                                data-project-id="<%= project.id %>">Delete
+                        </button>
+
+                        <% if (+i > 0) { %>
+                            <button class="right taskSwapOrder"
+                                    data-task-id="<%= task.id %>"
+                                    data-other-task-id="<%= milestone.tasks[+i-1].id %>"
+                                    data-project-id="<%= project.id %>">▲
+                            </button>
+                        <% } %>
+
+                        <% if (+i < milestone.tasks.length - 1) { %>
+                            <button class="right taskSwapOrder"
+                                    data-task-id="<%= task.id %>"
+                                    data-other-task-id="<%= milestone.tasks[+i+1].id %>"
+                                    data-project-id="<%= project.id %>">▼
+                            </button>
+                        <% } %>
+                    </div>
+
+                <% } %>
+
+                <div class="form-group">
+                    <%- include("./_show", {task}) %>
+                </div>
+
+            </div>
+        <% } %>
+
+    </div>
+
+<% } %>
+
+<script type="module">
+  document.addEventListener("click", async ev => {
+
+    const projectId = ev.target.dataset.projectId;
+    const milestoneId = ev.target.dataset.milestoneId;
+    const taskId = ev.target.dataset.taskId;
+
+    if (ev.target.matches(".taskEdit")) {
+      ev.preventDefault();
+      location.href = "/projects/" + projectId + "/milestones/" + milestoneId + "/tasks/" + taskId + "/edit?clienttimezoneoffset=" + new Date().getTimezoneOffset();
+    } else if (ev.target.matches(".taskDelete")) {
+      ev.preventDefault();
+      location.href = "/projects/" + projectId + "/milestones/" + milestoneId + "/tasks/" + taskId + "?_method=DELETE";
+    } else if (ev.target.matches(".addtask")) {
+      ev.preventDefault();
+      location.href = "/projects/" + projectId + "/milestones/" + milestoneId + "/tasks/new?clienttimezoneoffset=' + new Date().getTimezoneOffset()";
+    }  else if (ev.target.matches(".taskSwapOrder")) {
+        ev.preventDefault();
+        const otherTaskId = ev.target.dataset.otherTaskId;
+        location.href = "/projects/" + projectId + "/tasks/swaporder/" + taskId + "/" + otherTaskId + "?_method=PUT";
+      }
+  })
+</script>

@@ -1,0 +1,35 @@
+
+<div class="card">
+
+    <div class="card-title"><%= project.title %></div>
+
+    <div class="form-group">
+
+        <p><strong>State:</strong> <%= project.state %></p>
+        <p><strong>Summary:</strong> <%= project.summary %></p>
+        <p><strong>Description:</strong> <%= project.description %></p>
+        <p><strong>URL:</strong> <%= project.url %></p>
+        <p><strong>Budget:</strong> <%= project.budget %> <%= project.currency %></p>
+
+        <p>
+            <strong>Delivery Date::</strong>
+            <span id="deliveryDate"></span>
+        </p>
+        <script type="module">
+          document.getElementById("deliveryDate").innerHTML = new Date(<%= project.deliveryDate.valueOf() %>).toLocaleString();
+        </script>
+
+        <p>
+            <strong>Client:</strong> <%= project.client?.name %>
+            <img class="attachment" src="/clients/<%= project.clientId %>/attachment"
+                 onerror="this.src='../images/none.png';this.onerror='';">
+        </p>
+
+        <p>
+            <strong>Consultant:</strong> <%= project.consultant?.name %>
+            <img class="attachment" src="/developers/<%= project.consultantId %>/attachment"
+                 onerror="this.src='../images/none.png';this.onerror='';">
+        </p>
+    </div>
+
+</div>

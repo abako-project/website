@@ -48,7 +48,7 @@ exports.edit = (req, res, next) => {
     const {client} = req.load;
 
     // No se puede usar el valor client en las opciones cuando
-    // hay llamadas anidadas a la fumcion incluede de EJS.
+    // hay llamadas anidadas a la fumcion include de EJS.
     res.render('clients/edit', {c: client});
 };
 

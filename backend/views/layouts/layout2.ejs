@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <%- include('_head') %>
+</head>
+<body>
+<section id="appTwoColumns">
+
+    <section id="appLeft">
+        <img src="/images/w.png" width="50%">
+        <p>Welcome in PolkaTalent</p>
+    </section>
+
+    <section id="appRight">
+        <%- include('_appHeader') %>
+        <%- include('_appNav') %>
+        <%- include('_appMain', {body}) %>
+    </section>
+</section>
+</body>
+</html>

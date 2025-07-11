@@ -209,7 +209,7 @@ exports.swapOrder = async (req, res, next) => {
       await milestone1.update({displayOrder: displayOrder2}, {transaction}),
       await milestone2.update({displayOrder: displayOrder1}, {transaction})
 
-    console.log('Milestone swapped successfully.');
+    console.log('Milestones swapped successfully.');
     res.redirect('/projects/' + milestone1.projectId + '/milestones');
 
     await transaction.commit();

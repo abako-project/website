@@ -9,9 +9,19 @@ body {
 }
 
 .card {
-    background-color: #f9f9f9;
+    background-color: #f3f3f3;
     border-radius: 8px;
     border: 2px solid grey;
+    padding: 7px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 7px;
+}
+
+
+.subcard {
+    background-color: #ffffff;
+    border-radius: 8px;
+    border: 1px dotted grey;
     padding: 7px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     margin-bottom: 7px;
@@ -81,11 +91,11 @@ button {
 .card-title {
     font-size: 1.2em;
     margin-bottom: 15px;
-    font-weight: bold;
+    font-weight: bolder;
 }
 
 .card-subtitle {
     font-size: 1em;
-    margin-bottom: 10px;
-    font-weight: normal;
+    margin-bottom: 15px;
+    font-weight: bold;
 }

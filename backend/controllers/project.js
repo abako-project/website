@@ -34,12 +34,12 @@ exports.load = async (req, res, next, projectId) => {
         {model: ProjectConstraint, as: 'constraints'},
         {
           model: Milestone, as: 'milestones',
-
           separate: true,
-
           order: [['displayOrder', 'ASC']],
           include: [
             {model: Task, as: 'tasks',
+              separate: true,
+              order: [['displayOrder', 'ASC']],
               include: [
                 {model: Role, as: 'role'}
               ]
@@ -142,7 +142,9 @@ exports.index = async (req, res, next) => {
 
     const projects = await Project.findAll(options);
 
-    res.render('projects/index', {projects, client, developer});
+    // No se puede usar el valor client en las opciones cuando
+    // hay llamadas anidadas a la fumcion include de EJS.
+    res.render('projects/index', {projects, c: client, developer});
   } catch (error) {
     next(error);
   }
@@ -357,7 +359,7 @@ exports.scopeSubmit = async (req, res, next) => {
     console.log('Success: Scope submitted successfully.');
 
     if (developerId) {
-      res.redirect('/developers/' + developerId + '/projects');
+      res.redirect('/projects/' + project.id);
     } else {
       res.redirect('/projects/');
     }
@@ -372,7 +374,7 @@ exports.scopeAccept = async (req, res, next) => {
 
   const {project} = req.load;
 
-  const developerId = req.session.loginUser?.developerId;
+  const clientId = req.session.loginUser?.clientId;
 
   project.state = states.ProjectState.TaskingInProgress;
 
@@ -381,8 +383,8 @@ exports.scopeAccept = async (req, res, next) => {
     await project.save();
     console.log('Success: Scope accepted successfully.');
 
-    if (developerId) {
-      res.redirect('/developers/' + developerId + '/projects');
+    if (clientId) {
+      res.redirect('/projects/' + project.id);
     } else {
       res.redirect('/projects/');
     }
@@ -397,7 +399,7 @@ exports.scopeReject = async (req, res, next) => {
 
   const {project} = req.load;
 
-  const developerId = req.session.loginUser?.developerId;
+  const clientId = req.session.loginUser?.clientId;
 
   project.state = states.ProjectState.ScopingInProgress;
 
@@ -406,8 +408,8 @@ exports.scopeReject = async (req, res, next) => {
     await project.save();
     console.log('Success: Scope rechazados successfully.');
 
-    if (developerId) {
-      res.redirect('/developers/' + developerId + '/projects');
+    if (clientId) {
+      res.redirect('/projects/' + project.id);
     } else {
       res.redirect('/projects/');
     }
@@ -478,7 +480,7 @@ exports.selectConsultant = async (req, res, next) => {
 
   const allDevelopers = await Developer.findAll();
 
-  res.render('projects/selectConsultant', {
+  res.render('consultants/select', {
     project,
     allDevelopers
   });

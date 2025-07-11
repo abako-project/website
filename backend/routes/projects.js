@@ -185,10 +185,15 @@ router.put('/:projectId(\\d+)/milestones/swaporder/:id1(\\d+)/:id2(\\d+)',
 
 // === Tasks
 
-// Listar todos las tasks de un milestone
-router.get('/:projectId(\\d+)/milestones/:milestoneId(\\d+)/tasks',
+// Editar todos las tasks de todos los milestones del projecto
+router.get('/:projectId(\\d+)/tasks/edit',
   authController.isAuthenticated,
-  taskController.index);
+  taskController.editAll);
+
+// Listar todos las tasks de todos los milestones del projecto
+router.get('/:projectId(\\d+)/tasks',
+  authController.isAuthenticated,
+  taskController.showAll);
 
 // Mostrar formulario de creación de una Task
 router.get('/:projectId(\\d+)/milestones/:milestoneId(\\d+)/tasks/new',
@@ -223,5 +228,10 @@ router.delete('/:projectId(\\d+)/milestones/:milestoneId(\\d+)/tasks/:taskId(\\d
   projectController.LoggedConsultantRequired,
   taskController.destroy);
 
+// Intercambiar orden de mostrar dos tasks
+router.put('/:projectId(\\d+)/tasks/swaporder/:id1(\\d+)/:id2(\\d+)',
+  authController.isAuthenticated,
+  projectController.LoggedConsultantRequired,
+  taskController.swapOrder);
 
 module.exports = router;
