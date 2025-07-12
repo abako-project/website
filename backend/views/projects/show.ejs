@@ -49,7 +49,7 @@
 
     if (ev.target.matches(".projectEdit")) {
       ev.preventDefault();
-      location.href = "/projects/" + projectId + "/edit?clienttimezoneoffset=" + new Date().getTimezoneOffset();
+      location.href = addTZO("/projects/" + projectId + "/edit");
 
     } else if (ev.target.matches(".scopeSubmit")) {
       ev.preventDefault();

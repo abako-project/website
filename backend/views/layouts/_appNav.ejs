@@ -2,9 +2,9 @@
 <nav id="appNav" role="navigation">
     <a href="/backdoor"><span class="right adminDAO">BackDoor</span></a>
 
-    <a href="javascript:void(0)"><s>Dashboard</s></a>
-    <a href="javascript:void(0)"><s>Reputation</s></a>
-    <a href="javascript:void(0)"><s>Governance</s></a>
+    <span class="todo">Dashboard</span>
+    <span class="todo">Reputation</span>
+    <span class="todo">Governance</span>
 
     <% if (locals.loginUser?.isAdmin) { %>
         <a href="/projects">Proyectos</a>
@@ -16,6 +16,6 @@
         <a href="/clients/<%= loginUser.clientId %>/projects">Proyectos</a>
     <% } %>
 
-    <a href="javascript:void(0)"><s>Payments</s></a>
+    <span class="todo">Payments</span>
 
 </nav>

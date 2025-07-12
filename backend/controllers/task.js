@@ -74,17 +74,15 @@ exports.new = async (req, res, next) => {
   };
 
   // Timezone offset del cliente
-  let {clienttimezoneoffset} = req.query;
-  clienttimezoneoffset = Number(clienttimezoneoffset);
-  clienttimezoneoffset = Number.isNaN(clienttimezoneoffset) ? 0 : clienttimezoneoffset;
-  const clientTimezoneOffset = clienttimezoneoffset * 60 * 1000;
+  let browserTimezoneOffset = Number(req.query.browserTimezoneOffset ?? 0);
+  browserTimezoneOffset = Number.isNaN(browserTimezoneOffset) ? 0 : browserTimezoneOffset;
 
   res.render('tasks/new', {
     task,
     milestone,
     project,
     allRoles,
-    clientTimezoneOffset,
+    browserTimezoneOffset,
   });
 };
 
@@ -97,11 +95,12 @@ exports.create = async (req, res, next) => {
 
   let {title, description, budget, currency, deliveryDate, roleId} = req.body;
 
-  let {clientTimezoneOffset} = req.body;
-  clientTimezoneOffset = Number(clientTimezoneOffset);
+  let {browserTimezoneOffset} = req.query;
+  browserTimezoneOffset = Number(browserTimezoneOffset);
+
   const serverTimezoneOffset = new Date().getTimezoneOffset() * 60 * 1000;
 
-  deliveryDate = new Date(deliveryDate).valueOf() + clientTimezoneOffset - serverTimezoneOffset;
+  deliveryDate = new Date(deliveryDate).valueOf() + browserTimezoneOffset - serverTimezoneOffset;
 
   const milestoneId = milestone.id;
 
@@ -110,16 +109,19 @@ exports.create = async (req, res, next) => {
     description,
     budget,
     currency,
-    deliveryDate,
-    roleId});
+    deliveryDate});
 
   try {
     // Save into the data base
     task = await task.save();
 
+    if (roleId) {
+      task = await task.setRole(roleId);
+    }
+
     await milestone.addTask(task);
     console.log('Success: Task created successfully.');
-    res.redirect('/projects/' + project.id + '/tasks');
+    res.redirect('/projects/' + project.id + '/tasks/edit');
   } catch (error) {
     if (error instanceof Sequelize.ValidationError) {
       req.flash('error', 'Error: There are errors in the form:');
@@ -129,7 +131,7 @@ exports.create = async (req, res, next) => {
         task,
         milestone,
         project,
-        clientTimezoneOffset,
+        browserTimezoneOffset,
       });
     } else {
       next(error);
@@ -146,10 +148,8 @@ exports.edit = async (req, res) => {
   const allRoles = await Role.findAll();
 
   // Timezone offset del cliente
-  let {clienttimezoneoffset} = req.query;
-  clienttimezoneoffset = Number(clienttimezoneoffset);
-  clienttimezoneoffset = Number.isNaN(clienttimezoneoffset) ? 0 : clienttimezoneoffset;
-  const clientTimezoneOffset = clienttimezoneoffset * 60 * 1000;
+  let browserTimezoneOffset = Number(req.query.browserTimezoneOffset ?? 0);
+  browserTimezoneOffset = Number.isNaN(browserTimezoneOffset) ? 0 : browserTimezoneOffset;
 
 
   res.render('tasks/edit', {
@@ -157,7 +157,7 @@ exports.edit = async (req, res) => {
     milestone,
     project,
     allRoles,
-    clientTimezoneOffset,
+    browserTimezoneOffset,
   });
 };
 
@@ -168,21 +168,22 @@ exports.update = async (req, res) => {
   const {body} = req;
   const {project, milestone, task} = req.load;
 
-  let {clientTimezoneOffset} = body;
-  clientTimezoneOffset = Number(clientTimezoneOffset);
+  let {browserTimezoneOffset} = req.query;
+  browserTimezoneOffset = Number(browserTimezoneOffset);
+
   const serverTimezoneOffset = new Date().getTimezoneOffset() * 60 * 1000;
 
   task.title = body.title;
   task.description = body.description;
   task.budget = body.budget;
   task.currency = body.currency;
-  task.deliveryDate = new Date(body.deliveryDate).valueOf() + clientTimezoneOffset - serverTimezoneOffset;
+  task.deliveryDate = new Date(body.deliveryDate).valueOf() + browserTimezoneOffset - serverTimezoneOffset;
   task.roleId = body.roleId;
 
   try {
     await task.save();
     console.log('Task edited successfully.');
-    res.redirect('/projects/' + project.id + '/tasks');
+    res.redirect('/projects/' + project.id + '/tasks/edit');
   } catch (error) {
     if (error instanceof Sequelize.ValidationError) {
       req.flash('error', 'Error: There are errors in the form:');
@@ -192,7 +193,8 @@ exports.update = async (req, res) => {
         task,
         milestone,
         project,
-        clientTimezoneOffset,
+        allRoles,
+        browserTimezoneOffset,
       });
     } else {
       next(error);

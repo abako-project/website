@@ -78,13 +78,13 @@
 
     if (ev.target.matches(".taskEdit")) {
       ev.preventDefault();
-      location.href = "/projects/" + projectId + "/milestones/" + milestoneId + "/tasks/" + taskId + "/edit?clienttimezoneoffset=" + new Date().getTimezoneOffset();
+      location.href = addTZO("/projects/" + projectId + "/milestones/" + milestoneId + "/tasks/" + taskId + "/edit");
     } else if (ev.target.matches(".taskDelete")) {
       ev.preventDefault();
       location.href = "/projects/" + projectId + "/milestones/" + milestoneId + "/tasks/" + taskId + "?_method=DELETE";
     } else if (ev.target.matches(".addtask")) {
       ev.preventDefault();
-      location.href = "/projects/" + projectId + "/milestones/" + milestoneId + "/tasks/new?clienttimezoneoffset=' + new Date().getTimezoneOffset()";
+      location.href = addTZO("/projects/" + projectId + "/milestones/" + milestoneId + "/tasks/new");
     }  else if (ev.target.matches(".taskSwapOrder")) {
         ev.preventDefault();
         const otherTaskId = ev.target.dataset.otherTaskId;

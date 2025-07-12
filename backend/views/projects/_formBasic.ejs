@@ -37,12 +37,10 @@
            placeholder="Currency" autocomplete="off">
 </div>
 
-<input type="hidden" name="clientTimezoneOffset" value="<%= clientTimezoneOffset %>"/>
-
 <div class="form-group">
     <label for="deliveryDate">Delivery Date:</label>
     <input type="datetime-local" id="deliveryDate" name="deliveryDate"
-           value="<%= new Date(project.deliveryDate - clientTimezoneOffset).toISOString().slice(0, 16) %>"
+           value="<%= new Date(project.deliveryDate - browserTimezoneOffset).toISOString().slice(0, 16) %>"
            placeholder="Delivery Date" autocomplete="off">
 </div>
 

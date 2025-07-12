@@ -165,14 +165,12 @@ exports.new = (req, res, next) => {
   };
 
   // Timezone offset del cliente
-  let {clienttimezoneoffset} = req.query;
-  clienttimezoneoffset = Number(clienttimezoneoffset);
-  clienttimezoneoffset = Number.isNaN(clienttimezoneoffset) ? 0 : clienttimezoneoffset;
-  const clientTimezoneOffset = clienttimezoneoffset * 60 * 1000;
+  let browserTimezoneOffset = Number(req.query.browserTimezoneOffset ?? 0);
+  browserTimezoneOffset = Number.isNaN(browserTimezoneOffset) ? 0 : browserTimezoneOffset;
 
   res.render('projects/new', {
     project,
-    clientTimezoneOffset,
+    browserTimezoneOffset,
   });
 };
 
@@ -181,11 +179,15 @@ exports.create = async (req, res, next) => {
 
   let {title, summary, description, url, budget, currency, deliveryDate} = req.body;
 
-  let {clientTimezoneOffset} = req.body;
-  clientTimezoneOffset = Number(clientTimezoneOffset);
+  console.log("===Ctrl Proy create ====Query =======================", req.query);
+
+  let {browserTimezoneOffset} = req.query;
+  browserTimezoneOffset = Number(browserTimezoneOffset);
+
+  console.log("===Ctrl Proy create ===========================", browserTimezoneOffset);
   const serverTimezoneOffset = new Date().getTimezoneOffset() * 60 * 1000;
 
-  deliveryDate = new Date(deliveryDate).valueOf() + clientTimezoneOffset - serverTimezoneOffset;
+  deliveryDate = new Date(deliveryDate).valueOf() + browserTimezoneOffset - serverTimezoneOffset;
 
   const clientId = req.session.loginUser?.clientId;
   // const consultantId = (await Developer.findOne())?.id; // El primer developer es el consultor.
@@ -219,7 +221,7 @@ exports.create = async (req, res, next) => {
 
       res.render('projects/basics/new', {
         project,
-        clientTimezoneOffset,
+        browserTimezoneOffset,
       });
     } else {
       next(error);
@@ -234,14 +236,12 @@ exports.show = async (req, res, next) => {
   const {project} = req.load;
 
   // Timezone offset del cliente
-  let {clienttimezoneoffset} = req.query;
-  clienttimezoneoffset = Number(clienttimezoneoffset);
-  clienttimezoneoffset = Number.isNaN(clienttimezoneoffset) ? 0 : clienttimezoneoffset;
-  const clientTimezoneOffset = clienttimezoneoffset * 60 * 1000;
+  let browserTimezoneOffset = Number(req.query.browserTimezoneOffset ?? 0);
+  browserTimezoneOffset = Number.isNaN(browserTimezoneOffset) ? 0 : browserTimezoneOffset;
 
   res.render('projects/show', {
     project,
-    clientTimezoneOffset,
+    browserTimezoneOffset,
   });
 };
 
@@ -252,15 +252,13 @@ exports.editBasic = async (req, res, next) => {
   const {project} = req.load;
 
   // Timezone offset del cliente
-  let {clienttimezoneoffset} = req.query;
-  clienttimezoneoffset = Number(clienttimezoneoffset);
-  clienttimezoneoffset = Number.isNaN(clienttimezoneoffset) ? 0 : clienttimezoneoffset;
-  const clientTimezoneOffset = clienttimezoneoffset * 60 * 1000;
+  let browserTimezoneOffset = Number(req.query.browserTimezoneOffset ?? 0);
+  browserTimezoneOffset = Number.isNaN(browserTimezoneOffset) ? 0 : browserTimezoneOffset;
 
 
   res.render('projects/editBasic', {
     project,
-    clientTimezoneOffset,
+    browserTimezoneOffset,
   });
 };
 
@@ -271,8 +269,9 @@ exports.updateBasic = async (req, res, next) => {
   const {body} = req;
   const {project} = req.load;
 
-  let {clientTimezoneOffset} = body;
-  clientTimezoneOffset = Number(clientTimezoneOffset);
+  let {browserTimezoneOffset} = req.query;
+  browserTimezoneOffset = Number(browserTimezoneOffset);
+
   const serverTimezoneOffset = new Date().getTimezoneOffset() * 60 * 1000;
 
   project.title = body.title;
@@ -281,7 +280,7 @@ exports.updateBasic = async (req, res, next) => {
   project.url = body.url;
   project.budget = body.budget;
   project.currency = body.currency;
-  project.deliveryDate = new Date(body.deliveryDate).valueOf() + clientTimezoneOffset - serverTimezoneOffset;
+  project.deliveryDate = new Date(body.deliveryDate).valueOf() + browserTimezoneOffset - serverTimezoneOffset;
 
   try {
     await project.save();
@@ -296,7 +295,7 @@ exports.updateBasic = async (req, res, next) => {
 
       res.render('projects/editBasic', {
         project,
-        clientTimezoneOffset,
+        browserTimezoneOffset,
       });
     } else {
       next(error);
@@ -460,15 +459,13 @@ exports.editObjectivesConstraints = async (req, res) => {
   const {project} = req.load;
 
   // Timezone offset del cliente
-  let {clienttimezoneoffset} = req.query;
-  clienttimezoneoffset = Number(clienttimezoneoffset);
-  clienttimezoneoffset = Number.isNaN(clienttimezoneoffset) ? 0 : clienttimezoneoffset;
-  const clientTimezoneOffset = clienttimezoneoffset * 60 * 1000;
+  let browserTimezoneOffset = Number(req.query.browserTimezoneOffset ?? 0);
+  browserTimezoneOffset = Number.isNaN(browserTimezoneOffset) ? 0 : browserTimezoneOffset;
 
 
   res.render('projects/editObjectivesConstraints', {
     project,
-    clientTimezoneOffset,
+    browserTimezoneOffset,
   });
 };
 

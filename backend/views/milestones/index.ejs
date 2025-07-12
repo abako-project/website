@@ -6,11 +6,8 @@
 
 <% if (locals.loginUser && locals.loginUser.developerId === project.consultantId) { %>
     <p>
-        <a href="" id="addmilestone">Crear nuevo Milestone</a>
+        <a is="a-with-tzo" href="/projects/<%= project.id %>/milestones/new" id="addmilestone">Crear nuevo Milestone</a>
     </p>
-    <script>
-      document.getElementById("addmilestone").href = '/projects/<%= project.id %>/milestones/new?clienttimezoneoffset=' + new Date().getTimezoneOffset();
-    </script>
 <% } %>
 
 <% for (const i in project.milestones) { %>
@@ -62,7 +59,7 @@
 
     if (ev.target.matches(".milestoneEdit")) {
       ev.preventDefault();
-      location.href = "/projects/" + projectId + "/milestones/" + milestoneId + "/edit?clienttimezoneoffset=" + new Date().getTimezoneOffset();
+      location.href = addTZO("/projects/" + projectId + "/milestones/" + milestoneId + "/edit");
     } else if (ev.target.matches(".milestoneDelete")) {
       ev.preventDefault();
       location.href = "/projects/" + projectId + "/milestones/" + milestoneId + "?_method=DELETE";
@@ -85,7 +82,7 @@
 
     ev.preventDefault();
     const projectId = ev.target.dataset.projectId;
-    location.href = "/projects/" + projectId + "?clienttimezoneoffset=" + new Date().getTimezoneOffset();
+    location.href = addTZO("/projects/" + projectId);
 
       <% } %>
 

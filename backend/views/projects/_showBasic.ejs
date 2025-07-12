@@ -21,15 +21,20 @@
 
         <p>
             <strong>Client:</strong> <%= project.client?.name %>
-            <img class="attachment" src="/clients/<%= project.clientId %>/attachment"
-                 onerror="this.src='../images/none.png';this.onerror='';">
+            <img class="attachment" src="/clients/<%= project.clientId %>/attachment">
         </p>
 
         <p>
-            <strong>Consultant:</strong> <%= project.consultant?.name %>
-            <img class="attachment" src="/developers/<%= project.consultantId %>/attachment"
-                 onerror="this.src='../images/none.png';this.onerror='';">
+            <% if (project.consultant) { %>
+                <strong>Consultant:</strong> <%= project.consultant?.name %>
+                <img class="attachment" src="/developers/<%= project.consultantId %>/attachment">
+            <% } else { %>
+                    <strong>Consultant:</strong> <small> <%= 'not assigned' %> </small>
+                <img class="attachment"
+                     src="/images/none.png">
+            <% } %>
         </p>
+
     </div>
 
 </div>

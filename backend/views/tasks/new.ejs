@@ -2,10 +2,10 @@
 
 <h1>Crear Nueva Task</h1>
 
-<form action="/projects/<%= project.id %>/milestones/<%= milestone.id %>/tasks" method="POST">
+<form is="form-with-tzo" action="/projects/<%= project.id %>/milestones/<%= milestone.id %>/tasks" method="POST">
 
     <div class="card">
-        <%- include("./_form", {project, milestone, clientTimezoneOffset}) %>
+        <%- include("./_form", {project, milestone, browserTimezoneOffset}) %>
     </div>
 
 </form>

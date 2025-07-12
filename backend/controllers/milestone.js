@@ -55,15 +55,13 @@ exports.new = (req, res, next) => {
   };
 
   // Timezone offset del cliente
-  let {clienttimezoneoffset} = req.query;
-  clienttimezoneoffset = Number(clienttimezoneoffset);
-  clienttimezoneoffset = Number.isNaN(clienttimezoneoffset) ? 0 : clienttimezoneoffset;
-  const clientTimezoneOffset = clienttimezoneoffset * 60 * 1000;
+  let browserTimezoneOffset = Number(req.query.browserTimezoneOffset ?? 0);
+  browserTimezoneOffset = Number.isNaN(browserTimezoneOffset) ? 0 : browserTimezoneOffset;
 
   res.render('milestones/new', {
     milestone,
     project,
-    clientTimezoneOffset,
+    browserTimezoneOffset,
   });
 };
 
@@ -76,11 +74,12 @@ exports.create = async (req, res, next) => {
 
   let {title, description, budget, currency, deliveryDate} = req.body;
 
-  let {clientTimezoneOffset} = req.body;
-  clientTimezoneOffset = Number(clientTimezoneOffset);
+  let {browserTimezoneOffset} = req.query;
+  browserTimezoneOffset = Number(browserTimezoneOffset);
+
   const serverTimezoneOffset = new Date().getTimezoneOffset() * 60 * 1000;
 
-  deliveryDate = new Date(deliveryDate).valueOf() + clientTimezoneOffset - serverTimezoneOffset;
+  deliveryDate = new Date(deliveryDate).valueOf() + browserTimezoneOffset - serverTimezoneOffset;
 
   const projectId = project.id;
 
@@ -106,7 +105,7 @@ exports.create = async (req, res, next) => {
       res.render('milestones/new', {
         milestone,
         project,
-        clientTimezoneOffset,
+        browserTimezoneOffset,
       });
     } else {
       next(error);
@@ -121,16 +120,14 @@ exports.edit = async (req, res) => {
   const {project, milestone} = req.load;
 
   // Timezone offset del cliente
-  let {clienttimezoneoffset} = req.query;
-  clienttimezoneoffset = Number(clienttimezoneoffset);
-  clienttimezoneoffset = Number.isNaN(clienttimezoneoffset) ? 0 : clienttimezoneoffset;
-  const clientTimezoneOffset = clienttimezoneoffset * 60 * 1000;
+  let browserTimezoneOffset = Number(req.query.browserTimezoneOffset ?? 0);
+  browserTimezoneOffset = Number.isNaN(browserTimezoneOffset) ? 0 : browserTimezoneOffset;
 
 
   res.render('milestones/edit', {
     project,
     milestone,
-    clientTimezoneOffset,
+    browserTimezoneOffset,
   });
 };
 
@@ -141,15 +138,16 @@ exports.update = async (req, res) => {
   const {body} = req;
   const {project, milestone} = req.load;
 
-  let {clientTimezoneOffset} = body;
-  clientTimezoneOffset = Number(clientTimezoneOffset);
+  let {browserTimezoneOffset} = req.query;
+  browserTimezoneOffset = Number(browserTimezoneOffset);
+
   const serverTimezoneOffset = new Date().getTimezoneOffset() * 60 * 1000;
 
   milestone.title = body.title;
   milestone.description = body.description;
   milestone.budget = body.budget;
   milestone.currency = body.currency;
-  milestone.deliveryDate = new Date(body.deliveryDate).valueOf() + clientTimezoneOffset - serverTimezoneOffset;
+  milestone.deliveryDate = new Date(body.deliveryDate).valueOf() + browserTimezoneOffset - serverTimezoneOffset;
 
   try {
     await milestone.save();
@@ -163,7 +161,7 @@ exports.update = async (req, res) => {
       res.render('milestones/edit', {
         project,
         milestone,
-        clientTimezoneOffset,
+        browserTimezoneOffset,
       });
     } else {
       next(error);

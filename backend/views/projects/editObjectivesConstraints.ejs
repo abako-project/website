@@ -38,7 +38,7 @@
 
     ev.preventDefault();
     const projectId = ev.target.dataset.projectId;
-    location.href = "/projects/" + projectId + "?clienttimezoneoffset=" + new Date().getTimezoneOffset();
+    location.href = addTZO("/projects/" + projectId);
 
       <% } else if (locals.loginUser.developerId === project.consultantId &&
               project.state &&

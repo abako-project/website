@@ -5,12 +5,8 @@
 
 <% if (client) { %>
     <p>
-        <a href="" id="addproject">Crear nuevo proyecto</a>
+        <a is="a-with-tzo" href="/projects/new">Crear nuevo proyecto</a>
     </p>
-
-    <script>
-      document.getElementById("addproject").href = '/projects/new?clienttimezoneoffset=' + new Date().getTimezoneOffset();
-    </script>
 <% } %>
 
 
@@ -24,16 +20,27 @@
             </div>
 
             <div class="user" id="client">
-                <small> <%= project.client ? project.client.name : 'N/A' %> </small>
-                <img class="attachment"
-                     src="/clients/<%= project.clientId %>/attachment"
-                     onerror="this.src='../images/none.png';this.onerror='';">
+                <% if (project.client) { %>
+                    <small> <%= project.client.name %> </small>
+                    <img class="attachment"
+                         src="/clients/<%= project.clientId %>/attachment">
+                <% } else { %>
+                    <small> <%= 'N/A' %> </small>
+                    <img class="attachment"
+                         src="/images/none.png">
+                <% } %>
             </div>
+
             <div class="user" id="consultant">
-                <small> <%= project.consultant ? project.consultant.name : 'N/A' %> </small>
-                <img class="attachment"
-                     src="/developers/<%= project.consultantId %>/attachment"
-                     onerror="this.src='../images/none.png';this.onerror='';">
+                <% if (project.consultant) { %>
+                    <small> <%= project.consultant.name %> </small>
+                    <img class="attachment"
+                         src="/developers/<%= project.consultantId %>/attachment">
+                <% } else { %>
+                    <small> <%= 'N/A' %> </small>
+                    <img class="attachment"
+                         src="/images/none.png">
+                <% } %>
             </div>
 
             <div class="state">
@@ -50,7 +57,7 @@
 
                     if (ev.target.matches(".projectShow")) {
                       ev.preventDefault();
-                      location.href = "/projects/" + projectId + "?clienttimezoneoffset=" + new Date().getTimezoneOffset();
+                      location.href = addTZO("/projects/" + projectId);
                     }
                   })
                 </script>

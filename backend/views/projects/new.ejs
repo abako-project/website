@@ -2,10 +2,10 @@
 
 <h1>Project Description</h1>
 
-<form action="/projects" method="POST">
+<form is="form-with-tzo" action="/projects" method="POST">
 
     <div class="card">
-        <%- include("./_formBasic", {project, clientTimezoneOffset}) %>
+        <%- include("./_formBasic", {project, browserTimezoneOffset}) %>
     </div>
 
 </form>

@@ -67,6 +67,7 @@ body {
     border-right: 0px;
 }
 
+
 #appMain {
     padding: 2px;
     margin: 1px;
@@ -87,6 +88,12 @@ body {
 }
 
 #appHeader a {
+}
+
+/* ------------------------- */
+
+#appNav .todo {
+    color: #cccccc;
 }
 
 /* ------------------------- */
