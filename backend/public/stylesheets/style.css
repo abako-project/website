@@ -131,13 +131,12 @@ a {
     color: var(--primary);
 }
 
-
 a.button, input.button {
     display: inline-block;
-    font-size: x-small;
+    font-size: large;
     text-decoration: none;
-    padding: 1px 4px;
-    margin: 2px;
+    padding: 6px 8px;
+    margin: 4px;
     background: #f5f5f5;
     color: var(--primary);
     border-radius: 4px;
@@ -147,6 +146,46 @@ a.button, input.button {
 a.button:hover, input.button:hover {
     background: lightgray;
 }
+
+/* ------------------------- */
+
+a.adminDAO {
+    display: inline-block;
+    font-size: large;
+    text-decoration: none;
+    padding: 8px 12px;
+    margin: 4px;
+    border-radius: 4px;
+    border: solid 1px var(--secondary);
+
+    background-color: lightgoldenrodyellow;
+    color: darkgoldenrod;
+}
+
+a.adminDAO:hover {
+    background: gold;
+}
+
+/* ------------------------- */
+
+a.projectFlow {
+    display: inline-block;
+    font-size: large;
+    text-decoration: none;
+    padding: 8px 12px;
+    margin: 4px;
+    border-radius: 4px;
+    border: solid 1px var(--secondary);
+
+    background-color: #8fbc8f;
+    color: beige;
+}
+
+a.projectFlow:hover {
+    background: var(--primary);
+}
+
+/* ------------------------- */
 
 .right {
     float: right;
@@ -326,12 +365,6 @@ article.projectsIndex div.state {
     font-size: medium;
 }
 
-/* ------------------------- */
-
-.adminDAO {
-    background-color: lightgoldenrodyellow;
-    color: darkgoldenrod;
-}
 
 /* ------------------------- */
 
