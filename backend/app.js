@@ -21,6 +21,35 @@ const sequelize = require("./models");
 
 const app = express();
 
+// Only for development: livereloa
+// to automatically refresh the browser when files change
+if (process.env.NODE_ENV === 'development') {
+    const livereload = require('livereload');
+    const connectLivereload = require('connect-livereload');
+    const chokidar = require('chokidar');
+
+    // Crear servidor de livereload
+    const liveReloadServer = livereload.createServer();
+    chokidar.watch(['views', 'public']).on('change', (path) => {
+      console.log("🔧 Archivo cambiado:", path);
+      liveReloadServer.refresh('/');
+    }); 
+
+    // Forzar recarga del navegador cuando se reinicia el servidor
+    liveReloadServer.server.once("connection", () => {
+        console.log("Livereload server connected");
+        setTimeout(() => {
+        liveReloadServer.refresh("/");
+        }, 100);
+    });
+
+    liveReloadServer.server.on("error", (err) => {
+        console.error("Livereload error:", err);
+    });
+
+    app.use(connectLivereload());
+}
+
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 app.set('view options', {defaultLayout: 'layouts/layout'});
