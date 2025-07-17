@@ -3,7 +3,7 @@
 const {DataTypes} = require("sequelize");
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('ProjectObjectives',
+    await queryInterface.createTable('Objectives',
       {
         id: {
           type: Sequelize.INTEGER,
@@ -15,6 +15,11 @@ module.exports = {
         description: {
           type: Sequelize.STRING,
           validate: {notEmpty: {msg: "Description must not be empty."}},
+        },
+        displayOrder: {
+          type: Sequelize.INTEGER,
+          allowNull: false,
+          defaultValue: 0
         },
         projectId: {
           type: Sequelize.INTEGER,
@@ -41,6 +46,6 @@ module.exports = {
   },
 
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('ProjectObjectives');
+    await queryInterface.dropTable('Objectives');
   }
 };

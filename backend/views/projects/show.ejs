@@ -1,55 +1,13 @@
-<%- include('../projectNav/_menu', {project})  %>
+<%- include('./headers/_empty', {project,
+                                 title: "Ready to share this with the DAO?",
+                                 subtitle: "Once submitted, your project will be reviewed and voted on by DAO members within 48–72 hours."})
+%>
 
-<% if (locals.loginUser && locals.loginUser.isAdmin) { %>
+<%- include("./proposals/_show", {project}) %>
 
-    <a class="right adminDAO" href="/projects/<%= project.id %>?_method=DELETE">Delete</a>
+<%- include("./objectives/_show", {project}) %>
 
-    <a class="right adminDAO" href="/projects/<%= project.id %>/reject?_method=PUT">Reject</a>
-
-    <a class="right adminDAO" href="/projects/<%= project.id %>/approve?_method=PUT">Approve</a>
-
-    <a class="right adminDAO"href="/projects/<%= project.id %>/consultant/select">Select Consultant</a>
-
-<% } %>
-
-
-<% if (locals.loginUser && locals.loginUser.clientId === project.clientId) { %>
-
-    <% if (!project.state) { %>
-        <a is="a-with-tzo" href="/projects/<%= project.id %>/edit" class="projectFlow">Review</a>
-    <% } %>
-
-    <% if (!project.state) { %>
-        <a is="a-with-tzo" href="/projects/<%= project.id %>/projectSubmit?_method=PUT" class="projectFlow">Submit</a>
-    <% } %>
-
-    <% if (project.state && ["validationNeeded"].includes(project.state)) { %>
-        <a href="/projects/<%= project.id %>/scopeAccept?_method=PUT" class="projectFlow">Accept Scope</a>
-        <a href="/projects/<%= project.id %>/scopeReject?_method=PUT" class="projectFlow">Reject Scope</a>
-    <% } %>
-<% } %>
-
-
-<% if (locals.loginUser && locals.loginUser.developerId === project.consultantId) { %>
-
-    <% if (project.state && ["scopingInProgress"].includes(project.state)) { %>
-        <a is="a-with-tzo" href="/projects/<%= project.id %>/edit" class="projectFlow">Review</a>
-        <a is="a-with-tzo" href="/projects/<%= project.id %>/projectSubmit?_method=PUT" class="projectFlow">Submit</a>
-    <% } %>
-
-    <% if (project.state && ["taskingInProgress"].includes(project.state)) { %>
-        <a href="/projects/<%= project.id %>/tasks/edit" class="projectFlow">Review tasks</a>
-    <% } %>
-<% } %>
-
-
-<h1><%= project.title %></h1>
-
-<%- include("./_showBasic", {project}) %>
-
-<%- include("./_showObjectives", {project}) %>
-
-<%- include("./_showConstraints", {project}) %>
+<%- include("./constraints/_show", {project}) %>
 
 <% if (project.milestones?.length) { %>
     <%- include("./_showMilestonesAndTasks", {project}) %>

@@ -1,0 +1,12 @@
+<%- include('./headers/_empty', {project, title: "Let´s start with your project description"})  %>
+
+<form is="form-with-tzo" action="/projects/<%= project.id %>?_method=PUT" method="POST">
+
+    <div class="card">
+        <%- include("./proposals/_form", {project, browserTimezoneOffset}) %>
+    </div>
+
+
+
+    <input type="submit" value="Next"/>
+</form>

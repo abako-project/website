@@ -318,6 +318,10 @@ a.projectFlow:hover {
   float: right;
 }
 
+.clear {
+  clear: both;
+}
+
 /* ------------------------- */
 .wideRow {
   display: flex;
@@ -392,8 +396,7 @@ article.postShow div.author {
 img.attachment {
   width: 30px;
   height: 30px;
-  -o-object-fit: cover;
-     object-fit: cover;
+  object-fit: cover;
   border-radius: 20px;
   box-shadow: 2px 2px 7px #ccc;
   vertical-align: middle;
@@ -489,4 +492,6 @@ article.projectsIndex div.state {
   border-right: 0px;
 }
 
-/* ------------------------- *//*# sourceMappingURL=main.css.map */
+/* ------------------------- */
+
+/*# sourceMappingURL=main.css.map */

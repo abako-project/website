@@ -1,0 +1,27 @@
+
+<style>
+    .contenedor {
+        padding: 5px 20px;
+        margin: 5px 0px 20px 0px;
+
+        display: grid;
+        grid-template-columns:  1fr auto;
+
+        gap: 5px;
+    }
+</style>
+
+<div class="contenedor">
+
+    <div>
+       <h1> <%= locals.title ?? "" %> </h1>
+        <br />
+        <%= locals.subtitle ?? ""%>
+
+    </div>
+
+    <div>
+        <%- include('_flow', {project}) %>
+    </div>
+
+</div>

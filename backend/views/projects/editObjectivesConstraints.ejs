@@ -1,7 +1,8 @@
-<h1>Objectives and Constraints</h1>
+
+<%- include('./headers/_empty', {project, title: "What do you want to achieve?"})  %>
 
 <div class="card">
-    <%- include("./_editObjectives", {project}) %>
+    <%- include("./objectives/_edit", {project}) %>
 
     <% if ((locals.loginUser.clientId === project.clientId &&
                     !project.state) ||
@@ -9,24 +10,27 @@
                     project.state &&
                     ["scopingInProgress"].includes(project.state))) { %>
 
-        <%- include("./_newObjective", {project}) %>
+        <%- include("./objectives/_new", {project}) %>
 
     <% } %>
 </div>
 
 
 <div class="card">
-    <%- include("./_editConstraints", {project}) %>
+    <%- include("./constraints/_edit", {project}) %>
 
     <% if ((locals.loginUser.clientId === project.clientId &&
                     !project.state) ||
             (locals.loginUser.developerId === project.consultantId &&
                     project.state &&
                     ["scopingInProgress"].includes(project.state))) { %>
-        <%- include("./_newConstraint", {project}) %>
+        <%- include("./constraints/_new", {project}) %>
 
     <% } %>
 </div>
+
+<a is="a-with-tzo" href="/projects/<%= project.id %>/edit" class="button">back</a>
+
 
 <button id="projectNextButton" data-project-id="<%= project.id %>">Next</button>
 <script type="module">

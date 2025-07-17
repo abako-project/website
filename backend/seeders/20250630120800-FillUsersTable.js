@@ -36,11 +36,11 @@ module.exports = {
       foreignKey: 'skillId', otherKey: 'developerId'});
 
     const clients = [
-      {email: 'carlos@sitio.es', name: "Carlos", attachment: "c1.jpeg"},
-      {email: 'cipriano@aqui.es', name: "Cipriano", attachment: "c2.jpeg"},
-      {email: 'camilo@alli.es', name: "Camilo", attachment: "c3.jpeg"},
-      {email: 'cesar@sitio.es', name: "Cesar", attachment: "c4.jpeg"},
-      {email: 'clemente@sitio.es', name: "Clemente", attachment: "c5.jpeg"}
+      {email: 'carlos@sitio.es',   name: "Carlos",    website: "https://sitio.es", attachment: "c1.jpeg"},
+      {email: 'cipriano@aqui.es',  name: "Cipriano",  website: "https://aqui.es",  attachment: "c2.jpeg"},
+      {email: 'camilo@alli.es',    name: "Camilo",    website: "https://alli.es",  attachment: "c3.jpeg"},
+      {email: 'cesar@sitio.es',    name: "Cesar",     website: "https://sitio.es", attachment: "c4.jpeg"},
+      {email: 'cesar@sitio.es',    name: "Clemente",  website: "https://sitio.es", attachment: "c5.jpeg"}
     ];
 
     const developers = [
@@ -56,11 +56,12 @@ module.exports = {
         skillIds: [], roleId: 1, attachment: "d5.jpeg"}
     ];
 
-    for (const {email, name, attachment} of clients) {
+    for (const {email, name, website, attachment} of clients) {
       try {
         const user = await User.create({email});
         const client = await Client.create({
           name,
+          website,
             password: '1'
         });
         await client.setUser(user);

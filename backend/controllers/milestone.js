@@ -2,7 +2,7 @@ const createError = require('http-errors');
 const Sequelize = require("sequelize");
 
 const {models: {Project, Client, User, Attachment,
-  ProjectObjective, ProjectConstraint, Milestone, Task}} = require('../models');
+  Objective, Constraint, Milestone, Task}} = require('../models');
 
 const sequelize = require('../models');
 

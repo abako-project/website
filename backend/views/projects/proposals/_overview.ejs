@@ -1,0 +1,29 @@
+<div class="card">
+
+    <div class="form-group">
+
+        <p><strong>Description:</strong> <%= project.description %></p>
+        <p><strong>Budget:</strong> <%= project.budget %> <%= project.currency %></p>
+
+        <p>
+            <strong>Delivery Date::</strong>
+            <span id="deliveryDate"></span>
+        </p>
+        <script type="module">
+          document.getElementById("deliveryDate").innerHTML = new Date(<%= project.deliveryDate.valueOf() %>).toLocaleString();
+        </script>
+
+        <p>
+            <% if (project.consultant) { %>
+                <strong>Consultant:</strong> <%= project.consultant?.name %>
+                <img class="attachment" src="/developers/<%= project.consultantId %>/attachment">
+            <% } else { %>
+                    <strong>Consultant:</strong> <small> <%= 'not assigned' %> </small>
+                <img class="attachment"
+                     src="/images/none.png">
+            <% } %>
+        </p>
+
+    </div>
+
+</div>

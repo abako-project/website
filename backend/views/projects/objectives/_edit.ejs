@@ -1,0 +1,49 @@
+<div class="card-title">Objectives</div>
+
+<ul>
+    <% for (const i in project.objectives) { %>
+        <% const objective = project.objectives[i]; %>
+        <li>
+
+            <%= objective.description %>
+
+            <% if (locals.loginUser.clientId === project.clientId) { %>
+                <a href="/projects/<%= project.id %>/objectives/<%= objective.id %>?_method=DELETE"
+                   class="right button">Delete</a>
+            <% } %>
+
+            <% if (+i > 0) { %>
+                <button class="right objectiveSwapOrder"
+                        data-objective-id="<%= objective.id %>"
+                        data-other-objective-id="<%= project.objectives[+i - 1].id %>"
+                        data-project-id="<%= project.id %>">▲
+                </button>
+            <% } %>
+
+            <% if (+i < project.objectives.length - 1) { %>
+                <button class="right objectiveSwapOrder"
+                        data-objective-id="<%= objective.id %>"
+                        data-other-objective-id="<%= project.objectives[+i + 1].id %>"
+                        data-project-id="<%= project.id %>">▼
+                </button>
+            <% } %>
+
+            <div class="clear"></div>
+        </li>
+    <% } %>
+</ul>
+
+
+<script type="module">
+  document.addEventListener("click", async ev => {
+
+    const projectId = ev.target.dataset.projectId;
+    const objectiveId = ev.target.dataset.objectiveId;
+
+    if (ev.target.matches(".objectiveSwapOrder")) {
+      ev.preventDefault();
+      const otherObjectiveId = ev.target.dataset.otherObjectiveId;
+      location.href = "/projects/" + projectId + "/objectives/swaporder/" + objectiveId + "/" + otherObjectiveId + "?_method=PUT";
+    }
+  })
+</script>

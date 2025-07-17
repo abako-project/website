@@ -1,0 +1,11 @@
+<%- include('./headers/_project', {project})  %>
+
+<%- include("./proposals/_overview", {project}) %>
+
+<%- include("./objectives/_show", {project}) %>
+
+<%- include("./constraints/_show", {project}) %>
+
+<% if (project.milestones?.length) { %>
+    <%- include("./_showMilestonesAndTasks", {project}) %>
+<% } %>

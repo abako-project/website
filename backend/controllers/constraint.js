@@ -1,14 +1,15 @@
 const createError = require('http-errors');
 const Sequelize = require("sequelize");
 
-const {models: {ProjectConstraint}} = require('../models');
+const {models: {Constraint}} = require('../models');
+const sequelize = require("../models");
 
 
 // Autoload el objetivo asociado a :constraintId
 exports.load = async (req, res, next, constraintId) => {
 
     try {
-        const constraint = await ProjectConstraint.findByPk(constraintId);
+        const constraint = await Constraint.findByPk(constraintId);
         if (constraint) {
             req.load = {...req.load, constraint};
             next();
@@ -27,7 +28,7 @@ exports.create = async (req, res, next) => {
     let {description} = req.body;
     let {project} = req.load;
 
-    let constraint = ProjectConstraint.build({description});
+    let constraint = Constraint.build({description});
 
     try {
         // Save into the data base
@@ -66,3 +67,37 @@ exports.destroy = async (req, res) => {
     }
 };
 
+
+// Intercambiar el orden de visualizacion de 2 constraints
+exports.swapOrder = async (req, res, next) => {
+
+    const transaction = await sequelize.transaction();
+    try {
+        const constraint1 = await Constraint.findByPk(req.params.id1, {transaction});
+        if (!constraint1) {
+            throw new Error('Constraint 1 not found.');
+        }
+
+        const constraint2 = await Constraint.findByPk(req.params.id2, {transaction});
+        if (!constraint2) {
+            throw new Error('Constraint 2 not found.');
+        }
+
+        const displayOrder1 = constraint1.displayOrder;
+        const displayOrder2 = constraint2.displayOrder;
+
+        // Intercambiamos posiciones
+        await constraint1.update({displayOrder: displayOrder2}, {transaction}),
+          await constraint2.update({displayOrder: displayOrder1}, {transaction})
+
+        console.log('Constraints swapped successfully.');
+        res.redirect('/projects/' + constraint1.projectId + '/objectives_constraints/edit');
+
+        await transaction.commit();
+
+    } catch
+      (error) {
+        await transaction.rollback();
+        next(error);
+    }
+};

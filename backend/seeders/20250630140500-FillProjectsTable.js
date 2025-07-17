@@ -8,21 +8,21 @@ module.exports = {
     const Client = require("../models/client")(sequelize);
     const Developer = require("../models/developer")(sequelize);
     const Project = require("../models/project")(sequelize);
-    const ProjectObjective = require("../models/projectObjective")(sequelize);
-    const ProjectConstraint = require("../models/projectConstraint")(sequelize);
+    const Objective = require("../models/objective")(sequelize);
+    const Constraint = require("../models/constraint")(sequelize);
     const Milestone = require("../models/milestone")(sequelize);
     const Task = require("../models/task")(sequelize);
     const Role = require("../models/role")(sequelize);
 
     const states = require("../controllers/state");
 
-    // Relation 1-to-N between Project and ProjectObjective:
-    Project.hasMany(ProjectObjective, {as: 'objectives', foreignKey: 'projectId'});
-    ProjectObjective.belongsTo(Project, {as: 'project', foreignKey: 'projectId'});
+    // Relation 1-to-N between Project and Objective:
+    Project.hasMany(Objective, {as: 'objectives', foreignKey: 'projectId'});
+    Objective.belongsTo(Project, {as: 'project', foreignKey: 'projectId'});
 
-    // Relation 1-to-N between Project and ProjectConstraint:
-    Project.hasMany(ProjectConstraint, {as: 'constraints', foreignKey: 'projectId'});
-    ProjectConstraint.belongsTo(Project, {as: 'project', foreignKey: 'projectId'});
+    // Relation 1-to-N between Project and Constraint:
+    Project.hasMany(Constraint, {as: 'constraints', foreignKey: 'projectId'});
+    Constraint.belongsTo(Project, {as: 'project', foreignKey: 'projectId'});
 
     // Relation 1-to-N between Project and Milestone:
     Project.hasMany(Milestone, {as: 'milestones', foreignKey: 'projectId'});
@@ -311,11 +311,11 @@ module.exports = {
           clientId
         });
         for (const description of objectives) {
-          const objective = await ProjectObjective.create({description});
+          const objective = await Objective.create({description});
           await project.addObjective(objective);
         }
         for (const description of constraints) {
-          const constraint = await ProjectConstraint.create({description});
+          const constraint = await Constraint.create({description});
           await project.addConstraint(constraint);
         }
         for (const {title, description, budget, currency, deliveryDate, roleId, tasks} of milestones) {

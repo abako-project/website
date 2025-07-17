@@ -25,7 +25,8 @@ exports.adminLogin = async (req, res) => {
 
     req.session.loginUser = {
         id: 0,
-        email: "admin@sitio.es",
+      email: "admin@sitio.es",
+      name: "admin",
         isAdmin: true,
         clientId: undefined,
         developerId: undefined
