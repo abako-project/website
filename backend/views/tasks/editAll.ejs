@@ -1,4 +1,5 @@
-<%- include('../projectNav/_menu', {project})  %>
+
+<%- include('../projects/headers/_project', {project})  %>
 
 <h1>Milestones &amp; Tasks</h1>
 
@@ -7,15 +8,7 @@
 
     <div class="card">
 
-        <% if (locals.loginUser && locals.loginUser.developerId === project.consultantId) { %>
-            <button class="right addtask"
-                    data-milestone-id="<%= milestone.id %>"
-                    data-project-id="<%= project.id %>">
-                Add new task
-            </button>
-        <% } %>
-
-        <%- include("../milestones/_show", {milestone}) %>
+        <%- include("../projects/milestones/_show", {milestone}) %>
 
         <div class="card-subtitle">Tasks:</div>
 
@@ -62,6 +55,15 @@
 
             </div>
         <% } %>
+
+            <% if (locals.loginUser && locals.loginUser.developerId === project.consultantId) { %>
+                <button class="addtask"
+                        data-milestone-id="<%= milestone.id %>"
+                        data-project-id="<%= project.id %>">
+                    Add new task
+                </button>
+            <% } %>
+
 
     </div>
 

@@ -147,6 +147,10 @@ button {
   font-weight: bold;
 }
 
+* {
+  border: 1px solid tomato;
+}
+
 html {
   height: 100%;
   margin: 0;

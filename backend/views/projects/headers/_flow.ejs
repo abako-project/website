@@ -2,14 +2,16 @@
 
     <% if (locals.loginUser && locals.loginUser.isAdmin) { %>
 
+        <a class="adminDAO" href="/projects/<%= project.id %>?_method=DELETE">Delete</a>
+        <br/>
+        <a class="adminDAO" href="/projects/<%= project.id %>/reject?_method=PUT">Reject</a>
+        <br/>
 
-        <a class="right adminDAO" href="/projects/<%= project.id %>?_method=DELETE">Delete</a>
+        <a class="adminDAO" href="/projects/<%= project.id %>/approve?_method=PUT">Approve</a>
+        <br/>
 
-        <a class="right adminDAO" href="/projects/<%= project.id %>/reject?_method=PUT">Reject</a>
-
-        <a class="right adminDAO" href="/projects/<%= project.id %>/approve?_method=PUT">Approve</a>
-
-        <a class="right adminDAO" href="/projects/<%= project.id %>/consultant/select">Select Consultant</a>
+        <a class="adminDAO" href="/projects/<%= project.id %>/consultant/select">Select/Change Consultant</a>
+        <br/>
 
     <% } %>
 
@@ -18,16 +20,21 @@
 
         <% if (!project.state) { %>
             <a is="a-with-tzo" href="/projects/<%= project.id %>/edit" class="projectFlow">Review</a>
+            <br />
         <% } %>
 
         <% if (!project.state) { %>
             <a is="a-with-tzo" href="/projects/<%= project.id %>/projectSubmit?_method=PUT"
-               class="projectFlow">Submit</a>
+               class="projectFlow">Project Submit</a>
+            <br />
         <% } %>
 
         <% if (project.state && ["validationNeeded"].includes(project.state)) { %>
             <a href="/projects/<%= project.id %>/scopeAccept?_method=PUT" class="projectFlow">Accept Scope</a>
+            <br />
+
             <a href="/projects/<%= project.id %>/scopeReject?_method=PUT" class="projectFlow">Reject Scope</a>
+            <br />
         <% } %>
     <% } %>
 
@@ -36,12 +43,21 @@
 
         <% if (project.state && ["scopingInProgress"].includes(project.state)) { %>
             <a is="a-with-tzo" href="/projects/<%= project.id %>/edit" class="projectFlow">Review</a>
-            <a is="a-with-tzo" href="/projects/<%= project.id %>/projectSubmit?_method=PUT"
-               class="projectFlow">Submit</a>
+            <br />
+
+            <a is="a-with-tzo" href="/projects/<%= project.id %>/scopeSubmit?_method=PUT"
+               class="projectFlow">Scope Submit</a>
+            <br />
         <% } %>
 
-        <% if (project.state && ["taskingInProgress"].includes(project.state)) { %>
+        <% if (project.state && ["tasksPending"].includes(project.state)) { %>
             <a href="/projects/<%= project.id %>/tasks/edit" class="projectFlow">Review tasks</a>
+            <br />
+        <% } %>
+
+        <% if (project.state && ["tasksPending"].includes(project.state)) { %>
+            <a href="/projects/<%= project.id %>/sendTasks?_method=PUT" class="projectFlow">Send tasks</a>
+            <br />
         <% } %>
 
     <% } %>

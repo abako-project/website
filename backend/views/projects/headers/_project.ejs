@@ -21,23 +21,21 @@
 
     <p style="grid-area: summary; font-size: small; "> <%= project.summary %> </p>
 
-    <% if (locals.loginUser.clientId) { %>
-        <div style="grid-area: client;">
-            <img class="attachment" src="/clients/<%= project.clientId %>/attachment">
-            <%= project.client.name %>
-            <br/>
-            <%= project.client.website %>
-        </div>
-    <% } %>
+    <div style="grid-area: client;">
+        <img class="attachment" src="/clients/<%= project.clientId %>/attachment">
+        <%= project.client.name %>
+        <br/>
+        <%= project.client.website %>
+    </div>
 
     <div  style="grid-area: nav;">
         <nav id="projectNav" role="navigation">
             <a href="/projects/<%= project.id %>"><span>Overview</span></a>
-            <a href="/projects/<%= project.id %>/tasks"><span>Tasks</span></a>
+            <a href="/projects/<%= project.id %>/tasks"><span>Milestones &amp; Tasks</span></a>
         </nav>
     </div>
 
-    <p style="grid-area: state;"> <%= project.state %> </p>
+    <p style="grid-area: state; background-color: lightcoral; text-align: center;"> <%= project.state %> </p>
 
     <div  style="grid-area: flow;">
 

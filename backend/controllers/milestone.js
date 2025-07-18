@@ -29,13 +29,13 @@ exports.load = async (req, res, next, milestoneId) => {
 
 
 
-// Listar todos los milestones de un proyecto
-exports.index = async (req, res, next) => {
+// Editar todos los milestones de un proyecto
+exports.editAll = async (req, res, next) => {
 
   try {
     const {project} = req.load;
 
-    res.render('milestones/index', {project});
+    res.render('projects/editMilestones', {project});
   } catch (error) {
     next(error);
   }
@@ -58,7 +58,7 @@ exports.new = (req, res, next) => {
   let browserTimezoneOffset = Number(req.query.browserTimezoneOffset ?? 0);
   browserTimezoneOffset = Number.isNaN(browserTimezoneOffset) ? 0 : browserTimezoneOffset;
 
-  res.render('milestones/new', {
+  res.render('projects/milestones/new', {
     milestone,
     project,
     browserTimezoneOffset,
@@ -102,7 +102,7 @@ exports.create = async (req, res, next) => {
       req.flash('error', 'Error: There are errors in the form:');
       error.errors.forEach(({message}) => req.flash('error', message));
 
-      res.render('milestones/new', {
+      res.render('projects/milestones/new', {
         milestone,
         project,
         browserTimezoneOffset,
@@ -124,7 +124,7 @@ exports.edit = async (req, res) => {
   browserTimezoneOffset = Number.isNaN(browserTimezoneOffset) ? 0 : browserTimezoneOffset;
 
 
-  res.render('milestones/edit', {
+  res.render('projects/milestones/edit', {
     project,
     milestone,
     browserTimezoneOffset,
@@ -158,7 +158,7 @@ exports.update = async (req, res) => {
       req.flash('error', 'Error: There are errors in the form:');
       error.errors.forEach(({message}) => req.flash('error', message));
 
-      res.render('milestones/edit', {
+      res.render('projects/milestones/edit', {
         project,
         milestone,
         browserTimezoneOffset,

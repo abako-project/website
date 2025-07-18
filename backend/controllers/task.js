@@ -4,6 +4,7 @@ const Sequelize = require("sequelize");
 const {models: {Project, Client, User, Attachment,
   Objective, Constraint, Milestone, Task, Role}} = require('../models');
 const sequelize = require("../models");
+const states = require("./state");
 
 
 // Autoload la task asociado a :taskId
@@ -254,3 +255,30 @@ exports.swapOrder = async (req, res, next) => {
     next(error);
   }
 };
+
+
+
+// Publicar las tasks creadas
+exports.sendTasks = async (req, res, next) => {
+
+  const {project} = req.load;
+
+  const developerId = req.session.loginUser?.developerId;
+
+  project.state = states.ProjectState.TeamAssignmentPending;
+
+  try {
+    // Save into the data base
+    await project.save();
+    console.log('Success: Tasks submitted successfully.');
+
+    if (developerId) {
+      res.redirect('/projects/' + project.id);
+    } else {
+      res.redirect('/projects/');
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+

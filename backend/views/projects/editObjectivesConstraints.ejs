@@ -1,5 +1,10 @@
-
-<%- include('./headers/_empty', {project, title: "What do you want to achieve?"})  %>
+<% if (!project.state) { %>
+    <%- include('./headers/_empty', {project, title: "What do you want to achieve?"}) %>
+<% } else if (project.state === "scopingInProgress" ) { %>
+    <%- include('./headers/_empty', {project, title: "Review the Project Scope and Milestones"}) %>
+<% } else { %>
+    <%- include('./headers/_empty', {project, title: "Project description"}) %>
+<% } %>
 
 <div class="card">
     <%- include("./objectives/_edit", {project}) %>
@@ -49,7 +54,7 @@
 
     ev.preventDefault();
     const projectId = ev.target.dataset.projectId;
-    location.href = "/projects/" + projectId + "/milestones";
+    location.href = "/projects/" + projectId + "/milestones/edit";
 
 
       <% } %>

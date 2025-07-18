@@ -44,13 +44,13 @@ router.get('/:projectId(\\d+)',
 // Mostrar formulario de edición de una propuesta
 router.get('/:projectId(\\d+)/edit',
   permissionController.isAuthenticated,
-  permissionController.userTypesRequired({client: true, consultant: true}),
+  permissionController.userTypesRequired({client: true, projectConsultant: true}),
   projectController.editProposal);
 
 // Actualizar propuesta
 router.put('/:projectId(\\d+)',
   permissionController.isAuthenticated,
-  permissionController.userTypesRequired({client: true, consultant: true}),
+  permissionController.userTypesRequired({client: true, projectConsultant: true}),
   projectController.updateProposal);
 
 // Eliminar proyecto
@@ -80,7 +80,7 @@ router.put('/:projectId(\\d+)/approve',
 // Publicar el scope: estado = validationNeeded
 router.put('/:projectId(\\d+)/scopeSubmit',
   permissionController.isAuthenticated,
-  permissionController.userTypesRequired({consultant: true}),
+  permissionController.userTypesRequired({projectConsultant: true}),
   projectController.scopeSubmit);
 
 // Aprobar el scope del proyecto: estado = taskingInProgress
@@ -160,10 +160,10 @@ router.post('/:projectId(\\d+)/consultant',
 
 // === Milestones
 
-// Listar todos los milestones de un proyecto
-router.get('/:projectId(\\d+)/milestones',
+// Editar todos los milestones de un proyecto
+router.get('/:projectId(\\d+)/milestones/edit',
   permissionController.isAuthenticated,
-  milestoneController.index);
+  milestoneController.editAll);
 
 // Mostrar formulario de creación de un milestone
 router.get('/:projectId(\\d+)/milestones/new',
@@ -256,5 +256,13 @@ router.put('/:projectId(\\d+)/tasks/swaporder/:id1(\\d+)/:id2(\\d+)',
   permissionController.isAuthenticated,
   permissionController.projectConsultantRequired,
   taskController.swapOrder);
+
+
+// Publicar las tasks creadas
+router.put('/:projectId(\\d+)/sendTasks',
+  permissionController.isAuthenticated,
+  permissionController.userTypesRequired({projectConsultant: true}),
+  taskController.sendTasks);
+
 
 module.exports = router;

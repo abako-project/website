@@ -338,7 +338,7 @@ exports.scopeAccept = async (req, res, next) => {
 
   const clientId = req.session.loginUser?.clientId;
 
-  project.state = states.ProjectState.TaskingInProgress;
+  project.state = states.ProjectState.TasksPending;
 
   try {
     // Save into the data base

@@ -1,11 +1,10 @@
-<h1>Milestones</h1>
-
-
-<% if (locals.loginUser && locals.loginUser.developerId === project.consultantId) { %>
-    <p>
-        <a is="a-with-tzo" href="/projects/<%= project.id %>/milestones/new" id="addmilestone">Crear nuevo Milestone</a>
-    </p>
+<% if (project.state === "scopingInProgress" ) { %>
+    <%- include('./headers/_empty', {project, title: "Review the Project Scope and Milestones"}) %>
+<% } else { %>
+    <%- include('./headers/_empty', {project, title: "Project description"}) %>
 <% } %>
+
+
 
 <% for (const i in project.milestones) { %>
 
@@ -13,23 +12,23 @@
 
     <div class="card">
 
-        <%- include("./_show", {milestone}) %>
+        <%- include("./milestones/_show", {milestone}) %>
 
         <br/>
 
         <% if (locals.loginUser && locals.loginUser.developerId === project.consultantId) { %>
 
-            <button class="milestoneEdit"
+            <button class="right milestoneEdit"
                     data-milestone-id="<%= milestone.id %>"
                     data-project-id="<%= project.id %>">Edit
             </button>
-            <button class="milestoneDelete"
+            <button class="right milestoneDelete"
                     data-milestone-id="<%= milestone.id %>"
                     data-project-id="<%= project.id %>">Delete
             </button>
 
             <% if (+i > 0) { %>
-                <button class="milestoneSwapOrder"
+                <button class="right milestoneSwapOrder"
                         data-milestone-id="<%= milestone.id %>"
                         data-other-milestone-id="<%= project.milestones[+i-1].id %>"
                         data-project-id="<%= project.id %>">▲
@@ -37,16 +36,26 @@
             <% } %>
 
             <% if (+i < project.milestones.length - 1) { %>
-                <button class="milestoneSwapOrder"
+                <button class="right milestoneSwapOrder"
                         data-milestone-id="<%= milestone.id %>"
                         data-other-milestone-id="<%= project.milestones[+i+1].id %>"
                         data-project-id="<%= project.id %>">▼
                 </button>
             <% } %>
+
+            <div class="clear"></div>
+
         <% } %>
 
     </div>
 <% } %>
+
+<% if (locals.loginUser && locals.loginUser.developerId === project.consultantId) { %>
+    <p>
+        <a is="a-with-tzo" href="/projects/<%= project.id %>/milestones/new" id="addmilestone" class="button">Crear nuevo Milestone</a>
+    </p>
+<% } %>
+
 
 <script type="module">
   document.addEventListener("click", async ev => {
@@ -67,6 +76,9 @@
     }
   })
 </script>
+
+
+<a is="a-with-tzo" href="/projects/<%= project.id %>/objectives_constraints/edit" class="button">back</a>
 
 
 <button id="projectNextButton" data-project-id="<%= project.id %>">Next</button>
