@@ -23,14 +23,14 @@
     <% if (task.assignation) { %>
 
         <% if (task.assignation.state !== 'None') { %>
+            <img class="attachment"
+                 src="/developers/<%= task.assignation.developerId %>/attachment">
+            <%= task.assignation.developer?.name ?? "Anonymous" %>
             <% if (task.assignation.state === "Pending") { %>
-                <%= task.assignation.developer?.name ?? "Anonymous" %>
                 [Pending]
             <% } else if (task.assignation.state === "Accepted") { %>
-                <%= task.assignation.developer?.name ?? "Anonymous" %>
                 [Accepted]
             <% } else if (task.assignation.state === "Rejected") { %>
-                <%= task.assignation.developer?.name ?? "Anonymous" %>
                 [Rejected]
             <% } else { %>
                 [Unknown state]

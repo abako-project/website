@@ -50,7 +50,7 @@ module.exports = {
         skillIds: [1,3], roleId: 2, attachment: "d2.jpeg"},
       {email: 'dolores@alli.es', name: "Dolores", address: "xxxxx3", bio: "Grandes éxito",
         skillIds: [3],roleId: 3, attachment: "d3.jpeg"},
-      {email: 'deborah@sitio.es', name: "Dedorah", address: "xxxxx4", bio: "Becaria eterna",
+      {email: 'deborah@sitio.es', name: "Deborah", address: "xxxxx4", bio: "Becaria eterna",
         skillIds: [1,4], roleId: 2, attachment: "d4.jpeg"},
       {email: 'diana@sitio.es', name: "Diana", address: "xxxxx5", bio: "Siempre lo mismo",
         skillIds: [], roleId: 1, attachment: "d5.jpeg"}

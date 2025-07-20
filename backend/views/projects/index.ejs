@@ -44,6 +44,16 @@
                 <% } %>
             </div>
 
+            <div class="user" id="developer">
+                <% if (developer && project.milestones.some(m => m.tasks.some(t => t.assignation.developerId === developer.id))) { %>
+                    <small> <%= developer.name %> </small>
+                    <img class="attachment"
+                         src="/developers/<%= developer.id %>/attachment">
+                <% } %>
+            </div>
+
+
+
             <div class="state">
                 <%= project.state ?? 'Unknown' %>
             </div>

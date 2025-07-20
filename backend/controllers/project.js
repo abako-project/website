@@ -1,5 +1,5 @@
 const createError = require('http-errors');
-const Sequelize = require("sequelize");
+const {Sequelize, Op} = require("sequelize");
 
 const states = require("./state");
 
@@ -106,6 +106,23 @@ exports.index = async (req, res, next) => {
           include: [
             {model: User, as: "user"},
             {model: Attachment, as: "attachment"}]
+        },
+        {
+          model: Milestone, as: 'milestones',
+          include: [
+            {
+              model: Task, as: 'tasks',
+              include: [
+                {
+                  model: Assignation, as: 'assignation',
+                  required: true,
+                  include: [{
+                    model: Developer, as: 'developer'
+                  }]
+                }
+              ]
+            }
+          ]
         }
       ]
     };
@@ -115,7 +132,12 @@ exports.index = async (req, res, next) => {
     }
 
     if (developer) {
-      options.where = {consultantId: developer.id};
+      options.where = {
+        [Op.or]: [
+          {consultantId: developer.id},
+          {'$milestones.tasks.assignation.developer.id$': developer.id}
+        ]
+      };
     }
 
     const projects = await Project.findAll(options);
