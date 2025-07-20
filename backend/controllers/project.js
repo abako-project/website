@@ -6,7 +6,7 @@ const states = require("./state");
 const {
   models: {
     Project, Client, Developer, User, Attachment,
-    Objective, Constraint, Milestone, Task, Role, Comment
+    Objective, Constraint, Milestone, Task, Role, Comment, Assignation
   }
 } = require('../models');
 const authController = require("./auth");
@@ -30,31 +30,46 @@ exports.load = async (req, res, next, projectId) => {
             {model: User, as: "user"},
             {model: Attachment, as: "attachment"}]
         },
-        {model: Objective, as: 'objectives',
+        {
+          model: Objective, as: 'objectives',
           separate: true,
-          order: [['displayOrder', 'ASC']] },
-        {model: Constraint, as: 'constraints',
+          order: [['displayOrder', 'ASC']]
+        },
+        {
+          model: Constraint, as: 'constraints',
           separate: true,
-          order: [['displayOrder', 'ASC']] },
+          order: [['displayOrder', 'ASC']]
+        },
         {
           model: Milestone, as: 'milestones',
           separate: true,
           order: [['displayOrder', 'ASC']],
           include: [
-            {model: Task, as: 'tasks',
+            {
+              model: Task, as: 'tasks',
               separate: true,
               order: [['displayOrder', 'ASC']],
               include: [
-                {model: Role, as: 'role'}
+                {model: Role, as: 'role'},
+                {
+                  model: Assignation, as: 'assignation',
+                  include: [{
+                    model: Developer, as: 'developer',
+                    include: [
+                      {model: User, as: "user"},
+                      {model: Attachment, as: "attachment"}]
+                  }]
+                }
               ]
             }
           ]
         },
-        {model: Comment, as: "comments",
+        {
+          model: Comment, as: "comments",
           separate: true,
           order: [['createdAt', 'DESC']],
         }
-  ]
+      ]
     });
     if (project) {
       req.load = {...req.load, project};
@@ -461,12 +476,17 @@ exports.selectConsultant = async (req, res, next) => {
 
   const {project} = req.load;
 
-  const allDevelopers = await Developer.findAll();
+  try {
 
-  res.render('consultants/select', {
-    project,
-    allDevelopers
-  });
+    const allDevelopers = await Developer.findAll();
+
+    res.render('consultants/select', {
+      project,
+      allDevelopers
+    });
+  } catch (error) {
+    next(error);
+  }
 };
 
 

@@ -4,7 +4,11 @@
     <%- include('./headers/_empty', {project, title: "Project description"}) %>
 <% } %>
 
-
+<% if (project.milestones.length === 0) { %>
+    <div class="card">
+        No se ha creado ningún milestone todavía.
+    </div>
+<% } %>
 
 <% for (const i in project.milestones) { %>
 

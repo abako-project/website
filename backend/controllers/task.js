@@ -1,8 +1,8 @@
 const createError = require('http-errors');
 const Sequelize = require("sequelize");
 
-const {models: {Project, Client, User, Attachment,
-  Objective, Constraint, Milestone, Task, Role}} = require('../models');
+const {models: {Project, Client, Developer, User, Attachment,
+  Objective, Constraint, Milestone, Task, Role, Assignation}} = require('../models');
 const sequelize = require("../models");
 const states = require("./state");
 
@@ -18,8 +18,18 @@ exports.load = async (req, res, next, taskId) => {
           include: [
             {model: Project, as: 'project'}
           ]
+        },
+        {model: Role, as: 'role'},
+        {
+          model: Assignation, as: 'assignation',
+          include: [{
+            model: Developer, as: 'developer',
+            include: [
+              {model: User, as: "user"},
+              {model: Attachment, as: "attachment"}]
+          }]
         }
-      ],
+      ]
     });
     if (task) {
       req.load = {...req.load, task};
@@ -290,4 +300,56 @@ exports.submitTasks = async (req, res, next) => {
     next(error);
   }
 };
+
+// Mostrar formulario para seleccioanr el developer de una task
+exports.selectDeveloper = async (req, res, next) => {
+
+  const {project, milestone, task} = req.load;
+
+  try {
+    const validDevelopers = await Developer.findAll({
+      where: {roleId: task.roleId},
+    });
+
+    res.render('tasks/selectDeveloper', {
+      project,
+      milestone,
+      task,
+      validDevelopers
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+// Actualizar el developer de una task
+exports.setDeveloper = async (req, res, next) => {
+
+  const {body} = req;
+
+  const {project, milestone, task} = req.load;
+
+  try {
+
+    if (body.developerId) {
+      const newAssignation = await Assignation.create({
+        developerId: body.developerId,
+        state: body.developerId ? "Pending" : "None",
+        comment: "",
+        taskId: task.id
+      });
+      await task.setAssignation(newAssignation);
+    } else {
+      await task.setAssignation(undefined);
+    }
+
+    console.log('Task developer assigned successfully.');
+
+    res.redirect('/projects/' + project.id + "/tasks");
+
+  } catch (error) {
+    next(error);
+  }
+}
+
 

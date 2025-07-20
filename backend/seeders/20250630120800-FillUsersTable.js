@@ -40,7 +40,7 @@ module.exports = {
       {email: 'cipriano@aqui.es',  name: "Cipriano",  website: "https://aqui.es",  attachment: "c2.jpeg"},
       {email: 'camilo@alli.es',    name: "Camilo",    website: "https://alli.es",  attachment: "c3.jpeg"},
       {email: 'cesar@sitio.es',    name: "Cesar",     website: "https://sitio.es", attachment: "c4.jpeg"},
-      {email: 'cesar@sitio.es',    name: "Clemente",  website: "https://sitio.es", attachment: "c5.jpeg"}
+      {email: 'clemente@sitio.es', name: "Clemente",  website: "https://sitio.es", attachment: "c5.jpeg"}
     ];
 
     const developers = [

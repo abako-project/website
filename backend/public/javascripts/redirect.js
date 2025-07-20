@@ -117,3 +117,7 @@ function redirectTaskEdit(projectId, milestoneId, taskId) {
 function redirectTaskDelete(projectId, milestoneId, taskId) {
   location.href = "/projects/" + projectId + "/milestones/" + milestoneId + "/tasks/" + taskId + "?_method=DELETE";
 }
+
+function redirectSelectTaskDeveloper(projectId, milestoneId, taskId) {
+  location.href = "/projects/" + projectId + "/milestones/" + milestoneId + "/tasks/" + taskId + "/developer/select";
+}

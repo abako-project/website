@@ -23,6 +23,8 @@ const Task = require('./task')(sequelize);
 
 const Comment = require('./comment')(sequelize);
 
+const Assignation = require('./assignation')(sequelize);
+
 
 User.hasOne(Client, {as: 'client', foreignKey: 'userId'});
 Client.belongsTo(User, {as: 'user', foreignKey: 'userId'});
@@ -85,5 +87,13 @@ Task.belongsTo(Role, {as: 'role', foreignKey: 'roleId'});
 // Relation 1-to-N between Project and Comment
 Project.hasMany(Comment, {as: 'comments', foreignKey: 'projectId'});
 Comment.belongsTo(Project, {as: 'project', foreignKey: 'projectId'});
+
+// Relation 1-to-1 between Assignation and Task
+Task.hasOne(Assignation, {as: 'assignation', foreignKey: 'taskId'});
+Assignation.belongsTo(Task, {as: 'task', foreignKey: 'taskId'});
+
+// Relation 1-to-N between Developer and Assignation
+Developer.hasMany(Assignation, {as: 'assignations', foreignKey: 'developerId'});
+Assignation.belongsTo(Developer, {as: 'developer', foreignKey: 'developerId'});
 
 module.exports = sequelize;

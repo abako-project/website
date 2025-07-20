@@ -37,8 +37,13 @@
         <% } %>
 
         <% if (project.state && ["tasksPending"].includes(project.state)) { %>
-            <button class="projectFlow" onclick="redirectTasksSubmit(<%= project.id %>); return false;">Send tasks</button>
-            <br />
+
+            <% if (project.milestones.every(milestone => milestone.tasks.length !== 0)) { %>
+
+                <button class="projectFlow" onclick="redirectTasksSubmit(<%= project.id %>); return false;">Send tasks
+                </button>
+                <br/>
+            <% } %>
         <% } %>
 
     <% } %>

@@ -264,5 +264,18 @@ router.put('/:projectId(\\d+)/submitTasks',
   permissionController.userTypesRequired({projectConsultant: true}),
   taskController.submitTasks);
 
+// === Task Developer
+
+// Mostrar formulario para asignar developer a una task
+router.get('/:projectId(\\d+)/milestones/:milestoneId(\\d+)/tasks/:taskId(\\d+)/developer/select',
+  permissionController.isAuthenticated,
+  permissionController.adminRequired,
+  taskController.selectDeveloper);
+
+// Actualizar el developer de una task
+router.post('/:projectId(\\d+)/milestones/:milestoneId(\\d+)/tasks/:taskId(\\d+)/developer',
+  permissionController.isAuthenticated,
+  permissionController.adminRequired,
+  taskController.setDeveloper);
 
 module.exports = router;

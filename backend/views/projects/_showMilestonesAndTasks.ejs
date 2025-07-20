@@ -15,10 +15,14 @@
                     <ul>
                         <% for (const task of milestone.tasks) { %>
                             <li>
-                                <%- include("../tasks/_show", {task}) %>
+                                <%- include("../tasks/_show", {project, milestone, task}) %>
                             </li>
                         <% } %>
                     </ul>
+                </div>
+            <% } else { %>
+                <div class="subcard">
+                    No se ha creado ninguna task todavía.
                 </div>
             <% } %>
 
