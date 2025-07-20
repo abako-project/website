@@ -10,6 +10,10 @@ function redirectProjectEdit(projectId) {
   location.href = addTZO("/projects/" + projectId + "/edit");
 }
 
+function redirectProjectNew() {
+  location.href = addTZO("/projects/new");
+}
+
 function redirectProjectDelete(projectId) {
   location.href = addTZO("/projects/" + projectId + "?_method=DELETE");
 }

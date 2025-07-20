@@ -21,18 +21,6 @@
             <br />
         <% } %>
 
-        <% if (!project.state) { %>
-            <button class="projectFlow" onclick="redirectProjectSubmit(<%= project.id %>); return false;">Project Submit</button>
-            <br />
-        <% } %>
-
-        <% if (project.state && ["validationNeeded"].includes(project.state)) { %>
-            <button class="projectFlow" onclick="redirectScopeAcept(<%= project.id %>); return false;">Accept Scope</button>
-            <br />
-
-            <button class="projectFlow" onclick="redirectScopeReject(<%= project.id %>); return false;">Reject Scope</button>
-            <br />
-        <% } %>
     <% } %>
 
 
@@ -40,9 +28,6 @@
 
         <% if (project.state && ["scopingInProgress"].includes(project.state)) { %>
             <button class="projectFlow" onclick="redirectProjectEdit(<%= project.id %>); return false;">Review</button>
-            <br />
-
-            <button class="projectFlow" onclick="redirectScopeSubmit(<%= project.id %>); return false;">Scope Submit</button>
             <br />
         <% } %>
 

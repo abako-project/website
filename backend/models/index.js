@@ -21,6 +21,9 @@ const Constraint = require('./constraint')(sequelize);
 const Milestone = require('./milestone')(sequelize);
 const Task = require('./task')(sequelize);
 
+const Comment = require('./comment')(sequelize);
+
+
 User.hasOne(Client, {as: 'client', foreignKey: 'userId'});
 Client.belongsTo(User, {as: 'user', foreignKey: 'userId'});
 
@@ -78,5 +81,9 @@ Task.belongsTo(Milestone, {as: 'milestone', foreignKey: 'milestoneId'});
 // Relation 1-to-N between Role and Tasks
 Role.hasMany(Task, {as: 'tasks', foreignKey: 'roleId'});
 Task.belongsTo(Role, {as: 'role', foreignKey: 'roleId'});
+
+// Relation 1-to-N between Project and Comment
+Project.hasMany(Comment, {as: 'comments', foreignKey: 'projectId'});
+Comment.belongsTo(Project, {as: 'project', foreignKey: 'projectId'});
 
 module.exports = sequelize;

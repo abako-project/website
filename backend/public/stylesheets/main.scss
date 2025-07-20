@@ -175,7 +175,7 @@ a.adminDAO:hover, button.adminDAO:hover {
 
 /* ------------------------- */
 
-a.projectFlow {
+a.projectFlow, button.projectFlow {
   display: inline-block;
   font-size: large;
   text-decoration: none;
@@ -188,7 +188,7 @@ a.projectFlow {
   color: beige;
 }
 
-a.projectFlow:hover {
+a.projectFlow:hover, button.projectFlow:hover {
   background: var(--primary);
 }
 

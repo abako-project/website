@@ -6,7 +6,7 @@ const states = require("./state");
 const {
   models: {
     Project, Client, Developer, User, Attachment,
-    Objective, Constraint, Milestone, Task, Role
+    Objective, Constraint, Milestone, Task, Role, Comment
   }
 } = require('../models');
 const authController = require("./auth");
@@ -49,8 +49,12 @@ exports.load = async (req, res, next, projectId) => {
               ]
             }
           ]
+        },
+        {model: Comment, as: "comments",
+          separate: true,
+          order: [['createdAt', 'DESC']],
         }
-      ]
+  ]
     });
     if (project) {
       req.load = {...req.load, project};
@@ -309,15 +313,22 @@ exports.projectSubmit = async (req, res, next) => {
 // Publicar el scope: estado = validationNeeded
 exports.scopeSubmit = async (req, res, next) => {
 
-  const {project} = req.load;
+  let {project} = req.load;
 
   const developerId = req.session.loginUser?.developerId;
 
   project.state = states.ProjectState.ValidationNeeded;
 
+  const consultantComment = req.body.consultantComment || "";
+
   try {
     // Save into the data base
-    await project.save();
+    project = await project.save();
+
+    const comment = await Comment.create({consultantComment});
+
+    project.addComment(comment);
+
     console.log('Success: Scope submitted successfully.');
 
     if (developerId) {
@@ -334,15 +345,21 @@ exports.scopeSubmit = async (req, res, next) => {
 // Aceptar el scope: estado = taskingInProgress
 exports.scopeAccept = async (req, res, next) => {
 
-  const {project} = req.load;
+  let {project} = req.load;
+  let [comment] = project.comments;
 
   const clientId = req.session.loginUser?.clientId;
 
   project.state = states.ProjectState.TasksPending;
 
+  const clientResponse = req.body.clientResponse || "Genial no, lo siguiente."
+
   try {
     // Save into the data base
-    await project.save();
+    project = await project.save();
+
+    await comment.update({clientResponse});
+
     console.log('Success: Scope accepted successfully.');
 
     if (clientId) {
@@ -359,15 +376,21 @@ exports.scopeAccept = async (req, res, next) => {
 // Rechazar el scope: estado = scopingInProgress
 exports.scopeReject = async (req, res, next) => {
 
-  const {project} = req.load;
+  let {project} = req.load;
+  let [comment] = project.comments;
 
   const clientId = req.session.loginUser?.clientId;
 
   project.state = states.ProjectState.ScopingInProgress;
 
+  const clientResponse = req.body.clientResponse || "Peor imposible."
+
   try {
     // Save into the data base
-    await project.save();
+    project = await project.save();
+
+    await comment.update({clientResponse});
+
     console.log('Success: Scope rechazados successfully.');
 
     if (clientId) {
