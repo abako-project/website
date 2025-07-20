@@ -72,7 +72,6 @@ body {
   border: 1px dotted grey;
   padding: 7px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  margin-left: 20px;
   margin-bottom: 7px;
 }
 
@@ -149,7 +148,7 @@ button {
 }
 
 * {
-  xxxborder: 1px solid tomato;
+  border: 1px solid tomato;
 }
 
 html {
@@ -268,7 +267,7 @@ a {
   color: var(--primary);
 }
 
-a.button, input.button, .button {
+a.button, input.button {
   display: inline-block;
   font-size: large;
   text-decoration: none;
@@ -280,12 +279,12 @@ a.button, input.button, .button {
   border: solid 1px var(--secondary);
 }
 
-a.button:hover, input.button:hover, .button:hover {
+a.button:hover, input.button:hover {
   background: lightgray;
 }
 
 /* ------------------------- */
-a.adminDAO, button.adminDAO {
+a.adminDAO {
   display: inline-block;
   font-size: large;
   text-decoration: none;
@@ -297,12 +296,12 @@ a.adminDAO, button.adminDAO {
   color: darkgoldenrod;
 }
 
-a.adminDAO:hover, button.adminDAO:hover {
+a.adminDAO:hover {
   background: gold;
 }
 
 /* ------------------------- */
-a.projectFlow, button.projectFlow {
+a.projectFlow {
   display: inline-block;
   font-size: large;
   text-decoration: none;
@@ -314,17 +313,13 @@ a.projectFlow, button.projectFlow {
   color: beige;
 }
 
-a.projectFlow:hover, button.projectFlow:hover {
+a.projectFlow:hover {
   background: var(--primary);
 }
 
 /* ------------------------- */
 .right {
   float: right;
-}
-
-.clear {
-  clear: both;
 }
 
 /* ------------------------- */
@@ -401,7 +396,8 @@ article.postShow div.author {
 img.attachment {
   width: 30px;
   height: 30px;
-  object-fit: cover;
+  -o-object-fit: cover;
+     object-fit: cover;
   border-radius: 20px;
   box-shadow: 2px 2px 7px #ccc;
   vertical-align: middle;
@@ -497,6 +493,4 @@ article.projectsIndex div.state {
   border-right: 0px;
 }
 
-/* ------------------------- */
-
-/*# sourceMappingURL=main.css.map */
+/* ------------------------- *//*# sourceMappingURL=main.css.map */

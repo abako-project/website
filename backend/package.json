@@ -4,7 +4,7 @@
   "scripts": {
     "start2": "PORT=3001 node ./bin/www",
     "start": "PORT=3001 supervisor ./bin/www",
-    "dev": "NODE_ENV=development PORT=3001 nodemon ./bin/www",
+    "dev": "cross-env NODE_ENV=development PORT=3001 nodemon ./bin/www",
     "migrate": "sequelize db:migrate",
     "seed": "sequelize db:seed:all",
     "mss": "npm run migrate && npm run seed && npm start"
