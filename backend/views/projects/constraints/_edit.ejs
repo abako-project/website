@@ -7,41 +7,27 @@
             <%= constraint.description %>
 
             <% if (locals.loginUser.clientId === project.clientId) { %>
-                <a href="/projects/<%= project.id %>/constraints/<%= constraint.id %>?_method=DELETE"
-                   class="right button">Delete</a>
+                        <button class="right button"
+                                onclick="redirectConstraintDelete(<%= project.id %>, <%= constraint.id %>); return false;">
+                                🗑️
+                        </button>
             <% } %>
 
             <% if (+i > 0) { %>
-                <button class="right constraintSwapOrder"
-                        data-constraint-id="<%= constraint.id %>"
-                        data-other-constraint-id="<%= project.constraints[+i - 1].id %>"
-                        data-project-id="<%= project.id %>">▲
-                </button>
+                        <button class="right button"
+                                onclick="redirectConstraintsSwapOrder(<%= project.id %>, <%= constraint.id %>, <%= project.constraints[+i - 1].id %>); return false;">
+                                ▲
+                        </button>
             <% } %>
 
             <% if (+i < project.constraints.length - 1) { %>
-                <button class="right constraintSwapOrder"
-                        data-constraint-id="<%= constraint.id %>"
-                        data-other-constraint-id="<%= project.constraints[+i + 1].id %>"
-                        data-project-id="<%= project.id %>">▼
-                </button>
+                        <button class="right button"
+                                onclick="redirectConstraintsSwapOrder(<%= project.id %>, <%= constraint.id %>, <%= project.constraints[+i + 1].id %>); return false;">
+                                ▼
+                        </button>
             <% } %>
 
             <div class="clear"></div>
         </li>
     <% } %>
 </ul>
-
-<script type="module">
-  document.addEventListener("click", async ev => {
-
-    const projectId = ev.target.dataset.projectId;
-    const constraintId = ev.target.dataset.constraintId;
-
-    if (ev.target.matches(".constraintSwapOrder")) {
-      ev.preventDefault();
-      const otherConstraintId = ev.target.dataset.otherConstraintId;
-      location.href = "/projects/" + projectId + "/constraints/swaporder/" + constraintId + "/" + otherConstraintId + "?_method=PUT";
-    }
-  })
-</script>

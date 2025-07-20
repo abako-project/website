@@ -96,7 +96,7 @@ exports.create = async (req, res, next) => {
     // Save into the data base
     milestone = await milestone.save();
     console.log('Success: Milestone created successfully.');
-    res.redirect('/projects/' + projectId + '/milestones');
+    res.redirect('/projects/' + projectId + '/milestones/edit');
   } catch (error) {
     if (error instanceof Sequelize.ValidationError) {
       req.flash('error', 'Error: There are errors in the form:');
@@ -152,7 +152,7 @@ exports.update = async (req, res) => {
   try {
     await milestone.save();
     console.log('Milestone edited successfully.');
-    res.redirect('/projects/' + project.id + '/milestones');
+    res.redirect('/projects/' + project.id + '/milestones/edit');
   } catch (error) {
     if (error instanceof Sequelize.ValidationError) {
       req.flash('error', 'Error: There are errors in the form:');
@@ -178,7 +178,7 @@ exports.destroy = async (req, res, next) => {
   try {
     await milestone.destroy();
     console.log('Milestone deleted successfully.');
-    res.redirect('/projects/' + project.id + '/milestones');
+    res.redirect('/projects/' + project.id + '/milestones/edit');
   } catch (error) {
     next(error);
   }
@@ -208,7 +208,7 @@ exports.swapOrder = async (req, res, next) => {
       await milestone2.update({displayOrder: displayOrder1}, {transaction})
 
     console.log('Milestones swapped successfully.');
-    res.redirect('/projects/' + milestone1.projectId + '/milestones');
+    res.redirect('/projects/' + milestone1.projectId + '/milestones/edit');
 
     await transaction.commit();
 

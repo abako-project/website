@@ -259,10 +259,10 @@ router.put('/:projectId(\\d+)/tasks/swaporder/:id1(\\d+)/:id2(\\d+)',
 
 
 // Publicar las tasks creadas
-router.put('/:projectId(\\d+)/sendTasks',
+router.put('/:projectId(\\d+)/submitTasks',
   permissionController.isAuthenticated,
   permissionController.userTypesRequired({projectConsultant: true}),
-  taskController.sendTasks);
+  taskController.submitTasks);
 
 
 module.exports = router;

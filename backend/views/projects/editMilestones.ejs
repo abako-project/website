@@ -18,29 +18,33 @@
 
         <% if (locals.loginUser && locals.loginUser.developerId === project.consultantId) { %>
 
-            <button class="right milestoneEdit"
-                    data-milestone-id="<%= milestone.id %>"
-                    data-project-id="<%= project.id %>">Edit
+            <button class="right button"
+                    onclick="redirectMilestoneEdit(<%= project.id %>, <%= milestone.id %>); return false;"
+                    >
+                Edit
             </button>
-            <button class="right milestoneDelete"
-                    data-milestone-id="<%= milestone.id %>"
-                    data-project-id="<%= project.id %>">Delete
+
+            <button class="right button"
+                    onclick="redirectMilestoneDelete(<%= project.id %>, <%= milestone.id %>); return false;">
+                🗑️
             </button>
 
             <% if (+i > 0) { %>
-                <button class="right milestoneSwapOrder"
-                        data-milestone-id="<%= milestone.id %>"
-                        data-other-milestone-id="<%= project.milestones[+i-1].id %>"
-                        data-project-id="<%= project.id %>">▲
+
+                <button class="right button"
+                        onclick="redirectMilestonesSwapOrder(<%= project.id %>, <%= milestone.id %>, <%= project.milestones[+i - 1].id %>); return false;">
+                    ▲
                 </button>
+
             <% } %>
 
             <% if (+i < project.milestones.length - 1) { %>
-                <button class="right milestoneSwapOrder"
-                        data-milestone-id="<%= milestone.id %>"
-                        data-other-milestone-id="<%= project.milestones[+i+1].id %>"
-                        data-project-id="<%= project.id %>">▼
+
+                <button class="right button"
+                        onclick="redirectMilestonesSwapOrder(<%= project.id %>, <%= milestone.id %>, <%= project.milestones[+i + 1].id %>); return false;">
+                    ▼
                 </button>
+
             <% } %>
 
             <div class="clear"></div>
@@ -51,51 +55,20 @@
 <% } %>
 
 <% if (locals.loginUser && locals.loginUser.developerId === project.consultantId) { %>
-    <p>
-        <a is="a-with-tzo" href="/projects/<%= project.id %>/milestones/new" id="addmilestone" class="button">Crear nuevo Milestone</a>
-    </p>
+    <button class="right button" onclick="redirectMilestoneNew(<%= project.id %>); return false;">Add New Milestone
+    </button>
 <% } %>
 
 
-<script type="module">
-  document.addEventListener("click", async ev => {
+<button class="button" onclick="redirectObjectivesConstraintsEdit(<%= project.id %>); return false;">Back</button>
 
-    const projectId = ev.target.dataset.projectId;
-    const milestoneId = ev.target.dataset.milestoneId;
-
-    if (ev.target.matches(".milestoneEdit")) {
-      ev.preventDefault();
-      location.href = addTZO("/projects/" + projectId + "/milestones/" + milestoneId + "/edit");
-    } else if (ev.target.matches(".milestoneDelete")) {
-      ev.preventDefault();
-      location.href = "/projects/" + projectId + "/milestones/" + milestoneId + "?_method=DELETE";
-    } else if (ev.target.matches(".milestoneSwapOrder")) {
-      ev.preventDefault();
-      const otherMilestoneId = ev.target.dataset.otherMilestoneId;
-      location.href = "/projects/" + projectId + "/milestones/swaporder/" + milestoneId + "/" + otherMilestoneId + "?_method=PUT";
-    }
-  })
-</script>
-
-
-<a is="a-with-tzo" href="/projects/<%= project.id %>/objectives_constraints/edit" class="button">back</a>
-
-
-<button id="projectNextButton" data-project-id="<%= project.id %>">Next</button>
-<script type="module">
-  document.getElementById('projectNextButton').addEventListener('click', async ev => {
-
-      <% if (locals.loginUser.developerId === project.consultantId &&
-              project.state &&
-              ["scopingInProgress"].includes(project.state)) { %>
-
-    ev.preventDefault();
-    const projectId = ev.target.dataset.projectId;
-    location.href = addTZO("/projects/" + projectId);
-
-      <% } %>
-
-  });
-</script>
+<% if (locals.loginUser.developerId === project.consultantId &&
+        project.state &&
+        ["scopingInProgress"].includes(project.state)) { %>
+    <button class="button" onclick="redirectProjectShow(<%= project.id %>); return false;"
+            data-project-id="<%= project.id %>">
+        Next
+    </button>
+<% } %>
 
 

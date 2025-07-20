@@ -34,30 +34,19 @@
     <% } %>
 </div>
 
-<a is="a-with-tzo" href="/projects/<%= project.id %>/edit" class="button">back</a>
+<button class="button" onclick="redirectProjectEdit(<%= project.id %>); return false;">Back</button>
 
 
-<button id="projectNextButton" data-project-id="<%= project.id %>">Next</button>
-<script type="module">
-  document.getElementById('projectNextButton').addEventListener('click', async ev => {
+<% if (locals.loginUser.clientId === project.clientId && !project.state) { %>
 
-      <% if (locals.loginUser.clientId === project.clientId && !project.state) { %>
+    <button class="button" onclick="redirectProjectShow(<%= project.id %>); return false;">Next</button>
 
-    ev.preventDefault();
-    const projectId = ev.target.dataset.projectId;
-    location.href = addTZO("/projects/" + projectId);
+<% } else if (locals.loginUser.developerId === project.consultantId &&
+        project.state &&
+        ["scopingInProgress"].includes(project.state)) { %>
 
-      <% } else if (locals.loginUser.developerId === project.consultantId &&
-              project.state &&
-              ["scopingInProgress"].includes(project.state)) { %>
+    <button class="button" onclick="redirectMilestonesEdit(<%= project.id %>); return false;">Next</button>
+
+<% } %>
 
 
-    ev.preventDefault();
-    const projectId = ev.target.dataset.projectId;
-    location.href = "/projects/" + projectId + "/milestones/edit";
-
-
-      <% } %>
-
-  });
-</script>

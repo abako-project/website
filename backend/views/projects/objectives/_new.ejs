@@ -1,7 +1,5 @@
 
-<div class="card-subtitle">Add New Objective:</div>
-
-<form action="/projects/<%= project.id %>/objectives" method="POST">
+<form  id="newObjectiveForm" action="/projects/<%= project.id %>/objectives" method="POST">
 
     <div class="form-group">
         <input type="text" id="description" name="description"
@@ -9,8 +7,8 @@
                placeholder="Description" autocomplete="off">
     </div>
 
-    <div class="form-group">
-        <input type="submit" value="Add"/>
-    </div>
+    <button class="right button" onclick="submitFormById('newObjectiveForm'); return false;" >Add New Objective</button>
+
+    <div class="clear"></div>
 
 </form>

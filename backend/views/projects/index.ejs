@@ -49,19 +49,13 @@
             </div>
 
             <div class="actions">
-                <button class="projectShow" data-project-id="<%= project.id %>">Show</button>
+                <button onclick="redirectProjectShow(<%= project.id %>);">Show</button>
 
-                <script type="module">
-                  document.addEventListener("click", async ev => {
+                <% if (locals.loginUser && locals.loginUser.isAdmin) { %>
 
-                    const projectId = ev.target.dataset.projectId;
+                    <button class="adminDAO" onclick="redirectProjectDelete(<%= project.id %>); return false;">Delete</button>
 
-                    if (ev.target.matches(".projectShow")) {
-                      ev.preventDefault();
-                      location.href = addTZO("/projects/" + projectId);
-                    }
-                  })
-                </script>
+                <% } %>
             </div>
 
         </article>

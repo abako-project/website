@@ -2,15 +2,13 @@
 
     <% if (locals.loginUser && locals.loginUser.isAdmin) { %>
 
-        <a class="adminDAO" href="/projects/<%= project.id %>?_method=DELETE">Delete</a>
+        <button class="adminDAO" onclick="redirectProjectDelete(<%= project.id %>); return false;">Delete</button>
         <br/>
-        <a class="adminDAO" href="/projects/<%= project.id %>/reject?_method=PUT">Reject</a>
+        <button class="adminDAO" onclick="redirectProjectReject(<%= project.id %>); return false;">Reject</button>
         <br/>
-
-        <a class="adminDAO" href="/projects/<%= project.id %>/approve?_method=PUT">Approve</a>
+        <button class="adminDAO" onclick="redirectProjectApprove(<%= project.id %>); return false;">Approve</button>
         <br/>
-
-        <a class="adminDAO" href="/projects/<%= project.id %>/consultant/select">Select/Change Consultant</a>
+        <button class="adminDAO" onclick="redirectSelectProjectConsultant(<%= project.id %>); return false;">Select/Change Consultant</button>
         <br/>
 
     <% } %>
@@ -19,21 +17,20 @@
     <% if (locals.loginUser && locals.loginUser.clientId === project.clientId) { %>
 
         <% if (!project.state) { %>
-            <a is="a-with-tzo" href="/projects/<%= project.id %>/edit" class="projectFlow">Review</a>
+            <button class="projectFlow" onclick="redirectProjectEdit(<%= project.id %>); return false;">Review</button>
             <br />
         <% } %>
 
         <% if (!project.state) { %>
-            <a is="a-with-tzo" href="/projects/<%= project.id %>/projectSubmit?_method=PUT"
-               class="projectFlow">Project Submit</a>
+            <button class="projectFlow" onclick="redirectProjectSubmit(<%= project.id %>); return false;">Project Submit</button>
             <br />
         <% } %>
 
         <% if (project.state && ["validationNeeded"].includes(project.state)) { %>
-            <a href="/projects/<%= project.id %>/scopeAccept?_method=PUT" class="projectFlow">Accept Scope</a>
+            <button class="projectFlow" onclick="redirectScopeAcept(<%= project.id %>); return false;">Accept Scope</button>
             <br />
 
-            <a href="/projects/<%= project.id %>/scopeReject?_method=PUT" class="projectFlow">Reject Scope</a>
+            <button class="projectFlow" onclick="redirectScopeReject(<%= project.id %>); return false;">Reject Scope</button>
             <br />
         <% } %>
     <% } %>
@@ -42,21 +39,20 @@
     <% if (locals.loginUser && locals.loginUser.developerId === project.consultantId) { %>
 
         <% if (project.state && ["scopingInProgress"].includes(project.state)) { %>
-            <a is="a-with-tzo" href="/projects/<%= project.id %>/edit" class="projectFlow">Review</a>
+            <button class="projectFlow" onclick="redirectProjectEdit(<%= project.id %>); return false;">Review</button>
             <br />
 
-            <a is="a-with-tzo" href="/projects/<%= project.id %>/scopeSubmit?_method=PUT"
-               class="projectFlow">Scope Submit</a>
-            <br />
-        <% } %>
-
-        <% if (project.state && ["tasksPending"].includes(project.state)) { %>
-            <a href="/projects/<%= project.id %>/tasks/edit" class="projectFlow">Review tasks</a>
+            <button class="projectFlow" onclick="redirectScopeSubmit(<%= project.id %>); return false;">Scope Submit</button>
             <br />
         <% } %>
 
         <% if (project.state && ["tasksPending"].includes(project.state)) { %>
-            <a href="/projects/<%= project.id %>/sendTasks?_method=PUT" class="projectFlow">Send tasks</a>
+            <button class="projectFlow" onclick="redirectTasksEdit(<%= project.id %>); return false;">Review tasks</button>
+            <br />
+        <% } %>
+
+        <% if (project.state && ["tasksPending"].includes(project.state)) { %>
+            <button class="projectFlow" onclick="redirectTasksSubmit(<%= project.id %>); return false;">Send tasks</button>
             <br />
         <% } %>
 

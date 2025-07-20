@@ -1,7 +1,5 @@
 
-<div class="card-subtitle">Add New Constraint:</div>
-
-<form action="/projects/<%= project.id %>/constraints" method="POST">
+<form id="newConstraintForm" action="/projects/<%= project.id %>/constraints" method="POST">
 
     <div class="form-group">
         <input type="text" id="description" name="description"
@@ -9,8 +7,8 @@
                placeholder="Description" autocomplete="off">
     </div>
 
-    <div class="form-group">
-        <input type="submit" value="Add"/>
-    </div>
+    <button class="right button" onclick="submitFormById('newConstraintForm'); return false;" >Add New Constraint</button>
+
+    <div class="clear"></div>
 
 </form>

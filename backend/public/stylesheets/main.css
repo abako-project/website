@@ -72,6 +72,7 @@ body {
   border: 1px dotted grey;
   padding: 7px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-left: 20px;
   margin-bottom: 7px;
 }
 
@@ -148,7 +149,7 @@ button {
 }
 
 * {
-  border: 1px solid tomato;
+  xxxborder: 1px solid tomato;
 }
 
 html {
@@ -267,7 +268,7 @@ a {
   color: var(--primary);
 }
 
-a.button, input.button {
+a.button, input.button, .button {
   display: inline-block;
   font-size: large;
   text-decoration: none;
@@ -279,12 +280,12 @@ a.button, input.button {
   border: solid 1px var(--secondary);
 }
 
-a.button:hover, input.button:hover {
+a.button:hover, input.button:hover, .button:hover {
   background: lightgray;
 }
 
 /* ------------------------- */
-a.adminDAO {
+a.adminDAO, button.adminDAO {
   display: inline-block;
   font-size: large;
   text-decoration: none;
@@ -296,7 +297,7 @@ a.adminDAO {
   color: darkgoldenrod;
 }
 
-a.adminDAO:hover {
+a.adminDAO:hover, button.adminDAO:hover {
   background: gold;
 }
 

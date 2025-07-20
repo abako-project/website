@@ -8,23 +8,23 @@
             <%= objective.description %>
 
             <% if (locals.loginUser.clientId === project.clientId) { %>
-                <a href="/projects/<%= project.id %>/objectives/<%= objective.id %>?_method=DELETE"
-                   class="right button">Delete</a>
+                        <button class="right button"
+                                onclick="redirectObjectiveDelete(<%= project.id %>, <%= objective.id %>); return false;">
+                                🗑️
+                        </button>
             <% } %>
 
             <% if (+i > 0) { %>
-                <button class="right objectiveSwapOrder"
-                        data-objective-id="<%= objective.id %>"
-                        data-other-objective-id="<%= project.objectives[+i - 1].id %>"
-                        data-project-id="<%= project.id %>">▲
+                <button class="right button"
+                        onclick="redirectObjectivesSwapOrder(<%= project.id %>, <%= objective.id %>, <%= project.objectives[+i - 1].id %>); return false;">
+                    ▲
                 </button>
             <% } %>
 
             <% if (+i < project.objectives.length - 1) { %>
-                <button class="right objectiveSwapOrder"
-                        data-objective-id="<%= objective.id %>"
-                        data-other-objective-id="<%= project.objectives[+i + 1].id %>"
-                        data-project-id="<%= project.id %>">▼
+                <button class="right button"
+                        onclick="redirectObjectivesSwapOrder(<%= project.id %>, <%= objective.id %>, <%= project.objectives[+i + 1].id %>); return false;">
+                    ▼
                 </button>
             <% } %>
 
@@ -32,18 +32,3 @@
         </li>
     <% } %>
 </ul>
-
-
-<script type="module">
-  document.addEventListener("click", async ev => {
-
-    const projectId = ev.target.dataset.projectId;
-    const objectiveId = ev.target.dataset.objectiveId;
-
-    if (ev.target.matches(".objectiveSwapOrder")) {
-      ev.preventDefault();
-      const otherObjectiveId = ev.target.dataset.otherObjectiveId;
-      location.href = "/projects/" + projectId + "/objectives/swaporder/" + objectiveId + "/" + otherObjectiveId + "?_method=PUT";
-    }
-  })
-</script>

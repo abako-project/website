@@ -142,7 +142,7 @@ exports.create = async (req, res, next) => {
 
 
 // Mostrar formulario de edición
-exports.edit = async (req, res) => {
+exports.edit = async (req, res, next) => {
 
   const {project, milestone, task} = req.load;
 
@@ -164,10 +164,11 @@ exports.edit = async (req, res) => {
 
 
 // Actualizar task
-exports.update = async (req, res) => {
+exports.update = async (req, res, next) => {
 
   const {body} = req;
-  const {project, milestone, task} = req.load;
+  const {project, milestone} = req.load;
+  let {task} = req.load;
 
   let {browserTimezoneOffset} = req.query;
   browserTimezoneOffset = Number(browserTimezoneOffset);
@@ -179,10 +180,18 @@ exports.update = async (req, res) => {
   task.budget = body.budget;
   task.currency = body.currency;
   task.deliveryDate = new Date(body.deliveryDate).valueOf() + browserTimezoneOffset - serverTimezoneOffset;
-  task.roleId = body.roleId;
+  //task.roleId = body.roleId;
 
   try {
     await task.save();
+
+    const roleId = body.roleId;
+    if (roleId) {
+      task = await task.setRole(roleId);
+    } else {
+      task = await task.setRole();
+    }
+
     console.log('Task edited successfully.');
     res.redirect('/projects/' + project.id + '/tasks/edit');
   } catch (error) {
@@ -205,14 +214,14 @@ exports.update = async (req, res) => {
 
 
 // Eliminar task
-exports.destroy = async (req, res) => {
+exports.destroy = async (req, res, next) => {
 
   const {project, milestone, task} = req.load;
 
   try {
     await task.destroy();
     console.log('Task deleted successfully.');
-    res.redirect('/projects/' + project.id + '/milestones/' + milestone.id + '/tasks');
+    res.redirect('/projects/' + project.id + '/tasks/edit');
   } catch (error) {
     next(error);
   }
@@ -245,7 +254,7 @@ exports.swapOrder = async (req, res, next) => {
       await task2.update({displayOrder: displayOrder1}, {transaction})
 
     console.log('Tasks swapped successfully.');
-    res.redirect('/projects/' + project.id + '/tasks');
+    res.redirect('/projects/' + project.id + '/tasks/edit');
 
     await transaction.commit();
 
@@ -259,7 +268,7 @@ exports.swapOrder = async (req, res, next) => {
 
 
 // Publicar las tasks creadas
-exports.sendTasks = async (req, res, next) => {
+exports.submitTasks = async (req, res, next) => {
 
   const {project} = req.load;
 
