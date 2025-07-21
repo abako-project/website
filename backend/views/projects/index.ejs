@@ -1,11 +1,12 @@
-<h1>Projects</h1>
+
+<%- include('./headers/_projects') %>
 
 <% const client = c; %>
 
 
 <% if (client) { %>
     <p>
-        <a is="a-with-tzo" href="/projects/new">Crear nuevo proyecto</a>
+        <button class="projectFlow" onclick="redirectProjectNew(); return false;">Create New Project</button>
     </p>
 <% } %>
 
@@ -43,24 +44,28 @@
                 <% } %>
             </div>
 
+            <div class="user" id="developer">
+                <% if (developer && project.milestones.some(m => m.tasks.some(t => t.assignation.developerId === developer.id))) { %>
+                    <small> <%= developer.name %> </small>
+                    <img class="attachment"
+                         src="/developers/<%= developer.id %>/attachment">
+                <% } %>
+            </div>
+
+
+
             <div class="state">
                 <%= project.state ?? 'Unknown' %>
             </div>
 
             <div class="actions">
-                <button class="projectShow" data-project-id="<%= project.id %>">Show</button>
+                <button onclick="redirectProjectShow(<%= project.id %>);">Show</button>
 
-                <script type="module">
-                  document.addEventListener("click", async ev => {
+                <% if (locals.loginUser && locals.loginUser.isAdmin) { %>
 
-                    const projectId = ev.target.dataset.projectId;
+                    <button class="adminDAO" onclick="redirectProjectDelete(<%= project.id %>); return false;">Delete</button>
 
-                    if (ev.target.matches(".projectShow")) {
-                      ev.preventDefault();
-                      location.href = addTZO("/projects/" + projectId);
-                    }
-                  })
-                </script>
+                <% } %>
             </div>
 
         </article>

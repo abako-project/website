@@ -1,4 +1,4 @@
-<%- include('../projectNav/_menu', {project})  %>
+<%- include('../projects/headers/_project', {project})  %>
 
 <h1>Milestones &amp; Tasks</h1>
 
@@ -7,9 +7,15 @@
 
     <div class="card">
 
-        <%- include("../milestones/_show", {milestone}) %>
+        <%- include("../projects/milestones/_miniShow", {milestone}) %>
 
         <div class="card-subtitle">Tasks:</div>
+
+        <% if (milestone.tasks.length === 0) { %>
+            <div class="card">
+                No se ha creado ninguna task todavía.
+            </div>
+        <% } %>
 
         <% for (const i in milestone.tasks) { %>
             <% const task = milestone.tasks[i]; %>
@@ -17,7 +23,7 @@
             <div class="subcard">
 
                 <div class="form-group">
-                    <%- include("./_show", {task}) %>
+                    <%- include("./_show", {project, milestone, task}) %>
                 </div>
 
             </div>

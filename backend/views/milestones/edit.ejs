@@ -1,9 +1,0 @@
-<h1>Editar Milestone</h1>
-
-<form is="form-with-tzo" action="/projects/<%= project.id %>/milestones/<%= milestone.id %>?_method=PUT" method="POST">
-
-    <div class="card">
-        <%- include("./_form", {project, milestone, browserTimezoneOffset}) %>
-    </div>
-
-</form>

@@ -1,0 +1,18 @@
+
+<% if (!project.state) { %>
+    <%- include('./headers/_empty', {project, title: "Let´s start with your project description"}) %>
+<% } else if (project.state === "scopingInProgress" ) { %>
+    <%- include('./headers/_empty', {project, title: "Review the Project Scope and Milestones"}) %>
+<% } else { %>
+    <%- include('./headers/_empty', {project, title: "Project description"}) %>
+<% } %>
+
+<form is="form-with-tzo" id="editProposalForm" action="/projects/<%= project.id %>?_method=PUT" method="POST">
+
+    <div class="card">
+        <%- include("./proposals/_form", {project, browserTimezoneOffset}) %>
+    </div>
+
+</form>
+
+<button class="button" onclick="submitFormById('editProposalForm'); return false;" >Next</button>

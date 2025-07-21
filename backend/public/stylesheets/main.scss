@@ -49,12 +49,12 @@ html, body {
 // }
 
 #appOneColumn {
-    height: 100vh;
-    display: grid;
-    grid-template-rows: auto auto 1fr;
+  height: 100vh;
+  display: grid;
+  grid-template-rows: auto auto 1fr;
 
-    margin: 0px;
-    padding: 20px;
+  margin: 0px;
+  padding: 20px;
 
     color: var(--primary);
     // background: white;
@@ -65,13 +65,13 @@ html, body {
     display: flex;
     // grid-template-columns: 1fr 4fr;
 
-    margin: 0px;
-    padding: 0px;
+  margin: 0px;
+  padding: 0px;
 }
 
 #appLeft {
-    place-content: center;
-    text-align: center;
+  place-content: center;
+  text-align: center;
 
     // background-color: var(--primary);
     // color: white;
@@ -88,38 +88,38 @@ html, body {
 }
 
 #appHeader {
-    align-content: center;
-    padding: 2px;
-    margin: 1px;
-    text-align: center;
+  align-content: center;
+  padding: 2px;
+  margin: 1px;
+  text-align: center;
 }
 
 #appNav {
-    padding: 2px 7px;
-    margin: 1px;
-    text-align: left;
-    border-bottom: 2px solid var(--secondary);
-    border-right: 0px;
+  padding: 2px 7px;
+  margin: 1px;
+  text-align: left;
+  border-bottom: 2px solid var(--secondary);
+  border-right: 0px;
 }
 
 
 #appMain {
-    padding: 2px;
-    margin: 1px;
-    padding: 0px 10px;
+  padding: 2px;
+  margin: 1px;
+  padding: 0px 10px;
 }
 
 #appTwoColumns #appMain {
-    // place-content: center;
+   // place-content: center;
 }
 
 
 #appHeader h1 {
-    margin: 8px;
+  margin: 8px;
 }
 
 #appHeader .login {
-    float: right;
+  float: right;
 }
 
 #appHeader a {
@@ -128,13 +128,13 @@ html, body {
 /* ------------------------- */
 
 #appNav .todo {
-    color: #cccccc;
+  color: #cccccc;
 }
 
 /* ------------------------- */
 
 input[type=checkbox] {
-    width: auto;
+  width: auto;
 
 }
 
@@ -154,14 +154,14 @@ textarea {
 }
 
 textarea:focus {
-    background-color: yellow;
-    height: calc(15px * 10 + 10px);
+  background-color: yellow;
+  height: calc(15px * 10 + 10px);
 }
 
 /* ------------------------- */
 
 a {
-    color: var(--primary);
+  color: var(--primary);
 }
 
 a.button, input.button {
@@ -183,20 +183,23 @@ a.button:hover, input.button:hover {
 /* ------------------------- */
 
 a.adminDAO {
-    display: block;
+    display: inline-block;
     font-size: large;
     text-decoration: none;
     padding: 8px 12px;
+    
     border-radius: 4px;
     border: solid 1px var(--secondary);
 
     background-color: lightgoldenrodyellow;
     color: darkgoldenrod;
 
+  background-color: lightgoldenrodyellow;
+  color: darkgoldenrod;
 }
 
-a.adminDAO:hover {
-    background: gold;
+a.adminDAO:hover, button.adminDAO:hover {
+  background: gold;
 }
 
 .backdoorBtn {
@@ -211,103 +214,110 @@ a.adminDAO:hover {
 
 /* ------------------------- */
 
-a.projectFlow {
-    display: inline-block;
-    font-size: large;
-    text-decoration: none;
-    padding: 8px 12px;
-    margin: 4px;
-    border-radius: 4px;
-    border: solid 1px var(--secondary);
+a.projectFlow, button.projectFlow {
+  display: inline-block;
+  font-size: large;
+  text-decoration: none;
+  padding: 8px 12px;
+  margin: 4px;
+  border-radius: 4px;
+  border: solid 1px var(--secondary);
 
-    // background-color: #8fbc8f;
-    color: beige;
+  background-color: #8fbc8f;
+  color: beige;
 }
 
 a.projectFlow:hover {
-    // background: var(--primary);
+    // background: var(--primary)
+  }
+a.projectFlow:hover, button.projectFlow:hover {
+  background: var(--primary);
 }
 
 /* ------------------------- */
 
 .right {
-    float: right;
+  float: right;
+}
+
+.clear {
+  clear: both;
 }
 
 /* ------------------------- */
 
 .wideRow {
-    display: flex;
-    flex-flow: row wrap;
-    align-content: stretch;
+  display: flex;
+  flex-flow: row wrap;
+  align-content: stretch;
 }
 
 .wideRow .itemNarrow {
-    flex: 0 auto;
-    margin: 0px 5px;
+  flex: 0 auto;
+  margin: 0px 5px;
 }
 
 .wideRow .itemWide {
-    flex: 1 auto;
-    margin: 0px 5px;
+  flex: 1 auto;
+  margin: 0px 5px;
 }
 
 /* ------------------------- */
 
 article.postIndex {
-    display: inline-block;
-    width: auto;
-    padding: 10px;
-    box-shadow: 2px 2px 7px #ccc;
-    margin: 5px;
+  display: inline-block;
+  width: auto;
+  padding: 10px;
+  box-shadow: 2px 2px 7px #ccc;
+  margin: 5px;
 }
 
 article.postIndex div.title {
-    text-align: center;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    width: 200px;
-    white-space: nowrap;
-    margin-bottom: 5px;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 200px;
+  white-space: nowrap;
+  margin-bottom: 5px;
 }
 
 article.postIndex div.author {
-    float: right;
-    clear: both;
-    text-align: right;
-    font-size: small;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    margin: 0px 10px;
+  float: right;
+  clear: both;
+  text-align: right;
+  font-size: small;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin: 0px 10px;
 }
 
 /* ------------------------- */
 
 article.postShow {
-    padding: 0px;
-    margin: 0px;
+  padding: 0px;
+  margin: 0px;
 }
 
 article.postShow .title {
-    font-size: 200%;
+  font-size: 200%;
 }
 
 article.postShow .content {
 }
 
 article.postShow div.attachment {
-    float: right;
-    margin: 10px;
+  float: right;
+  margin: 10px;
 }
 
 article.postShow div.author {
-    float: right;
-    clear: both;
-    text-align: right;
-    font-size: small;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    margin: 0px 10px;
+  float: right;
+  clear: both;
+  text-align: right;
+  font-size: small;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin: 0px 10px;
 }
 
 /* ------------------------- */
@@ -322,21 +332,21 @@ img.attachment {
 }
 
 p.post-date {
-    font-size: small;
-    font-style: italic;
+  font-size: small;
+  font-style: italic;
 }
 
 div.actions {
-    clear: both;
-    margin-top: 10px;
+  clear: both;
+  margin-top: 10px;
 }
 
 /* ------------------------- */
 
 
 .usersIndex {
-    width: 100%;
-    border-collapse: collapse;
+  width: 100%;
+  border-collapse: collapse;
 }
 
 .usersIndex tr {
@@ -359,63 +369,64 @@ div.actions {
 }
 
 .usersIndex td {
-    padding: 3px;
-    margin: 2px;
-    vertical-align: middle;
-    text-align: center;
-    border-left: 1px solid #636363;
+  padding: 3px;
+  margin: 2px;
+  vertical-align: middle;
+  text-align: center;
+  border-left: 1px solid #636363;
 
 }
 
 /* ------------------------- */
 
 article.projectsIndex {
-    display: inline-block;
-    width: auto;
-    padding: 10px;
-    box-shadow: 2px 2px 7px #ccc;
-    margin: 5px;
+  display: inline-block;
+  width: auto;
+  padding: 10px;
+  box-shadow: 2px 2px 7px #ccc;
+  margin: 5px;
 }
 
 article.projectsIndex div.title {
-    text-align: center;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    width: 200px;
-    white-space: nowrap;
-    margin-bottom: 5px;
-    font-size: x-large;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 200px;
+  white-space: nowrap;
+  margin-bottom: 5px;
+  font-size: x-large;
 }
 
 article.projectsIndex div.user {
-    float: right;
-    clear: both;
-    text-align: right;
-    font-size: small;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    margin: 0px 10px;
+  float: right;
+  clear: both;
+  text-align: right;
+  font-size: small;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin: 0px 10px;
 }
 
 
 article.projectsIndex div.state {
-    text-align: left;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    width: 200px;
-    white-space: nowrap;
-    margin-bottom: 5px;
-    font-size: medium;
+  text-align: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 200px;
+  white-space: nowrap;
+  margin-bottom: 5px;
+  font-size: medium;
 }
 
 
 /* ------------------------- */
 
 #projectNav {
-    padding: 10px 0px;
-    margin: 10px;
-    text-align: left;
-    border-right: 0px;
+  padding: 10px 0px;
+  margin: 10px;
+  text-align: left;
+  border-right: 0px;
 }
+
 
 /* ------------------------- */

@@ -1,0 +1,34 @@
+<div class="card-title">Objectives</div>
+
+<ul>
+    <% for (const i in project.objectives) { %>
+        <% const objective = project.objectives[i]; %>
+        <li>
+
+            <%= objective.description %>
+
+            <% if (locals.loginUser.clientId === project.clientId) { %>
+                        <button class="right button"
+                                onclick="redirectObjectiveDelete(<%= project.id %>, <%= objective.id %>); return false;">
+                                🗑️
+                        </button>
+            <% } %>
+
+            <% if (+i > 0) { %>
+                <button class="right button"
+                        onclick="redirectObjectivesSwapOrder(<%= project.id %>, <%= objective.id %>, <%= project.objectives[+i - 1].id %>); return false;">
+                    ▲
+                </button>
+            <% } %>
+
+            <% if (+i < project.objectives.length - 1) { %>
+                <button class="right button"
+                        onclick="redirectObjectivesSwapOrder(<%= project.id %>, <%= objective.id %>, <%= project.objectives[+i + 1].id %>); return false;">
+                    ▼
+                </button>
+            <% } %>
+
+            <div class="clear"></div>
+        </li>
+    <% } %>
+</ul>

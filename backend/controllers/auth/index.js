@@ -3,27 +3,7 @@
 const authClient = require("./client");
 const authDeveloper = require("./developer");
 
-// --------- PERMISOS
 
-// Middleware: autenticación requerida
-exports.isAuthenticated = (req, res, next) => {
-    if (req.session.loginUser) return next();
-    req.flash("info", "Login required: log in and retry.");
-    res.redirect('/auth/login');
-};
-
-// MW that allows to pass only if the logged in user is admin
-exports.adminRequired = (req, res, next) => {
-
-    const isAdmin = !!req.session.loginUser?.isAdmin;
-
-    if (isAdmin) {
-        next();
-    } else {
-        console.log('Prohibited route: it is not an administrator.');
-        res.sendStatus(403);
-    }
-};
 // --------- AREAS: Seleccionar cliente o desarrollador
 exports.registerAreas = (req, res) => {
     res.render('areas/register', {layout: "layouts/layout2"});

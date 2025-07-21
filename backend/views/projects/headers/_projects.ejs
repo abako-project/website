@@ -1,0 +1,22 @@
+
+<style>
+    .contenedor {
+        background-color: lightgray;
+        padding: 5px 20px;
+
+        display: grid;
+        grid-template-columns:  1fr auto;
+
+        gap: 5px;
+    }
+</style>
+
+<div class="contenedor">
+
+    <h1> Projects & Tasks</h1>
+
+    <div>
+        <%- include('_flow', {project: null}) %>
+    </div>
+
+</div>

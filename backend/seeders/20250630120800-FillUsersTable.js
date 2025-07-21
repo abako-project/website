@@ -36,11 +36,11 @@ module.exports = {
       foreignKey: 'skillId', otherKey: 'developerId'});
 
     const clients = [
-      {email: 'carlos@sitio.es', name: "Carlos", attachment: "c1.jpeg"},
-      {email: 'cipriano@aqui.es', name: "Cipriano", attachment: "c2.jpeg"},
-      {email: 'camilo@alli.es', name: "Camilo", attachment: "c3.jpeg"},
-      {email: 'cesar@sitio.es', name: "Cesar", attachment: "c4.jpeg"},
-      {email: 'clemente@sitio.es', name: "Clemente", attachment: "c5.jpeg"}
+      {email: 'carlos@sitio.es',   name: "Carlos",    website: "https://sitio.es", attachment: "c1.jpeg"},
+      {email: 'cipriano@aqui.es',  name: "Cipriano",  website: "https://aqui.es",  attachment: "c2.jpeg"},
+      {email: 'camilo@alli.es',    name: "Camilo",    website: "https://alli.es",  attachment: "c3.jpeg"},
+      {email: 'cesar@sitio.es',    name: "Cesar",     website: "https://sitio.es", attachment: "c4.jpeg"},
+      {email: 'clemente@sitio.es', name: "Clemente",  website: "https://sitio.es", attachment: "c5.jpeg"}
     ];
 
     const developers = [
@@ -50,17 +50,18 @@ module.exports = {
         skillIds: [1,3], roleId: 2, attachment: "d2.jpeg"},
       {email: 'dolores@alli.es', name: "Dolores", address: "xxxxx3", bio: "Grandes éxito",
         skillIds: [3],roleId: 3, attachment: "d3.jpeg"},
-      {email: 'deborah@sitio.es', name: "Dedorah", address: "xxxxx4", bio: "Becaria eterna",
+      {email: 'deborah@sitio.es', name: "Deborah", address: "xxxxx4", bio: "Becaria eterna",
         skillIds: [1,4], roleId: 2, attachment: "d4.jpeg"},
       {email: 'diana@sitio.es', name: "Diana", address: "xxxxx5", bio: "Siempre lo mismo",
         skillIds: [], roleId: 1, attachment: "d5.jpeg"}
     ];
 
-    for (const {email, name, attachment} of clients) {
+    for (const {email, name, website, attachment} of clients) {
       try {
         const user = await User.create({email});
         const client = await Client.create({
           name,
+          website,
             password: '1'
         });
         await client.setUser(user);

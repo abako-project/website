@@ -1,0 +1,32 @@
+<% if (locals.loginUser && locals.loginUser.developerId === project.consultantId) { %>
+
+    <% if (project.state && ["scopingInProgress"].includes(project.state)) { %>
+
+        <% if (project.milestones.length > 0) { %>
+
+            <div style="display: flex;   justify-content: flex-end;">
+            <div style="padding: 5px; margin: 10px; width: 50%;  border: 5px dotted seagreen;">
+
+                <form id="submitScopeForm" action="/projects/<%= project.id %>/scopeSubmit?_method=PUT" method="POST">
+
+                    <div class="form-group">
+                        <label for="consultantComment">Your Commentary:</label>
+                        <input type="text" id="consultantComment" name="consultantComment"
+                               value=""
+                               placeholder="Comment" autocomplete="off">
+                    </div>
+
+                    <button class="right projectFlow" onclick="submitFormById('submitScopeForm'); return false;">Scope
+                        Submit
+                    </button>
+
+                    <div class="clear"></div>
+
+                </form>
+
+            </div>
+        </div>
+        <% } %>
+    <% } %>
+<% } %>
+

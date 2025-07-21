@@ -1,0 +1,10 @@
+
+
+<% if (locals.loginUser && locals.loginUser.clientId === project.clientId) { %>
+
+    <% if (!project.state) { %>
+        <button class="right projectFlow" onclick="redirectProjectSubmit(<%= project.id %>); return false;">Project Submit</button>
+        <div class="clear"></div>
+    <% } %>
+
+<% } %>

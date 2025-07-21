@@ -1,92 +1,73 @@
-<%- include('../projectNav/_menu', {project})  %>
-
-<h1>Milestones &amp; Tasks</h1>
-
+<%- include('../projects/headers/_project', {project}) %>
 
 <% for (const milestone of project.milestones) { %>
 
     <div class="card">
 
-        <% if (locals.loginUser && locals.loginUser.developerId === project.consultantId) { %>
-            <button class="right addtask"
-                    data-milestone-id="<%= milestone.id %>"
-                    data-project-id="<%= project.id %>">
-                Add new task
-            </button>
-        <% } %>
-
-        <%- include("../milestones/_show", {milestone}) %>
+        <%- include("../projects/milestones/_miniShow", {milestone}) %>
 
         <div class="card-subtitle">Tasks:</div>
 
-            <% for (const i in milestone.tasks) { %>
-                <% const task = milestone.tasks[i]; %>
+        <% if (milestone.tasks.length === 0) { %>
+            <div class="card">
+                No se ha creado ninguna task todavía.
+            </div>
+        <% } %>
+
+        <% for (const i in milestone.tasks) { %>
+            <% const task = milestone.tasks[i]; %>
 
             <div class="subcard">
 
                 <% if (locals.loginUser && locals.loginUser.developerId === project.consultantId) { %>
                     <div class="form-group">
-                        <button class="right taskEdit"
-                                data-task-id="<%= task.id %>"
-                                data-milestone-id="<%= milestone.id %>"
-                                data-project-id="<%= project.id %>">Edit
+                        <button class="right button"
+                                onclick="redirectTaskEdit(<%= project.id %>, <%= milestone.id %>, <%= task.id %>); return false;">
+                            Edit
                         </button>
-                        <button class="right taskDelete"
-                                data-task-id="<%= task.id %>"
-                                data-milestone-id="<%= milestone.id %>"
-                                data-project-id="<%= project.id %>">Delete
+
+                        <button class="right button"
+                                onclick="redirectTaskDelete(<%= project.id %>, <%= milestone.id %>, <%= task.id %>); return false;">
+                            🗑️
                         </button>
 
                         <% if (+i > 0) { %>
-                            <button class="right taskSwapOrder"
-                                    data-task-id="<%= task.id %>"
-                                    data-other-task-id="<%= milestone.tasks[+i-1].id %>"
-                                    data-project-id="<%= project.id %>">▲
+                            <button class="right button"
+                                    onclick="redirectTasksSwapOrder(<%= project.id %>, <%= task.id %>, <%= milestone.tasks[+i - 1].id %>); return false;">
+                                ▲
                             </button>
                         <% } %>
 
                         <% if (+i < milestone.tasks.length - 1) { %>
-                            <button class="right taskSwapOrder"
-                                    data-task-id="<%= task.id %>"
-                                    data-other-task-id="<%= milestone.tasks[+i+1].id %>"
-                                    data-project-id="<%= project.id %>">▼
+                            <button class="right button"
+                                    onclick="redirectTasksSwapOrder(<%= project.id %>, <%= task.id %>, <%= milestone.tasks[+i + 1].id %>); return false;">
+                                ▼
                             </button>
                         <% } %>
                     </div>
 
                 <% } %>
 
-                <div class="form-group">
-                    <%- include("./_show", {task}) %>
-                </div>
+                <%- include("./_show", {task}) %>
+
+                <div class="clear"></div>
 
             </div>
+        <% } %>
+
+        <% if ((locals.loginUser && locals.loginUser.developerId === project.consultantId) &&
+                project.state &&
+                ["tasksPending"].includes(project.state)) { %>
+
+            <button class="right button" onclick="redirectTaskNew(<%= project.id %>, <%= milestone.id %>); return false;">
+                Add new task
+            </button>
+
+            <div class="clear"></div>
+
         <% } %>
 
     </div>
 
 <% } %>
 
-<script type="module">
-  document.addEventListener("click", async ev => {
-
-    const projectId = ev.target.dataset.projectId;
-    const milestoneId = ev.target.dataset.milestoneId;
-    const taskId = ev.target.dataset.taskId;
-
-    if (ev.target.matches(".taskEdit")) {
-      ev.preventDefault();
-      location.href = addTZO("/projects/" + projectId + "/milestones/" + milestoneId + "/tasks/" + taskId + "/edit");
-    } else if (ev.target.matches(".taskDelete")) {
-      ev.preventDefault();
-      location.href = "/projects/" + projectId + "/milestones/" + milestoneId + "/tasks/" + taskId + "?_method=DELETE";
-    } else if (ev.target.matches(".addtask")) {
-      ev.preventDefault();
-      location.href = addTZO("/projects/" + projectId + "/milestones/" + milestoneId + "/tasks/new");
-    }  else if (ev.target.matches(".taskSwapOrder")) {
-        ev.preventDefault();
-        const otherTaskId = ev.target.dataset.otherTaskId;
-        location.href = "/projects/" + projectId + "/tasks/swaporder/" + taskId + "/" + otherTaskId + "?_method=PUT";
-      }
-  })
-</script>

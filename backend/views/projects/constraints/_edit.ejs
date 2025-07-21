@@ -1,0 +1,33 @@
+<div class="card-title">Constraints</div>
+
+<ul>
+    <% for (const i in project.constraints) { %>
+        <% const constraint = project.constraints[i]; %>
+        <li>
+            <%= constraint.description %>
+
+            <% if (locals.loginUser.clientId === project.clientId) { %>
+                        <button class="right button"
+                                onclick="redirectConstraintDelete(<%= project.id %>, <%= constraint.id %>); return false;">
+                                🗑️
+                        </button>
+            <% } %>
+
+            <% if (+i > 0) { %>
+                        <button class="right button"
+                                onclick="redirectConstraintsSwapOrder(<%= project.id %>, <%= constraint.id %>, <%= project.constraints[+i - 1].id %>); return false;">
+                                ▲
+                        </button>
+            <% } %>
+
+            <% if (+i < project.constraints.length - 1) { %>
+                        <button class="right button"
+                                onclick="redirectConstraintsSwapOrder(<%= project.id %>, <%= constraint.id %>, <%= project.constraints[+i + 1].id %>); return false;">
+                                ▼
+                        </button>
+            <% } %>
+
+            <div class="clear"></div>
+        </li>
+    <% } %>
+</ul>

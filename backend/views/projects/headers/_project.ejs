@@ -1,0 +1,44 @@
+
+<style>
+    .contenedor {
+        background-color: lightgray;
+        padding: 5px 20px;
+        margin: 5px 0px;
+
+        display: grid;
+
+        grid-template-areas:
+                 'title   title   title   title   client flow'
+                 'summary summary summary summary client   flow'
+                 'nav     nav     nav     .       state     flow';
+        gap: 5px;
+    }
+</style>
+
+<div class="contenedor">
+
+    <h1 style="grid-area: title;  font-size: xx-large; "> <%= project.title %> </h1>
+
+    <p style="grid-area: summary; font-size: small; "> <%= project.summary %> </p>
+
+    <div style="grid-area: client;">
+        <img class="attachment" src="/clients/<%= project.clientId %>/attachment">
+        <%= project.client.name %>
+        <br/>
+        <%= project.client.website %>
+    </div>
+
+    <div  style="grid-area: nav;">
+        <nav id="projectNav" role="navigation">
+            <a href="/projects/<%= project.id %>"><span>Overview</span></a>
+            <a href="/projects/<%= project.id %>/tasks"><span>Milestones &amp; Tasks</span></a>
+        </nav>
+    </div>
+
+    <p style="grid-area: state; background-color: lightcoral; text-align: center;"> <%= project.state %> </p>
+
+    <div  style="grid-area: flow;">
+
+        <%- include('_flow', {project}) %>
+    </div>
+</div>

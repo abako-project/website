@@ -1,7 +1,13 @@
-<h1>Objectives and Constraints</h1>
+<% if (!project.state) { %>
+    <%- include('./headers/_empty', {project, title: "What do you want to achieve?"}) %>
+<% } else if (project.state === "scopingInProgress" ) { %>
+    <%- include('./headers/_empty', {project, title: "Review the Project Scope and Milestones"}) %>
+<% } else { %>
+    <%- include('./headers/_empty', {project, title: "Project description"}) %>
+<% } %>
 
 <div class="card">
-    <%- include("./_editObjectives", {project}) %>
+    <%- include("./objectives/_edit", {project}) %>
 
     <% if ((locals.loginUser.clientId === project.clientId &&
                     !project.state) ||
@@ -9,46 +15,38 @@
                     project.state &&
                     ["scopingInProgress"].includes(project.state))) { %>
 
-        <%- include("./_newObjective", {project}) %>
+        <%- include("./objectives/_new", {project}) %>
 
     <% } %>
 </div>
 
 
 <div class="card">
-    <%- include("./_editConstraints", {project}) %>
+    <%- include("./constraints/_edit", {project}) %>
 
     <% if ((locals.loginUser.clientId === project.clientId &&
                     !project.state) ||
             (locals.loginUser.developerId === project.consultantId &&
                     project.state &&
                     ["scopingInProgress"].includes(project.state))) { %>
-        <%- include("./_newConstraint", {project}) %>
+        <%- include("./constraints/_new", {project}) %>
 
     <% } %>
 </div>
 
-<button id="projectNextButton" data-project-id="<%= project.id %>">Next</button>
-<script type="module">
-  document.getElementById('projectNextButton').addEventListener('click', async ev => {
-
-      <% if (locals.loginUser.clientId === project.clientId && !project.state) { %>
-
-    ev.preventDefault();
-    const projectId = ev.target.dataset.projectId;
-    location.href = addTZO("/projects/" + projectId);
-
-      <% } else if (locals.loginUser.developerId === project.consultantId &&
-              project.state &&
-              ["scopingInProgress"].includes(project.state)) { %>
+<button class="button" onclick="redirectProjectEdit(<%= project.id %>); return false;">Back</button>
 
 
-    ev.preventDefault();
-    const projectId = ev.target.dataset.projectId;
-    location.href = "/projects/" + projectId + "/milestones";
+<% if (locals.loginUser.clientId === project.clientId && !project.state) { %>
+
+    <button class="button" onclick="redirectProjectShow(<%= project.id %>); return false;">Next</button>
+
+<% } else if (locals.loginUser.developerId === project.consultantId &&
+        project.state &&
+        ["scopingInProgress"].includes(project.state)) { %>
+
+    <button class="button" onclick="redirectMilestonesEdit(<%= project.id %>); return false;">Next</button>
+
+<% } %>
 
 
-      <% } %>
-
-  });
-</script>

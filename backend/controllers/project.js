@@ -1,12 +1,12 @@
 const createError = require('http-errors');
-const Sequelize = require("sequelize");
+const {Sequelize, Op} = require("sequelize");
 
 const states = require("./state");
 
 const {
   models: {
     Project, Client, Developer, User, Attachment,
-    ProjectObjective, ProjectConstraint, Milestone, Task, Role
+    Objective, Constraint, Milestone, Task, Role, Comment, Assignation
   }
 } = require('../models');
 const authController = require("./auth");
@@ -30,21 +30,44 @@ exports.load = async (req, res, next, projectId) => {
             {model: User, as: "user"},
             {model: Attachment, as: "attachment"}]
         },
-        {model: ProjectObjective, as: 'objectives'},
-        {model: ProjectConstraint, as: 'constraints'},
+        {
+          model: Objective, as: 'objectives',
+          separate: true,
+          order: [['displayOrder', 'ASC']]
+        },
+        {
+          model: Constraint, as: 'constraints',
+          separate: true,
+          order: [['displayOrder', 'ASC']]
+        },
         {
           model: Milestone, as: 'milestones',
           separate: true,
           order: [['displayOrder', 'ASC']],
           include: [
-            {model: Task, as: 'tasks',
+            {
+              model: Task, as: 'tasks',
               separate: true,
               order: [['displayOrder', 'ASC']],
               include: [
-                {model: Role, as: 'role'}
+                {model: Role, as: 'role'},
+                {
+                  model: Assignation, as: 'assignation',
+                  include: [{
+                    model: Developer, as: 'developer',
+                    include: [
+                      {model: User, as: "user"},
+                      {model: Attachment, as: "attachment"}]
+                  }]
+                }
               ]
             }
           ]
+        },
+        {
+          model: Comment, as: "comments",
+          separate: true,
+          order: [['createdAt', 'DESC']],
         }
       ]
     });
@@ -60,55 +83,10 @@ exports.load = async (req, res, next, projectId) => {
 };
 
 
-// MW that allows actions only if the user logged in is the project client.
-exports.LoggedClientRequired = (req, res, next) => {
-
-  const clientIsLogged = !!req.session.loginUser?.clientId;
-  const clientLoggedIsProjectClient = req.load?.project.clientId === req.session.loginUser?.clientId;
-
-  if (clientIsLogged && clientLoggedIsProjectClient) {
-    next();
-  } else {
-    console.log('Prohibited operation: The logged in user is not the project client.');
-    next(new Error('Prohibited operation: The logged in user is not the project client.'));
-  }
-};
-
-// MW that allows actions only if the user logged in is the project consultant.
-exports.LoggedConsultantRequired = (req, res, next) => {
-
-  const developerIsLogged = !!req.session.loginUser?.developerId;
-  const developerLoggedIsProjectConsultant = req.load?.project.consultantId === req.session.loginUser?.developerId;
-
-
-  if (developerIsLogged && developerLoggedIsProjectConsultant) {
-    next();
-  } else {
-    console.log('Prohibited operation: The logged in user is not the project consultant.');
-    next(new Error('Prohibited operation: The logged in user is not the project consultant.'));
-  }
-};
-
-
-// MW that allows actions only if the user logged in is the project client or the project consultant.
-exports.LoggedClientOrConsultantRequired = (req, res, next) => {
-
-  const clientIsLogged = !!req.session.loginUser?.clientId;
-  const clientLoggedIsProjectClient = req.load?.project.clientId === req.session.loginUser?.clientId;
-
-  const developerIsLogged = !!req.session.loginUser?.developerId;
-  const developerLoggedIsProjectConsultant = req.load?.project.consultantId === req.session.loginUser?.developerId;
-
-  if ((clientIsLogged && clientLoggedIsProjectClient) ||
-(developerIsLogged && developerLoggedIsProjectConsultant)) {
-    next();
-  } else {
-    console.log('Prohibited operation: The logged in user is not the project client nor consultant.');
-    next(new Error('Prohibited operation: The logged in user is not the project client nor consultant.'));
-  }
-};
-
 // Listar todos los proyectos o los de un cliente o los de un developer
+// GET + /projects
+// GET + /clients/:clientId/projects
+// GET + /developers/:developerId/projects
 exports.index = async (req, res, next) => {
 
   try {
@@ -128,6 +106,23 @@ exports.index = async (req, res, next) => {
           include: [
             {model: User, as: "user"},
             {model: Attachment, as: "attachment"}]
+        },
+        {
+          model: Milestone, as: 'milestones',
+          include: [
+            {
+              model: Task, as: 'tasks',
+              include: [
+                {
+                  model: Assignation, as: 'assignation',
+                  required: true,
+                  include: [{
+                    model: Developer, as: 'developer'
+                  }]
+                }
+              ]
+            }
+          ]
         }
       ]
     };
@@ -137,7 +132,12 @@ exports.index = async (req, res, next) => {
     }
 
     if (developer) {
-      options.where = {consultantId: developer.id};
+      options.where = {
+        [Op.or]: [
+          {consultantId: developer.id},
+          {'$milestones.tasks.assignation.developer.id$': developer.id}
+        ]
+      };
     }
 
     const projects = await Project.findAll(options);
@@ -152,7 +152,7 @@ exports.index = async (req, res, next) => {
 
 
 // Mostrar formulario de creación
-exports.new = (req, res, next) => {
+exports.newProposal = (req, res, next) => {
 
   const project = {
     title: "",
@@ -168,23 +168,20 @@ exports.new = (req, res, next) => {
   let browserTimezoneOffset = Number(req.query.browserTimezoneOffset ?? 0);
   browserTimezoneOffset = Number.isNaN(browserTimezoneOffset) ? 0 : browserTimezoneOffset;
 
-  res.render('projects/new', {
+  res.render('projects/newProposal', {
     project,
     browserTimezoneOffset,
   });
 };
 
 // Crear proyecto
-exports.create = async (req, res, next) => {
+exports.createProposal = async (req, res, next) => {
 
   let {title, summary, description, url, budget, currency, deliveryDate} = req.body;
-
-  console.log("===Ctrl Proy create ====Query =======================", req.query);
 
   let {browserTimezoneOffset} = req.query;
   browserTimezoneOffset = Number(browserTimezoneOffset);
 
-  console.log("===Ctrl Proy create ===========================", browserTimezoneOffset);
   const serverTimezoneOffset = new Date().getTimezoneOffset() * 60 * 1000;
 
   deliveryDate = new Date(deliveryDate).valueOf() + browserTimezoneOffset - serverTimezoneOffset;
@@ -219,7 +216,7 @@ exports.create = async (req, res, next) => {
       req.flash('error', 'Error: There are errors in the form:');
       error.errors.forEach(({message}) => req.flash('error', message));
 
-      res.render('projects/basics/new', {
+      res.render('projects/newProposal', {
         project,
         browserTimezoneOffset,
       });
@@ -239,15 +236,22 @@ exports.show = async (req, res, next) => {
   let browserTimezoneOffset = Number(req.query.browserTimezoneOffset ?? 0);
   browserTimezoneOffset = Number.isNaN(browserTimezoneOffset) ? 0 : browserTimezoneOffset;
 
-  res.render('projects/show', {
-    project,
-    browserTimezoneOffset,
-  });
+  if (project.state) {
+    res.render('projects/overview', {
+      project,
+      browserTimezoneOffset,
+    });
+  } else {
+    res.render('projects/show', {
+      project,
+      browserTimezoneOffset,
+    });
+  }
 };
 
 
 // Mostrar formulario de edición
-exports.editBasic = async (req, res, next) => {
+exports.editProposal = async (req, res, next) => {
 
   const {project} = req.load;
 
@@ -256,7 +260,7 @@ exports.editBasic = async (req, res, next) => {
   browserTimezoneOffset = Number.isNaN(browserTimezoneOffset) ? 0 : browserTimezoneOffset;
 
 
-  res.render('projects/editBasic', {
+  res.render('projects/editProposal', {
     project,
     browserTimezoneOffset,
   });
@@ -264,7 +268,7 @@ exports.editBasic = async (req, res, next) => {
 
 
 // Actualizar proyecto
-exports.updateBasic = async (req, res, next) => {
+exports.updateProposal = async (req, res, next) => {
 
   const {body} = req;
   const {project} = req.load;
@@ -293,7 +297,7 @@ exports.updateBasic = async (req, res, next) => {
       req.flash('error', 'Error: There are errors in the form:');
       error.errors.forEach(({message}) => req.flash('error', message));
 
-      res.render('projects/editBasic', {
+      res.render('projects/editProposal', {
         project,
         browserTimezoneOffset,
       });
@@ -346,15 +350,22 @@ exports.projectSubmit = async (req, res, next) => {
 // Publicar el scope: estado = validationNeeded
 exports.scopeSubmit = async (req, res, next) => {
 
-  const {project} = req.load;
+  let {project} = req.load;
 
   const developerId = req.session.loginUser?.developerId;
 
   project.state = states.ProjectState.ValidationNeeded;
 
+  const consultantComment = req.body.consultantComment || "";
+
   try {
     // Save into the data base
-    await project.save();
+    project = await project.save();
+
+    const comment = await Comment.create({consultantComment});
+
+    project.addComment(comment);
+
     console.log('Success: Scope submitted successfully.');
 
     if (developerId) {
@@ -371,15 +382,21 @@ exports.scopeSubmit = async (req, res, next) => {
 // Aceptar el scope: estado = taskingInProgress
 exports.scopeAccept = async (req, res, next) => {
 
-  const {project} = req.load;
+  let {project} = req.load;
+  let [comment] = project.comments;
 
   const clientId = req.session.loginUser?.clientId;
 
-  project.state = states.ProjectState.TaskingInProgress;
+  project.state = states.ProjectState.TasksPending;
+
+  const clientResponse = req.body.clientResponse || "Genial no, lo siguiente."
 
   try {
     // Save into the data base
-    await project.save();
+    project = await project.save();
+
+    await comment.update({clientResponse});
+
     console.log('Success: Scope accepted successfully.');
 
     if (clientId) {
@@ -396,15 +413,21 @@ exports.scopeAccept = async (req, res, next) => {
 // Rechazar el scope: estado = scopingInProgress
 exports.scopeReject = async (req, res, next) => {
 
-  const {project} = req.load;
+  let {project} = req.load;
+  let [comment] = project.comments;
 
   const clientId = req.session.loginUser?.clientId;
 
   project.state = states.ProjectState.ScopingInProgress;
 
+  const clientResponse = req.body.clientResponse || "Peor imposible."
+
   try {
     // Save into the data base
-    await project.save();
+    project = await project.save();
+
+    await comment.update({clientResponse});
+
     console.log('Success: Scope rechazados successfully.');
 
     if (clientId) {
@@ -453,7 +476,7 @@ exports.approve = async (req, res, next) => {
 };
 
 
-// Mostrar Formulario para editar Objectives y Constraints
+// Mostrar Formulario para editar objectives y Constraints
 exports.editObjectivesConstraints = async (req, res) => {
 
   const {project} = req.load;
@@ -475,12 +498,17 @@ exports.selectConsultant = async (req, res, next) => {
 
   const {project} = req.load;
 
-  const allDevelopers = await Developer.findAll();
+  try {
 
-  res.render('consultants/select', {
-    project,
-    allDevelopers
-  });
+    const allDevelopers = await Developer.findAll();
+
+    res.render('consultants/select', {
+      project,
+      allDevelopers
+    });
+  } catch (error) {
+    next(error);
+  }
 };
 
 

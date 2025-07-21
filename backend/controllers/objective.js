@@ -1,14 +1,15 @@
 const createError = require('http-errors');
 const Sequelize = require("sequelize");
 
-const {models: {Project, Client, User, Attachment, ProjectObjective}} = require('../models');
+const {models: {Project, Client, User, Attachment, Objective}} = require('../models');
+const sequelize = require("../models");
 
 
 // Autoload el objectivo asociado a :objectiveId
 exports.load = async (req, res, next, objectiveId) => {
 
   try {
-    const objective = await ProjectObjective.findByPk(objectiveId);
+    const objective = await Objective.findByPk(objectiveId);
     if (objective) {
       req.load = {...req.load, objective};
       next();
@@ -27,7 +28,7 @@ exports.create = async (req, res, next) => {
   let {description} = req.body;
   let {project} = req.load;
   
-  let objective = ProjectObjective.build({description});
+  let objective = Objective.build({description});
 
   try {
     // Save into the data base
@@ -67,3 +68,37 @@ exports.destroy = async (req, res) => {
   }
 };
 
+
+// Intercambiar el orden de visualizacion de 2 objectives
+exports.swapOrder = async (req, res, next) => {
+
+  const transaction = await sequelize.transaction();
+  try {
+    const objective1 = await Objective.findByPk(req.params.id1, {transaction});
+    if (!objective1) {
+      throw new Error('Objective 1 not found.');
+    }
+
+    const objective2 = await Objective.findByPk(req.params.id2, {transaction});
+    if (!objective2) {
+      throw new Error('Objective 2 not found.');
+    }
+
+    const displayOrder1 = objective1.displayOrder;
+    const displayOrder2 = objective2.displayOrder;
+
+    // Intercambiamos posiciones
+    await objective1.update({displayOrder: displayOrder2}, {transaction}),
+      await objective2.update({displayOrder: displayOrder1}, {transaction})
+
+    console.log('Objectives swapped successfully.');
+    res.redirect('/projects/' + objective1.projectId + '/objectives_constraints/edit');
+
+    await transaction.commit();
+
+  } catch
+    (error) {
+    await transaction.rollback();
+    next(error);
+  }
+};

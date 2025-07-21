@@ -3,7 +3,7 @@
 const {DataTypes} = require("sequelize");
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('ProjectObjectives',
+    await queryInterface.createTable('Comments',
       {
         id: {
           type: Sequelize.INTEGER,
@@ -12,9 +12,11 @@ module.exports = {
           autoIncrement: true,
           unique: true
         },
-        description: {
-          type: Sequelize.STRING,
-          validate: {notEmpty: {msg: "Description must not be empty."}},
+        consultantComment: {
+          type: Sequelize.STRING
+        },
+        clientResponse: {
+          type: Sequelize.STRING
         },
         projectId: {
           type: Sequelize.INTEGER,
@@ -41,6 +43,6 @@ module.exports = {
   },
 
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('ProjectObjectives');
+    await queryInterface.dropTable('Comments');
   }
 };

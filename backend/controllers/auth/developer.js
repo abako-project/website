@@ -105,6 +105,7 @@ exports.loginCreate = async (req, res, next) => {
         req.session.loginUser = {
             id: user.id,
             email: user.email,
+            name: user.developer.name,
             clientId: undefined,
             developerId: user.developer.id
         };

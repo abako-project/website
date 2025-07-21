@@ -1,0 +1,11 @@
+<div class="form-group">
+    <strong><%= milestone.title %></strong> -
+
+    <small>(<%= milestone.budget %> <%= milestone.currency %>)</small> -
+
+    <small> <span id="deliveryDate<%= milestone.id %>"></span></small>
+    <script type="module">
+      document.getElementById("deliveryDate<%= milestone.id %>").innerHTML = new Date(<%= milestone.deliveryDate.valueOf() %>).toLocaleString();
+    </script>
+</div>
+

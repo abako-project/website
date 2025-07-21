@@ -1,0 +1,17 @@
+<h1>Crear Nuevo Milestone</h1>
+
+<form is="form-with-tzo" id="newMilestoneForm" action="/projects/<%= project.id %>/milestones" method="POST">
+
+    <div class="card">
+        <%- include("./_form", {project, milestone, browserTimezoneOffset}) %>
+    </div>
+
+</form>
+
+<button class="button" onclick="redirectMilestonesEdit(<%= project.id %>); return false;">
+    Cancel
+</button>
+
+<button class="button" onclick="submitFormById('newMilestoneForm'); return false;">
+    Save and Next
+</button>

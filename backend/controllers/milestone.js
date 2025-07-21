@@ -2,7 +2,7 @@ const createError = require('http-errors');
 const Sequelize = require("sequelize");
 
 const {models: {Project, Client, User, Attachment,
-  ProjectObjective, ProjectConstraint, Milestone, Task}} = require('../models');
+  Objective, Constraint, Milestone, Task}} = require('../models');
 
 const sequelize = require('../models');
 
@@ -29,13 +29,13 @@ exports.load = async (req, res, next, milestoneId) => {
 
 
 
-// Listar todos los milestones de un proyecto
-exports.index = async (req, res, next) => {
+// Editar todos los milestones de un proyecto
+exports.editAll = async (req, res, next) => {
 
   try {
     const {project} = req.load;
 
-    res.render('milestones/index', {project});
+    res.render('projects/editMilestones', {project});
   } catch (error) {
     next(error);
   }
@@ -58,7 +58,7 @@ exports.new = (req, res, next) => {
   let browserTimezoneOffset = Number(req.query.browserTimezoneOffset ?? 0);
   browserTimezoneOffset = Number.isNaN(browserTimezoneOffset) ? 0 : browserTimezoneOffset;
 
-  res.render('milestones/new', {
+  res.render('projects/milestones/new', {
     milestone,
     project,
     browserTimezoneOffset,
@@ -96,13 +96,13 @@ exports.create = async (req, res, next) => {
     // Save into the data base
     milestone = await milestone.save();
     console.log('Success: Milestone created successfully.');
-    res.redirect('/projects/' + projectId + '/milestones');
+    res.redirect('/projects/' + projectId + '/milestones/edit');
   } catch (error) {
     if (error instanceof Sequelize.ValidationError) {
       req.flash('error', 'Error: There are errors in the form:');
       error.errors.forEach(({message}) => req.flash('error', message));
 
-      res.render('milestones/new', {
+      res.render('projects/milestones/new', {
         milestone,
         project,
         browserTimezoneOffset,
@@ -124,7 +124,7 @@ exports.edit = async (req, res) => {
   browserTimezoneOffset = Number.isNaN(browserTimezoneOffset) ? 0 : browserTimezoneOffset;
 
 
-  res.render('milestones/edit', {
+  res.render('projects/milestones/edit', {
     project,
     milestone,
     browserTimezoneOffset,
@@ -152,13 +152,13 @@ exports.update = async (req, res) => {
   try {
     await milestone.save();
     console.log('Milestone edited successfully.');
-    res.redirect('/projects/' + project.id + '/milestones');
+    res.redirect('/projects/' + project.id + '/milestones/edit');
   } catch (error) {
     if (error instanceof Sequelize.ValidationError) {
       req.flash('error', 'Error: There are errors in the form:');
       error.errors.forEach(({message}) => req.flash('error', message));
 
-      res.render('milestones/edit', {
+      res.render('projects/milestones/edit', {
         project,
         milestone,
         browserTimezoneOffset,
@@ -178,7 +178,7 @@ exports.destroy = async (req, res, next) => {
   try {
     await milestone.destroy();
     console.log('Milestone deleted successfully.');
-    res.redirect('/projects/' + project.id + '/milestones');
+    res.redirect('/projects/' + project.id + '/milestones/edit');
   } catch (error) {
     next(error);
   }
@@ -208,7 +208,7 @@ exports.swapOrder = async (req, res, next) => {
       await milestone2.update({displayOrder: displayOrder1}, {transaction})
 
     console.log('Milestones swapped successfully.');
-    res.redirect('/projects/' + milestone1.projectId + '/milestones');
+    res.redirect('/projects/' + milestone1.projectId + '/milestones/edit');
 
     await transaction.commit();
 

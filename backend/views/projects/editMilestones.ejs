@@ -1,0 +1,78 @@
+<% if (project.state === "scopingInProgress" ) { %>
+    <%- include('./headers/_empty', {project, title: "Review the Project Scope and Milestones"}) %>
+<% } else { %>
+    <%- include('./headers/_empty', {project, title: "Project description"}) %>
+<% } %>
+
+<% if (project.milestones.length === 0) { %>
+    <div class="card">
+        No se ha creado ningún milestone todavía.
+    </div>
+<% } %>
+
+<% for (const i in project.milestones) { %>
+
+    <% const milestone = project.milestones[i]; %>
+
+    <div class="card">
+
+        <%- include("./milestones/_show", {milestone}) %>
+
+        <br/>
+
+        <% if (locals.loginUser && locals.loginUser.developerId === project.consultantId) { %>
+
+            <button class="right button"
+                    onclick="redirectMilestoneEdit(<%= project.id %>, <%= milestone.id %>); return false;"
+                    >
+                Edit
+            </button>
+
+            <button class="right button"
+                    onclick="redirectMilestoneDelete(<%= project.id %>, <%= milestone.id %>); return false;">
+                🗑️
+            </button>
+
+            <% if (+i > 0) { %>
+
+                <button class="right button"
+                        onclick="redirectMilestonesSwapOrder(<%= project.id %>, <%= milestone.id %>, <%= project.milestones[+i - 1].id %>); return false;">
+                    ▲
+                </button>
+
+            <% } %>
+
+            <% if (+i < project.milestones.length - 1) { %>
+
+                <button class="right button"
+                        onclick="redirectMilestonesSwapOrder(<%= project.id %>, <%= milestone.id %>, <%= project.milestones[+i + 1].id %>); return false;">
+                    ▼
+                </button>
+
+            <% } %>
+
+            <div class="clear"></div>
+
+        <% } %>
+
+    </div>
+<% } %>
+
+<% if (locals.loginUser && locals.loginUser.developerId === project.consultantId) { %>
+    <button class="right button" onclick="redirectMilestoneNew(<%= project.id %>); return false;">Add New Milestone
+    </button>
+<% } %>
+
+
+<button class="button" onclick="redirectObjectivesConstraintsEdit(<%= project.id %>); return false;">Back</button>
+
+<% if (locals.loginUser.developerId === project.consultantId &&
+        project.state &&
+        ["scopingInProgress"].includes(project.state)) { %>
+    <button class="button" onclick="redirectProjectShow(<%= project.id %>); return false;"
+            data-project-id="<%= project.id %>">
+        Next
+    </button>
+<% } %>
+
+

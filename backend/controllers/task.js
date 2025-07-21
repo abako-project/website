@@ -1,9 +1,10 @@
 const createError = require('http-errors');
 const Sequelize = require("sequelize");
 
-const {models: {Project, Client, User, Attachment,
-  ProjectObjective, ProjectConstraint, Milestone, Task, Role}} = require('../models');
+const {models: {Project, Client, Developer, User, Attachment,
+  Objective, Constraint, Milestone, Task, Role, Assignation}} = require('../models');
 const sequelize = require("../models");
+const states = require("./state");
 
 
 // Autoload la task asociado a :taskId
@@ -17,8 +18,18 @@ exports.load = async (req, res, next, taskId) => {
           include: [
             {model: Project, as: 'project'}
           ]
+        },
+        {model: Role, as: 'role'},
+        {
+          model: Assignation, as: 'assignation',
+          include: [{
+            model: Developer, as: 'developer',
+            include: [
+              {model: User, as: "user"},
+              {model: Attachment, as: "attachment"}]
+          }]
         }
-      ],
+      ]
     });
     if (task) {
       req.load = {...req.load, task};
@@ -141,7 +152,7 @@ exports.create = async (req, res, next) => {
 
 
 // Mostrar formulario de edición
-exports.edit = async (req, res) => {
+exports.edit = async (req, res, next) => {
 
   const {project, milestone, task} = req.load;
 
@@ -163,10 +174,11 @@ exports.edit = async (req, res) => {
 
 
 // Actualizar task
-exports.update = async (req, res) => {
+exports.update = async (req, res, next) => {
 
   const {body} = req;
-  const {project, milestone, task} = req.load;
+  const {project, milestone} = req.load;
+  let {task} = req.load;
 
   let {browserTimezoneOffset} = req.query;
   browserTimezoneOffset = Number(browserTimezoneOffset);
@@ -178,10 +190,18 @@ exports.update = async (req, res) => {
   task.budget = body.budget;
   task.currency = body.currency;
   task.deliveryDate = new Date(body.deliveryDate).valueOf() + browserTimezoneOffset - serverTimezoneOffset;
-  task.roleId = body.roleId;
+  //task.roleId = body.roleId;
 
   try {
     await task.save();
+
+    const roleId = body.roleId;
+    if (roleId) {
+      task = await task.setRole(roleId);
+    } else {
+      task = await task.setRole();
+    }
+
     console.log('Task edited successfully.');
     res.redirect('/projects/' + project.id + '/tasks/edit');
   } catch (error) {
@@ -204,14 +224,14 @@ exports.update = async (req, res) => {
 
 
 // Eliminar task
-exports.destroy = async (req, res) => {
+exports.destroy = async (req, res, next) => {
 
   const {project, milestone, task} = req.load;
 
   try {
     await task.destroy();
     console.log('Task deleted successfully.');
-    res.redirect('/projects/' + project.id + '/milestones/' + milestone.id + '/tasks');
+    res.redirect('/projects/' + project.id + '/tasks/edit');
   } catch (error) {
     next(error);
   }
@@ -244,7 +264,7 @@ exports.swapOrder = async (req, res, next) => {
       await task2.update({displayOrder: displayOrder1}, {transaction})
 
     console.log('Tasks swapped successfully.');
-    res.redirect('/projects/' + project.id + '/tasks');
+    res.redirect('/projects/' + project.id + '/tasks/edit');
 
     await transaction.commit();
 
@@ -254,3 +274,82 @@ exports.swapOrder = async (req, res, next) => {
     next(error);
   }
 };
+
+
+
+// Publicar las tasks creadas
+exports.submitTasks = async (req, res, next) => {
+
+  const {project} = req.load;
+
+  const developerId = req.session.loginUser?.developerId;
+
+  project.state = states.ProjectState.TeamAssignmentPending;
+
+  try {
+    // Save into the data base
+    await project.save();
+    console.log('Success: Tasks submitted successfully.');
+
+    if (developerId) {
+      res.redirect('/projects/' + project.id);
+    } else {
+      res.redirect('/projects/');
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Mostrar formulario para seleccioanr el developer de una task
+exports.selectDeveloper = async (req, res, next) => {
+
+  const {project, milestone, task} = req.load;
+
+  try {
+    const validDevelopers = await Developer.findAll({
+      where: {roleId: task.roleId},
+    });
+
+    res.render('tasks/selectDeveloper', {
+      project,
+      milestone,
+      task,
+      validDevelopers
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+// Actualizar el developer de una task
+exports.setDeveloper = async (req, res, next) => {
+
+  const {body} = req;
+
+  const {project, milestone, task} = req.load;
+
+  try {
+
+    if (body.developerId) {
+      const newAssignation = await Assignation.create({
+        developerId: body.developerId,
+        state: body.developerId ? "Pending" : "None",
+        comment: "",
+        taskId: task.id
+      });
+      await task.setAssignation(newAssignation);
+    } else {
+      await task.setAssignation(undefined);
+    }
+
+    console.log('Task developer assigned successfully.');
+
+    res.redirect('/projects/' + project.id + "/tasks");
+
+  } catch (error) {
+    next(error);
+  }
+}
+
+

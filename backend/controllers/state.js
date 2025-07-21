@@ -12,7 +12,7 @@ module.exports = exports = {
     ScopingInProgress: "scopingInProgress", // consultor definiendo el scope
     ValidationNeeded: "validationNeeded", // el cliente tiene que validar el milestone
 
-    TaskingInProgress: "taskingInProgress", // creando tasks
+    TasksPending: "tasksPending", // creando tasks
 
     TeamAssignmentPending: "teamAssignmentPending", // se esta asignado el team de desarrolladores
     InProgress: "inProgress", // trabajando
