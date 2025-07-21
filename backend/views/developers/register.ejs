@@ -1,123 +1,143 @@
 <h1>Registro de un Developer</h1>
 
 <form id="registerForm" action="/auth/register/developer" method="POST">
-
-    <div class="card">
-        <div class="card-title">Datos de registro</div>
-        <div class="form-group">
-            <label for="email">Email:</label>
-            <input type="email" id="email" name="email" placeholder="email" required>
-        </div>
-        <div class="form-group">
-            <label for="name">Nombre de Usuario (opcional):</label>
-            <input type="text" id="name" name="name" placeholder="Nombre">
-        </div>
-
-        <input type="hidden" id="preparedData" name="preparedData">
-
-        <div class="form-group">
-            <button type="submit" id="registrationButton">Registrar</button>
-        </div>
-
-        <div class="form-group">
-            <p id="status"></p>
-        </div>
+  <div class="card">
+    <h2>Datos de registro</h2>
+    <div class="form-group">
+      <label for="email">Email:</label>
+      <input
+        type="email"
+        id="email"
+        name="email"
+        placeholder="email"
+        required
+      />
     </div>
+    <div class="form-group">
+      <label for="name">Nombre de Usuario (opcional):</label>
+      <input type="text" id="name" name="name" placeholder="Nombre" />
+    </div>
+
+    <input type="hidden" id="preparedData" name="preparedData" />
+
+    <div class="form-group">
+      <button class="btn btn_primary" type="submit" id="registrationButton">Registrar</button>
+    </div>
+
+    <div class="form-group">
+      <p id="status"></p>
+    </div>
+  </div>
 </form>
 
-
 <script type="module">
-  import {default as SDK} from 'https://cdn.jsdelivr.net/npm/@virtonetwork/sdk@0.0.4-alpha.5/dist/esm/sdk.js';
+  import { default as SDK } from "https://cdn.jsdelivr.net/npm/@virtonetwork/sdk@0.0.4-alpha.5/dist/esm/sdk.js";
 
-  const emailElement = document.getElementById('email');
-  const nameElement = document.getElementById('name');
-  const pdElement = document.getElementById('preparedData');
-  const registrationButton = document.getElementById('registrationButton');
-  const statusElement = document.getElementById('status');
+  const emailElement = document.getElementById("email");
+  const nameElement = document.getElementById("name");
+  const pdElement = document.getElementById("preparedData");
+  const registrationButton = document.getElementById("registrationButton");
+  const statusElement = document.getElementById("status");
 
   function initializeSDK() {
     try {
       const sdk = new SDK({
-        federate_server: 'http://localhost:3000/api',
-        provider_url: 'ws://localhost:12281',
+        federate_server: "http://localhost:3000/api",
+        provider_url: "ws://localhost:12281",
         config: {
-          wallet: 'polkadot'
-        }
+          wallet: "polkadot",
+        },
       });
 
-      console.log('SDK initialized successfully', 'success');
+      console.log("SDK initialized successfully", "success");
       return sdk;
     } catch (error) {
-      console.log(`Error initializing SDK: ${error instanceof Error ? error.message : 'Unknown error'}`, 'error');
+      console.log(
+        `Error initializing SDK: ${
+          error instanceof Error ? error.message : "Unknown error"
+        }`,
+        "error"
+      );
       throw error;
     }
   }
 
-  document.getElementById("registerForm").addEventListener("submit", async function (event) {
-    event.preventDefault(); // Evita el envío automático del formulario
+  document
+    .getElementById("registerForm")
+    .addEventListener("submit", async function (event) {
+      event.preventDefault(); // Evita el envío automático del formulario
 
-    try {
-      console.log('Registrar developer ...');
+      try {
+        console.log("Registrar developer ...");
 
-      registrationButton.disabled = true;
-      statusElement.innerHTML = 'Empieza el registro';
+        registrationButton.disabled = true;
+        statusElement.innerHTML = "Empieza el registro";
 
-      if (!emailElement.value) {
-        throw new Error('❌ Error: Email is requerido');
-      }
+        if (!emailElement.value) {
+          throw new Error("❌ Error: Email is requerido");
+        }
 
-      const VIRTO_REAL = false;
+        const VIRTO_REAL = false;
 
-      // ===== VIRTO REAL ==========
-      const preparedDataVirtoReal = async () => {
-        const sdk = initializeSDK();
+        // ===== VIRTO REAL ==========
+        const preparedDataVirtoReal = async () => {
+          const sdk = initializeSDK();
 
-        const userData = {
-          profile: {
-            id: emailElement.value,
-            name: nameElement.value || undefined
-          }
+          const userData = {
+            profile: {
+              id: emailElement.value,
+              name: nameElement.value || undefined,
+            },
+          };
+
+          statusElement.innerHTML = "Generando certificado para el registro";
+
+          return await sdk.auth.prepareRegistration(userData);
         };
 
-        statusElement.innerHTML = 'Generando certificado para el registro';
-
-        return await sdk.auth.prepareRegistration(userData);
-      };
-
-      // ===== VIRTO FAKE ==========
-      const preparedDataVirtoFake = () => {
-        return {
-          userId: emailElement.value,
-          attestationResponse: {},
-          blockNumber: 333
+        // ===== VIRTO FAKE ==========
+        const preparedDataVirtoFake = () => {
+          return {
+            userId: emailElement.value,
+            attestationResponse: {},
+            blockNumber: 333,
+          };
         };
-      };
 
-      const preparedData = VIRTO_REAL ? await preparedDataVirtoReal() : preparedDataVirtoFake();
+        const preparedData = VIRTO_REAL
+          ? await preparedDataVirtoReal()
+          : preparedDataVirtoFake();
 
-      if (!preparedData) {
-        throw new Error('❌ Error: No se han generado los registration data');
+        if (!preparedData) {
+          throw new Error("❌ Error: No se han generado los registration data");
+        }
+
+        const json = JSON.stringify(preparedData, null, 2);
+
+        console.log("Registration - prepared data:");
+        console.log(json);
+
+        statusElement.innerHTML = "Esperando respuesta del servidor";
+
+        pdElement.value = encodeURIComponent(json);
+
+        this.submit();
+      } catch (error) {
+        statusElement.innerHTML = "El registro ha fallado";
+        alert(
+          `❌ Registration error: ${
+            error instanceof Error ? error.message : "Unknown error"
+          }`
+        );
+        console.log(
+          `Registration error: ${
+            error instanceof Error ? error.message : "Unknown error"
+          }`,
+          "error"
+        );
+      } finally {
+        registrationButton.disabled = false;
+        statusElement.innerHTML = "";
       }
-
-      const json = JSON.stringify(preparedData, null, 2);
-
-      console.log('Registration - prepared data:');
-      console.log(json);
-
-      statusElement.innerHTML = 'Esperando respuesta del servidor';
-
-      pdElement.value = encodeURIComponent(json);
-
-      this.submit();
-
-    } catch (error) {
-      statusElement.innerHTML = 'El registro ha fallado';
-      alert(`❌ Registration error: ${error instanceof Error ? error.message : 'Unknown error'}`);
-      console.log(`Registration error: ${error instanceof Error ? error.message : 'Unknown error'}`, 'error');
-    } finally {
-      registrationButton.disabled = false;
-      statusElement.innerHTML = '';
-    }
-  });
-
+    });
 </script>

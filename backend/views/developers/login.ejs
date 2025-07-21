@@ -1,30 +1,30 @@
-<h1>Login de un Developer</h1>
+<!-- Login de un Developer -->
 
-<form id="loginForm" action="/auth/login/developer" method="POST">
-    <div class="card">
-        <div class="card-title">Login de un Developer</div>
-        <div class="form-group">
-            <label for="email">Email:</label>
-            <input type="text" id="email" name="email" placeholder="email">
-        </div>
-
-        <input type="hidden" id="preparedData" name="preparedData">
-
-        <div class="form-group">
-            <button type="submit" id="loginButton">Login</button>
-        </div>
-
-        <div class="form-group">
-            <p id="status"></p>
-        </div>
+<form class="onboardingForm" id="loginForm" action="/auth/login/developer" method="POST">
+  <h2>Login de un Developer</h2>
+  <div class="card">
+    <div class="input_text">
+      <label for="email">Email:</label>
+      <input type="text" id="email" name="email" placeholder="email" />
     </div>
+
+    <input type="hidden" id="preparedData" name="preparedData" />
+
+    <div class="form-group">
+      <button class="btn btn_primary" type="submit" id="loginButton">Login</button>
+    </div>
+
+    <div class="form-group">
+      <p id="status"></p>
+    </div>
+  </div>
 </form>
 
 <script type="module">
-  import {default as SDK} from 'https://cdn.jsdelivr.net/npm/@virtonetwork/sdk@0.0.4-alpha.5/dist/esm/sdk.js';
+  import { default as SDK } from "https://cdn.jsdelivr.net/npm/@virtonetwork/sdk@0.0.4-alpha.5/dist/esm/sdk.js";
 
-  const JWT_TOKEN_KEY = 'virto_jwt_token';
-  const CONNECTED_USER_KEY = 'virto_connected_user';
+  const JWT_TOKEN_KEY = "virto_jwt_token";
+  const CONNECTED_USER_KEY = "virto_connected_user";
 
   function loadFromLocalStorage() {
     const storedToken = localStorage.getItem(JWT_TOKEN_KEY);
@@ -32,44 +32,50 @@
 
     if (storedToken) {
       authToken = storedToken;
-      console.log('Token JWT loaded from localStorage', 'info');
+      console.log("Token JWT loaded from localStorage", "info");
     }
 
     if (storedUserId) {
       connectedUserId = storedUserId;
-      console.log(`Connected user loaded from localStorage: ${storedUserId}`, 'info');
+      console.log(
+        `Connected user loaded from localStorage: ${storedUserId}`,
+        "info"
+      );
     }
   }
 
-  let connectedUserId = null;            //: : string | null = null;
-  let authToken = null;                 //:  string | null = null;
+  let connectedUserId = null; //: : string | null = null;
+  let authToken = null; //:  string | null = null;
 
   loadFromLocalStorage();
 
-  const emailElement = document.getElementById('email');
-  const pdElement = document.getElementById('preparedData');
-  const loginButton = document.getElementById('loginButton');
-  const statusElement = document.getElementById('status');
-
+  const emailElement = document.getElementById("email");
+  const pdElement = document.getElementById("preparedData");
+  const loginButton = document.getElementById("loginButton");
+  const statusElement = document.getElementById("status");
 
   function initializeSDK() {
     try {
       const sdk = new SDK({
-        federate_server: 'http://localhost:3000/api',
-        provider_url: 'ws://localhost:12281',
+        federate_server: "http://localhost:3000/api",
+        provider_url: "ws://localhost:12281",
         config: {
-          wallet: 'polkadot'
-        }
+          wallet: "polkadot",
+        },
       });
 
-      console.log('SDK initialized successfully');
+      console.log("SDK initialized successfully");
       return sdk;
     } catch (error) {
-      console.log(`Error initializing SDK: ${error instanceof Error ? error.message : 'Unknown error'}`, 'error');
+      console.log(
+        `Error initializing SDK: ${
+          error instanceof Error ? error.message : "Unknown error"
+        }`,
+        "error"
+      );
       throw error;
     }
   }
-
 
   function saveToLocalStorage() {
     if (authToken) {
@@ -80,73 +86,82 @@
     }
   }
 
+  document
+    .getElementById("loginForm")
+    .addEventListener("submit", async function (event) {
+      event.preventDefault(); // Evita el envío automático del formulario
 
-  document.getElementById("loginForm").addEventListener("submit", async function (event) {
-    event.preventDefault(); // Evita el envío automático del formulario
+      try {
+        console.log("Loguear developer...");
 
-    try {
-      console.log('Loguear developer...');
+        loginButton.disabled = true;
+        statusElement.innerHTML = "Empieza el logueo";
 
-      loginButton.disabled = true;
-      statusElement.innerHTML = 'Empieza el logueo';
-
-      if (!emailElement.value) {
-        throw new Error('❌ Error: Email is requerido');
-      }
-
-      const VIRTO_REAL = false;
-
-      // ===== VIRTO REAL: ========
-      const preparedDataVirtoReal = async () => {
-        const sdk = initializeSDK();
-
-        console.log('Comprobar si es un developer registrado...');
-        const registered = await sdk.auth.isRegistered(emailElement.value);
-        if (!registered) {
-          throw new Error('Developer needs to register first');
+        if (!emailElement.value) {
+          throw new Error("❌ Error: Email is requerido");
         }
-        console.log('El developer está registrado.');
 
-        statusElement.innerHTML = 'Generando certificado para loguearse';
+        const VIRTO_REAL = false;
 
-        return await sdk.auth.prepareConnection(emailElement.value);
-      };
+        // ===== VIRTO REAL: ========
+        const preparedDataVirtoReal = async () => {
+          const sdk = initializeSDK();
 
-      // ==== VIRTO FAKE ========
-      const preparedDataVirtoFake = () => {
-        return {
-          userId: emailElement.value,
-          assertionResponse: {},
-          blockNumber: 333
+          console.log("Comprobar si es un developer registrado...");
+          const registered = await sdk.auth.isRegistered(emailElement.value);
+          if (!registered) {
+            throw new Error("Developer needs to register first");
+          }
+          console.log("El developer está registrado.");
+
+          statusElement.innerHTML = "Generando certificado para loguearse";
+
+          return await sdk.auth.prepareConnection(emailElement.value);
         };
+
+        // ==== VIRTO FAKE ========
+        const preparedDataVirtoFake = () => {
+          return {
+            userId: emailElement.value,
+            assertionResponse: {},
+            blockNumber: 333,
+          };
+        };
+
+        const preparedData = VIRTO_REAL
+          ? await preparedDataVirtoReal()
+          : preparedDataVirtoFake();
+
+        if (!preparedData) {
+          throw new Error("❌ Error: No se han generado los login data");
+        }
+
+        const json = JSON.stringify(preparedData, null, 2);
+
+        console.log("Login - prepared data:");
+        console.log(json);
+
+        statusElement.innerHTML = "Esperando respuesta del servidor";
+
+        pdElement.value = encodeURIComponent(json);
+
+        this.submit();
+      } catch (error) {
+        statusElement.innerHTML = "El login ha fallado";
+        alert(
+          `❌ Login error: ${
+            error instanceof Error ? error.message : "Unknown error"
+          }`
+        );
+        console.log(
+          `Login error: ${
+            error instanceof Error ? error.message : "Unknown error"
+          }`,
+          "error"
+        );
+      } finally {
+        loginButton.disabled = false;
+        statusElement.innerHTML = "";
       }
-
-      const preparedData = VIRTO_REAL ? await preparedDataVirtoReal() : preparedDataVirtoFake();
-
-
-      if (!preparedData) {
-        throw new Error('❌ Error: No se han generado los login data');
-      }
-
-      const json = JSON.stringify(preparedData, null, 2);
-
-      console.log('Login - prepared data:');
-      console.log(json);
-
-      statusElement.innerHTML = 'Esperando respuesta del servidor';
-
-      pdElement.value = encodeURIComponent(json);
-
-      this.submit();
-
-    } catch (error) {
-      statusElement.innerHTML = 'El login ha fallado';
-      alert(`❌ Login error: ${error instanceof Error ? error.message : 'Unknown error'}`);
-      console.log(`Login error: ${error instanceof Error ? error.message : 'Unknown error'}`, 'error');
-    } finally {
-      loginButton.disabled = false;
-      statusElement.innerHTML = '';
-    }
-  });
-
+    });
 </script>

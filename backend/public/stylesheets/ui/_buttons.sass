@@ -1,0 +1,24 @@
+.btn
+    @include flex-center
+    gap: $size-4
+    min-width: fit-content
+    height: fit-content
+    min-height: 44px
+    padding: 0 $size-8
+    border-radius: $size-6
+    border: 1px solid $text-dark-3
+    color: $text-dark
+    background-color: $base-2
+    cursor: pointer
+    font-weight: 700
+    &:hover
+        box-shadow: $shadow-2
+    .material-icons
+        @include material-icon($text-dark-3)
+        font-size: 24px
+    &_primary
+        color: $base-1
+        background-color: $brand
+
+
+    // &_secondary

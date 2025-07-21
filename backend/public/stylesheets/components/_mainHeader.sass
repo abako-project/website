@@ -1,0 +1,119 @@
+// App header
+
+// 1
+.mainHeader
+    position: sticky
+    top: 0
+    left: 0
+    z-index: 100
+    width: 100%
+    height: 88px
+    height: fit-content
+    padding: $sp-7 $sp-22
+    display: flex
+    justify-content: space-between
+    align-items: center
+    border-bottom: 1px solid $base-border
+    background-color: $base-1
+
+    // 2
+    &_left
+        display: flex
+        gap: $sp-8
+        align-items: center
+        // 3
+        .logoLink
+            height: 32px
+            width: 32px
+        // 3
+        img
+            @include img-contain
+        // 3
+        .menu
+            // 4
+            &_items
+                display: flex
+                gap: 8px
+                // 5
+                .menuItem
+                    @extend .btn
+                    border: none
+                    background: transparent
+                    box-shadow: none
+                    // 6
+                    & > a
+                        color: $text-dark-2
+                        font-size: $text-base
+                        font-weight: 500
+                    // 6
+                    &:hover
+                        box-shadow: none
+                        background-color: $fill-1
+                        color: $text-dark
+                    // 6
+                    &-active
+                        background-color: $fill-1
+                        // 7
+                        & > a
+                            color: $text-dark
+    // 2
+    &_right
+        height: 100%
+        min-height: 100%
+        min-width: 112px
+        width: fit-content
+        display: flex
+        align-items: center
+        justify-content: end
+        gap: $sp-8
+        // 3
+        .notifications
+            position: relative
+            margin-top: 8px
+            // 4
+            &_dot
+                position: absolute
+                top: -2px
+                right: -2px
+                z-index: 999
+                display: block
+                height: 14px
+                width: 14px
+                border-radius: $rounded-full
+                outline: 4px solid $base-1
+                background-color: $brand
+            // 4
+            &_icon
+                i
+                    @include remix-icon($fill-5)
+                    font-size: 24px
+        // 3
+        .profile
+            width: fit-content
+            display: flex
+            gap: $sp-5
+            align-items: center
+            // 4
+            &_avatar
+                @include img-contain
+                width: 40px
+                height: 40px
+                border-radius: $rounded-full
+                border: 1px solid $base-border
+                place-content: center
+                .iconPlaceholder
+                    @include flex-center
+                    i
+                        @include remix-icon($fill-5)
+                        font-size: 24px
+            // 4
+            &_icon
+                min-width: fit-content
+                min-height: fit-content
+                color: $fill-5
+                // 5
+                i
+                    @include remix-icon($fill-5)
+                    font-size: 24px
+                    width: 100%
+                    height: 100%

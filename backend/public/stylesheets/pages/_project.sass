@@ -1,0 +1,86 @@
+
+.project
+    margin: 0 112px
+    padding-top: $sp-16
+
+    .projectSubmission
+        width: $full
+        display: grid
+        grid-template-columns: repeat(12, 1fr)
+        grid-auto-rows: auto
+        gap: $sp-10 //24px
+        &_steps
+            grid-column: span 3
+            grid-row: 1 / -1
+            padding-top: 20px
+            .stepsItems, ul
+                position: sticky
+                top: 128px
+                display: flex
+                flex-direction: column
+                gap: 4px
+                &_item, li
+                    display: flex
+                    justify-content: start
+                    align-items: center
+                    gap: 20px
+                    span
+                        height: 40px
+                        min-height: 40px
+                        width: 40px
+                        min-width: 40px
+                        place-content: center
+                        text-align: center
+                    &-active
+                        span
+                            border-radius: $radi-6
+                            border: 4px solid $brand-selected
+                            background-color: $brand
+                    p
+                        font-size: $text-base
+                        font-weight: 500
+                        color: $text-dark-2
+                &_connector
+                    height: 54px
+                    margin-left: 18px
+                    width: 4px
+                    border-radius: $rounded-full
+                    background-color: $fill-5
+        &_form
+            grid-column: span 9
+            width: $full
+            min-height: 80dvh
+            height: fit-content
+            .projectSubmissionTitle
+                margin-bottom: $sp-12
+            .projectSubmissionForm
+                height: 100%
+                min-height: 70dvh
+                padding: $sp-15 // 44px
+
+.projectSubmissionForm
+    border-radius: $radi-6
+    border: 1px solid $base-border
+    background-color: $base-2
+    display: flex
+    flex-direction: column
+    gap: $sp-14
+    &_row
+        width: $full
+        display: inline-flex
+        gap: $sp-14
+        .input
+            width: $full
+
+    input, select, textarea
+        width: 100%
+        background-color: $base-1 !important
+        font-size: $text-base
+        line-height: $lh-base
+    label
+        color: $text-dark-2
+        font-size: $text-base
+        line-height: $lh-base
+
+    .projectDetail
+        // width: $full

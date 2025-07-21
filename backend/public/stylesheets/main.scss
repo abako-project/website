@@ -1,24 +1,52 @@
 @import './lib/flash';
 @import './ui/forms';
 
+@import "./lib/_reset.sass";
+@import "./lib/_variables.sass";
+@import "./lib/_mixins.sass";
+@import "./lib/_text.sass";
+@import "./lib/_componentslayout.sass";
+
+/* ui */
+@import "./ui/_buttons.sass";
+// @import "./ui/_inputs.sass";
+// @import "./ui/_icons.sass";
+// @import "./ui/_divider.sass";
+
+/* components */
+// @import "./components/_mainHeader.sass";
+
+// Pages
+@import './pages/_onboarding.sass';
+@import './pages/_project.sass';
+
 * {
-    border: 1px solid tomato;
+    // border: 1px solid tomato;
 }
 
 
-html {
-    height: 100%;
-    margin: 0;
+// html {
+//     height: 100%;
+//     margin: 0;
+// }
+
+html, body {
+    // --primary: #2a4f03;
+    // --secondary: #dfd88d;
+    // font: 16px "Lucida Grande", Helvetica, Arial, sans-serif;
+
+    // margin: 0px;
+    // padding: 0px;
+
+    min-width: 100dvw;
+    min-height: 100dvh;
+    background-color: $base-1;
+    color: $text-dark;
 }
 
-body {
-    --primary: #2a4f03;
-    --secondary: #dfd88d;
-    font: 16px "Lucida Grande", Helvetica, Arial, sans-serif;
-
-    margin: 0px;
-    padding: 0px;
-}
+// a {
+//     @extend .btn-primary;
+// }
 
 #appOneColumn {
     height: 100vh;
@@ -29,13 +57,13 @@ body {
     padding: 20px;
 
     color: var(--primary);
-    background: white;
+    // background: white;
 }
 
 #appTwoColumns {
     height: 100vh;
-    display: grid;
-    grid-template-columns: 1fr 4fr;
+    display: flex;
+    // grid-template-columns: 1fr 4fr;
 
     margin: 0px;
     padding: 0px;
@@ -45,18 +73,18 @@ body {
     place-content: center;
     text-align: center;
 
-    background-color: var(--primary);
-    color: white;
+    // background-color: var(--primary);
+    // color: white;
 }
 
 #appRight {
-    display: grid;
-    grid-template-rows: auto auto 1fr;
+    // display: grid;
+    // grid-template-rows: auto auto 1fr;
 
-    padding: 20px;
+    // padding: 20px;
 
-    color: var(--primary);
-    background: white;
+    // color: var(--primary);
+    // background: white;
 }
 
 #appHeader {
@@ -82,7 +110,7 @@ body {
 }
 
 #appTwoColumns #appMain {
-    place-content: center;
+    // place-content: center;
 }
 
 
@@ -111,18 +139,16 @@ input[type=checkbox] {
 }
 
 input[type=text], input[type=email], input[type=password] {
-    background-color: white;
-    height: 15px;
+    border: 1px solid $text-dark-3;
     transition: ease-in-out, background-color .4s ease-in-out, height .4s ease-in-out;
 }
 
 input[type=text]:focus, input[type=email]:focus, input[type=password]:focus {
-    background-color: yellow;
-    height: 24px;
+    border: 1px solid $brand;
 }
 
 textarea {
-    background-color: white;
+    // background-color: white;
     height: calc(15px * 10);
     transition: ease-in-out, background-color .4s ease-in-out, height .4s ease-in-out;
 }
@@ -144,33 +170,43 @@ a.button, input.button {
     text-decoration: none;
     padding: 6px 8px;
     margin: 4px;
-    background: #f5f5f5;
+    // background: #f5f5f5;
     color: var(--primary);
     border-radius: 4px;
     border: solid 1px var(--secondary);
 }
 
 a.button:hover, input.button:hover {
-    background: lightgray;
+    // background: lightgray;
 }
 
 /* ------------------------- */
 
 a.adminDAO {
-    display: inline-block;
+    display: block;
     font-size: large;
     text-decoration: none;
     padding: 8px 12px;
-    margin: 4px;
     border-radius: 4px;
     border: solid 1px var(--secondary);
 
     background-color: lightgoldenrodyellow;
     color: darkgoldenrod;
+
 }
 
 a.adminDAO:hover {
     background: gold;
+}
+
+.backdoorBtn {
+    position: fixed;
+    z-index: 999; 
+    bottom: 15px; 
+    right: 15px; 
+    border-radius: $sp-4;
+    padding: 0 $sp-4;
+    background-color: $fill-2;
 }
 
 /* ------------------------- */
@@ -184,12 +220,12 @@ a.projectFlow {
     border-radius: 4px;
     border: solid 1px var(--secondary);
 
-    background-color: #8fbc8f;
+    // background-color: #8fbc8f;
     color: beige;
 }
 
 a.projectFlow:hover {
-    background: var(--primary);
+    // background: var(--primary);
 }
 
 /* ------------------------- */
@@ -280,8 +316,8 @@ img.attachment {
     width: 30px;
     height: 30px;
     object-fit: cover;
-    border-radius: 20px;
-    box-shadow: 2px 2px 7px #ccc;
+    border-radius: $rounded-full;
+    border: 1px solid $text-dark-3;
     vertical-align: middle;
 }
 
@@ -304,19 +340,19 @@ div.actions {
 }
 
 .usersIndex tr {
-    background-color: #e5e5e5;
+    // background-color: #e5e5e5;
     border: 1px solid #636363;
     border-radius: 5px;
 }
 
 .usersIndex tr:nth-child(even) {
-    background-color: #cfcfcf
+    // background-color: #cfcfcf
 }
 
 .usersIndex th {
     padding: 3px;
     margin: 2px;
-    background-color: #cfcfcf;
+    // background-color: #cfcfcf;
     vertical-align: middle;
     text-align: center;
     border-left: 1px solid #636363;
