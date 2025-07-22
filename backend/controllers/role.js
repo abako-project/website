@@ -1,20 +1,16 @@
-const createError = require('http-errors');
-const Sequelize = require("sequelize");
 
-const {models: {Role}} = require('../models');
+const seda = require("../services/seda");
 
 
 // Autoload el role asociado a :roleId
 exports.load = async (req, res, next, roleId) => {
 
     try {
-        const role = await Role.findByPk(roleId);
-        if (role) {
-            req.load = {...req.load, role};
-            next();
-        } else {
-            throw createError(404, 'There is no role with id=' + roleId);
-        }
+        const role = await seda.role(roleId);
+
+        req.load = {...req.load, role};
+        next();
+
     } catch (error) {
         next(error);
     }
@@ -25,7 +21,7 @@ exports.load = async (req, res, next, roleId) => {
 exports.index = async (req, res, next) => {
 
     try {
-        const roles = await Role.findAll();
+        const roles = await seda.roleIndex();
 
         res.render('roles/index', {roles});
     } catch (error) {
@@ -51,17 +47,17 @@ exports.create = async (req, res, next) => {
 
     let {name} = req.body;
 
-    let role = Role.build({
+    let role = {
         name
-    });
+    };
 
     try {
-        // Save into the data base
-        role = await role.save();
+        role = await seda.roleCreate(name);
+
         console.log('Success: Role created successfully.');
         res.redirect('/roles');
     } catch (error) {
-        if (error instanceof Sequelize.ValidationError) {
+        if (error instanceof seda.ValidationError) {
             req.flash('error', 'Error: There are errors in the form:');
             error.errors.forEach(({message}) => req.flash('error', message));
 
@@ -76,13 +72,17 @@ exports.create = async (req, res, next) => {
 };
 
 // Mostrar detalle de un role
-exports.show = async (req, res) => {
+exports.show = async (req, res, next) => {
 
-    const {role} = req.load;
+    try {
+        const {role} = req.load;
 
-    res.render('roles/show', {
-        role
-    });
+        res.render('roles/show', {
+            role
+        });
+    } catch (error) {
+        next(error);
+    }
 };
 
 
@@ -98,7 +98,7 @@ exports.edit = async (req, res) => {
 
 
 // Actualizar role
-exports.update = async (req, res) => {
+exports.update = async (req, res, next) => {
 
     const {body} = req;
     const {role} = req.load;
@@ -106,11 +106,12 @@ exports.update = async (req, res) => {
     role.name = body.name;
 
     try {
-        await role.save();
+        await seda.roleUpdate(role.id, role);
+
         console.log('Role edited successfully.');
         res.redirect('/roles');
     } catch (error) {
-        if (error instanceof Sequelize.ValidationError) {
+        if (error instanceof seda.ValidationError) {
             req.flash('error', 'Error: There are errors in the form:');
             error.errors.forEach(({message}) => req.flash('error', message));
 
@@ -124,12 +125,13 @@ exports.update = async (req, res) => {
 };
 
 // Eliminar role
-exports.destroy = async (req, res) => {
+exports.destroy = async (req, res, next) => {
 
     const {role} = req.load;
 
     try {
-        await role.destroy();
+        await seda.roleDestroy(role.id);
+
         console.log('Role deleted successfully.');
         res.redirect('/roles');
     } catch (error) {

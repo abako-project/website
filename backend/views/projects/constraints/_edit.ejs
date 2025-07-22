@@ -18,6 +18,8 @@
                                 onclick="redirectConstraintsSwapOrder(<%= project.id %>, <%= constraint.id %>, <%= project.constraints[+i - 1].id %>); return false;">
                                 ▲
                         </button>
+            <% } else { %>
+                <button class="right button">▲</button>
             <% } %>
 
             <% if (+i < project.constraints.length - 1) { %>
@@ -25,6 +27,8 @@
                                 onclick="redirectConstraintsSwapOrder(<%= project.id %>, <%= constraint.id %>, <%= project.constraints[+i + 1].id %>); return false;">
                                 ▼
                         </button>
+            <% } else { %>
+                <button class="right button">▼</button>
             <% } %>
 
             <div class="clear"></div>

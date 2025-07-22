@@ -36,11 +36,19 @@
                                     onclick="redirectTasksSwapOrder(<%= project.id %>, <%= task.id %>, <%= milestone.tasks[+i - 1].id %>); return false;">
                                 ▲
                             </button>
+                        <% } else { %>
+                            <button class="right button">
+                                ▲
+                            </button>
                         <% } %>
 
                         <% if (+i < milestone.tasks.length - 1) { %>
                             <button class="right button"
                                     onclick="redirectTasksSwapOrder(<%= project.id %>, <%= task.id %>, <%= milestone.tasks[+i + 1].id %>); return false;">
+                                ▼
+                            </button>
+                        <% } else { %>
+                            <button class="right button">
                                 ▼
                             </button>
                         <% } %>

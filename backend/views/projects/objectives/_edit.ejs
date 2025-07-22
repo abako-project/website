@@ -19,6 +19,8 @@
                         onclick="redirectObjectivesSwapOrder(<%= project.id %>, <%= objective.id %>, <%= project.objectives[+i - 1].id %>); return false;">
                     ▲
                 </button>
+            <% } else { %>
+                <button class="right button">▲</button>
             <% } %>
 
             <% if (+i < project.objectives.length - 1) { %>
@@ -26,6 +28,8 @@
                         onclick="redirectObjectivesSwapOrder(<%= project.id %>, <%= objective.id %>, <%= project.objectives[+i + 1].id %>); return false;">
                     ▼
                 </button>
+            <% } else { %>
+                <button class="right button">▼</button>
             <% } %>
 
             <div class="clear"></div>

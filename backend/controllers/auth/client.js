@@ -1,7 +1,5 @@
 
-
-const {models:{User, Client, Developer}} = require('../../models');
-
+const seda = require("../../services/seda");
 
 // --------- LOGIN CON CONTRASEÑA
 
@@ -15,20 +13,7 @@ const {models:{User, Client, Developer}} = require('../../models');
  */
 const authenticate = async (email, password) => {
 
-    const user = await User.findOne({
-        where: {email},
-        include: [
-            {model: Client, as: "client"}
-        ]
-    });
-
-    if (!user || !user.client) {
-        return null;
-    }
-
-    const valid = await user.client.verifyPassword(password);
-
-    return valid ? user : null;
+    return await seda.clientFindByEmailPassword(email, password);
 };
 
 exports.loginCreate = async (req, res, next) => {
@@ -37,22 +22,22 @@ exports.loginCreate = async (req, res, next) => {
     const password = req.body.password ?? "";
 
     try {
-        const user = await authenticate(email, password);
-        if (user) {
+        const client = await authenticate(email, password);
+        if (client) {
             console.log('Info: Client authentication successful.');
 
             // Create req.session.loginUser.
             // The existence of req.session.loginUser indicates that the session exists.
             // I also save the moment when the session will expire due to inactivity.
             req.session.loginUser = {
-                id: user.id,
-                email: user.email,
-                name: user.client.name,
-                clientId: user.client.id,
+                id: client.user.id,
+                email: client.user.email,
+                name: client.name,
+                clientId: client.id,
                 developerId: undefined
             };
 
-            res.redirect(`/clients/${user.client.id}/projects`);
+            res.redirect(`/clients/${client.id}/projects`);
         } else {
             req.flash("error", 'Authentication has failed. Retry it again.');
             res.redirect('/auth/login/client/new');
@@ -68,11 +53,8 @@ exports.loginCreate = async (req, res, next) => {
 
 exports.registerCreate = async (req, res) => {
     const {email, password} = req.body;
-    if (!email || !password) {
-        return res.status(400).send('Todos los campos son obligatorios');
-    }
-    const user = await User.create({email});
-    const client = await Client.create({password});
-    await user.setClient(client);
+
+    await seda.clientCreate(email, password);
+
     res.redirect('/auth/login/client/new');
 };

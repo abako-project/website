@@ -1,0 +1,90 @@
+
+const sedaError = require("./error");
+
+const sedaProject = require("./project");
+const sedaProposal = require("./proposal");
+const sedaObjective = require("./objective");
+const sedaConstraint = require("./constraint");
+const sedaMilestone = require("./milestone");
+const sedaTask = require("./task");
+const sedaScope = require("./scope");
+const sedaClient = require("./client");
+const sedaDeveloper = require("./developer");
+const sedaAttachment = require("./attachment");
+const sedaLanguage = require("./language");
+const sedaRole = require("./role");
+const sedaSkill = require("./skill");
+
+
+
+exports.projectsIndex = sedaProject.projectsIndex;
+exports.project = sedaProject.project;
+exports.projectClientId = sedaProject.projectClientId;
+exports.projectConsultantId = sedaProject.projectConsultantId;
+exports.projectSetState = sedaProject.projectSetState;
+exports.projectSubmit = sedaProject.projectSubmit;
+exports.projectDestroy = sedaProject.projectDestroy;
+exports.projectApprove = sedaProject.projectApprove;
+exports.projectReject = sedaProject.projectReject;
+exports.projectSetConsultant = sedaProject.projectSetConsultant;
+
+exports.proposalCreate = sedaProposal.proposalCreate;
+exports.proposalUpdate = sedaProposal.proposalUpdate;
+
+exports.objective = sedaObjective.objective;
+exports.objectiveCreate = sedaObjective.objectiveCreate;
+exports.objectivesSwapOrder = sedaObjective.objectivesSwapOrder;
+exports.objectiveDestroy = sedaObjective.objectiveDestroy;
+
+exports.constraint = sedaConstraint.constraint;
+exports.constraintCreate = sedaConstraint.constraintCreate;
+exports.constraintsSwapOrder = sedaConstraint.constraintsSwapOrder;
+exports.constraintDestroy = sedaConstraint.constraintDestroy;
+
+exports.milestone = sedaMilestone.milestone;
+exports.milestoneCreate = sedaMilestone.milestoneCreate;
+exports.milestoneUpdate = sedaMilestone.milestoneUpdate;
+exports.milestonesSwapOrder = sedaMilestone.milestoneSwapOrder;
+exports.milestoneDestroy = sedaMilestone.milestoneDestroy;
+
+exports.scopeSubmit = sedaScope.scopeSubmit;
+exports.scopeAccept = sedaScope.scopeAccept;
+exports.scopeReject = sedaScope.scopeReject;
+
+exports.task = sedaTask.task;
+exports.taskCreate = sedaTask.taskCreate;
+exports.taskUpdate = sedaTask.taskUpdate;
+exports.tasksSwapOrder = sedaTask.tasksSwapOrder;
+exports.taskDestroy = sedaTask.taskDestroy;
+exports.tasksSubmit = sedaTask.tasksSubmit;
+exports.taskSetDeveloper = sedaTask.taskSetDeveloper;
+
+exports.clientIndex = sedaClient.clientIndex;
+exports.client = sedaClient.client;
+exports.clientCreate = sedaClient.clientCreate;
+exports.clientUpdate = sedaClient.clientUpdate;
+exports.clientFindByEmail = sedaClient.clientFindByEmail;
+exports.clientFindByEmailPassword = sedaClient.clientFindByEmailPassword;
+exports.clientAttachment = sedaClient.clientAttachment;
+
+exports.developerIndex = sedaDeveloper.developerIndex;
+exports.developer = sedaDeveloper.developer;
+exports.developerCreate = sedaDeveloper.developerCreate;
+exports.developerUpdate = sedaDeveloper.developerUpdate;
+exports.developerFindByEmail = sedaDeveloper.developerFindByEmail;
+exports.developersWithRole = sedaDeveloper.developersWithRole;
+exports.developerAttachment = sedaDeveloper.developerAttachment;
+
+exports.attachment = sedaAttachment.attachment;
+
+exports.languageIndex = sedaLanguage.languageIndex;
+
+exports.roleIndex = sedaRole.roleIndex;
+exports.role = sedaRole.role;
+exports.roleCreate = sedaRole.roleCreate;
+exports.roleUpdate = sedaRole.roleUpdate;
+exports.roleDestroy = sedaRole.roleDestroy;
+
+exports.skillIndex = sedaSkill.skillIndex;
+
+exports.ValidationError = sedaError.ValidationError;

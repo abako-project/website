@@ -1,24 +1,11 @@
 "use strict";
 
-const {models: {User, Client, Developer}} = require('../models');
-
+const seda = require("../services/seda");
 
 // Menu inicial
 exports.index = async (req, res) => {
   res.render('backdoor');
 };
-
-exports.users = async (req, res) => {
-
-  const clients = await Client.findAll({
-    include: [{model: User, as: "user"}]
-  });
-
-  const developers = {};
-
-  res.render('backdoor/users', {clients, developers});
-};
-
 
 // Login como Admin
 exports.adminLogin = async (req, res) => {
@@ -38,28 +25,25 @@ exports.adminLogin = async (req, res) => {
 
 
 // Login como el cliente Carlos
-exports.carlosLogin = async (req, res) => {
+exports.carlosLogin = async (req, res, next) => {
 
   const email = "carlos@sitio.es";
 
   try {
-    const user = await User.findOne({
-      where: {email},
-      include: [{model: Client, as: "client"}]
-    });
+    const client = await seda.clientFindByEmail(email);
 
-    if (!user || !user.client) {
+    if (!client) {
         return next("No encuentro a Carlos.");
     }
 
     req.session.loginUser = {
-      id: user.id,
-      email: user.email,
-      clientId: user.client.id,
+      id: client.user.id,
+      email: client.user.email,
+      clientId: client.id,
       developerId: undefined
     };
 
-    res.redirect(`/clients/${user.client.id}/projects`);
+    res.redirect(`/clients/${client.id}/projects`);
   } catch (error) {
     console.log('Error: An error has occurred: ' + error);
     next(error);
@@ -68,31 +52,28 @@ exports.carlosLogin = async (req, res) => {
 
 
 // Login como el developer Daniela
-exports.danielaLogin = async (req, res) => {
+exports.danielaLogin = async (req, res, next) => {
 
-    const email = "daniela@sitio.es";
+  const email = "daniela@sitio.es";
 
-    try {
-        const user = await User.findOne({
-            where: {email},
-            include: [{model: Developer, as: "developer"},]
-        });
+  try {
+    const developer = await seda.developerFindByEmail(email);
 
-        if (!user || !user.developer) {
-            return next("No encuentro a Daniela.");
-        }
-
-        req.session.loginUser = {
-            id: user.id,
-            email: user.email,
-            clientId: undefined,
-            developerId: user.developer.id
-        };
-
-      res.redirect(`/developers/${user.developer.id}/projects`);
-    } catch (error) {
-        console.log('Error: An error has occurred: ' + error);
-        next(error);
+    if (!developer) {
+      return next("No encuentro a Daniela.");
     }
+
+    req.session.loginUser = {
+      id: developer.user.id,
+      email: developer.user.email,
+      clientId: undefined,
+      developerId: developer.id
+    };
+
+    res.redirect(`/developers/${developer.id}/projects`);
+  } catch (error) {
+    console.log('Error: An error has occurred: ' + error);
+    next(error);
+  }
 };
 

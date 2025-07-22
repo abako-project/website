@@ -1,53 +1,14 @@
-const createError = require('http-errors');
-const Sequelize = require("sequelize");
-
-const {models: {Project, Client, Developer, User, Attachment,
-  Objective, Constraint, Milestone, Task, Role, Assignation}} = require('../models');
-const sequelize = require("../models");
-const states = require("./state");
 
 
-// Autoload la task asociado a :taskId
-exports.load = async (req, res, next, taskId) => {
-
-  try {
-    const task = await Task.findByPk(taskId, {
-      include: [
-        {
-          model: Milestone, as: 'milestone',
-          include: [
-            {model: Project, as: 'project'}
-          ]
-        },
-        {model: Role, as: 'role'},
-        {
-          model: Assignation, as: 'assignation',
-          include: [{
-            model: Developer, as: 'developer',
-            include: [
-              {model: User, as: "user"},
-              {model: Attachment, as: "attachment"}]
-          }]
-        }
-      ]
-    });
-    if (task) {
-      req.load = {...req.load, task};
-      next();
-    } else {
-      throw createError(404, 'There is no task with id=' + taskId);
-    }
-  } catch (error) {
-    next(error);
-  }
-};
+const seda = require("../services/seda");
 
 
 // Editar todos las tasks de todos los milestone del project5o
 exports.editAll = async (req, res, next) => {
 
   try {
-    const {project} = req.load;
+    const projectId = req.params.projectId;
+    const project = await seda.project(projectId);
 
     res.render('tasks/editAll', {project});
   } catch (error) {
@@ -60,7 +21,8 @@ exports.editAll = async (req, res, next) => {
 exports.showAll = async (req, res, next) => {
 
   try {
-    const {project} = req.load;
+    const projectId = req.params.projectId;
+    const project = await seda.project(projectId);
 
     res.render('tasks/showAll', {project});
   } catch (error) {
@@ -71,9 +33,13 @@ exports.showAll = async (req, res, next) => {
 // Mostrar formulario de creación de una task para un milestone
 exports.new = async (req, res, next) => {
 
-  const {project, milestone} = req.load;
+  const projectId = req.params.projectId;
+  const project = await seda.project(projectId);
 
-  const allRoles = await Role.findAll();
+  const milestoneId = req.params.milestoneId;
+  const milestone = await seda.milestone(milestoneId);
+
+  const allRoles = await seda.roleIndex();
 
   const task = {
     title: "",
@@ -102,7 +68,11 @@ exports.new = async (req, res, next) => {
 // Crear task
 exports.create = async (req, res, next) => {
 
-  const {project, milestone} = req.load;
+  const projectId = req.params.projectId;
+  const project = await seda.project(projectId);
+
+  const milestoneId = req.params.milestoneId;
+  const milestone = await seda.milestone(milestoneId);
 
   let {title, description, budget, currency, deliveryDate, roleId} = req.body;
 
@@ -113,28 +83,22 @@ exports.create = async (req, res, next) => {
 
   deliveryDate = new Date(deliveryDate).valueOf() + browserTimezoneOffset - serverTimezoneOffset;
 
-  const milestoneId = milestone.id;
-
-  let task = Task.build({
+  let task = {
     title,
     description,
     budget,
     currency,
-    deliveryDate});
+    deliveryDate,
+    roleId
+  };
 
   try {
-    // Save into the data base
-    task = await task.save();
+    await seda.taskCreate(milestoneId, task);
 
-    if (roleId) {
-      task = await task.setRole(roleId);
-    }
-
-    await milestone.addTask(task);
     console.log('Success: Task created successfully.');
     res.redirect('/projects/' + project.id + '/tasks/edit');
   } catch (error) {
-    if (error instanceof Sequelize.ValidationError) {
+    if (error instanceof seda.ValidationError) {
       req.flash('error', 'Error: There are errors in the form:');
       error.errors.forEach(({message}) => req.flash('error', message));
 
@@ -154,9 +118,16 @@ exports.create = async (req, res, next) => {
 // Mostrar formulario de edición
 exports.edit = async (req, res, next) => {
 
-  const {project, milestone, task} = req.load;
+  const projectId = req.params.projectId;
+  const project = await seda.project(projectId);
 
-  const allRoles = await Role.findAll();
+  const taskId = req.params.taskId;
+  const task = await seda.task(taskId);
+
+  const milestoneId = req.params.milestoneId;
+  const milestone = await seda.milestone(milestoneId);
+
+  const allRoles = await seda.roleIndex();
 
   // Timezone offset del cliente
   let browserTimezoneOffset = Number(req.query.browserTimezoneOffset ?? 0);
@@ -177,8 +148,15 @@ exports.edit = async (req, res, next) => {
 exports.update = async (req, res, next) => {
 
   const {body} = req;
-  const {project, milestone} = req.load;
-  let {task} = req.load;
+
+  const projectId = req.params.projectId;
+  const project = await seda.project(projectId);
+
+  const taskId = req.params.taskId;
+  const task = await seda.task(taskId);
+
+  const milestoneId = req.params.milestoneId;
+  const milestone = await seda.milestone(milestoneId);
 
   let {browserTimezoneOffset} = req.query;
   browserTimezoneOffset = Number(browserTimezoneOffset);
@@ -190,24 +168,19 @@ exports.update = async (req, res, next) => {
   task.budget = body.budget;
   task.currency = body.currency;
   task.deliveryDate = new Date(body.deliveryDate).valueOf() + browserTimezoneOffset - serverTimezoneOffset;
-  //task.roleId = body.roleId;
+  task.roleId = body.roleId;
 
   try {
-    await task.save();
-
-    const roleId = body.roleId;
-    if (roleId) {
-      task = await task.setRole(roleId);
-    } else {
-      task = await task.setRole();
-    }
+    await seda.taskUpdate(task.id, task);
 
     console.log('Task edited successfully.');
     res.redirect('/projects/' + project.id + '/tasks/edit');
   } catch (error) {
-    if (error instanceof Sequelize.ValidationError) {
+    if (error instanceof seda.ValidationError) {
       req.flash('error', 'Error: There are errors in the form:');
       error.errors.forEach(({message}) => req.flash('error', message));
+
+      const allRoles = await seda.roleIndex();
 
       res.render('tasks/edit', {
         task,
@@ -226,12 +199,15 @@ exports.update = async (req, res, next) => {
 // Eliminar task
 exports.destroy = async (req, res, next) => {
 
-  const {project, milestone, task} = req.load;
+  const projectId = req.params.projectId;
+
+  const taskId = req.params.taskId;
 
   try {
-    await task.destroy();
+    await seda.taskDestroy(taskId);
+
     console.log('Task deleted successfully.');
-    res.redirect('/projects/' + project.id + '/tasks/edit');
+    res.redirect('/projects/' + projectId + '/tasks/edit');
   } catch (error) {
     next(error);
   }
@@ -242,35 +218,17 @@ exports.destroy = async (req, res, next) => {
 // Intercambiar el orden de visualizacion de 2 tasks
 exports.swapOrder = async (req, res, next) => {
 
-  const {project} = req.load;
-
-  const transaction = await sequelize.transaction();
   try {
-    const task1 = await Task.findByPk(req.params.id1, {transaction});
-    if (!task1) {
-      throw new Error('Task 1 not found.');
-    }
+    const task1 = await seda.task(req.params.id1);
+    const milestone = await seda.milestone(task1.milestoneId);
+    const projectId = milestone.projectId;
 
-    const task2 = await Task.findByPk(req.params.id2, {transaction});
-    if (!task2) {
-      throw new Error('Task 2 not found.');
-    }
-
-    const displayOrder1 = task1.displayOrder;
-    const displayOrder2 = task2.displayOrder;
-
-    // Intercambiamos posiciones
-    await task1.update({displayOrder: displayOrder2}, {transaction}),
-      await task2.update({displayOrder: displayOrder1}, {transaction})
+    await seda.tasksSwapOrder(req.params.id1, req.params.id2);
 
     console.log('Tasks swapped successfully.');
-    res.redirect('/projects/' + project.id + '/tasks/edit');
-
-    await transaction.commit();
-
+    res.redirect('/projects/' + projectId + '/tasks/edit');
   } catch
     (error) {
-    await transaction.rollback();
     next(error);
   }
 };
@@ -280,19 +238,16 @@ exports.swapOrder = async (req, res, next) => {
 // Publicar las tasks creadas
 exports.submitTasks = async (req, res, next) => {
 
-  const {project} = req.load;
-
+  const projectId = req.params.projectId;
   const developerId = req.session.loginUser?.developerId;
 
-  project.state = states.ProjectState.TeamAssignmentPending;
-
   try {
-    // Save into the data base
-    await project.save();
+    await seda.tasksSubmit(projectId);
+
     console.log('Success: Tasks submitted successfully.');
 
     if (developerId) {
-      res.redirect('/projects/' + project.id);
+      res.redirect('/projects/' + projectId);
     } else {
       res.redirect('/projects/');
     }
@@ -304,12 +259,17 @@ exports.submitTasks = async (req, res, next) => {
 // Mostrar formulario para seleccioanr el developer de una task
 exports.selectDeveloper = async (req, res, next) => {
 
-  const {project, milestone, task} = req.load;
+  const projectId = req.params.projectId;
+  const project = await seda.project(projectId);
+
+  const taskId = req.params.taskId;
+  const task = await seda.task(taskId);
+
+  const milestoneId = req.params.milestoneId;
+  const milestone = await seda.milestone(milestoneId);
 
   try {
-    const validDevelopers = await Developer.findAll({
-      where: {roleId: task.roleId},
-    });
+    const validDevelopers = await seda.developersWithRole(task.roleId);
 
     res.render('tasks/selectDeveloper', {
       project,
@@ -327,25 +287,17 @@ exports.setDeveloper = async (req, res, next) => {
 
   const {body} = req;
 
-  const {project, milestone, task} = req.load;
+  const projectId = req.params.projectId;
+  const taskId = req.params.taskId;
+
+  console.log(">>>>>>>>>>>>>> TaskId =", taskId, "   DevloperId =", body.developerId);
 
   try {
-
-    if (body.developerId) {
-      const newAssignation = await Assignation.create({
-        developerId: body.developerId,
-        state: body.developerId ? "Pending" : "None",
-        comment: "",
-        taskId: task.id
-      });
-      await task.setAssignation(newAssignation);
-    } else {
-      await task.setAssignation(undefined);
-    }
+    await seda.taskSetDeveloper(taskId, body.developerId);
 
     console.log('Task developer assigned successfully.');
 
-    res.redirect('/projects/' + project.id + "/tasks");
+    res.redirect('/projects/' + projectId + "/tasks");
 
   } catch (error) {
     next(error);

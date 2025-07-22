@@ -1,22 +1,6 @@
-<% const attachment = developer?.attachment; %>
 
-<% if (attachment) { %>
-
-    <% if ( attachment.mime === "image/jpeg" ||
-            attachment.mime === "image/gif" ||
-            attachment.mime === "image/jpg" ||
-            attachment.mime === "image/png" ||
-            attachment.mime === "image/gif" ) { %>
-
-        <img src="/developers/<%= developer.id %>/attachment" alt="Image"/>
-
-    <% } else { %>
-
-        <img src="/images/none.png" alt="Image"/>
-
-    <% } %>
-
-<% } else { %>
-    <img src="/images/none.png" />
-<% } %>
-
+<img src="/developers/<%= developer.id %>/attachment"
+     style="width: 200px; height: 200px; object-fit: cover;"
+     alt="Image"
+     onerror="this.src='/images/none.png'; this.onerror=''"
+/>

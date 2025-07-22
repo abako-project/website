@@ -34,21 +34,25 @@
             </button>
 
             <% if (+i > 0) { %>
-
                 <button class="right button"
                         onclick="redirectMilestonesSwapOrder(<%= project.id %>, <%= milestone.id %>, <%= project.milestones[+i - 1].id %>); return false;">
                     ▲
                 </button>
-
+            <% } else { %>
+                <button class="right button">
+                    ▲
+                </button>
             <% } %>
 
             <% if (+i < project.milestones.length - 1) { %>
-
                 <button class="right button"
                         onclick="redirectMilestonesSwapOrder(<%= project.id %>, <%= milestone.id %>, <%= project.milestones[+i + 1].id %>); return false;">
                     ▼
                 </button>
-
+            <% } else { %>
+                <button class="right button">
+                    ▼
+                </button>
             <% } %>
 
             <div class="clear"></div>

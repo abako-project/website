@@ -1,4 +1,6 @@
 
+const seda = require("../services/seda");
+
 
 // Middleware: autenticación requerida
 exports.isAuthenticated = (req, res, next) => {
@@ -45,9 +47,14 @@ exports.developerRequired = (req, res, next) => {
 
 
 // MW that allows actions only if the logged in user is the project client.
-exports.projectClientRequired = (req, res, next) => {
+exports.projectClientRequired = async (req, res, next) => {
   const clientIsLogged = !!req.session.loginUser?.clientId;
-  const clientLoggedIsProjectClient = req.load?.project.clientId === req.session.loginUser?.clientId;
+
+  const projectId = req.params.projectId;
+  const projectClientId = await seda.projectClientId(projectId);
+
+  const clientLoggedIsProjectClient = projectClientId === req.session.loginUser?.clientId;
+
   if (clientIsLogged && clientLoggedIsProjectClient) {
     next();
   } else {
@@ -58,9 +65,14 @@ exports.projectClientRequired = (req, res, next) => {
 
 
 // MW that allows actions only if the logged in user is the project consultant.
-exports.projectConsultantRequired = (req, res, next) => {
+exports.projectConsultantRequired = async (req, res, next) => {
   const developerIsLogged = !!req.session.loginUser?.developerId;
-  const developerLoggedIsProjectConsultant = req.load?.project.consultantId === req.session.loginUser?.developerId;
+
+  const projectId = req.params.projectId;
+  const projectConsultanttId = await seda.projectConsultantId(projectId);
+
+  const developerLoggedIsProjectConsultant = projectConsultanttId === req.session.loginUser?.developerId;
+
   if (developerIsLogged && developerLoggedIsProjectConsultant) {
     next();
   } else {
@@ -92,7 +104,7 @@ exports.userTypesRequired = ({
                               developer = false,
                               projectDeveloper = false,
                               projectConsultant = false
-                            }) => (req, res, next) => {
+                            }) => async (req, res, next) => {
 
   if (admin) {
     const adminIsLogged = !!req.session.loginUser?.isAdmin;
@@ -110,7 +122,12 @@ exports.userTypesRequired = ({
 
   if (projectClient) {
     const clientIsLogged = !!req.session.loginUser?.clientId;
-    const clientLoggedIsProjectClient = req.load?.project.clientId === req.session.loginUser?.clientId;
+
+    const projectId = req.params.projectId;
+    const projectClientId = await seda.projectClientId(projectId);
+
+    const clientLoggedIsProjectClient = projectClientId === req.session.loginUser?.clientId;
+
     if (clientIsLogged && clientLoggedIsProjectClient) {
       return next();
     }
@@ -129,7 +146,12 @@ exports.userTypesRequired = ({
 
   if (projectConsultant) {
     const developerIsLogged = !!req.session.loginUser?.developerId;
-    const developerLoggedIsProjectConsultant = req.load?.project.consultantId === req.session.loginUser?.developerId;
+
+    const projectId = req.params.projectId;
+    const projectConsultanttId = await seda.projectConsultantId(projectId);
+
+    const developerLoggedIsProjectConsultant = projectConsultanttId === req.session.loginUser?.developerId;
+
     if (developerIsLogged && developerLoggedIsProjectConsultant) {
       return next();
     }

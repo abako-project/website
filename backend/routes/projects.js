@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 
-const authController = require('../controllers/auth');
 const projectController = require('../controllers/project');
 const objectiveController = require('../controllers/objective');
 const constraintController = require('../controllers/constraint');
@@ -9,14 +8,6 @@ const milestoneController = require('../controllers/milestone');
 const taskController = require('../controllers/task');
 
 const permissionController = require('../controllers/permission');
-
-
-/* Autoloading */
-router.param('projectId', projectController.load);
-router.param('objectiveId', objectiveController.load);
-router.param('constraintId', constraintController.load);
-router.param('milestoneId', milestoneController.load);
-router.param('taskId', taskController.load);
 
 
 // Listar todos los proyectos, los de un cliente, o los de un developer

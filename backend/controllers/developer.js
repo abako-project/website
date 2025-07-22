@@ -1,29 +1,15 @@
 "use strict";
 
-const createError = require('http-errors');
-const Sequelize = require("sequelize");
-
-const {models: {User, Developer, Attachment, Language, Skill, Role}} = require('../models');
+const seda = require("../services/seda");
 
 // Autoload the developer with id equals to :developerId
 exports.load = async (req, res, next, developerId) => {
 
   try {
-    const developer = await Developer.findByPk(developerId, {
-      include: [
-        {model: User, as: "user"},
-        {model: Attachment, as: "attachment"},
-        {model: Language, as: "languages"},
-        {model: Skill, as: "skills"},
-      ]
-    });
-    if (developer) {
-      req.load = {...req.load, developer};
-      next();
-    } else {
-      req.flash('error', 'There is no developer with id=' + developerId + '.');
-      throw createError(404, 'No exist developerId=' + developerId);
-    }
+    const developer = await seda.developer(developerId);
+
+    req.load = {...req.load, developer};
+    next();
   } catch (error) {
     next(error);
   }
@@ -31,15 +17,7 @@ exports.load = async (req, res, next, developerId) => {
 
 exports.index = async (req, res, next) => {
 
-  const developers = await Developer.findAll({
-    include: [
-      {model: User, as: "user"},
-      {model: Attachment, as: "attachment"},
-      {model: Language, as: "languages"},
-      {model: Role, as: "role"},
-      {model: Skill, as: "skills"},
-    ]
-  });
+  const developers = await seda.developerIndex();
 
   res.render('developers/index', {developers});
 };
@@ -50,9 +28,9 @@ exports.edit = async (req, res, next) => {
 
   const {developer} = req.load;
 
-  const allLanguages = await Language.findAll();
-  const allRoles = await Role.findAll();
-  const allSkills = await Skill.findAll();
+  const allLanguages = await seda.languageIndex();
+  const allRoles = await seda.roleIndex();
+  const allSkills = await seda.skillIndex();
 
   res.render('developers/edit', {developer, allLanguages, allRoles, allSkills});
 };
@@ -62,66 +40,34 @@ exports.edit = async (req, res, next) => {
 exports.update = async (req, res, next) => {
 
   const {body} = req;
-  let {developer} = req.load;
 
-  developer.name = body.name;
-  developer.bio = body.bio;
-  developer.background = body.background;
-  developer.roleId = body.roleId || null;
-  developer.experienceLevel = body.experienceLevel;
-  developer.githubUsername = body.githubUsername;
-  developer.portfolioUrl = body.portfolioUrl;
-  developer.city = body.city;
-  developer.country = body.country;
-  developer.availability = body.availability;
+  const developerId = req.params.developerId;
 
-
-  let fields_to_update = ["name", "bio", "background", "roleId", "experienceLevel",
-    "githubUsername", "portfolioUrl", "city", "country", "availability"];
+  let developer = {
+    name: body.name,
+    bio: body.bio,
+    background: body.background,
+    roleId: body.roleId || null,
+    experienceLevel: body.experienceLevel,
+    githubUsername: body.githubUsername,
+    portfolioUrl: body.portfolioUrl,
+    city: body.city,
+    country: body.country,
+    availability: body.availability,
+    languageIds: body.languages.map(str => +str),
+    skillIds: body.skills.map(str => +str),
+    mime: req.file?.mimetype,
+    image: req.file?.buffer
+  };
 
   try {
-    developer = await developer.save({fields: fields_to_update});
+    await seda.developerUpdate(developerId, developer);
 
     console.log('Developer edited successfully.');
 
-    try {
-      await developer.setLanguages(body.languages.map(str => +str));
-    } catch (error) {
-      console.log('Failed setting languages: ' + error.message);
-    }
-
-
-    try {
-      await developer.setSkills(body.skills.map(str => +str));
-    } catch (error) {
-      console.log('Failed setting skills: ' + error.message);
-    }
-
-    try {
-      if (!req.file) {
-        console.log('Developer attachment does not change.');
-        return;
-      }
-      // Delete old attachment.  // Repasar CASCADE
-      if (developer.attachment) {
-        await developer.attachment.destroy();
-      }
-
-      // Create the new developer attachment
-      const attachment = await Attachment.create({
-        mime: req.file.mimetype,
-        image: req.file.buffer
-      });
-      await developer.setAttachment(attachment);
-      console.log('Attachment saved successfully.');
-
-    } catch (error) {
-      console.log('Failed saving the new attachment: ' + error.message);
-    } finally {
-      res.redirect('/');
-    }
+    res.redirect('/');
   } catch (error) {
-    if (error instanceof Sequelize.ValidationError) {
+    if (error instanceof seda.ValidationError) {
       console.log('There are errors in the form:');
       error.errors.forEach(({message}) => console.log(message));
       res.render('clients/edit', {client});
@@ -133,15 +79,21 @@ exports.update = async (req, res, next) => {
 
 
 // GET /developers/:developerId/attachment
-exports.attachment = (req, res, next) => {
+exports.attachment = async (req, res, next) => {
 
-  const {developer: {attachment}} = req.load;
+  try {
+    const developerId = req.params.developerId;
 
-  if (!attachment) {
-    res.redirect("/images/none.png");
-  } else {
-    res.type(attachment.mime);
-    res.send(attachment.image);
+    const attachment = await seda.developerAttachment(developerId);
+
+    if (!attachment) {
+      res.redirect("/images/none.png");
+    } else {
+      res.type(attachment.mime);
+      res.send(attachment.image);
+    }
+  } catch (error) {
+    next(error);
   }
-}
+};
 

@@ -1,27 +1,16 @@
 "use strict";
 
-const createError = require('http-errors');
-const Sequelize = require("sequelize");
-
-const {models: {User, Client, Attachment}} = require('../models');
+const seda = require("../services/seda");
 
 // Autoload the client with id equals to :clientId
 exports.load = async (req, res, next, clientId) => {
 
     try {
-        const client = await Client.findByPk(clientId, {
-            include: [
-                {model: User, as: "user"},
-                {model: Attachment, as: "attachment"},
-            ]
-        });
-        if (client) {
-            req.load = {...req.load, client};
-            next();
-        } else {
-            req.flash('error', 'There is no client with id=' + clientId + '.');
-            throw createError(404, 'No exist clientId=' + clientId);
-        }
+        const client = await seda.client(clientId);
+
+        req.load = {...req.load, client};
+        next();
+
     } catch (error) {
         next(error);
     }
@@ -29,14 +18,13 @@ exports.load = async (req, res, next, clientId) => {
 
 exports.index = async (req, res, next) => {
 
-    const clients = await Client.findAll({
-        include: [
-            {model: User, as: "user"},
-            {model: Attachment, as: "attachment"},
-        ]
-    });
+    try {
+        const clients = await seda.clientIndex();
 
-    res.render('clients/index',  {clients});
+        res.render('clients/index', {clients});
+    } catch (error) {
+        next(error);
+    }
 };
 
 
@@ -57,57 +45,29 @@ exports.edit = (req, res, next) => {
 exports.update = async (req, res, next) => {
 
     const {body} = req;
-    const {client} = req.load;
 
-    client.name = body.name;
-    client.company = body.company;
-    client.department = body.department;
-    client.website = body.website;
-    client.description = body.description;
-    client.city = body.city;
-    client.country = body.country;
+    const clientId = req.params.clientId;
 
+    const client = {
+        name: body.name,
+        company: body.company,
+        department: body.department,
+        website: body.website,
+        description: body.description,
+        city: body.city,
+        country: body.country,
+        password: body.password,
+        mime: req.file?.mimetype,
+        image: req.file?.buffer
+    };
 
-    let fields_to_update = ["name", "company", "department", "website", "description", "city", "country"];
-
-    // ¿Cambio el password?
-    if (body.password) {
-        console.log('Updating password');
-        client.password = body.password;
-        fields_to_update.push('salt');
-        fields_to_update.push('password');
-    }
 
     try {
-        await client.save({fields: fields_to_update});
-
+        await seda.clientUpdate(clientId, client);
         console.log('Client edited successfully.');
-
-        try {
-            if (!req.file) {
-                console.log('Client attachment does not change.');
-                return;
-            }
-            // Delete old attachment.  // Repasar CASCADE
-            if (client.attachment) {
-                await client.attachment.destroy();
-            }
-
-            // Create the new client attachment
-            const attachment = await Attachment.create({
-                mime: req.file.mimetype,
-                image: req.file.buffer
-            });
-            await client.setAttachment(attachment);
-            console.log('Attachment saved successfully.');
-
-        } catch (error) {
-            console.log('Failed saving the new attachment: ' + error.message);
-        } finally {
-            res.redirect('/');
-        }
+        res.redirect('/');
     } catch (error) {
-        if (error instanceof Sequelize.ValidationError) {
+        if (error instanceof seda.ValidationError) {
             console.log('There are errors in the form:');
             error.errors.forEach(({message}) => console.log(message));
             res.render('clients/edit', {client});
@@ -118,18 +78,22 @@ exports.update = async (req, res, next) => {
 };
 
 
-
-
 // GET /clients/:clientId/attachment
-exports.attachment = (req, res, next) => {
+exports.attachment = async (req, res, next) => {
 
-    const {client: {attachment}} = req.load;
+    try {
+        const clientId = req.params.clientId;
 
-    if (!attachment) {
-        res.redirect("/images/none.png");
-    } else {
-        res.type(attachment.mime);
-        res.send(attachment.image);
+        const attachment = await seda.clientAttachment(clientId);
+
+        if (!attachment) {
+            res.redirect("/images/none.png");
+        } else {
+            res.type(attachment.mime);
+            res.send(attachment.image);
+        }
+    } catch (error) {
+        next(error);
     }
-}
+};
 

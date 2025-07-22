@@ -1,31 +1,5 @@
-const createError = require('http-errors');
-const Sequelize = require("sequelize");
 
-const {models: {Project, Client, User, Attachment,
-  Objective, Constraint, Milestone, Task}} = require('../models');
-
-const sequelize = require('../models');
-
-// Autoload el milestone asociado a :milestoneId
-exports.load = async (req, res, next, milestoneId) => {
-
-  try {
-    const milestone = await Milestone.findByPk(milestoneId, {
-      include: [
-        {model: Project, as: 'project'},
-        {model: Task, as: 'tasks'}
-      ],
-    });
-    if (milestone) {
-      req.load = {...req.load, milestone};
-      next();
-    } else {
-      throw createError(404, 'There is no milestone with id=' + milestoneId);
-    }
-  } catch (error) {
-    next(error);
-  }
-};
+const seda = require("../services/seda");
 
 
 
@@ -33,7 +7,8 @@ exports.load = async (req, res, next, milestoneId) => {
 exports.editAll = async (req, res, next) => {
 
   try {
-    const {project} = req.load;
+    const projectId = req.params.projectId;
+    const project = await seda.project(projectId);
 
     res.render('projects/editMilestones', {project});
   } catch (error) {
@@ -42,9 +17,10 @@ exports.editAll = async (req, res, next) => {
 };
 
 // Mostrar formulario de creación de un milestone
-exports.new = (req, res, next) => {
+exports.new = async (req, res, next) => {
 
-  const {project} = req.load;
+  const projectId = req.params.projectId;
+  const project = await seda.project(projectId);
 
   const milestone = {
     title: "",
@@ -70,7 +46,8 @@ exports.new = (req, res, next) => {
 // Crear milestone
 exports.create = async (req, res, next) => {
 
-  const {project} = req.load;
+  const projectId = req.params.projectId;
+  const project = await seda.project(projectId);
 
   let {title, description, budget, currency, deliveryDate} = req.body;
 
@@ -81,24 +58,21 @@ exports.create = async (req, res, next) => {
 
   deliveryDate = new Date(deliveryDate).valueOf() + browserTimezoneOffset - serverTimezoneOffset;
 
-  const projectId = project.id;
-
-  let milestone = Milestone.build({
+  let milestone = {
     title,
     description,
     budget,
     currency,
-    deliveryDate,
-    projectId
-  });
+    deliveryDate
+  };
 
   try {
-    // Save into the data base
-    milestone = await milestone.save();
+    await seda.milestoneCreate(projectId, milestone);
+
     console.log('Success: Milestone created successfully.');
     res.redirect('/projects/' + projectId + '/milestones/edit');
   } catch (error) {
-    if (error instanceof Sequelize.ValidationError) {
+    if (error instanceof seda.ValidationError) {
       req.flash('error', 'Error: There are errors in the form:');
       error.errors.forEach(({message}) => req.flash('error', message));
 
@@ -117,12 +91,15 @@ exports.create = async (req, res, next) => {
 // Mostrar formulario de edición
 exports.edit = async (req, res) => {
 
-  const {project, milestone} = req.load;
+  const projectId = req.params.projectId;
+  const project = await seda.project(projectId);
+
+  const milestoneId = req.params.milestoneId;
+  const milestone = await seda.milestone(milestoneId);
 
   // Timezone offset del cliente
   let browserTimezoneOffset = Number(req.query.browserTimezoneOffset ?? 0);
   browserTimezoneOffset = Number.isNaN(browserTimezoneOffset) ? 0 : browserTimezoneOffset;
-
 
   res.render('projects/milestones/edit', {
     project,
@@ -136,7 +113,12 @@ exports.edit = async (req, res) => {
 exports.update = async (req, res) => {
 
   const {body} = req;
-  const {project, milestone} = req.load;
+
+  const projectId = req.params.projectId;
+  const project = await seda.project(projectId);
+
+  const milestoneId = req.params.milestoneId;
+  const milestone = await seda.milestone(milestoneId);
 
   let {browserTimezoneOffset} = req.query;
   browserTimezoneOffset = Number(browserTimezoneOffset);
@@ -150,11 +132,13 @@ exports.update = async (req, res) => {
   milestone.deliveryDate = new Date(body.deliveryDate).valueOf() + browserTimezoneOffset - serverTimezoneOffset;
 
   try {
-    await milestone.save();
+    await seda.milestoneUpdate(milestone.id, milestone);
+
+    // await milestone.save();
     console.log('Milestone edited successfully.');
     res.redirect('/projects/' + project.id + '/milestones/edit');
   } catch (error) {
-    if (error instanceof Sequelize.ValidationError) {
+    if (error instanceof seda.ValidationError) {
       req.flash('error', 'Error: There are errors in the form:');
       error.errors.forEach(({message}) => req.flash('error', message));
 
@@ -173,12 +157,15 @@ exports.update = async (req, res) => {
 // Eliminar milestone
 exports.destroy = async (req, res, next) => {
 
-  const {project, milestone} = req.load;
+  const projectId = req.params.projectId;
+
+  const milestoneId = req.params.milestoneId;
 
   try {
-    await milestone.destroy();
+    await seda.milestoneDestroy(milestoneId);
+
     console.log('Milestone deleted successfully.');
-    res.redirect('/projects/' + project.id + '/milestones/edit');
+    res.redirect('/projects/' + projectId + '/milestones/edit');
   } catch (error) {
     next(error);
   }
@@ -188,33 +175,14 @@ exports.destroy = async (req, res, next) => {
 // Intercambiar el orden de visualizacion de 2 milestones
 exports.swapOrder = async (req, res, next) => {
 
-  const transaction = await sequelize.transaction();
   try {
-    const milestone1 = await Milestone.findByPk(req.params.id1, {transaction});
-    if (!milestone1) {
-      throw new Error('Milestone 1 not found.');
-    }
+    const milestone1 = await seda.milestone(req.params.id1);
 
-    const milestone2 = await Milestone.findByPk(req.params.id2, {transaction});
-    if (!milestone2) {
-      throw new Error('Milestone 2 not found.');
-    }
-
-    const displayOrder1 = milestone1.displayOrder;
-    const displayOrder2 = milestone2.displayOrder;
-
-    // Intercambiamos posiciones
-      await milestone1.update({displayOrder: displayOrder2}, {transaction}),
-      await milestone2.update({displayOrder: displayOrder1}, {transaction})
+    await seda.milestonesSwapOrder(req.params.id1, req.params.id2);
 
     console.log('Milestones swapped successfully.');
     res.redirect('/projects/' + milestone1.projectId + '/milestones/edit');
-
-    await transaction.commit();
-
-  } catch
-    (error) {
-    await transaction.rollback();
+  } catch(error) {
     next(error);
   }
 };

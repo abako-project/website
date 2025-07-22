@@ -1,7 +1,6 @@
 const virtoService = require('../../services/virtoFake');
 
-const {models: {User, Developer}} = require('../../models');
-
+const seda = require("../../services/seda");
 
 exports.registerCreate = async (req, res, next) => {
 
@@ -31,9 +30,7 @@ exports.registerCreate = async (req, res, next) => {
 
         const address = result.address;
 
-        const user = await User.create({email});
-        const developer = await Developer.create({email, name, address});
-        await user.setDeveloper(developer);
+        await seda.developerCreate(email, name, address);
 
         req.flash("success", '✅ Registrado correctamente');
 
@@ -56,11 +53,13 @@ exports.loginCreate = async (req, res, next) => {
     }
 
     try {
-        const user = await User.findOne({
-            where: {email},
-            include: [{model: Developer, as: "developer"},]
-        });
-        if (!user) {
+       //  const user = await User.findOne({
+       //      where: {email},
+       //      include: [{model: Developer, as: "developer"},]
+       //  });
+
+        const developer = await seda.developerFindByEmail(email);
+        if (!developer) {
             req.flash("error", "El developer " + email + " no existe.");
             res.redirect('/auth/login/developer/new');
             return;
@@ -103,15 +102,15 @@ exports.loginCreate = async (req, res, next) => {
         // The existence of req.session.loginUser indicates that the session exists.
         // I also save the moment when the session will expire due to inactivity.
         req.session.loginUser = {
-            id: user.id,
-            email: user.email,
-            name: user.developer.name,
+            id: developer.user.id,
+            email: developer.user.email,
+            name: developer.name,
             clientId: undefined,
-            developerId: user.developer.id
+            developerId: developer.id
         };
 
         req.flash("success", 'Developer authentication completed.');
-        res.redirect(`/developers/${user.developer.id}/projects`);
+        res.redirect(`/developers/${developer.id}/projects`);
 
     } catch (error) {
         req.flash("error", 'Authentication has failed. Retry it again.');

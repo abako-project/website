@@ -1,86 +1,5 @@
-const createError = require('http-errors');
-const {Sequelize, Op} = require("sequelize");
 
-const states = require("./state");
-
-const {
-  models: {
-    Project, Client, Developer, User, Attachment,
-    Objective, Constraint, Milestone, Task, Role, Comment, Assignation
-  }
-} = require('../models');
-const authController = require("./auth");
-
-
-// Autoload el project asociado a :projectId
-exports.load = async (req, res, next, projectId) => {
-
-  try {
-    const project = await Project.findByPk(projectId, {
-      include: [
-        {
-          model: Client, as: 'client',
-          include: [
-            {model: User, as: "user"},
-            {model: Attachment, as: "attachment"}]
-        },
-        {
-          model: Developer, as: 'consultant',
-          include: [
-            {model: User, as: "user"},
-            {model: Attachment, as: "attachment"}]
-        },
-        {
-          model: Objective, as: 'objectives',
-          separate: true,
-          order: [['displayOrder', 'ASC']]
-        },
-        {
-          model: Constraint, as: 'constraints',
-          separate: true,
-          order: [['displayOrder', 'ASC']]
-        },
-        {
-          model: Milestone, as: 'milestones',
-          separate: true,
-          order: [['displayOrder', 'ASC']],
-          include: [
-            {
-              model: Task, as: 'tasks',
-              separate: true,
-              order: [['displayOrder', 'ASC']],
-              include: [
-                {model: Role, as: 'role'},
-                {
-                  model: Assignation, as: 'assignation',
-                  include: [{
-                    model: Developer, as: 'developer',
-                    include: [
-                      {model: User, as: "user"},
-                      {model: Attachment, as: "attachment"}]
-                  }]
-                }
-              ]
-            }
-          ]
-        },
-        {
-          model: Comment, as: "comments",
-          separate: true,
-          order: [['createdAt', 'DESC']],
-        }
-      ]
-    });
-    if (project) {
-      req.load = {...req.load, project};
-      next();
-    } else {
-      throw createError(404, 'There is no project with id=' + projectId);
-    }
-  } catch (error) {
-    next(error);
-  }
-};
+const seda = require("../services/seda");
 
 
 // Listar todos los proyectos o los de un cliente o los de un developer
@@ -90,60 +9,17 @@ exports.load = async (req, res, next, projectId) => {
 exports.index = async (req, res, next) => {
 
   try {
-    const client = req.load?.client;
-    const developer = req.load?.developer;
 
-    let options = {
-      include: [
-        {
-          model: Client, as: 'client',
-          include: [
-            {model: User, as: "user"},
-            {model: Attachment, as: "attachment"}]
-        },
-        {
-          model: Developer, as: 'consultant',
-          include: [
-            {model: User, as: "user"},
-            {model: Attachment, as: "attachment"}]
-        },
-        {
-          model: Milestone, as: 'milestones',
-          include: [
-            {
-              model: Task, as: 'tasks',
-              include: [
-                {
-                  model: Assignation, as: 'assignation',
-                  required: true,
-                  include: [{
-                    model: Developer, as: 'developer'
-                  }]
-                }
-              ]
-            }
-          ]
-        }
-      ]
-    };
+    const clientId = req.params.clientId;
+    const client = clientId ? await seda.client(clientId) : null;
 
-    if (client) {
-      options.where = {clientId: client.id};
-    }
+    const developerId = req.params.developerId;
+    const developer = developerId ? await seda.developer(developerId) : null;
 
-    if (developer) {
-      options.where = {
-        [Op.or]: [
-          {consultantId: developer.id},
-          {'$milestones.tasks.assignation.developer.id$': developer.id}
-        ]
-      };
-    }
-
-    const projects = await Project.findAll(options);
+    const projects = await seda.projectsIndex(clientId, developerId, developerId);
 
     // No se puede usar el valor client en las opciones cuando
-    // hay llamadas anidadas a la fumcion include de EJS.
+    // hay llamadas anidadas a la funcion include de EJS.
     res.render('projects/index', {projects, c: client, developer});
   } catch (error) {
     next(error);
@@ -187,37 +63,32 @@ exports.createProposal = async (req, res, next) => {
   deliveryDate = new Date(deliveryDate).valueOf() + browserTimezoneOffset - serverTimezoneOffset;
 
   const clientId = req.session.loginUser?.clientId;
-  // const consultantId = (await Developer.findOne())?.id; // El primer developer es el consultor.
-  const consultantId = undefined
 
-  let project = Project.build({
+  let proposal = {
     title,
     summary,
     description,
-    state: null,  // states.ProjectState.Creating,
     url,
     budget,
     currency,
-    deliveryDate,
-    clientId,
-    consultantId
-  });
+    deliveryDate
+  };
 
   try {
     // Save into the data base
-    project = await project.save();
+    let project = await seda.proposalCreate(clientId, proposal);
     console.log('Success: Project created successfully.');
 
     // res.redirect('/clients/' + req.session.loginUser.clientId + '/projects');
     res.redirect('/projects/' + project.id + '/objectives_constraints/edit');
 
   } catch (error) {
-    if (error instanceof Sequelize.ValidationError) {
+    if (error instanceof seda.ValidationError) {
       req.flash('error', 'Error: There are errors in the form:');
       error.errors.forEach(({message}) => req.flash('error', message));
 
       res.render('projects/newProposal', {
-        project,
+        proposal,
         browserTimezoneOffset,
       });
     } else {
@@ -230,7 +101,8 @@ exports.createProposal = async (req, res, next) => {
 // Mostrar detalle de un proyecto
 exports.show = async (req, res, next) => {
 
-  const {project} = req.load;
+  const projectId = req.params.projectId;
+  const project = await seda.project(projectId);
 
   // Timezone offset del cliente
   let browserTimezoneOffset = Number(req.query.browserTimezoneOffset ?? 0);
@@ -253,17 +125,22 @@ exports.show = async (req, res, next) => {
 // Mostrar formulario de edición
 exports.editProposal = async (req, res, next) => {
 
-  const {project} = req.load;
+  try {
+    const projectId = req.params.projectId;
+    const project = await seda.project(projectId);
 
-  // Timezone offset del cliente
-  let browserTimezoneOffset = Number(req.query.browserTimezoneOffset ?? 0);
-  browserTimezoneOffset = Number.isNaN(browserTimezoneOffset) ? 0 : browserTimezoneOffset;
+    // Timezone offset del cliente
+    let browserTimezoneOffset = Number(req.query.browserTimezoneOffset ?? 0);
+    browserTimezoneOffset = Number.isNaN(browserTimezoneOffset) ? 0 : browserTimezoneOffset;
 
 
-  res.render('projects/editProposal', {
-    project,
-    browserTimezoneOffset,
-  });
+    res.render('projects/editProposal', {
+      project,
+      browserTimezoneOffset,
+    });
+  } catch (error) {
+    next(error);
+  }
 };
 
 
@@ -271,29 +148,34 @@ exports.editProposal = async (req, res, next) => {
 exports.updateProposal = async (req, res, next) => {
 
   const {body} = req;
-  const {project} = req.load;
+
+  const projectId = req.params.projectId;
+  const project = await seda.project(projectId);
 
   let {browserTimezoneOffset} = req.query;
   browserTimezoneOffset = Number(browserTimezoneOffset);
 
   const serverTimezoneOffset = new Date().getTimezoneOffset() * 60 * 1000;
 
-  project.title = body.title;
-  project.summary = body.summary;
-  project.description = body.description;
-  project.url = body.url;
-  project.budget = body.budget;
-  project.currency = body.currency;
-  project.deliveryDate = new Date(body.deliveryDate).valueOf() + browserTimezoneOffset - serverTimezoneOffset;
+  const proposal = {
+    title: body.title,
+    summary: body.summary,
+    description: body.description,
+    url: body.url,
+    budget: body.budget,
+    currency: body.currency,
+    deliveryDate: new Date(body.deliveryDate).valueOf() + browserTimezoneOffset - serverTimezoneOffset
+  };
 
   try {
-    await project.save();
+    await seda.proposalUpdate(project.id, proposal);
+
     console.log('Project edited successfully.');
 
     res.redirect('/projects/' + project.id + '/objectives_constraints/edit');
 
   } catch (error) {
-    if (error instanceof Sequelize.ValidationError) {
+    if (error instanceof seda.ValidationError) {
       req.flash('error', 'Error: There are errors in the form:');
       error.errors.forEach(({message}) => req.flash('error', message));
 
@@ -310,10 +192,12 @@ exports.updateProposal = async (req, res, next) => {
 // Eliminar proyecto
 exports.destroy = async (req, res, next) => {
 
-  const {project} = req.load;
+  const projectId = req.params.projectId;
 
   try {
-    await project.destroy();
+    await seda.projectDestroy(projectId);
+
+    // project.destroy();
     console.log('Project deleted successfully.');
     res.redirect('/projects');
   } catch (error) {
@@ -325,15 +209,14 @@ exports.destroy = async (req, res, next) => {
 // Publicar el proyecto: estado = pending
 exports.projectSubmit = async (req, res, next) => {
 
-  const {project} = req.load;
+  const projectId = req.params.projectId;
 
   const clientId = req.session.loginUser?.clientId;
 
-  project.state = states.ProjectState.Pending;
-
   try {
     // Save into the data base
-    await project.save();
+    await seda.projectSubmit(projectId);
+
     console.log('Success: Project submitted successfully.');
 
     if (clientId) {
@@ -350,26 +233,19 @@ exports.projectSubmit = async (req, res, next) => {
 // Publicar el scope: estado = validationNeeded
 exports.scopeSubmit = async (req, res, next) => {
 
-  let {project} = req.load;
+  const projectId = req.params.projectId;
 
   const developerId = req.session.loginUser?.developerId;
-
-  project.state = states.ProjectState.ValidationNeeded;
 
   const consultantComment = req.body.consultantComment || "";
 
   try {
-    // Save into the data base
-    project = await project.save();
-
-    const comment = await Comment.create({consultantComment});
-
-    project.addComment(comment);
+    await seda.scopeSubmit(projectId, consultantComment)
 
     console.log('Success: Scope submitted successfully.');
 
     if (developerId) {
-      res.redirect('/projects/' + project.id);
+      res.redirect('/projects/' + projectId);
     } else {
       res.redirect('/projects/');
     }
@@ -382,25 +258,19 @@ exports.scopeSubmit = async (req, res, next) => {
 // Aceptar el scope: estado = taskingInProgress
 exports.scopeAccept = async (req, res, next) => {
 
-  let {project} = req.load;
-  let [comment] = project.comments;
+  const projectId = req.params.projectId;
 
   const clientId = req.session.loginUser?.clientId;
-
-  project.state = states.ProjectState.TasksPending;
 
   const clientResponse = req.body.clientResponse || "Genial no, lo siguiente."
 
   try {
-    // Save into the data base
-    project = await project.save();
-
-    await comment.update({clientResponse});
+    await seda.scopeAccept(projectId, clientResponse);
 
     console.log('Success: Scope accepted successfully.');
 
     if (clientId) {
-      res.redirect('/projects/' + project.id);
+      res.redirect('/projects/' + projectId);
     } else {
       res.redirect('/projects/');
     }
@@ -413,25 +283,19 @@ exports.scopeAccept = async (req, res, next) => {
 // Rechazar el scope: estado = scopingInProgress
 exports.scopeReject = async (req, res, next) => {
 
-  let {project} = req.load;
-  let [comment] = project.comments;
+  const projectId = req.params.projectId;
 
   const clientId = req.session.loginUser?.clientId;
-
-  project.state = states.ProjectState.ScopingInProgress;
 
   const clientResponse = req.body.clientResponse || "Peor imposible."
 
   try {
-    // Save into the data base
-    project = await project.save();
-
-    await comment.update({clientResponse});
+    await seda.scopeReject(projectId, clientResponse);
 
     console.log('Success: Scope rechazados successfully.');
 
     if (clientId) {
-      res.redirect('/projects/' + project.id);
+      res.redirect('/projects/' + projectId);
     } else {
       res.redirect('/projects/');
     }
@@ -443,15 +307,13 @@ exports.scopeReject = async (req, res, next) => {
 // Rechazar el proyecto: estado = rejected
 exports.reject = async (req, res, next) => {
 
-  const {project} = req.load;
-
-  project.state = states.ProjectState.Rejected;
+  const projectId = req.params.projectId;
 
   try {
-    // Save into the data base
-    await project.save();
+    await seda.projectReject(projectId);
+
     console.log('Success: Project rejected successfully.');
-      res.redirect('/projects/' + project.id);
+    res.redirect('/projects/' + projectId);
   } catch (error) {
     next(error);
   }
@@ -461,15 +323,13 @@ exports.reject = async (req, res, next) => {
 // Aprobar el proyecto: estado = rejected
 exports.approve = async (req, res, next) => {
 
-  const {project} = req.load;
-
-  project.state = states.ProjectState.Approved;
+  const projectId = req.params.projectId;
 
   try {
-    // Save into the data base
-    await project.save();
+    await seda.projectApprove(projectId);
+
     console.log('Success: Project approved successfully.');
-    res.redirect('/projects/' + project.id);
+    res.redirect('/projects/' + projectId);
   } catch (error) {
     next(error);
   }
@@ -479,7 +339,8 @@ exports.approve = async (req, res, next) => {
 // Mostrar Formulario para editar objectives y Constraints
 exports.editObjectivesConstraints = async (req, res) => {
 
-  const {project} = req.load;
+  const projectId = req.params.projectId;
+  const project = await seda.project(projectId);
 
   // Timezone offset del cliente
   let browserTimezoneOffset = Number(req.query.browserTimezoneOffset ?? 0);
@@ -496,11 +357,11 @@ exports.editObjectivesConstraints = async (req, res) => {
 // Mostrar formulario para seleccioanr consultor
 exports.selectConsultant = async (req, res, next) => {
 
-  const {project} = req.load;
+  const projectId = req.params.projectId;
+  const project = await seda.project(projectId);
 
   try {
-
-    const allDevelopers = await Developer.findAll();
+    const allDevelopers = await seda.developerIndex();
 
     res.render('consultants/select', {
       project,
@@ -516,16 +377,17 @@ exports.selectConsultant = async (req, res, next) => {
 exports.setConsultant = async (req, res, next) => {
 
   const {body} = req;
-  const {project} = req.load;
 
-  project.consultantId =  body.consultantId;
-  project.state =  states.ProjectState.ScopingInProgress;
+  const projectId = req.params.projectId;
+
+  const consultantId = body.consultantId;
 
   try {
-    await project.save();
+    await seda.projectSetConsultant(projectId, consultantId);
+
     console.log('Project consultant assigned successfully.');
 
-    res.redirect('/projects/' + project.id);
+    res.redirect('/projects/' + projectId);
 
   } catch (error) {
     next(error);

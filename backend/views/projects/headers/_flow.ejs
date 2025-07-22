@@ -4,12 +4,21 @@
 
         <button class="adminDAO" onclick="redirectProjectDelete(<%= project.id %>); return false;">Delete</button>
         <br/>
-        <button class="adminDAO" onclick="redirectProjectReject(<%= project.id %>); return false;">Reject</button>
-        <br/>
-        <button class="adminDAO" onclick="redirectProjectApprove(<%= project.id %>); return false;">Approve</button>
-        <br/>
-        <button class="adminDAO" onclick="redirectSelectProjectConsultant(<%= project.id %>); return false;">Select/Change Consultant</button>
-        <br/>
+
+        <% if (project.state && ["pending"].includes(project.state)) { %>
+
+            <button class="adminDAO" onclick="redirectProjectReject(<%= project.id %>); return false;">Reject</button>
+            <br/>
+            <button class="adminDAO" onclick="redirectProjectApprove(<%= project.id %>); return false;">Approve</button>
+            <br/>
+        <% } %>
+
+        <% if (project.state && ["approved"].includes(project.state)) { %>
+            <button class="adminDAO" onclick="redirectSelectProjectConsultant(<%= project.id %>); return false;">
+                Select/Change Consultant
+            </button>
+            <br/>
+        <% } %>
 
     <% } %>
 
