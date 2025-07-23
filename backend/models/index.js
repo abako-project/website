@@ -32,13 +32,13 @@ Client.belongsTo(User, {as: 'user', foreignKey: 'userId'});
 User.hasOne(Developer, {as: 'developer', foreignKey: 'userId'});
 Developer.belongsTo(User, {as: 'user', foreignKey: 'userId'});
 
-// Relation 1-to-1 between Client and Attachment
-Client.hasOne(Attachment, {as: 'attachment', foreignKey: 'clientId'});
-Attachment.belongsTo(Client, {as: 'client', foreignKey: 'clientId'});
+// Relation 1-to-1 between User and Attachment
+Attachment.hasOne(Client, {as: 'client', foreignKey: 'attachmentId'});
+Client.belongsTo(Attachment, {as: 'attachment', foreignKey: 'attachmentId'});
 
 // Relation 1-to-1 between developer and Attachment
-Developer.hasOne(Attachment, {as: 'attachment', foreignKey: 'developerId'});
-Attachment.belongsTo(Developer, {as: 'developer', foreignKey: 'developerId'});
+Attachment.hasOne(Developer, {as: 'developer', foreignKey: 'attachmentId'});
+Developer.belongsTo(Attachment, {as: 'attachment', foreignKey: 'attachmentId'});
 
 // Relation N-to-N between developer and Language
 Developer.belongsToMany(Language, {as: 'languages', through: "KnownLanguages",

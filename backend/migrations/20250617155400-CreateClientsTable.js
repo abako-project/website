@@ -48,6 +48,15 @@ module.exports = {
                     onUpdate: 'CASCADE',
                     onDelete: 'CASCADE'
                 },
+              attachmentId: {
+                type: Sequelize.INTEGER,
+                references: {
+                  model: "Attachments",
+                  key: "id"
+                },
+                onUpdate: 'CASCADE',
+                onDelete: 'CASCADE'
+              },
                 createdAt: {
                     type: Sequelize.DATE,
                     allowNull: false

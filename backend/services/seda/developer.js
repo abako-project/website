@@ -211,12 +211,14 @@ exports.developersWithRole = async (roleId) => {
  */
 exports.developerAttachment = async developerId => {
 
-  const attachment = await Attachment.findOne({
-    where: {developerId}
+  const developer = await Developer.findByPk(developerId, {
+    include: [
+      {model: Attachment, as: "attachment"},
+    ]
   })
 
-  if (attachment) {
-    return json.attachmentJson(attachment);
+  if (developer?.attachment) {
+    return json.attachmentJson(developer.attachment);
   } else {
     return null;
   }

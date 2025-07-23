@@ -18,24 +18,6 @@ module.exports = {
                 image: {
                     type: Sequelize.BLOB('long')
                 },
-                clientId: {
-                    type: Sequelize.INTEGER,
-                    references: {
-                        model: "Clients",
-                        key: "id"
-                    },
-                    onUpdate: 'CASCADE',
-                    onDelete: 'CASCADE'
-                },
-                developerId: {
-                    type: Sequelize.INTEGER,
-                    references: {
-                        model: "Developers",
-                        key: "id"
-                    },
-                    onUpdate: 'CASCADE',
-                    onDelete: 'CASCADE'
-                },
                 createdAt: {
                     type: Sequelize.DATE,
                     allowNull: false

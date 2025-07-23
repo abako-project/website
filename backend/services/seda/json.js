@@ -93,7 +93,6 @@ const clientJson = client => {
     updatedAt: client.updatedAt.valueOf(),
 
     user: userJson(client.user),
-  //  attachment: attachmentJson(client.attachment),
     projects: client.projects?.map(project => projectJson(project)) || [],
   };
 };
@@ -126,7 +125,6 @@ const developerJson = developer => {
     updatedAt: developer.updatedAt.valueOf(),
 
     user: userJson(developer.user),
-    // attachment: attachmentJson(developer.attachment),
     languages: developer.languages?.map(language => languageJson(language)) || [],
     role: roleJson(developer.role),
     skills: developer.skills?.map(skill => skillJson(skill)) || [],

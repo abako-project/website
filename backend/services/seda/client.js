@@ -218,12 +218,14 @@ exports.clientFindByEmailPassword = async (email, password) => {
  */
 exports.clientAttachment = async clientId => {
 
-  const attachment = await Attachment.findOne({
-    where: {clientId}
+  const client = await Client.findByPk(clientId, {
+    include: [
+      {model: Attachment, as: "attachment"},
+    ]
   })
 
-  if (attachment) {
-    return json.attachmentJson(attachment);
+  if (client?.attachment) {
+    return json.attachmentJson(client.attachment);
   } else {
     return null;
   }
