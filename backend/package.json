@@ -7,7 +7,8 @@
     "dev": "cross-env NODE_ENV=development PORT=3001 nodemon ./bin/www",
     "migrate": "sequelize db:migrate",
     "seed": "sequelize db:seed:all",
-    "mss": "npm run migrate && npm run seed && npm start"
+    "mss": "npm run migrate && npm run seed && npm start",
+    "docs": "jsdoc -c config/jsdoc.json"
   },
   "dependencies": {
     "@virtonetwork/sdk": "^0.0.4-alpha.5",

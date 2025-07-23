@@ -12,7 +12,14 @@ const {
 
 //-----------------------------------------------------------
 
-// Devuelve un listado de todos los clientes registrados.
+/**
+ * Devuelve un listado de todos los clientes registrados,
+ * incluyendo sus datos de usuario y adjuntos.
+ *
+ * @async
+ * @function clientIndex
+ * @returns {Promise<Object[]>} Lista de clientes en formato JSON.
+ */
 exports.clientIndex = async () => {
 
   const clients = await Client.findAll({
@@ -27,11 +34,16 @@ exports.clientIndex = async () => {
 
 //-----------------------------------------------------------
 
-// Devuelve los datos de un cliente.
-// Tambien incluye sus datos como usuario.
-// Parametros:
-//   * clientId: id del cliente
-// Devuelve: un JSON con los datos del cliente,
+/**
+ * Devuelve los datos de un cliente por su ID,
+ * incluyendo su información de usuario y adjunto.
+ *
+ * @async
+ * @function client
+ * @param {number} clientId - ID del cliente.
+ * @returns {Promise<Object>} Objeto JSON con los datos del cliente.
+ * @throws {Error} Si no se encuentra el cliente.
+ */
 exports.client = async clientId => {
 
   const client = await Client.findByPk(clientId, {
@@ -49,11 +61,16 @@ exports.client = async clientId => {
 
 //-----------------------------------------------------------
 
-// Registrar un cliente nuevo.
-// Parametros:
-//    email:    email del cliente.
-//    password: password del cliente.
-// Devuelve un JSON con los datos del cliente creado.
+/**
+ * Crea un nuevo cliente con un usuario asociado.
+ *
+ * @async
+ * @function clientCreate
+ * @param {string} email - Email del cliente.
+ * @param {string} password - Contraseña del cliente.
+ * @returns {Promise<Object>} Objeto JSON con los datos del cliente creado.
+ * @throws {Error} Si el email o el password no están definidos.
+ */
 exports.clientCreate = async (email, password) => {
 
   if (!email) {
@@ -73,12 +90,27 @@ exports.clientCreate = async (email, password) => {
 
 //-----------------------------------------------------------
 
-// Actualiza los datos de un cliente.
-// Parametros:
-//    clientId: id del cliente.
-//    otros: nuevos valores para actualizar el cliente.
-//      NOTA: El valor del password se puede dejar vacio para no cambiar su valor.
-// Devuelve un JSON con los datos actializados del cliente.
+/**
+ * Actualiza los datos de un cliente.
+ * Si se incluye una nueva imagen, se reemplaza el adjunto anterior.
+ *
+ * @async
+ * @function clientUpdate
+ * @param {number} clientId - ID del cliente a actualizar.
+ * @param {Object} data - Datos a actualizar.
+ * @param {string} [data.name]
+ * @param {string} [data.company]
+ * @param {string} [data.department]
+ * @param {string} [data.website]
+ * @param {string} [data.description]
+ * @param {string} [data.city]
+ * @param {string} [data.country]
+ * @param {string} [data.password] - Nuevo password (opcional).
+ * @param {string} [data.mime] - Tipo MIME de la nueva imagen (opcional).
+ * @param {string} [data.image] - Imagen codificada en base64 (opcional).
+ * @returns {Promise<Object>} Objeto JSON con los datos actualizados del cliente.
+ * @throws {Error} Si ocurre un error en la actualización.
+ */
 exports.clientUpdate = async (clientId, {
   name, company, department, website, description, city, country, password,
   mime, image
@@ -116,10 +148,14 @@ exports.clientUpdate = async (clientId, {
 
 //-----------------------------------------------------------
 
-// Busca un cliente por su email.
-// Parametros:
-//    email:    email del cliente.
-// Devuelve un JSON con los datos del cliente encontrado, o null si no existe.
+/**
+ * Busca un cliente por su dirección de email.
+ *
+ * @async
+ * @function clientFindByEmail
+ * @param {string} email - Dirección de correo electrónico del cliente.
+ * @returns {Promise<Object|null>} Objeto JSON con los datos del cliente, o `null` si no existe.
+ */
 exports.clientFindByEmail = async (email) => {
 
   const client = await Client.findOne({
@@ -137,11 +173,15 @@ exports.clientFindByEmail = async (email) => {
 
 //-----------------------------------------------------------
 
-// Busca un cliente por su email and password.
-// Parametros:
-//    email:    email del cliente.
-//    password: password del cliente.
-// Devuelve un JSON con los datos del cliente encontrado, o null si no existe.
+/**
+ * Busca un cliente por email y verifica su contraseña.
+ *
+ * @async
+ * @function clientFindByEmailPassword
+ * @param {string} email - Dirección de correo electrónico del cliente.
+ * @param {string} password - Contraseña proporcionada por el cliente.
+ * @returns {Promise<Object|null>} Objeto JSON del cliente si las credenciales son correctas, o `null`.
+ */
 exports.clientFindByEmailPassword = async (email, password) => {
 
   const client = await Client.findOne({
@@ -168,10 +208,14 @@ exports.clientFindByEmailPassword = async (email, password) => {
 
 //-----------------------------------------------------------
 
-// Devuelve el attachment de un cliente.
-// Parametros:
-//   * clientId: id del cliente
-// Devuelve: un JSON con los datos del attachment,
+/**
+ * Devuelve el attachment asociado a un cliente.
+ *
+ * @async
+ * @function clientAttachment
+ * @param {number} clientId - ID del cliente.
+ * @returns {Promise<Object|null>} Objeto JSON con los datos del attachment, o `null` si no existe.
+ */
 exports.clientAttachment = async clientId => {
 
   const attachment = await Attachment.findOne({

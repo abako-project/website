@@ -8,7 +8,13 @@ const {
 
 //-----------------------------------------------------------
 
-// Devuelve un listado de todos los lenguajes.
+/**
+ * Devuelve un listado de todos los lenguajes registrados.
+ *
+ * @async
+ * @function languageIndex
+ * @returns {Promise<Object[]>} Lista de lenguajes en formato JSON.
+ */
 exports.languageIndex = async () => {
 
   const languages = await Language.findAll();

@@ -11,7 +11,14 @@ const {
 
 //-----------------------------------------------------------
 
-// Devuelve un listado de todos los developers registrados.
+/**
+ * Devuelve un listado de todos los desarrolladores registrados,
+ * incluyendo su información de usuario, adjunto, lenguajes, rol y habilidades.
+ *
+ * @async
+ * @function developerIndex
+ * @returns {Promise<Object[]>} Lista de desarrolladores en formato JSON.
+ */
 exports.developerIndex = async () => {
 
   const developers = await Developer.findAll({
@@ -29,12 +36,16 @@ exports.developerIndex = async () => {
 
 //-----------------------------------------------------------
 
-
-// Devuelve los datos de un developer.
-// Tambien incluye sus datos como usuario, lengiajes y skills.
-// Parametros:
-//   * developerId: id del desarrollador
-// Devuelve: un JSON con los datos del desarrollador,
+/**
+ * Devuelve los datos de un desarrollador por su ID,
+ * incluyendo información de usuario, lenguajes y habilidades.
+ *
+ * @async
+ * @function developer
+ * @param {number} developerId - ID del desarrollador.
+ * @returns {Promise<Object>} Objeto JSON con los datos del desarrollador.
+ * @throws {Error} Si no se encuentra el desarrollador.
+ */
 exports.developer = async developerId => {
 
   const developer = await Developer.findByPk(developerId, {
@@ -54,12 +65,17 @@ exports.developer = async developerId => {
 
 //-----------------------------------------------------------
 
-// Registrar un developer nuevo.
-// Parametros:
-//    email:   email del developer.
-//    name:    nombre del developer.
-//    address: address del developer en la blockchain.
-// Devuelve un JSON con los datos del developer creado.
+/**
+ * Registra un nuevo desarrollador y crea el usuario asociado.
+ *
+ * @async
+ * @function developerCreate
+ * @param {string} email - Email del desarrollador.
+ * @param {string} name - Nombre del desarrollador.
+ * @param {string} address - Dirección del desarrollador en la blockchain.
+ * @returns {Promise<Object>} Objeto JSON con los datos del desarrollador creado.
+ * @throws {Error} Si falta algún parámetro obligatorio.
+ */
 exports.developerCreate = async (email, name, address) => {
 
   if (!email) {
@@ -83,11 +99,29 @@ exports.developerCreate = async (email, name, address) => {
 
 //-----------------------------------------------------------
 
-// Actualiza los datos de un developer.
-// Parametros:
-//    developerId: id del developer.
-//    otros: nuevos valores para actualizar el developer.
-// Devuelve un JSON con los datos actializados del developer.
+/**
+ * Actualiza los datos de un desarrollador, incluyendo habilidades, lenguajes y adjunto.
+ *
+ * @async
+ * @function developerUpdate
+ * @param {number} developerId - ID del desarrollador a actualizar.
+ * @param {Object} data - Datos a actualizar.
+ * @param {string} [data.name]
+ * @param {string} [data.bio]
+ * @param {string} [data.background]
+ * @param {number} [data.roleId]
+ * @param {string} [data.experienceLevel]
+ * @param {string} [data.githubUsername]
+ * @param {string} [data.portfolioUrl]
+ * @param {string} [data.city]
+ * @param {string} [data.country]
+ * @param {string} [data.availability]
+ * @param {number[]} [data.languageIds]
+ * @param {number[]} [data.skillIds]
+ * @param {string} [data.mime] - Tipo MIME del nuevo adjunto.
+ * @param {string} [data.image] - Imagen codificada en base64.
+ * @returns {Promise<Object>} Objeto JSON con los datos actualizados del desarrollador.
+ */
 exports.developerUpdate = async (developerId, {
   name, bio, background, roleId, experienceLevel, githubUsername, portfolioUrl, city, country, availability,
   languageIds, skillIds,
@@ -124,10 +158,14 @@ exports.developerUpdate = async (developerId, {
 
 //-----------------------------------------------------------
 
-// Busca un developer por su email.
-// Parametros:
-//    email:    email del cliente.
-// Devuelve un JSON con los datos del developer encontrado, o null si no existe.
+/**
+ * Busca un desarrollador por su dirección de email.
+ *
+ * @async
+ * @function developerFindByEmail
+ * @param {string} email - Dirección de correo del desarrollador.
+ * @returns {Promise<Object|null>} Objeto JSON con los datos del desarrollador, o `null` si no existe.
+ */
 exports.developerFindByEmail = async (email) => {
 
   const developer = await Developer.findOne({
@@ -144,10 +182,14 @@ exports.developerFindByEmail = async (email) => {
 
 //-----------------------------------------------------------
 
-// Busca los developers de un role.
-// Parametros:
-//    roleId:    id del role a buscar.
-// Devuelve un JSON con los developer que tienen el role dado.
+/**
+ * Busca todos los desarrolladores que tienen asignado un rol específico.
+ *
+ * @async
+ * @function developersWithRole
+ * @param {number} roleId - ID del rol.
+ * @returns {Promise<Object[]>} Lista de desarrolladores con el rol especificado.
+ */
 exports.developersWithRole = async (roleId) => {
 
   const developers = await Developer.findAll({
@@ -159,10 +201,14 @@ exports.developersWithRole = async (roleId) => {
 
 //-----------------------------------------------------------
 
-// Devuelve el attachment de un developer.
-// Parametros:
-//    developerId: id del developer.
-// Devuelve: un JSON con los datos del developer,
+/**
+ * Devuelve el adjunto (attachment) de un desarrollador.
+ *
+ * @async
+ * @function developerAttachment
+ * @param {number} developerId - ID del desarrollador.
+ * @returns {Promise<Object|null>} Objeto JSON con el attachment o `null` si no existe.
+ */
 exports.developerAttachment = async developerId => {
 
   const attachment = await Attachment.findOne({

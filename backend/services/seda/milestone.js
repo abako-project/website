@@ -9,10 +9,16 @@ const sequelize = require("../../models");
 
 //-----------------------------------------------------------
 
-// Devuelve todos los datos del milestone.
-// Parametros:
-//   * milestoneId: id del milestone
-// Devuelve: un JSON con todos los datos del milestone
+/**
+ * Devuelve todos los datos de un milestone por su ID,
+ * incluyendo el proyecto y sus tareas asociadas.
+ *
+ * @async
+ * @function milestone
+ * @param {number} milestoneId - ID del milestone.
+ * @returns {Promise<Object>} Objeto JSON con los datos del milestone.
+ * @throws {Error} Si no se encuentra el milestone.
+ */
 exports.milestone = async milestoneId => {
 
   const milestone = await Milestone.findByPk(milestoneId, {
@@ -31,12 +37,20 @@ exports.milestone = async milestoneId => {
 
 //-----------------------------------------------------------
 
-
-// Crea un milestone nuevo.
-// Parametros:
-//    projectId: id del projecto al que añadir el milestone.
-//    otros: datos del milestone
-// Devuelve un JSON con los datos del milestone creado.
+/**
+ * Crea un nuevo milestone asociado a un proyecto.
+ *
+ * @async
+ * @function milestoneCreate
+ * @param {number} projectId - ID del proyecto al que pertenece el milestone.
+ * @param {Object} data - Datos del milestone.
+ * @param {string} data.title - Título del milestone.
+ * @param {string} data.description - Descripción del milestone.
+ * @param {number} data.budget - Presupuesto asignado.
+ * @param {string} data.currency - Moneda del presupuesto.
+ * @param {string} data.deliveryDate - Fecha estimada de entrega.
+ * @returns {Promise<Object>} Objeto JSON del milestone creado.
+ */
 exports.milestoneCreate = async (projectId, {title, description, budget, currency, deliveryDate}) => {
 
   const milestone = await Milestone.create({
@@ -48,11 +62,20 @@ exports.milestoneCreate = async (projectId, {title, description, budget, currenc
 
 //-----------------------------------------------------------
 
-// Actualiza los datos de un milestone.
-// Parametros:
-//    milestoneId: id del milestone.
-//    otros: nuevos valores para actualizar el milestone
-// Devuelve un JSON con los datos del milestone actualizado.
+/**
+ * Actualiza los datos de un milestone existente.
+ *
+ * @async
+ * @function milestoneUpdate
+ * @param {number} milestoneId - ID del milestone a actualizar.
+ * @param {Object} data - Nuevos valores.
+ * @param {string} data.title
+ * @param {string} data.description
+ * @param {number} data.budget
+ * @param {string} data.currency
+ * @param {string} data.deliveryDate
+ * @returns {Promise<Object>} Objeto JSON con los datos actualizados.
+ */
 exports.milestoneUpdate = async (milestoneId, {title, description, budget, currency, deliveryDate}) => {
 
   let milestone = await Milestone.findByPk(milestoneId);
@@ -66,11 +89,16 @@ exports.milestoneUpdate = async (milestoneId, {title, description, budget, curre
 
 //-----------------------------------------------------------
 
-// Intercambiar el orden de visualizacion de 2 milestones.
-// Parametros:
-//   * milestoneId1: id de uno de los milestones.
-//   * milestoneId2: id del otro milestone.
-// Devuelve: nada
+/**
+ * Intercambia el orden de visualización de dos milestones.
+ *
+ * @async
+ * @function milestoneSwapOrder
+ * @param {number} milestoneId1 - ID del primer milestone.
+ * @param {number} milestoneId2 - ID del segundo milestone.
+ * @returns {Promise<void>}
+ * @throws {Error} Si alguno de los milestones no existe o falla la transacción.
+ */
 exports.milestoneSwapOrder = async (milestoneId1, milestoneId2) => {
 
   const transaction = await sequelize.transaction();
@@ -102,10 +130,15 @@ exports.milestoneSwapOrder = async (milestoneId1, milestoneId2) => {
 
 //-----------------------------------------------------------
 
-// Borra un milestone.
-// Parametros:
-//    milestoneId: id del milestone.
-// Devuelve: nada
+/**
+ * Elimina un milestone por su ID.
+ *
+ * @async
+ * @function milestoneDestroy
+ * @param {number} milestoneId - ID del milestone a eliminar.
+ * @returns {Promise<void>}
+ * @throws {Error} Si falla la eliminación.
+ */
 exports.milestoneDestroy = async milestoneId => {
   await Milestone.destroy({where: {id: milestoneId}});
 };

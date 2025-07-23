@@ -11,10 +11,15 @@ const sequelize = require("../../models");
 
 //-----------------------------------------------------------
 
-// Devuelve los datos de un objetivo.
-// Parametros:
-//   * objectiveId: id del objetivo
-// Devuelve: un JSON con los datos del objetivo,
+/**
+ * Devuelve los datos de un objetivo por su ID.
+ *
+ * @async
+ * @function objective
+ * @param {number} objectiveId - ID del objetivo.
+ * @returns {Promise<Object>} Objeto JSON con los datos del objetivo.
+ * @throws {Error} Si no se encuentra el objetivo.
+ */
 exports.objective = async objectiveId => {
 
   const objective = await Objective.findByPk(objectiveId);
@@ -27,11 +32,15 @@ exports.objective = async objectiveId => {
 
 //-----------------------------------------------------------
 
-// Crea un objetivo nuevo.
-// Parametros:
-//    projectId: id del projecto al que pertenece el objetivo.
-//    description: descripcion del objetivo.
-// Devuelve un JSON con los datos del objetivo creado.
+/**
+ * Crea un nuevo objetivo asociado a un proyecto.
+ *
+ * @async
+ * @function objectiveCreate
+ * @param {number} projectId - ID del proyecto al que pertenece el objetivo.
+ * @param {string} description - Descripción del objetivo.
+ * @returns {Promise<Object>} Objeto JSON con los datos del objetivo creado.
+ */
 exports.objectiveCreate = async (projectId, description) => {
 
   const objective = await Objective.create({projectId, description});
@@ -41,11 +50,16 @@ exports.objectiveCreate = async (projectId, description) => {
 
 //-----------------------------------------------------------
 
-// Intercambiar el orden de visualizacion de 2 objectives
-// Parametros:
-//   * objectiveId1: id de uno de los objetivo.
-//   * objectiveId2: id del otro objetivo.
-// Devuelve: nada
+/**
+ * Intercambia el orden de visualización de dos objetivos.
+ *
+ * @async
+ * @function objectivesSwapOrder
+ * @param {number} objectiveId1 - ID del primer objetivo.
+ * @param {number} objectiveId2 - ID del segundo objetivo.
+ * @returns {Promise<void>}
+ * @throws {Error} Si alguno de los objetivos no existe o falla la transacción.
+ */
 exports.objectivesSwapOrder = async (objectiveId1, objectiveId2) => {
 
   const transaction = await sequelize.transaction();
@@ -78,10 +92,15 @@ exports.objectivesSwapOrder = async (objectiveId1, objectiveId2) => {
 
 //-----------------------------------------------------------
 
-// Borra un objetivo.
-// Parametros:
-//   * objectiveId:  id del objetivo
-// Devuelve: nada
+/**
+ * Elimina un objetivo por su ID.
+ *
+ * @async
+ * @function objectiveDestroy
+ * @param {number} objectiveId - ID del objetivo a eliminar.
+ * @returns {Promise<void>}
+ * @throws {Error} Si ocurre un error durante la eliminación.
+ */
 exports.objectiveDestroy = async objectiveId => {
   await Objective.destroy({where: {id: objectiveId}});
 };

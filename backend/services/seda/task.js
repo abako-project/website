@@ -10,10 +10,16 @@ const states = require("../../controllers/state");
 
 //-----------------------------------------------------------
 
-// Devuelve todos los datos de la task.
-// Parametros:
-//   * taskId: id de la task.
-// Devuelve: un JSON con todos los datos de la task.
+/**
+ * Devuelve todos los datos de una tarea (task) por su ID,
+ * incluyendo el milestone, proyecto, rol y asignación.
+ *
+ * @async
+ * @function task
+ * @param {number} taskId - ID de la tarea.
+ * @returns {Promise<Object>} Objeto JSON con los datos de la tarea.
+ * @throws {Error} Si no se encuentra la tarea.
+ */
 exports.task = async taskId => {
 
   const task = await Task.findByPk(taskId, {
@@ -46,12 +52,21 @@ exports.task = async taskId => {
 
 //-----------------------------------------------------------
 
-
-// Crea una task nueva.
-// Parametros:
-//    milestoneId: id del milestone al que añadir la task.
-//    otros: datos de la task.
-// Devuelve un JSON con los datos de la task creada.
+/**
+ * Crea una nueva tarea asociada a un milestone.
+ *
+ * @async
+ * @function taskCreate
+ * @param {number} milestoneId - ID del milestone al que se asocia la tarea.
+ * @param {Object} data - Datos de la tarea.
+ * @param {string} data.title
+ * @param {string} data.description
+ * @param {number} data.budget
+ * @param {string} data.currency
+ * @param {string} data.deliveryDate
+ * @param {number} [data.roleId] - Rol requerido (opcional).
+ * @returns {Promise<Object>} Objeto JSON con los datos de la tarea creada.
+ */
 exports.taskCreate = async (milestoneId, {title, description, budget, currency, deliveryDate, roleId}) => {
 
   let task = await Task.create({
@@ -67,11 +82,21 @@ exports.taskCreate = async (milestoneId, {title, description, budget, currency, 
 
 //-----------------------------------------------------------
 
-// Actualiza los datos de una task.
-// Parametros:
-//   * taskId: id de la task.
-//    otros: nuevos valores para actualizar la task.
-// Devuelve un JSON con los datos de la task actualizada.
+/**
+ * Actualiza los datos de una tarea existente.
+ *
+ * @async
+ * @function taskUpdate
+ * @param {number} taskId - ID de la tarea.
+ * @param {Object} data - Nuevos valores de la tarea.
+ * @param {string} data.title
+ * @param {string} data.description
+ * @param {number} data.budget
+ * @param {string} data.currency
+ * @param {string} data.deliveryDate
+ * @param {number|null} [data.roleId] - ID del nuevo rol o `null` si se elimina.
+ * @returns {Promise<Object>} Objeto JSON con los datos actualizados de la tarea.
+ */
 exports.taskUpdate = async (taskId, {title, description, budget, currency, deliveryDate, roleId}) => {
 
   let task = await Task.findByPk(taskId);
@@ -91,11 +116,16 @@ exports.taskUpdate = async (taskId, {title, description, budget, currency, deliv
 
 //-----------------------------------------------------------
 
-// Intercambiar el orden de visualizacion de 2 tasks.
-// Parametros:
-//   * taskId1: id de uno de las tasks.
-//   * taskId2: id de la otra task.
-// Devuelve: nada
+/**
+ * Intercambia el orden de visualización de dos tareas.
+ *
+ * @async
+ * @function tasksSwapOrder
+ * @param {number} taskId1 - ID de la primera tarea.
+ * @param {number} taskId2 - ID de la segunda tarea.
+ * @returns {Promise<void>}
+ * @throws {Error} Si alguna de las tareas no existe o falla la transacción.
+ */
 exports.tasksSwapOrder = async (taskId1, taskId2) => {
 
   const transaction = await sequelize.transaction();
@@ -127,21 +157,29 @@ exports.tasksSwapOrder = async (taskId1, taskId2) => {
 
 //-----------------------------------------------------------
 
-// Borra una task.
-// Parametros:
-//   * taskId: id de la task.
-// Devuelve: nada
+/**
+ * Elimina una tarea por su ID.
+ *
+ * @async
+ * @function taskDestroy
+ * @param {number} taskId - ID de la tarea a eliminar.
+ * @returns {Promise<void>}
+ */
 exports.taskDestroy = async taskId => {
   await Task.destroy({where: {id: taskId}});
 };
 
 //-----------------------------------------------------------
 
-// Publicar las tareas creadas por el consultor del proyecto.
-// Cambia el estado a TeamAssignmentPending.
-// Parametros:
-//   * projectId:  id del proyecto
-// Devuelve: nada
+/**
+ * Publica las tareas creadas por el consultor del proyecto y cambia el estado
+ * del proyecto a `TeamAssignmentPending`.
+ *
+ * @async
+ * @function tasksSubmit
+ * @param {number} projectId - ID del proyecto.
+ * @returns {Promise<void>}
+ */
 exports.tasksSubmit = async (projectId) => {
 
   await Project.update({
@@ -151,11 +189,16 @@ exports.tasksSubmit = async (projectId) => {
 
 //-----------------------------------------------------------
 
-// DAO/Admin: Asignar developer a una task.
-// Parametros:
-//   * taskId: id de la task.
-//   * developerId: id del developer
-// Devuelve: nada
+/**
+ * Asigna un desarrollador a una tarea, eliminando cualquier asignación previa.
+ * Si `developerId` es null o undefined, solo se elimina la asignación actual.
+ *
+ * @async
+ * @function taskSetDeveloper
+ * @param {number} taskId - ID de la tarea.
+ * @param {number} [developerId] - ID del desarrollador (opcional).
+ * @returns {Promise<void>}
+ */
 exports.taskSetDeveloper = async (taskId, developerId) => {
 
   // Borrar asignacion actual:

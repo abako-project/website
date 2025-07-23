@@ -12,13 +12,23 @@ const {
 
 //-----------------------------------------------------------
 
-// Crea un proyecto nuevo.
-// Solo se guardan los datos de la propuesta inicial del cliente.
-// No se guardan ni objetivos ni constraints.
-// Parametros:
-//    clientId: id del cliente que crea la propuesta.
-//    otros: datos de la propuesta
-// Devuelve un JSON con los datos del proyecto creado.
+/**
+ * Crea un nuevo proyecto a partir de la propuesta inicial de un cliente.
+ * Solo se guardan los datos básicos de la propuesta, sin objetivos ni restricciones.
+ *
+ * @async
+ * @function proposalCreate
+ * @param {number} clientId - ID del cliente que crea la propuesta.
+ * @param {Object} data - Datos de la propuesta.
+ * @param {string} data.title - Título del proyecto.
+ * @param {string} data.summary - Resumen del proyecto.
+ * @param {string} data.description - Descripción detallada.
+ * @param {string} data.url - URL de referencia.
+ * @param {number} data.budget - Presupuesto estimado.
+ * @param {string} data.currency - Moneda del presupuesto.
+ * @param {string} data.deliveryDate - Fecha estimada de entrega.
+ * @returns {Promise<Object>} Objeto JSON con los datos del proyecto creado.
+ */
 exports.proposalCreate = async (clientId, {title, summary, description, url, budget, currency, deliveryDate}) => {
 
   const project = await Project.create({
@@ -30,12 +40,23 @@ exports.proposalCreate = async (clientId, {title, summary, description, url, bud
 
 //-----------------------------------------------------------
 
-// Actualiza los datos de la propuesta del un projecto.
-// No se actualizan ni objetivos ni constraints.
-// Parametros:
-//    projectId: id del proyecto.
-//    otros: nuevos valores para actualizar de la propuesta
-// Devuelve un JSON con los datos del proyecto actualizado.
+/**
+ * Actualiza los datos básicos de la propuesta de un proyecto existente.
+ * No modifica objetivos ni restricciones.
+ *
+ * @async
+ * @function proposalUpdate
+ * @param {number} projectId - ID del proyecto a actualizar.
+ * @param {Object} data - Nuevos valores de la propuesta.
+ * @param {string} data.title
+ * @param {string} data.summary
+ * @param {string} data.description
+ * @param {string} data.url
+ * @param {number} data.budget
+ * @param {string} data.currency
+ * @param {string} data.deliveryDate
+ * @returns {Promise<Object>} Objeto JSON con los datos actualizados del proyecto.
+ */
 exports.proposalUpdate = async (projectId, {title, summary, description, url, budget, currency, deliveryDate}) => {
 
   await Project.update({

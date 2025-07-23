@@ -1,5 +1,11 @@
 
-
+/**
+ * Convierte un objeto Attachment en un objeto JSON simplificado.
+ *
+ * @function attachmentJson
+ * @param {Object} attachment - Instancia del modelo Attachment.
+ * @returns {Object|undefined} Objeto JSON con los datos del attachment o `undefined` si no existe.
+ */
 const attachmentJson = attachment => {
   if (!attachment) return undefined;
   return {
@@ -9,7 +15,13 @@ const attachmentJson = attachment => {
   };
 };
 
-
+/**
+ * Convierte un objeto User en un objeto JSON, incluyendo cliente y desarrollador si están asociados.
+ *
+ * @function userJson
+ * @param {Object} user - Instancia del modelo User.
+ * @returns {Object|undefined} Objeto JSON del usuario o `undefined` si no existe.
+ */
 const userJson = user => {
   if (!user) return undefined;
   return {
@@ -24,6 +36,14 @@ const userJson = user => {
 };
 
 
+/**
+ * Convierte un objeto Project en un objeto JSON completo,
+ * incluyendo cliente, consultor, objetivos, restricciones, hitos y comentarios.
+ *
+ * @function projectJson
+ * @param {Object} project - Instancia del modelo Project.
+ * @returns {Object|undefined} Objeto JSON del proyecto o `undefined` si no existe.
+ */
 const projectJson = project => {
   if (!project) return undefined;
   return {
@@ -50,7 +70,13 @@ const projectJson = project => {
   };
 };
 
-
+/**
+ * Convierte un objeto Client en un objeto JSON, incluyendo usuario y proyectos asociados.
+ *
+ * @function clientJson
+ * @param {Object} client - Instancia del modelo Client.
+ * @returns {Object|undefined} Objeto JSON del cliente o `undefined` si no existe.
+ */
 const clientJson = client => {
   if (!client) return undefined;
   return {
@@ -72,7 +98,14 @@ const clientJson = client => {
   };
 };
 
-
+/**
+ * Convierte un objeto Developer en un objeto JSON detallado,
+ * incluyendo relaciones como usuario, lenguajes, rol, habilidades, proyectos y asignaciones.
+ *
+ * @function developerJson
+ * @param {Object} developer - Instancia del modelo Developer.
+ * @returns {Object|undefined} Objeto JSON del desarrollador o `undefined` si no existe.
+ */
 const developerJson = developer => {
   if (!developer) return undefined;
   return {
@@ -102,7 +135,13 @@ const developerJson = developer => {
   };
 };
 
-
+/**
+ * Convierte un objeto Language en un objeto JSON.
+ *
+ * @function languageJson
+ * @param {Object} language - Instancia del modelo Language.
+ * @returns {Object|undefined} Objeto JSON del lenguaje o `undefined`.
+ */
 const languageJson = language => {
   if (!language) return undefined;
   return {
@@ -114,7 +153,13 @@ const languageJson = language => {
   };
 };
 
-
+/**
+ * Convierte un objeto Objective en un objeto JSON.
+ *
+ * @function objectiveJson
+ * @param {Object} objective - Instancia del modelo Objective.
+ * @returns {Object|undefined} Objeto JSON del objetivo o `undefined`.
+ */
 const objectiveJson = objective => {
   if (!objective) return undefined;
   return {
@@ -127,7 +172,13 @@ const objectiveJson = objective => {
   };
 };
 
-
+/**
+ * Convierte un objeto Constraint en un objeto JSON.
+ *
+ * @function constraintJson
+ * @param {Object} constraint - Instancia del modelo Constraint.
+ * @returns {Object|undefined} Objeto JSON de la restricción o `undefined`.
+ */
 const constraintJson = constraint => {
   if (!constraint) return undefined;
   return {
@@ -140,7 +191,13 @@ const constraintJson = constraint => {
   };
 };
 
-
+/**
+ * Convierte un objeto Role en un objeto JSON, incluyendo los desarrolladores que lo usan.
+ *
+ * @function roleJson
+ * @param {Object} role - Instancia del modelo Role.
+ * @returns {Object|undefined} Objeto JSON del rol o `undefined`.
+ */
 const roleJson = role => {
   if (!role) return undefined;
   return {
@@ -154,6 +211,13 @@ const roleJson = role => {
 };
 
 
+/**
+ * Convierte un objeto Milestone en un objeto JSON, incluyendo sus tareas.
+ *
+ * @function milestoneJson
+ * @param {Object} milestone - Instancia del modelo Milestone.
+ * @returns {Object|undefined} Objeto JSON del milestone o `undefined`.
+ */
 const milestoneJson = milestone => {
   if (!milestone) return undefined;
   return {
@@ -172,7 +236,13 @@ const milestoneJson = milestone => {
   };
 };
 
-
+/**
+ * Convierte un objeto Skill en un objeto JSON.
+ *
+ * @function skillJson
+ * @param {Object} skill - Instancia del modelo Skill.
+ * @returns {Object|undefined} Objeto JSON de la habilidad o `undefined`.
+ */
 const skillJson = skill => {
   if (!skill) return undefined;
   return {
@@ -183,7 +253,13 @@ const skillJson = skill => {
   };
 };
 
-
+/**
+ * Convierte un objeto Task en un objeto JSON, incluyendo rol y asignación.
+ *
+ * @function taskJson
+ * @param {Object} task - Instancia del modelo Task.
+ * @returns {Object|undefined} Objeto JSON de la tarea o `undefined`.
+ */
 const taskJson = task => {
   if (!task) return undefined;
   return {
@@ -204,7 +280,13 @@ const taskJson = task => {
   };
 };
 
-
+/**
+ * Convierte un objeto Comment en un objeto JSON.
+ *
+ * @function commentJson
+ * @param {Object} comment - Instancia del modelo Comment.
+ * @returns {Object|undefined} Objeto JSON del comentario o `undefined`.
+ */
 const commentJson = comment => {
   if (!comment) return undefined;
   return {
@@ -217,7 +299,13 @@ const commentJson = comment => {
   };
 };
 
-
+/**
+ * Convierte un objeto Assignation en un objeto JSON, incluyendo el desarrollador asignado.
+ *
+ * @function assignationJson
+ * @param {Object} assignation - Instancia del modelo Assignation.
+ * @returns {Object|undefined} Objeto JSON de la asignación o `undefined`.
+ */
 const assignationJson = assignation => {
   if (!assignation) return undefined;
   return {

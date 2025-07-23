@@ -12,10 +12,15 @@ const sequelize = require("../../models");
 
 //-----------------------------------------------------------
 
-// Devuelve los datos de un constraint.
-// Parametros:
-//   * constraintId: id del constraint
-// Devuelve: un JSON con los datos del constraint,
+/**
+ * Devuelve los datos de un constraint por su ID.
+ *
+ * @async
+ * @function constraint
+ * @param {number} constraintId - ID del constraint.
+ * @returns {Promise<Object>} Objeto JSON con los datos del constraint.
+ * @throws {Error} Si no se encuentra el constraint.
+ */
 exports.constraint = async constraintId => {
 
   const constraint = await Constraint.findByPk(constraintId);
@@ -28,11 +33,15 @@ exports.constraint = async constraintId => {
 
 //-----------------------------------------------------------
 
-// Crea un constraint nuevo.
-// Parametros:
-//    projectId: id del projecto al que pertenece el constraint.
-//    description: descripcion del constraint.
-// Devuelve un JSON con los datos del constraint creado.
+/**
+ * Crea un nuevo constraint asociado a un proyecto.
+ *
+ * @async
+ * @function constraintCreate
+ * @param {number} projectId - ID del proyecto al que pertenece el constraint.
+ * @param {string} description - Descripción del constraint.
+ * @returns {Promise<Object>} Objeto JSON con el constraint creado.
+ */
 exports.constraintCreate = async (projectId, description) => {
 
   const constraint = await Constraint.create({projectId, description});
@@ -42,11 +51,16 @@ exports.constraintCreate = async (projectId, description) => {
 
 //-----------------------------------------------------------
 
-// Intercambiar el orden de visualizacion de 2 constraints
-// Parametros:
-//   * constraintId1: id de uno de los constraint.
-//   * constraintId2: id del otro constraint.
-// Devuelve: nada
+/**
+ * Intercambia el orden de visualización de dos constraints.
+ *
+ * @async
+ * @function constraintsSwapOrder
+ * @param {number} constraintId1 - ID del primer constraint.
+ * @param {number} constraintId2 - ID del segundo constraint.
+ * @returns {Promise<void>}
+ * @throws {Error} Si alguno de los constraints no existe o falla la transacción.
+ */
 exports.constraintsSwapOrder = async (constraintId1, constraintId2) => {
 
   const transaction = await sequelize.transaction();
@@ -78,10 +92,15 @@ exports.constraintsSwapOrder = async (constraintId1, constraintId2) => {
 
 //-----------------------------------------------------------
 
-// Borra un constraint.
-// Parametros:
-//   * constraintId:  id del constraint
-// Devuelve: nada
+/**
+ * Elimina un constraint por su ID.
+ *
+ * @async
+ * @function constraintDestroy
+ * @param {number} constraintId - ID del constraint a eliminar.
+ * @returns {Promise<void>}
+ * @throws {Error} Si falla la eliminación.
+ */
 exports.constraintDestroy = async constraintId => {
   await Constraint.destroy({where: {id: constraintId}});
 };

@@ -1,4 +1,14 @@
 
+/**
+ * Módulo principal que agrupa y reexporta las funciones del backend del sistema SEDA.
+ *
+ * Este archivo permite acceder a todas las operaciones del sistema (clientes, desarrolladores,
+ * proyectos, tareas, objetivos, etc.) desde un único punto de entrada.
+ *
+ * Cada exportación corresponde a una función implementada en un módulo individual
+ * dentro del backend.
+ */
+
 const sedaError = require("./error");
 
 const sedaProject = require("./project");

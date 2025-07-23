@@ -9,7 +9,13 @@ const {
 
 //-----------------------------------------------------------
 
-// Devuelve un listado de todos los roles.
+/**
+ * Devuelve un listado de todos los roles registrados.
+ *
+ * @async
+ * @function roleIndex
+ * @returns {Promise<Object[]>} Lista de roles en formato JSON.
+ */
 exports.roleIndex = async () => {
 
   const roles = await Role.findAll();
@@ -19,10 +25,15 @@ exports.roleIndex = async () => {
 
 //-----------------------------------------------------------
 
-// Devuelve los datos de un role.
-// Parametros:
-//   * roleId: id del role
-// Devuelve: un JSON con los datos del role,
+/**
+ * Devuelve los datos de un rol por su ID.
+ *
+ * @async
+ * @function role
+ * @param {number} roleId - ID del rol.
+ * @returns {Promise<Object>} Objeto JSON con los datos del rol.
+ * @throws {Error} Si no se encuentra el rol.
+ */
 exports.role = async roleId => {
 
   const role = await Role.findByPk(roleId);
@@ -36,10 +47,15 @@ exports.role = async roleId => {
 
 //-----------------------------------------------------------
 
-// Registrar un role nuevo.
-// Parametros:
-//    name:    nombre del role.
-// Devuelve un JSON con los datos del role creado.
+/**
+ * Crea un nuevo rol.
+ *
+ * @async
+ * @function roleCreate
+ * @param {string} name - Nombre del nuevo rol.
+ * @returns {Promise<Object>} Objeto JSON con los datos del rol creado.
+ * @throws {Error} Si no se proporciona un nombre.
+ */
 exports.roleCreate = async (name) => {
 
   if (!name) {
@@ -53,11 +69,16 @@ exports.roleCreate = async (name) => {
 
 //-----------------------------------------------------------
 
-// Actualiza los datos de un role.
-// Parametros:
-//   * roleId: id del role
-//   * name:    nombre del role.
-// Devuelve un JSON con los datos actializados del role.
+/**
+ * Actualiza el nombre de un rol.
+ *
+ * @async
+ * @function roleUpdate
+ * @param {number} roleId - ID del rol a actualizar.
+ * @param {Object} data - Objeto con el nuevo nombre.
+ * @param {string} data.name - Nuevo nombre del rol.
+ * @returns {Promise<Object>} Objeto JSON con los datos actualizados del rol.
+ */
 exports.roleUpdate = async (roleId, {name}) => {
 
   let role = await Role.findByPk(roleId);
@@ -69,10 +90,14 @@ exports.roleUpdate = async (roleId, {name}) => {
 
 //-----------------------------------------------------------
 
-// Borra un role.
-// Parametros:
-//   * roleId: id del role
-// Devuelve: nada
+/**
+ * Elimina un rol por su ID.
+ *
+ * @async
+ * @function roleDestroy
+ * @param {number} roleId - ID del rol a eliminar.
+ * @returns {Promise<void>}
+ */
 exports.roleDestroy = async roleId => {
   await Role.destroy({where: {id: roleId}});
 };

@@ -14,10 +14,16 @@ const states = require("../../controllers/state");
 
 //-----------------------------------------------------------
 
-// Devuelve todos los datos del proyecto
-// Parametros:
-//   * projectId: id del proyecto
-// Devuelve: un JSON con todos los datos del proyecto
+/**
+ * Devuelve todos los datos del proyecto, incluyendo relaciones como cliente, consultor,
+ * objetivos, restricciones, hitos, tareas y comentarios.
+ *
+ * @async
+ * @function project
+ * @param {number} projectId - ID del proyecto.
+ * @returns {Promise<Object>} Objeto JSON con todos los datos del proyecto.
+ * @throws {Error} Si no se encuentra el proyecto con el ID dado.
+ */
 exports.project = async projectId => {
 
   const project = await Project.findByPk(projectId, {
@@ -84,10 +90,15 @@ exports.project = async projectId => {
 
 //-----------------------------------------------------------
 
-// Devuelve el Id del cliente de un proyecto.
-// Parametros:
-//   * projectId: id del proyecto
-// Devuelve: el Id del cliente del proyecto.
+/**
+ * Devuelve el ID del cliente asociado a un proyecto.
+ *
+ * @async
+ * @function projectClientId
+ * @param {number} projectId - ID del proyecto.
+ * @returns {Promise<number>} ID del cliente.
+ * @throws {Error} Si no se encuentra el proyecto.
+ */
 exports.projectClientId = async projectId => {
 
   const project = await Project.findByPk(projectId);
@@ -101,10 +112,15 @@ exports.projectClientId = async projectId => {
 
 //-----------------------------------------------------------
 
-// Devuelve el Id del consultor de un proyecto.
-// Parametros:
-//   * projectId: id del proyecto
-// Devuelve: el Id del consultor del proyecto.
+/**
+ * Devuelve el ID del consultor asociado a un proyecto.
+ *
+ * @async
+ * @function projectConsultantId
+ * @param {number} projectId - ID del proyecto.
+ * @returns {Promise<number>} ID del consultor.
+ * @throws {Error} Si no se encuentra el proyecto.
+ */
 exports.projectConsultantId = async projectId => {
 
   const project = await Project.findByPk(projectId);
@@ -118,18 +134,18 @@ exports.projectConsultantId = async projectId => {
 
 //-----------------------------------------------------------
 
-// Devuelve un indice de proyectos.
-// Dependiendo delos parametros, se devuelven todos los proyectos o solo algunos de ellos.
-// Si no se pasan valores para clientId, consultantId, ni developerId, se devuelven todos los proyectos.
-// Si se pasa un  valor para clientId, se devuelven los proyectos de ese cliente.
-// Si se pasa un  valor para consultantId, se devuelven tambien los proyectos de ese consultor.
-// Si se pasa un  valor para developerId, se devuelven tambien los proyectos de en los que ese desarrollador trabaja como desarrollador.
-// Incluye los datos del cliente, consultor y desarrolladores del proyecto.
-// Parametros:
-//   * clientId:  id del cliente
-//   * consultantId:  id del consultor
-//   * developerId: id del desarrollador
-// Devuelve: un JSON con los datos necesarios para un indice de proyectos
+/**
+ * Devuelve un índice de proyectos filtrado por cliente, consultor o desarrollador.
+ * Si no se pasa ningún parámetro, devuelve todos los proyectos.
+ *
+ * @async
+ * @function projectsIndex
+ * @param {?number} clientId - ID del cliente (opcional).
+ * @param {?number} consultantId - ID del consultor (opcional).
+ * @param {?number} developerId - ID del desarrollador (opcional).
+ * @returns {Promise<Object[]>} Lista de proyectos en formato JSON.
+ * @throws {Error} Si ocurre un error en la consulta.
+ */
 exports.projectsIndex = async (clientId, consultantId, developerId) => {
 
   let options = {
@@ -189,22 +205,31 @@ exports.projectsIndex = async (clientId, consultantId, developerId) => {
 
 //-----------------------------------------------------------
 
-// Actualiza el valor del estado de un proyecto.
-// Parametros:
-//   * projectId:  id del proyecto
-//   * state: nuevo estado
-// Devuelve: nada
+/**
+ * Actualiza el estado de un proyecto.
+ *
+ * @async
+ * @function projectSetState
+ * @param {number} projectId - ID del proyecto.
+ * @param {string} state - Nuevo estado a asignar.
+ * @returns {Promise<void>}
+ * @throws {Error} Si falla la actualización del estado.
+ */
 exports.projectSetState = async (projectId, state) => {
   await Project.update({state}, {where: {id: projectId}});
 };
 
 //-----------------------------------------------------------
 
-// Publicar la propuesta de un proyecto.
-// Cambia el estado a Pending.
-// Parametros:
-//   * projectId:  id del proyecto
-// Devuelve: nada
+/**
+ * Publica una propuesta de proyecto y cambia su estado a `Pending`.
+ *
+ * @async
+ * @function projectSubmit
+ * @param {number} projectId - ID del proyecto.
+ * @returns {Promise<void>}
+ * @throws {Error} Si falla la actualización del estado.
+ */
 exports.projectSubmit = async (projectId) => {
   await Project.update({
     state: states.ProjectState.Pending
@@ -214,11 +239,15 @@ exports.projectSubmit = async (projectId) => {
 
 //-----------------------------------------------------------
 
-// DAO/Admin: Aprobar un proyecto.
-// Cambia el estado a Approved.
-// Parametros:
-//   * projectId:  id del proyecto
-// Devuelve: nada
+/**
+ * Aprueba un proyecto (rol DAO/Admin) cambiando su estado a `Approved`.
+ *
+ * @async
+ * @function projectApprove
+ * @param {number} projectId - ID del proyecto.
+ * @returns {Promise<void>}
+ * @throws {Error} Si falla la actualización del estado.
+ */
 exports.projectApprove = async (projectId) => {
   await Project.update({
     state: states.ProjectState.Approved
@@ -228,11 +257,15 @@ exports.projectApprove = async (projectId) => {
 
 //-----------------------------------------------------------
 
-// DAO/Admin: Rechazar un proyecto.
-// Cambia el estado a Rejected.
-// Parametros:
-//   * projectId:  id del proyecto
-// Devuelve: nada
+/**
+ * Rechaza un proyecto (rol DAO/Admin) cambiando su estado a `Rejected`.
+ *
+ * @async
+ * @function projectReject
+ * @param {number} projectId - ID del proyecto.
+ * @returns {Promise<void>}
+ * @throws {Error} Si falla la actualización del estado.
+ */
 exports.projectReject = async (projectId) => {
   await Project.update({
     state: states.ProjectState.Rejected
@@ -241,12 +274,16 @@ exports.projectReject = async (projectId) => {
 
 //-----------------------------------------------------------
 
-// DAO/Admin: Asignar consultor a un proyecto.
-// Cambia el estado a ScopingInProgress.
-// Parametros:
-//   * projectId:    id del proyecto
-//   * consultantId: id del consultor
-// Devuelve: nada
+/**
+ * Asigna un consultor a un proyecto y cambia el estado a `ScopingInProgress`.
+ *
+ * @async
+ * @function projectSetConsultant
+ * @param {number} projectId - ID del proyecto.
+ * @param {number} consultantId - ID del consultor.
+ * @returns {Promise<void>}
+ * @throws {Error} Si falla la asignación del consultor o la actualización del estado.
+ */
 exports.projectSetConsultant = async (projectId, consultantId) => {
 
   await Project.update({
@@ -257,10 +294,15 @@ exports.projectSetConsultant = async (projectId, consultantId) => {
 
 //-----------------------------------------------------------
 
-// Borra un proyecto.
-// Parametros:
-//   * projectId:  id del proyecto
-// Devuelve: nada
+/**
+ * Elimina un proyecto por su ID.
+ *
+ * @async
+ * @function projectDestroy
+ * @param {number} projectId - ID del proyecto.
+ * @returns {Promise<void>}
+ * @throws {Error} Si ocurre un error al eliminar el proyecto.
+ */
 exports.projectDestroy = async projectId => {
   await Project.destroy({where: {id: projectId}});
 };

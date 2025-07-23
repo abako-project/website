@@ -9,7 +9,13 @@ const {
 
 //-----------------------------------------------------------
 
-// Devuelve un listado de todos los skills.
+/**
+ * Devuelve un listado de todas las habilidades (skills) registradas.
+ *
+ * @async
+ * @function skillIndex
+ * @returns {Promise<Object[]>} Lista de habilidades en formato JSON.
+ */
 exports.skillIndex = async () => {
 
   const skills = await Skill.findAll();

@@ -15,12 +15,19 @@ const states = require("../../controllers/state");
 
 //-----------------------------------------------------------
 
-// Publicar el scope del proyecto.
-// Cambia el estado a ValidationNeeded.
-// Parametros:
-//   * projectId:  id del proyecto
-//   * consultantComment: comentario del consultor.
-// Devuelve: nada
+
+/**
+ * Publica el scope del proyecto.
+ * Cambia el estado del proyecto a `ValidationNeeded`
+ * y crea un comentario del consultor.
+ *
+ * @async
+ * @function scopeSubmit
+ * @param {number} projectId - ID del proyecto.
+ * @param {string} consultantComment - Comentario del consultor.
+ * @returns {Promise<void>}
+ * @throws {Error} Si falla la actualización del proyecto o la creación del comentario.
+ */
 exports.scopeSubmit = async (projectId, consultantComment) => {
 
   await Project.update({
@@ -33,12 +40,19 @@ exports.scopeSubmit = async (projectId, consultantComment) => {
 
 //-----------------------------------------------------------
 
-// El cliente acepta el scope del proyecto.
-// Cambia el estado a TasksPending.
-// Parametros:
-//   * projectId:  id del proyecto
-//   * clientResponse: respuesta del cliente al comentario.
-// Devuelve: nada
+
+/**
+ * Acepta el scope del proyecto por parte del cliente.
+ * Cambia el estado del proyecto a `TasksPending` y actualiza
+ * el último comentario con la respuesta del cliente.
+ *
+ * @async
+ * @function scopeAccept
+ * @param {number} projectId - ID del proyecto.
+ * @param {string} clientResponse - Respuesta del cliente al comentario.
+ * @returns {Promise<void>}
+ * @throws {Error} Si falla la actualización del proyecto o del comentario.
+ */
 exports.scopeAccept = async (projectId, clientResponse) => {
 
   await Project.update({
@@ -56,12 +70,18 @@ exports.scopeAccept = async (projectId, clientResponse) => {
 
 //-----------------------------------------------------------
 
-// Eñl cliente rechaza el scope del proyecto.
-// Cambia el estado a ScopingInProgress.
-// Parametros:
-//   * projectId:  id del proyecto
-//   * clientResponse: respuesta del cliente al comentario.
-// Devuelve: nada
+/**
+ * Rechaza el scope del proyecto por parte del cliente.
+ * Cambia el estado del proyecto a `ScopingInProgress` y actualiza
+ * el último comentario con la respuesta del cliente.
+ *
+ * @async
+ * @function scopeReject
+ * @param {number} projectId - ID del proyecto.
+ * @param {string} clientResponse - Respuesta del cliente al comentario.
+ * @returns {Promise<void>}
+ * @throws {Error} Si falla la actualización del proyecto o del comentario.
+ */
 exports.scopeReject = async (projectId, clientResponse) => {
 
   await Project.update({

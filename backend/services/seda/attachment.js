@@ -10,13 +10,18 @@ const {
 
 //-----------------------------------------------------------
 
-// Devuelve los datos de un attachment.
-// Parametros:
-//   * attachmentId: id del attachment
-// Devuelve: un JSON con los datos del attachment,
+/**
+ * Devuelve los datos de un attachment por su ID.
+ *
+ * @async
+ * @function attachment
+ * @param {number} attachmentId - ID del attachment.
+ * @returns {Promise<Object>} Objeto JSON con los datos del attachment.
+ * @throws {Error} Si no se encuentra el attachment con el ID especificado.
+ */
 exports.attachment = async attachmentId => {
 
-  const attachment = await Attachment.findByPk(attachment);
+  const attachment = await Attachment.findByPk(attachmentId);
 
   if (attachment) {
     return json.attachmentJson(attachment);
