@@ -3,13 +3,13 @@
 
 @import "./lib/_reset.sass";
 @import "./lib/_variables.sass";
-@import "./lib/_mixins.sass";
 @import "./lib/_text.sass";
+@import "./lib/_mixins.sass";
 @import "./lib/_componentslayout.sass";
 
 /* ui */
 @import "./ui/_buttons.sass";
-// @import "./ui/_inputs.sass";
+@import "./ui/_inputs.sass";
 // @import "./ui/_icons.sass";
 // @import "./ui/_divider.sass";
 
@@ -22,6 +22,7 @@
 
 * {
     // border: 1px solid tomato;
+    transition: ease-in-out, background-color .3s ease-in-out, height .4s ease-in-out
 }
 
 
@@ -47,6 +48,10 @@ html, body {
 // a {
 //     @extend .btn-primary;
 // }
+
+button {
+    @extend .btn;
+}
 
 #appOneColumn {
   height: 100vh;
@@ -133,33 +138,6 @@ html, body {
 
 /* ------------------------- */
 
-input[type=checkbox] {
-  width: auto;
-
-}
-
-input[type=text], input[type=email], input[type=password] {
-    border: 1px solid $text-dark-3;
-    transition: ease-in-out, background-color .4s ease-in-out, height .4s ease-in-out;
-}
-
-input[type=text]:focus, input[type=email]:focus, input[type=password]:focus {
-    border: 1px solid $brand;
-}
-
-textarea {
-    // background-color: white;
-    height: calc(15px * 10);
-    transition: ease-in-out, background-color .4s ease-in-out, height .4s ease-in-out;
-}
-
-textarea:focus {
-  background-color: yellow;
-  height: calc(15px * 10 + 10px);
-}
-
-/* ------------------------- */
-
 a {
   color: var(--primary);
 }
@@ -170,10 +148,7 @@ a.button, input.button {
     text-decoration: none;
     padding: 6px 8px;
     margin: 4px;
-    // background: #f5f5f5;
-    color: var(--primary);
-    border-radius: 4px;
-    border: solid 1px var(--secondary);
+    @extend .btn;
 }
 
 a.button:hover, input.button:hover {
@@ -187,7 +162,7 @@ a.adminDAO {
     font-size: large;
     text-decoration: none;
     padding: 8px 12px;
-    
+
     border-radius: 4px;
     border: solid 1px var(--secondary);
 

@@ -11,10 +11,15 @@ body {
 .card {
     // background-color: #f3f3f3;
     border-radius: 8px;
-    border: 2px solid grey;
+    // border: 2px solid grey;
     padding: 7px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    // box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     margin-bottom: 7px;
+    &-subtitle {
+        font-size: 1em;
+        margin-bottom: 15px;
+        font-weight: bold;
+    }
 }
 
 
@@ -29,38 +34,6 @@ body {
 
 .form-group {
     margin-bottom: 8px;
-}
-
-label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: 500;
-}
-
-input {
-    width: 100%;
-    padding: 6px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    box-sizing: border-box;
-}
-
-textarea {
-    width: 100%;
-    padding: 6px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    box-sizing: border-box;
-}
-
-button {
-//     border: none;
-//     padding: 8px 10px;
-//     border-radius: 4px;
-//     cursor: pointer;
-//     margin-right: 8px;
-//     margin-bottom: 8px;
-    @extend .btn
 }
 
 .logs {
@@ -93,10 +66,4 @@ button {
     font-size: 1.2em;
     margin-bottom: 15px;
     font-weight: bolder;
-}
-
-.card-subtitle {
-    font-size: 1em;
-    margin-bottom: 15px;
-    font-weight: bold;
 }
