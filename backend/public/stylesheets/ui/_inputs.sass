@@ -1,24 +1,27 @@
 label
-  display: inline-block
-  // margin-bottom: 5px
   font-weight: 400
-
-input, select, textarea, input[type='text'], input[type='email'], input[type='password']
+input, select, textarea
   @extend .bubble
-  width: 100%
   min-height: 36px
   display: flex
   flex-direction: column
   gap: $sp-5
   border-radius: $radi-6
-  border: 1px solid $text-dark-3
   font-weight: 500
+  &:focus
     outline: 1px solid $brand
     box-shadow: $shadow-2
   &::placeholder, &:disabled, &:invalid
     color: $text-dark-3
 
 .input
+  min-height: 36px
+  display: flex
+  flex-direction: column
+  gap: $sp-5
+  border-radius: $radi-6
+  font-weight: 500
+  font-size: $text-sm
   line-height: $lh-sm
   &::placeholder
     color: $text-dark-3
@@ -39,8 +42,9 @@ input, select, textarea, input[type='text'], input[type='email'], input[type='pa
     &:focus
       outline: 1px solid $brand
       box-shadow: $shadow-2
+      // background-color: $brand
 
-.onboardingForm > .input[type="text"]
+.onboardingForm .input[type="text"]
   display: flex
   flex-direction: column
   gap: $sp-5
@@ -80,7 +84,7 @@ input, select, textarea, input[type='text'], input[type='email'], input[type='pa
 /**--------------------------------------------------------------------------------------
  CHECKBOX
 
-.input_checkbox, input[type="checkbox"]
+.input_checkbox
   @extend .bubble
   padding: $sp-7
   display: flex
@@ -102,7 +106,7 @@ input, select, textarea, input[type='text'], input[type='email'], input[type='pa
     box-shadow: $shadow-2
     .custom-checkbox
       border-color: $brand
-  &:checked
+  &--checked
     background-color: $base-2
     .custom-checkbox
       background-color: $brand

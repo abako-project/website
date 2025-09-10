@@ -1,21 +1,43 @@
 <header id="appHeader">
-    <div class="login">
-        <% if (!locals.loginUser) { %>
-            <a href="/auth/login">Login</a>
-            <a href="/auth/register">Registro</a>
-        <% } else { %>
-            <% if (locals.loginUser.isAdmin) { %>
-                <span class="adminDAO">Admin</span>
-            <% } %>
-            <% if (locals.loginUser.developerId) { %>
-                <img class="attachment" src="/developers/<%= loginUser.developerId %>/attachment">
-                <a href="/developers/<%= loginUser.developerId %>/edit"><%= loginUser.email %></a>
-            <% } %>
-            <% if (locals.loginUser.clientId) { %>
-                <img class="attachment" src="/clients/<%= loginUser.clientId %>/attachment">
-                <a href="/clients/<%= loginUser.clientId %>/edit"><%= loginUser.email %></a>
-            <% } %>
-            <a href="/auth/logout?_method=DELETE">Logout</a>
-        <% } %>
+  <div class="login">
+    <% if (!locals.loginUser) { %>
+    <a href="/auth/login"> <button>Login</button></a>
+    <a href="/auth/register"><button>Registro</button></a>
+    <% } else { %> <% if (locals.loginUser.isAdmin) { %>
+    <span class="adminDAO">Admin</span>
+    <% } %> <% if (locals.loginUser.developerId) { %>
+    <div class="userContainer">
+      <span class="userContainer__avatar">
+        <img
+          class="attachment"
+          src="/developers/<%= loginUser.developerId %>/attachment"
+        />
+      </span>
+      <span class="userContainer__info">
+        <a href="/developers/<%= loginUser.developerId %>/edit"
+          ><%= loginUser.email %></a
+        > 
+      </span>
     </div>
+    <% } %> <% if (locals.loginUser.clientId) { %>
+    <div class="userContainer">
+      <span class="userContainer__avatar">
+        <img
+          class="attachment"
+          src="/clients/<%= loginUser.clientId %>/attachment"
+        />
+        <span class="dot"></span>
+      </span>
+      <span class="userContainer__info">
+        <a href="/clients/<%= loginUser.clientId %>/edit"
+          ><%= loginUser.email %></a
+        > 
+      </span>
+    </div>
+    <% } %>
+    <a href="/auth/logout?_method=DELETE"
+      ><i class="ri-logout-box-r-line"></i
+    ></a>
+    <% } %>
+  </div>
 </header>

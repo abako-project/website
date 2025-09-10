@@ -16,6 +16,11 @@
 /* components */
 // @import "./components/_mainHeader.sass";
 
+// cComponents
+@import './components/_appSidebar.sass';
+@import './components/_appHeader.sass'; // cambiar nombre pq no tiene sentido ya
+
+
 // Pages
 @import './pages/_onboarding.sass';
 @import './pages/_project.sass';
@@ -53,6 +58,11 @@ button {
     @extend .btn;
 }
 
+i {
+  @include remix-icon;
+
+}
+
 #appOneColumn {
   height: 100vh;
   display: grid;
@@ -66,12 +76,13 @@ button {
 }
 
 #appTwoColumns {
-    height: 100vh;
-    display: flex;
-    // grid-template-columns: 1fr 4fr;
-
+  // Para las vistas con sidebar
   margin: 0px;
   padding: 0px;
+  max-height: 100dvh;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  overflow: hidden;
 }
 
 #appLeft {
@@ -99,40 +110,19 @@ button {
   text-align: center;
 }
 
-#appNav {
-  padding: 2px 7px;
-  margin: 1px;
-  text-align: left;
-  border-bottom: 2px solid var(--secondary);
-  border-right: 0px;
-}
-
 
 #appMain {
   padding: 2px;
   margin: 1px;
   padding: 0px 10px;
+  height: 100dvh;
+  overflow: scroll;
 }
 
-#appTwoColumns #appMain {
-   // place-content: center;
-}
-
-
-#appHeader h1 {
-  margin: 8px;
-}
-
-#appHeader .login {
-  float: right;
-}
-
-#appHeader a {
-}
 
 /* ------------------------- */
 
-#appNav .todo {
+#appSidebar .todo {
   color: #cccccc;
 }
 
@@ -190,16 +180,13 @@ a.adminDAO:hover, button.adminDAO:hover {
 /* ------------------------- */
 
 a.projectFlow, button.projectFlow {
-  display: inline-block;
-  font-size: large;
-  text-decoration: none;
-  padding: 8px 12px;
-  margin: 4px;
-  border-radius: 4px;
-  border: solid 1px var(--secondary);
-
-  background-color: #8fbc8f;
-  color: beige;
+  // display: inline-block;
+  // font-size: large;
+  // text-decoration: none;
+  // padding: 8px 12px;
+  // margin: 4px;
+  // border-radius: 4px;
+  // border: solid 1px var(--secondary);
 }
 
 a.projectFlow:hover {

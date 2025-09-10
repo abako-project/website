@@ -4,11 +4,9 @@
   "scripts": {
     "start2": "PORT=3001 node ./bin/www",
     "start": "PORT=3001 supervisor ./bin/www",
-    "dev": "cross-env NODE_ENV=development PORT=3001 nodemon ./bin/www",
     "migrate": "sequelize db:migrate",
     "seed": "sequelize db:seed:all",
-    "mss": "npm run migrate && npm run seed && npm start",
-    "docs": "jsdoc -c config/jsdoc.json"
+    "mss": "npm run migrate && npm run seed && npm start"
   },
   "dependencies": {
     "@virtonetwork/sdk": "^0.0.4-alpha.5",
@@ -24,18 +22,11 @@
     "node-localstorage": "^3.0.5",
     "passport": "^0.6.0",
     "passport-local": "^1.0.0",
-    "sass": "^1.89.2",
+    "remixicon": "^4.6.0",
     "sequelize": "^6.32.1",
     "sequelize-cli": "^6.6.3",
     "serve-favicon": "^2.5.0",
     "sqlite3": "^5.1.6",
     "supervisor": "^0.12.0"
-  },
-  "devDependencies": {
-      "chokidar": "^4.0.3",
-      "connect-livereload": "^0.6.1",
-      "cross-env": "^7.0.3",
-      "livereload": "^0.9.3",
-      "nodemon": "^2.0.15"
   }
 }
