@@ -19,7 +19,7 @@ const backdoorRouter = require('./routes/backdoor');
 
 const sequelize = require("./models");
 
-import 'remixicon/fonts/remixicon.css';
+// import 'remixicon/fonts/remixicon.css';
 
 const app = express();
 

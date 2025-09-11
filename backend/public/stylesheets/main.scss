@@ -116,7 +116,13 @@ i {
   margin: 1px;
   padding: 0px 10px;
   height: 100dvh;
-  overflow: scroll;
+  overflow-y: scroll;
+  form {
+    height: 100dvh;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+  }
 }
 
 
@@ -345,8 +351,12 @@ article.projectsIndex {
   display: inline-block;
   width: auto;
   padding: 10px;
-  box-shadow: 2px 2px 7px #ccc;
   margin: 5px;
+  background-color: $base-2;
+  border-radius: $radi-6;
+  border: 1px solid $text-dark-3;
+  box-shadow: $shadow-1;
+  box-sizing: border-box;
 }
 
 article.projectsIndex div.title {
