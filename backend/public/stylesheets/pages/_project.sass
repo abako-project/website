@@ -1,10 +1,63 @@
 
+/* ------------------------- 
+ Project List (index)
+
+.projects
+    padding: $sp-12 $sp-17
+    display: grid
+    grid-template-columns: repeat(3, 1fr)
+    gap: 24px
+
+    .projectsIndex
+        @extend .bubble
+        @include flex-start
+        flex-direction: column
+        gap: $sp-8
+        padding: $sp-10
+        width: 100%
+        background-color: $base-2
+        // border-radius: $radi-6
+
+        .title
+            overflow: hidden
+            text-overflow: ellipsis
+            white-space: nowrap
+
+        .users
+            display: flex
+            justify-content: start
+            align-items: center
+            gap: $sp-12
+            .user
+                display: flex
+                justify-content: start
+                align-items: center
+                gap: $sp-4
+                // overflow: hidden
+                // text-overflow: ellipsis
+                margin: 0px 10px
+
+        .state
+            text-align: left
+            overflow: hidden
+            text-overflow: ellipsis
+            width: 200px
+            white-space: nowrap
+            margin-bottom: 5px
+            font-size: medium
+        .actions
+            width: 100%
+            @include flex-end
+            gap: $sp-6
+
+        
+
+/* ------------------------- 
+ Project Detail (show)
+
 .project
     margin: 0 112px
     padding-top: $sp-16
-
-    .projectCard
-        background-origin: blue
 
     .projectSubmission
         width: $full
@@ -87,3 +140,13 @@
 
     .projectDetail
         // width: $full
+
+/* ------------------------- */
+
+#projectNav
+    padding: 10px 0px
+    margin: 10px
+    text-align: left
+    border-right: 0px
+
+/* ------------------------- */

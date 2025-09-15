@@ -44,11 +44,24 @@
 
     // onboarding__right
     &__right
+        height: 100%
+        width: 100%
+        margin: auto
         padding: 0 $sp-19
-        @include flex-center
+        overflow: hidden
+        display: flex
         flex-direction: column
+        justify-content: center
+        align-items: start
+        #appMain
+            margin: auto
+            width: fit-content
+            height: fit-content
+            display: flex
+            flex-direction: column
+
         article
-            width: 80%
+            // width: 80%
             // min-width: 400px
             overflow: hidden
             max-width: 720px

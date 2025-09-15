@@ -30,12 +30,6 @@
     transition: ease-in-out, background-color .3s ease-in-out, height .4s ease-in-out
 }
 
-
-// html {
-//     height: 100%;
-//     margin: 0;
-// }
-
 html, body {
     // --primary: #2a4f03;
     // --secondary: #dfd88d;
@@ -50,17 +44,12 @@ html, body {
     color: $text-dark;
 }
 
-// a {
-//     @extend .btn-primary;
-// }
-
 button {
     @extend .btn;
 }
 
 i {
   @include remix-icon;
-
 }
 
 #appOneColumn {
@@ -71,8 +60,8 @@ i {
   margin: 0px;
   padding: 20px;
 
-    color: var(--primary);
-    // background: white;
+  color: var(--primary);
+  // background: white;
 }
 
 #appTwoColumns {
@@ -85,24 +74,6 @@ i {
   overflow: hidden;
 }
 
-#appLeft {
-  place-content: center;
-  text-align: center;
-
-    // background-color: var(--primary);
-    // color: white;
-}
-
-#appRight {
-    // display: grid;
-    // grid-template-rows: auto auto 1fr;
-
-    // padding: 20px;
-
-    // color: var(--primary);
-    // background: white;
-}
-
 #appHeader {
   align-content: center;
   padding: 2px;
@@ -110,21 +81,16 @@ i {
   text-align: center;
 }
 
-
 #appMain {
-  padding: 2px;
   margin: 1px;
-  padding: 0px 10px;
   height: 100dvh;
+  width: 100%;
+  padding: 0px 10px;
   overflow-y: scroll;
-  form {
-    height: 100dvh;
-    overflow: hidden;
-    display: flex;
-    align-items: center;
+  &::-webkit-scrollbar {
+      display: none;
   }
 }
-
 
 /* ------------------------- */
 
@@ -145,10 +111,6 @@ a.button, input.button {
     padding: 6px 8px;
     margin: 4px;
     @extend .btn;
-}
-
-a.button:hover, input.button:hover {
-    // background: lightgray;
 }
 
 /* ------------------------- */
@@ -345,60 +307,7 @@ div.actions {
 
 }
 
-/* ------------------------- */
-
-article.projectsIndex {
-  display: inline-block;
-  width: auto;
-  padding: 10px;
-  margin: 5px;
-  background-color: $base-2;
-  border-radius: $radi-6;
-  border: 1px solid $text-dark-3;
-  box-shadow: $shadow-1;
-  box-sizing: border-box;
-}
-
-article.projectsIndex div.title {
-  text-align: center;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  width: 200px;
-  white-space: nowrap;
-  margin-bottom: 5px;
-  font-size: x-large;
-}
-
-article.projectsIndex div.user {
-  float: right;
-  clear: both;
-  text-align: right;
-  font-size: small;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  margin: 0px 10px;
-}
 
 
-article.projectsIndex div.state {
-  text-align: left;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  width: 200px;
-  white-space: nowrap;
-  margin-bottom: 5px;
-  font-size: medium;
-}
 
 
-/* ------------------------- */
-
-#projectNav {
-  padding: 10px 0px;
-  margin: 10px;
-  text-align: left;
-  border-right: 0px;
-}
-
-
-/* ------------------------- */
