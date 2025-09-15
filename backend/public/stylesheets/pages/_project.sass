@@ -5,7 +5,7 @@
 .projects
     padding: $sp-12 $sp-17
     display: grid
-    grid-template-columns: repeat(3, 1fr)
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr))
     gap: 24px
 
     .projectsIndex
@@ -14,11 +14,15 @@
         flex-direction: column
         gap: $sp-8
         padding: $sp-10
+        // width: auto
         width: 100%
+        overflow: hidden
         background-color: $base-2
         // border-radius: $radi-6
 
         .title
+            display: block
+            max-width: 100%
             overflow: hidden
             text-overflow: ellipsis
             white-space: nowrap
@@ -38,18 +42,20 @@
                 margin: 0px 10px
 
         .state
-            text-align: left
+            padding: 0 $sp-5
+            border-radius: $radi-6
+            border: 1px solid $brand
+            // align-self: end
             overflow: hidden
             text-overflow: ellipsis
-            width: 200px
             white-space: nowrap
-            margin-bottom: 5px
-            font-size: medium
+            i
+                @include material-icon($text-dark-3)
+
         .actions
             width: 100%
             @include flex-end
             gap: $sp-6
-
         
 
 /* ------------------------- 

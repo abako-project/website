@@ -13,12 +13,15 @@
     font-weight: 700
     &:hover
         box-shadow: $shadow-2
-    .material-icons
-        @include material-icon($text-dark-3)
-        font-size: 24px
     &_primary
         color: $base-1
         background-color: $brand
+    &_icon
+        width: 44px
+        padding: 0
+    i, .material-icons
+        @include material-icon($text-dark-3)
+        font-size: 24px // icon large
 
 
     // &_secondary

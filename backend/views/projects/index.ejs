@@ -14,59 +14,67 @@
   <% for (let project of projects) { %>
 
   <article class="projectsIndex">
-    <h3 class="title"><%= project.title %></h3>
+    <h4 class="title"><%= project.title %></h4>
 
     <ul class="users">
-        <li class="user" id="client">
-            <% if (project.client) { %>
-            <img
-            class="attachment"
-            src="/clients/<%= project.clientId %>/attachment"
-            />
-            <small> <%= project.client.name %> </small>
-            <% } else { %>
-            <img class="attachment" src="/images/none.png" />
-            <small> <%= 'none' %> </small>
-            <% } %>
-        </li>
+      <li class="user" id="client">
+        <% if (project.client) { %>
+        <img
+          class="attachment"
+          src="/clients/<%= project.clientId %>/attachment"
+        />
+        <small> <%= project.client.name %> </small>
+        <% } else { %>
+        <img class="attachment" src="/images/none.png" />
+        <small> <%= 'none' %> </small>
+        <% } %>
+      </li>
 
-        <li class="user" id="consultant">
-            <% if (project.consultant) { %>
-            <img
-            class="attachment"
-            src="/developers/<%= project.consultantId %>/attachment"
-            />
-            <small> <%= project.consultant.name %> </small>
-            <% } else { %>
-            <img class="attachment" src="/images/none.png" />
-            <small> <%= 'none' %> </small>
-            <% } %>
-        </li>
+      <li class="user" id="consultant">
+        <% if (project.consultant) { %>
+        <img
+          class="attachment"
+          src="/developers/<%= project.consultantId %>/attachment"
+        />
+        <small> <%= project.consultant.name %> </small>
+        <% } else { %>
+        <img class="attachment" src="/images/none.png" />
+        <small> <%= 'none' %> </small>
+        <% } %>
+      </li>
 
-        <li class="user" id="developer">
-            <% if (developer && project.milestones.some(m => m.tasks.some(t =>
-            t.assignation.developerId === developer.id))) { %>
-            <img
-            class="attachment"
-            src="/developers/<%= developer.id %>/attachment"
-            />
-            <small> <%= developer.name %> </small>
-            <% } %>
-        </li>
+      <li class="user" id="developer">
+        <% if (developer && project.milestones.some(m => m.tasks.some(t =>
+        t.assignation.developerId === developer.id))) { %>
+        <img
+          class="attachment"
+          src="/developers/<%= developer.id %>/attachment"
+        />
+        <small> <%= developer.name %> </small>
+        <% } %>
+      </li>
     </ul>
 
-    <div class="state"><%= project.state ?? 'Unknown' %></div>
+    <div class="state">
+        <i class="ri-timer-2-line"></i>
+        <%= project.state ?? 'Unknown' %>
+    </div>
 
     <div class="actions">
-      <button onclick="redirectProjectShow(<%= project.id %>);">Show</button>
+      <button
+        class="btn btn_primary"
+        onclick="redirectProjectShow(<%= project.id %>);"
+      >
+        Show
+      </button>
 
       <% if (locals.loginUser && locals.loginUser.isAdmin) { %>
 
       <button
-        class="adminDAO"
+        class="adminDAO btn btn_icon"
         onclick="redirectProjectDelete(<%= project.id %>); return false;"
       >
-        Delete
+        <i class="ri-delete-bin-7-line"></i>
       </button>
 
       <% } %>
