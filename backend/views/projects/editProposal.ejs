@@ -7,12 +7,16 @@
     <%- include('./headers/_empty', {project, title: "Project description"}) %>
 <% } %>
 
-<form is="form-with-tzo" id="editProposalForm" action="/projects/<%= project.id %>?_method=PUT" method="POST">
+<div class="projectContainer1col">
+    
+    <form is="form-with-tzo" id="editProposalForm" action="/projects/<%= project.id %>?_method=PUT" method="POST">
+        <!-- <div class="projectProposal projectProposal__form"> -->
+            <%- include("./proposals/_form", {project, browserTimezoneOffset}) %>
+        <!-- </div> -->
+    </form>
 
-    <div class="card">
-        <%- include("./proposals/_form", {project, browserTimezoneOffset}) %>
+    <div class="buttonContainer">
+        <span></span>
+        <button class="button btn btn_primary" onclick="submitFormById('editProposalForm'); return false;" >Next: Define Objectives</button>
     </div>
-
-</form>
-
-<button class="button" onclick="submitFormById('editProposalForm'); return false;" >Next</button>
+</div>

@@ -41,25 +41,36 @@
                 // text-overflow: ellipsis
                 margin: 0px 10px
 
-        .state
-            padding: 0 $sp-5
-            border-radius: $radi-6
-            border: 1px solid $brand
-            // align-self: end
-            overflow: hidden
-            text-overflow: ellipsis
-            white-space: nowrap
-            i
-                @include material-icon($text-dark-3)
-
         .actions
             width: 100%
             @include flex-end
             gap: $sp-6
-        
+
+.state
+    padding: 0 $sp-5
+    height: fit-content
+    border-radius: $radi-6
+    border: 1px solid $brand
+    // align-self: end
+    overflow: hidden
+    text-overflow: ellipsis
+    white-space: nowrap
+    i
+        @include material-icon($text-dark-3)
 
 /* ------------------------- 
  Project Detail (show)
+
+.projectContainer
+    padding: $sp-12 $sp-17
+    display: flex
+    &__col1
+        width: 100%
+    &__col2
+        width: 100%
+
+.projectContainer1col
+    padding: $sp-12 $sp-17
 
 .project
     margin: 0 112px
@@ -122,7 +133,7 @@
 
 .projectSubmissionForm
     border-radius: $radi-6
-    border: 1px solid $base-border
+    border: 1px solid $stroke
     background-color: $base-2
     display: flex
     flex-direction: column
@@ -144,15 +155,52 @@
         font-size: $text-base
         line-height: $lh-base
 
-    .projectDetail
-        // width: $full
-
 /* ------------------------- */
 
+.projectHeader
+    padding: $sp-12 $sp-17
+    gap: $sp-6 // $sp-12
+    background-color: $base-2
+    border-bottom: 1px solid $stroke
+
 #projectNav
-    padding: 10px 0px
-    margin: 10px
     text-align: left
     border-right: 0px
 
-/* ------------------------- */
+/* -------------------------
+ Project Proposal
+ */
+.buttonContainer
+    display: flex
+    justify-content: space-between
+
+.projectProposal
+    padding: $sp-15
+    @extend .bubble
+    background-color: $base-2
+    &__form
+        display: grid
+        gap: $sp-14
+        grid-template-columns: repeat(2, 1fr)
+        grid-template-rows: repeat(3, 1fr)
+        .area1 // title
+            grid-area: 1/1/2/2
+        .area2 // summary
+            grid-area: 2/1/2/2
+        .area3 // date
+            grid-area: 1/2/2/-1
+        .area4 
+            grid-area: 2/1/1/1
+        .area5 // description
+            grid-area: 3/1/-1/-1
+    &__summary
+
+.form-group
+    label
+        font-size: $text-base
+        line-height: $lh-base
+        font-weight: 500
+        color: $text-dark-2
+    input, textarea
+        width: 100%
+        background-color: $base-1

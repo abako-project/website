@@ -6,8 +6,10 @@
     <%- include('./headers/_empty', {project, title: "Project description"}) %>
 <% } %>
 
-<div class="card">
-    <%- include("./objectives/_edit", {project}) %>
+<div class="projectContainer1col">
+
+    <div class="card">
+        <%- include("./objectives/_edit", {project}) %>
 
     <% if ((locals.loginUser.clientId === project.clientId &&
                     !project.state) ||
@@ -15,38 +17,43 @@
                     project.state &&
                     ["scopingInProgress"].includes(project.state))) { %>
 
-        <%- include("./objectives/_new", {project}) %>
-
-    <% } %>
-</div>
-
-
-<div class="card">
-    <%- include("./constraints/_edit", {project}) %>
-
-    <% if ((locals.loginUser.clientId === project.clientId &&
-                    !project.state) ||
-            (locals.loginUser.developerId === project.consultantId &&
+                        <%- include("./objectives/_new", {project}) %>
+                        
+                        <% } %>
+                        </div>
+                        
+                        
+                        <div class="card">
+                            <%- include("./constraints/_edit", {project}) %>
+                            
+                            <% if ((locals.loginUser.clientId === project.clientId &&
+                            !project.state) ||
+                            (locals.loginUser.developerId === project.consultantId &&
                     project.state &&
                     ["scopingInProgress"].includes(project.state))) { %>
         <%- include("./constraints/_new", {project}) %>
 
-    <% } %>
+        <% } %>
 </div>
 
-<button class="button" onclick="redirectProjectEdit(<%= project.id %>); return false;">Back</button>
-
-
-<% if (locals.loginUser.clientId === project.clientId && !project.state) { %>
-
-    <button class="button" onclick="redirectProjectShow(<%= project.id %>); return false;">Next</button>
-
-<% } else if (locals.loginUser.developerId === project.consultantId &&
+<div class="buttonContainer">
+    
+    <button class="button" onclick="redirectProjectEdit(<%= project.id %>); return false;">Back</button>
+    
+    
+    <% if (locals.loginUser.clientId === project.clientId && !project.state) { %>
+        
+        <button class="button" onclick="redirectProjectShow(<%= project.id %>); return false;">Next</button>
+        
+    <% } else if (locals.loginUser.developerId === project.consultantId &&
         project.state &&
         ["scopingInProgress"].includes(project.state)) { %>
-
-    <button class="button" onclick="redirectMilestonesEdit(<%= project.id %>); return false;">Next</button>
-
-<% } %>
-
-
+            
+            <button class="button" onclick="redirectMilestonesEdit(<%= project.id %>); return false;">Next</button>
+            
+            <% } %>
+            </div>
+            
+            
+            
+</div>

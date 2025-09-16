@@ -1,8 +1,6 @@
 
 <style>
     .contenedor {
-        padding: 5px 20px;
-        margin: 5px 0px;
 
         display: grid;
 
@@ -10,11 +8,10 @@
                  'title   title   title   title   client flow'
                  'summary summary summary summary client   flow'
                  'nav     nav     nav     .       state     flow';
-        gap: 5px;
     }
 </style>
 
-<div class="contenedor bubble">
+<div class="contenedor projectHeader">
 
     <h1 style="grid-area: title;  font-size: xx-large; "> <%= project.title %> </h1>
 
@@ -34,7 +31,7 @@
         </nav>
     </div>
 
-    <p style="grid-area: state; background-color: lightcoral; text-align: center;"> <%= project.state %> </p>
+    <p class="state" style="grid-area: state;"> <%= project.state %> </p>
 
     <div  style="grid-area: flow;">
 

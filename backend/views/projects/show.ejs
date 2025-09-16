@@ -3,14 +3,21 @@
     subtitle: "Once submitted, your project will be reviewed and voted on by DAO members within 48–72 hours."})
 %>
 
-<%- include("./submits/_all", {project}) %>
+<div class="projectContainer1col">
+    <div class="projectProposal projectProposal__summary">
 
-<%- include("./proposals/_show", {project}) %>
-
-<%- include("./objectives/_show", {project}) %>
-
-<%- include("./constraints/_show", {project}) %>
-
-<% if (project.milestones?.length) { %>
-    <%- include("./_showMilestonesAndTasks", {project}) %>
-<% } %>
+        
+        
+        <%- include("./proposals/_show", {project}) %>
+        
+        <%- include("./objectives/_show", {project}) %>
+        
+        <%- include("./constraints/_show", {project}) %>
+        
+        <% if (project.milestones?.length) { %>
+            <%- include("./_showMilestonesAndTasks", {project}) %>
+            <% } %>
+            
+        </div>
+        <%- include("./submits/_all", {project}) %>
+</div>

@@ -1,13 +1,14 @@
-<%- include('./headers/_project', {project})  %>
+<%- include('./headers/_project', {project}) %>
 
-<%- include("./submits/_all", {project}) %>
-
-<%- include("./proposals/_overview", {project}) %>
-
-<%- include("./objectives/_show", {project}) %>
-
-<%- include("./constraints/_show", {project}) %>
-
-<% if (project.milestones?.length) { %>
-    <%- include("./_showMilestonesAndTasks", {project}) %>
-<% } %>
+<div class="projectContainer1col">
+  <div class="projectContainer__col1">
+    <%- include("./submits/_all", {project}) %> <%-
+    include("./proposals/_overview", {project}) %> <%-
+    include("./objectives/_show", {project}) %> <%-
+    include("./constraints/_show", {project}) %>
+  </div>
+  <div class="projectContainer__col2">
+    <% if (project.milestones?.length) { %> <%-
+    include("./_showMilestonesAndTasks", {project}) %> <% } %>
+  </div>
+</div>

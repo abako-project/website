@@ -82,10 +82,8 @@ i {
 }
 
 #appMain {
-  margin: 1px;
   height: 100dvh;
   width: 100%;
-  padding: 0px 10px;
   overflow-y: scroll;
   &::-webkit-scrollbar {
       display: none;
@@ -114,6 +112,11 @@ a.button, input.button {
 }
 
 
+.backdoor {
+  height: fit-content;
+  width: fit-content;
+  margin: 40px;
+}
 
 .backdoorBtn {
     position: fixed;
