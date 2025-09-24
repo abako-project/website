@@ -1,20 +1,31 @@
-<h1>What kind of account do you want to create?</h1>
+<div class="onboarding">
+  <%- include('../layouts/onboarding/_appLeft') %>
 
-<div class="card">
-    <div class="card-title">Developer</div>
-    <div class="card-subtitle">I&apos;m looking to work in Web3 projects</div>
+  <section class="onboarding__right">
+    <h1>What kind of account do you want to create?</h1>
 
-    <div class="form-group">
+    <div class="card">
+      <div class="card-title">Developer</div>
+      <div class="card-subtitle">I&apos;m looking to work in Web3 projects</div>
+
+      <div class="form-group btn btn_primary">
         <a href="/auth/register/developer/new">Sign up</a>
+      </div>
     </div>
-</div>
 
-<div class="card">
-    <div class="card-title">Company/Organization</div>
-    <div class="card-subtitle">I&apos;m looking for Web3 development talent</div>
-    <div class="card-subtitle">I need an integral Web3 solution - consultants, project leads, an developers</div>
+    <div class="card">
+      <div class="card-title">Company/Organization</div>
+      <div class="card-subtitle">
+        I&apos;m looking for Web3 development talent
+      </div>
+      <div class="card-subtitle">
+        I need an integral Web3 solution - consultants, project leads, an
+        developers
+      </div>
 
-    <div class="form-group">
+      <div class="form-group btn btn_primary">
         <a href="/auth/register/client/new">Sign up</a>
+      </div>
     </div>
+  </section>
 </div>

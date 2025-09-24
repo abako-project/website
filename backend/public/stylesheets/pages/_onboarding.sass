@@ -53,6 +53,9 @@
         flex-direction: column
         justify-content: center
         align-items: start
+
+        overflow-y: scroll
+
         #appMain
             margin: auto
             width: fit-content
@@ -97,14 +100,16 @@
         width: 100%
 
 .modalRegister
+    @extend .bubble
     width: 540px
     min-width: 540px
-    // overflow: hidden
     // Ajustar altura >>>>>
+    height: fit-content
+    min-height: 200px
     padding: $sp-10 $sp-18 $sp-12 $sp-18
     @include flex-start
     flex-direction: column
-    gap: $sp-12
+    // gap: $sp-12
     .input
         width: 100%
     .input_checkbox

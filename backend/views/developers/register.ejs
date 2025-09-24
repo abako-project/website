@@ -1,34 +1,44 @@
-<h1>Registro de un Developer</h1>
+<div class="onboarding">
 
-<form id="registerForm" action="/auth/register/developer" method="POST">
-  <div class="card">
-    <h2>Datos de registro</h2>
-    <div class="form-group">
-      <label for="email">Email:</label>
-      <input
+  <%- include('../layouts/onboarding/_appLeft') %>
+
+
+  <section id="appRight" class="onboarding__right">
+    <h1>Registro de un Developer</h1>
+
+  <form id="registerForm" action="/auth/register/developer" method="POST">
+    <div class="card">
+      <h2>Datos de registro</h2>
+      <div class="form-group">
+        <label for="email">Email:</label>
+        <input
         type="email"
         id="email"
         name="email"
         placeholder="email"
         required
-      />
-    </div>
-    <div class="form-group">
-      <label for="name">Nombre de Usuario (opcional):</label>
-      <input type="text" id="name" name="name" placeholder="Nombre" />
-    </div>
+        />
+      </div>
+      <div class="form-group">
+        <label for="name">Nombre de Usuario (opcional):</label>
+        <input type="text" id="name" name="name" placeholder="Nombre" />
+      </div>
 
-    <input type="hidden" id="preparedData" name="preparedData" />
+      <input type="hidden" id="preparedData" name="preparedData" />
+      
+      <div class="form-group">
+        <button class="btn btn_primary" type="submit" id="registrationButton">
+          Registrar
+        </button>
+      </div>
 
-    <div class="form-group">
-      <button class="btn btn_primary" type="submit" id="registrationButton">Registrar</button>
+      <div class="form-group">
+        <p id="status"></p>
+      </div>
     </div>
-
-    <div class="form-group">
-      <p id="status"></p>
-    </div>
-  </div>
-</form>
+  </form>
+</section>
+</div>
 
 <script type="module">
   import { default as SDK } from "https://cdn.jsdelivr.net/npm/@virtonetwork/sdk@0.0.4-alpha.5/dist/esm/sdk.js";

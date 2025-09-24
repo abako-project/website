@@ -1,5 +1,9 @@
 <!-- Login de un Developer -->
 
+<div class="onboarding">
+  <%- include('../layouts/onboarding/_appLeft') %>
+
+  <section class="onboarding__right">
 <form id="loginForm" action="/auth/login/developer" method="POST">
   <h2>Login de un Developer</h2>
   <div class="form">
@@ -19,6 +23,8 @@
     </div>
   </div>
 </form>
+  </section>
+</div>
 
 <script type="module">
   import { default as SDK } from "https://cdn.jsdelivr.net/npm/@virtonetwork/sdk@0.0.4-alpha.5/dist/esm/sdk.js";
