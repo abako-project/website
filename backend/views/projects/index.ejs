@@ -1,84 +1,91 @@
-<%- include('./headers/_projects') %> <% const client = c; %> <% if (client) {
-%>
-<p>
-  <button
-    class="projectFlow btn btn_primary"
-    onclick="redirectProjectNew(); return false;"
-  >
-    Create New Project
-  </button>
-</p>
-<% } %>
-
-<section class="projects">
-  <% for (let project of projects) { %>
-
-  <article class="projectsIndex">
-    <h4 class="title"><%= project.title %></h4>
-
-    <ul class="users">
-      <li class="user" id="client">
-        <% if (project.client) { %>
-        <img
-          class="attachment"
-          src="/clients/<%= project.clientId %>/attachment"
-        />
-        <small> <%= project.client.name %> </small>
-        <% } else { %>
-        <img class="attachment" src="/images/none.png" />
-        <small> <%= 'none' %> </small>
-        <% } %>
-      </li>
-
-      <li class="user" id="consultant">
-        <% if (project.consultant) { %>
-        <img
-          class="attachment"
-          src="/developers/<%= project.consultantId %>/attachment"
-        />
-        <small> <%= project.consultant.name %> </small>
-        <% } else { %>
-        <img class="attachment" src="/images/none.png" />
-        <small> <%= 'none' %> </small>
-        <% } %>
-      </li>
-
-      <li class="user" id="developer">
-        <% if (developer && project.milestones.some(m => m.tasks.some(t =>
-        t.assignation.developerId === developer.id))) { %>
-        <img
-          class="attachment"
-          src="/developers/<%= developer.id %>/attachment"
-        />
-        <small> <%= developer.name %> </small>
-        <% } %>
-      </li>
-    </ul>
-
-    <div class="state">
-        <i class="ri-timer-2-line"></i>
-        <%= project.state ?? 'Unknown' %>
-    </div>
-
-    <div class="actions">
+<div id="appTwoColumns">
+  <div class="col1">
+    <!-- Sidebar -->
+    <%- include('../layouts/_appSidebar') %>
+  </div>
+  <div class="col2">
+    <!-- Header -->
+    <%- include('./headers/_projects') %> <% const client = c; %> <% if (client)
+    { %>
       <button
-        class="btn btn_primary"
-        onclick="redirectProjectShow(<%= project.id %>);"
+        class="projectFlow btn btn_primary"
+        onclick="redirectProjectNew(); return false;"
       >
-        Show
+        Create New Project
       </button>
+    <% } %>
 
-      <% if (locals.loginUser && locals.loginUser.isAdmin) { %>
+    <section class="projects">
+      <% for (let project of projects) { %>
 
-      <button
-        class="adminDAO btn btn_icon"
-        onclick="redirectProjectDelete(<%= project.id %>); return false;"
-      >
-        <i class="ri-delete-bin-7-line"></i>
-      </button>
+      <article class="projectsIndex">
+        <h4 class="title"><%= project.title %></h4>
 
+        <ul class="users">
+          <li class="user" id="client">
+            <% if (project.client) { %>
+            <img
+              class="attachment"
+              src="/clients/<%= project.clientId %>/attachment"
+            />
+            <small> <%= project.client.name %> </small>
+            <% } else { %>
+            <img class="attachment" src="/images/none.png" />
+            <small> <%= 'none' %> </small>
+            <% } %>
+          </li>
+
+          <li class="user" id="consultant">
+            <% if (project.consultant) { %>
+            <img
+              class="attachment"
+              src="/developers/<%= project.consultantId %>/attachment"
+            />
+            <small> <%= project.consultant.name %> </small>
+            <% } else { %>
+            <img class="attachment" src="/images/none.png" />
+            <small> <%= 'none' %> </small>
+            <% } %>
+          </li>
+
+          <li class="user" id="developer">
+            <% if (developer && project.milestones.some(m => m.tasks.some(t =>
+            t.assignation.developerId === developer.id))) { %>
+            <img
+              class="attachment"
+              src="/developers/<%= developer.id %>/attachment"
+            />
+            <small> <%= developer.name %> </small>
+            <% } %>
+          </li>
+        </ul>
+
+        <div class="state">
+          <i class="ri-timer-2-line"></i>
+          <%= project.state ?? 'Unknown' %>
+        </div>
+
+        <div class="actions">
+          <button
+            class="btn btn_primary"
+            onclick="redirectProjectShow(<%= project.id %>);"
+          >
+            Show
+          </button>
+
+          <% if (locals.loginUser && locals.loginUser.isAdmin) { %>
+
+          <button
+            class="adminDAO btn btn_icon"
+            onclick="redirectProjectDelete(<%= project.id %>); return false;"
+          >
+            <i class="ri-delete-bin-7-line"></i>
+          </button>
+
+          <% } %>
+        </div>
+      </article>
       <% } %>
-    </div>
-  </article>
-  <% } %>
-</section>
+    </section>
+  </div>
+</div>

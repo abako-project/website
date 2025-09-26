@@ -44,12 +44,35 @@ html, body {
     color: $text-dark;
 }
 
+/* Reorg */
+// Además revisar inputs y formularios del login y register (onboarding) y projects
 button {
     @extend .btn;
+    input {
+      border: none;
+      background: transparent;
+      font-weight: inherit;
+    }
+    &.form-group {
+      margin-top: $sp-12;
+    }
 }
+.form-group > button {
+margin-top: $sp-12;
+}/* Reorg */
 
 i {
   @include remix-icon;
+}
+
+.layoutWrapper {
+  margin: 0px;
+  padding: 0px;
+  height: 100dvh;
+  max-height: 100dvh;
+  width: 100dvw;
+  max-width: 100dvw;
+  overflow: hidden;
 }
 
 #appOneColumn {
@@ -73,6 +96,8 @@ i {
   grid-template-columns: auto 1fr;
   overflow: hidden;
 }
+
+
 
 #appHeader {
   align-content: center;
