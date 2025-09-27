@@ -1,0 +1,33 @@
+
+<%- include('../components/_cancelTopbar', {step: 1}) %>
+
+<div id="appTwoColumns">
+
+    <div class="col1">
+        <!-- Sidebar -->
+        <%- include('../components/_progressSidebar', {step: 1}) %>
+    </div>
+
+    <div class="col2">
+
+        <%- include('../components/headers/_basic', {title: "Let´s start with your project description"}) %>
+
+        <div class="projectContainer1col">
+
+            <form is="form-with-tzo" id="newProposalForm" action="/projects" method="POST">
+
+                <!-- <div class="projectProposal projectProposal__form"> -->
+                <%- include("./edit/_formProposal", {project, allBudgets, allDeliveryTimes, allProjectTypes, browserTimezoneOffset}) %>
+                <!-- </div> -->
+
+            </form>
+
+            <button class="button" onclick="submitFormById('newProposalForm'); return false;">
+                Next: Define Objectives
+            </button>
+        </div>
+
+    </div>
+
+</div>
+

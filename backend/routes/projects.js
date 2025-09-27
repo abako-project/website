@@ -32,6 +32,12 @@ router.get('/:projectId(\\d+)',
   permissionController.isAuthenticated,
     projectController.show);
 
+// Mostrar la pantalla que ofrece publicar  (submit) una propuesta nueva o rechazada
+router.get('/:projectId(\\d+)/submit',
+  permissionController.isAuthenticated,
+  permissionController.userTypesRequired({client: true}),
+  projectController.submit);
+
 // Mostrar formulario de edición de una propuesta
 router.get('/:projectId(\\d+)/edit',
   permissionController.isAuthenticated,
@@ -128,7 +134,7 @@ router.put('/:projectId(\\d+)/objectives/swaporder/:id1(\\d+)/:id2(\\d+)',
   permissionController.userTypesRequired({client: true, projectConsultant: true}),
   objectiveController.swapOrder);
 
-// Intercambiar orden de mostrar dos constraints
+// Intercambiar orden de mostrar dos edit
 router.put('/:projectId(\\d+)/constraints/swaporder/:id1(\\d+)/:id2(\\d+)',
   permissionController.isAuthenticated,
   permissionController.userTypesRequired({client: true, projectConsultant: true}),

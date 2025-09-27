@@ -23,6 +23,9 @@ const sedaDeveloper = require("./developer");
 const sedaAttachment = require("./attachment");
 const sedaLanguage = require("./language");
 const sedaRole = require("./role");
+const sedaBudget = require("./budget");
+const sedaDeliveryTime = require("./deliveryTime");
+const sedaProjectType = require("./projectType");
 const sedaSkill = require("./skill");
 
 
@@ -94,6 +97,12 @@ exports.role = sedaRole.role;
 exports.roleCreate = sedaRole.roleCreate;
 exports.roleUpdate = sedaRole.roleUpdate;
 exports.roleDestroy = sedaRole.roleDestroy;
+
+exports.budgetIndex = sedaBudget.budgetIndex;
+
+exports.deliveryTimeIndex = sedaDeliveryTime.deliveryTimeIndex;
+
+exports.projectTypeIndex = sedaProjectType.projectTypeIndex;
 
 exports.skillIndex = sedaSkill.skillIndex;
 

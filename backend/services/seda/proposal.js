@@ -4,8 +4,7 @@ const json = require("./json");
 
 const {
   models: {
-    Project, Client, Developer, User, Attachment,
-    Objective, Constraint, Milestone, Task, Role, Comment, Assignation
+    Project
   }
 } = require('../../models');
 
@@ -22,17 +21,18 @@ const {
  * @param {Object} data - Datos de la propuesta.
  * @param {string} data.title - Título del proyecto.
  * @param {string} data.summary - Resumen del proyecto.
+ * @param {number} data.projectTypeId - Id del tipo de proyecto.
  * @param {string} data.description - Descripción detallada.
  * @param {string} data.url - URL de referencia.
- * @param {number} data.budget - Presupuesto estimado.
- * @param {string} data.currency - Moneda del presupuesto.
+ * @param {number} data.budgetId - Id del presupuesto estimado.
+ * @param {number} data.deliveryTimeId - Id de la hora de entrega estimado.
  * @param {string} data.deliveryDate - Fecha estimada de entrega.
  * @returns {Promise<Object>} Objeto JSON con los datos del proyecto creado.
  */
-exports.proposalCreate = async (clientId, {title, summary, description, url, budget, currency, deliveryDate}) => {
+exports.proposalCreate = async (clientId, {title, summary, projectTypeId, description, url, budgetId, deliveryTimeId, deliveryDate}) => {
 
   const project = await Project.create({
-    title, summary, description, state: null, url, budget, currency, deliveryDate, clientId, consultantId: undefined
+    title, summary, description, projectTypeId, state: null, url, budgetId, deliveryTimeId, deliveryDate, clientId, consultantId: undefined
   });
 
   return json.projectJson(project);
@@ -52,15 +52,16 @@ exports.proposalCreate = async (clientId, {title, summary, description, url, bud
  * @param {string} data.summary
  * @param {string} data.description
  * @param {string} data.url
- * @param {number} data.budget
- * @param {string} data.currency
+ * @param {number} data.projectTypeId
+ * @param {number} data.budgetId
+ * @param {number} data.deliveryTimeId
  * @param {string} data.deliveryDate
  * @returns {Promise<Object>} Objeto JSON con los datos actualizados del proyecto.
  */
-exports.proposalUpdate = async (projectId, {title, summary, description, url, budget, currency, deliveryDate}) => {
+exports.proposalUpdate = async (projectId, {title, summary, description, url, projectTypeId, budgetId, deliveryTimeId, deliveryDate}) => {
 
   await Project.update({
-    title, summary, description, url, budget, currency, deliveryDate
+    title, summary, description, url, projectTypeId, budgetId, deliveryTimeId, deliveryDate
   }, {
     where: {id: projectId}
   });

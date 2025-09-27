@@ -14,6 +14,9 @@ const Developer = require('./developer')(sequelize);
 const Language = require('./language')(sequelize);
 const Role = require('./role')(sequelize);
 const Skill = require('./skill')(sequelize);
+const Budget = require('./budget')(sequelize);
+const DeliveryTime = require('./deliveryTime')(sequelize);
+const ProjectType = require('./projectType')(sequelize);
 
 const Project = require('./project')(sequelize);
 const Objective = require('./objective')(sequelize);
@@ -75,6 +78,18 @@ Constraint.belongsTo(Project, {as: 'project', foreignKey: 'projectId'});
 // Relation 1-to-N between Project and Milestone:
 Project.hasMany(Milestone, {as: 'milestones', foreignKey: 'projectId'});
 Milestone.belongsTo(Project, {as: 'project', foreignKey: 'projectId'});
+
+// Relation 1-to-N between Budget and Project
+Budget.hasMany(Project, {as: 'projects', foreignKey: 'budgetId'});
+Project.belongsTo(Budget, {as: 'budget', foreignKey: 'budgetId'});
+
+// Relation 1-to-N between DeliveryTime and Project
+DeliveryTime.hasMany(Project, {as: 'projects', foreignKey: 'deliveryTimeId'});
+Project.belongsTo(DeliveryTime, {as: 'deliveryTime', foreignKey: 'deliveryTimeId'});
+
+// Relation 1-to-N between ProjectType and Project
+ProjectType.hasMany(Project, {as: 'projects', foreignKey: 'projectTypeId'});
+Project.belongsTo(ProjectType, {as: 'projectType', foreignKey: 'projectTypeId'});
 
 // Relation 1-to-N between Milestone and Tasks
 Milestone.hasMany(Task, {as: 'tasks', foreignKey: 'milestoneId'});

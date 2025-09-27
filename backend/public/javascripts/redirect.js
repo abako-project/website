@@ -1,3 +1,20 @@
+// Dashboard
+
+function redirectProjects() {
+  location.href = "/projects";
+}
+
+function redirectClientProjects(clientId) {
+  location.href = "/clients/" + clientId + "projects";
+}
+
+function redirectDeveloperProjects(developerId) {
+  location.href = "/developers/" + developerId + "/projects";
+}
+
+function redirectDeveloperMilestones(developerId) {
+  location.href = "/developers/" + developerId + "/milestones";
+}
 
 // Project and Proposal:
 
@@ -49,11 +66,11 @@ function redirectObjectivesSwapOrder(projectId, objectiveId1, objectiveId2) {
 }
 
 function redirectConstraintDelete(projectId, constraintId) {
-  location.href = "/projects/" + projectId + "/constraints/" + constraintId + "?_method=DELETE";
+  location.href = "/projects/" + projectId + "/edit/" + constraintId + "?_method=DELETE";
 }
 
 function redirectConstraintsSwapOrder(projectId, constraintId1, constraintId2) {
-  location.href = "/projects/" + projectId + "/constraints/swaporder/" + constraintId1 + "/" + constraintId2 + "?_method=PUT";
+  location.href = "/projects/" + projectId + "/edit/swaporder/" + constraintId1 + "/" + constraintId2 + "?_method=PUT";
 }
 
 // Scopes:

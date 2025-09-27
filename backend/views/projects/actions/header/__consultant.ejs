@@ -1,0 +1,31 @@
+<%
+const actions = [];
+
+if (locals.loginUser.developerId === project.consultantId) {
+
+    if (project.state && ["scopingInProgress"].includes(project.state)) {
+        actions.push({
+            title: "Review Project",
+            callback: "redirectMilestonesEdit(" + project.id + ")",
+        });
+    }
+
+    if (project.state && ["tasksPending"].includes(project.state)) {
+        actions.push({
+            title: "Review tasks",
+            callback: "redirectTasksEdit(" + project.id + ")",
+        });
+    }
+
+    if (project.state && ["tasksPending"].includes(project.state)) {
+        if (project.milestones.every(milestone => milestone.tasks.length !== 0)) {
+            actions.push({
+                title: "Send tasks",
+                callback: "redirectTasksSubmit(" + project.id + ")",
+            });
+        }
+    }
+}
+%>
+
+<%- include("./__render", {actions}) %>

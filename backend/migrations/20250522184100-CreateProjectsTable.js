@@ -28,12 +28,6 @@ module.exports = {
         url: {
           type: Sequelize.STRING
         },
-        budget: {
-          type: Sequelize.FLOAT
-        },
-        currency: {
-          type: Sequelize.STRING
-        },
         deliveryDate: {
           type: Sequelize.DATE
         },
@@ -50,6 +44,33 @@ module.exports = {
           type: Sequelize.INTEGER,
           references: {
             model: "Developers",
+            key: "id"
+          },
+          onUpdate: 'CASCADE',
+          onDelete: 'SET NULL'
+        },
+        budgetId: {
+          type: Sequelize.INTEGER,
+          references: {
+            model: "Budgets",
+            key: "id"
+          },
+          onUpdate: 'CASCADE',
+          onDelete: 'SET NULL'
+        },
+        deliveryTimeId: {
+          type: Sequelize.INTEGER,
+          references: {
+            model: "DeliveryTimes",
+            key: "id"
+          },
+          onUpdate: 'CASCADE',
+          onDelete: 'SET NULL'
+        },
+        projectTypeId: {
+          type: Sequelize.INTEGER,
+          references: {
+            model: "ProjectTypes",
             key: "id"
           },
           onUpdate: 'CASCADE',

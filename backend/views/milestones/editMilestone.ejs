@@ -1,0 +1,17 @@
+<h1>Editar Milestone</h1>
+
+<form is="form-with-tzo" id="editMilestoneForm" action="/projects/<%= project.id %>/milestones/<%= milestone.id %>?_method=PUT" method="POST">
+
+    <div class="card">
+        <%- include("./edit/_formMilestone", {project, milestone, browserTimezoneOffset}) %>
+    </div>
+
+</form>
+
+<button class="button" onclick="redirectMilestonesEdit(<%= project.id %>); return false;">
+    Cancel
+</button>
+
+<button class="button" onclick="submitFormById('editMilestoneForm'); return false;">
+    Save and Next
+</button>

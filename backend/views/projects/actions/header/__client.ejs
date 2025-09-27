@@ -1,0 +1,26 @@
+<%
+const actions = [];
+
+if (locals.loginUser.clientId === project.clientId) {
+
+    if (!project.state) {
+        actions.push({
+            title: "Review",
+            callback: "redirectProjectEdit(" + project.id + ")",
+        });
+        actions.push({
+            title: "Submit Project",
+            callback: "redirectProjectSubmit(" + project.id + ")",
+        });
+    }
+
+    if (project.state && ["rejected"].includes(project.state)) {
+        actions.push({
+            title: "Review",
+            callback: "redirectProjectEdit(" + project.id + ")",
+        });
+    }
+}
+%>
+
+<%- include("./__render", {actions}) %>

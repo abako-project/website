@@ -9,6 +9,7 @@ const upload = multer({
 
 const developerController = require('../controllers/developer');
 const projectController = require('../controllers/project');
+const milestoneController = require('../controllers/milestone');
 
 /* Autoloading */
 router.param('developerId', developerController.load);  // autoload :developerId
@@ -31,6 +32,11 @@ router.get('/:developerId(\\d+)/attachment',
 
 // Route to developer projects
 router.get('/:developerId(\\d+)/projects', projectController.index);
+
+
+// Route to developer milestones
+router.get('/:developerId(\\d+)/milestones', milestoneController.milestones);
+
 
 
 module.exports = router;

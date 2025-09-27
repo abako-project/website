@@ -38,7 +38,8 @@ const userJson = user => {
 
 /**
  * Convierte un objeto Project en un objeto JSON completo,
- * incluyendo cliente, consultor, objetivos, restricciones, hitos y comentarios.
+ * incluyendo cliente, consultor, objetivos, restricciones, hitos, comentarios, presupuesto,
+ * tipo de hora de entrega, tipo de proyecto, ....
  *
  * @function projectJson
  * @param {Object} project - Instancia del modelo Project.
@@ -51,10 +52,11 @@ const projectJson = project => {
     title: project.title,
     description: project.description,
     summary: project.summary,
+    projectTypeId: project.projectTypeId,
     state: project.state,
     url: project.url,
-    budget: project.budget,
-    currency: project.currency,
+    budgetId: project.budgetId,
+    deliveryTimeId: project.deliveryTimeId,
     deliveryDate: project.deliveryDate.valueOf(),
     clientId: project.clientId,
     consultantId: project.consultantId,
@@ -67,6 +69,9 @@ const projectJson = project => {
     constraints: project.constraints?.map(constraint => constraintJson(constraint)) || [],
     milestones: project.milestones?.map(milestone => milestoneJson(milestone)) || [],
     comments: project.comments?.map(comment => commentJson(comment)) || [],
+    budget: budgetJson(project.budget),
+    deliveryTime: deliveryTimeJson(project.deliveryTime),
+    projectType: projectTypeJson(project.projectType),
   };
 };
 
@@ -208,6 +213,56 @@ const roleJson = role => {
   };
 };
 
+/**
+ * Convierte un objeto Budget en un objeto JSON.
+ *
+ * @function budgetJson
+ * @param {Object} budget - Instancia del modelo Budget.
+ * @returns {Object|undefined} Objeto JSON del budget o `undefined`.
+ */
+const budgetJson = budget => {
+  if (!budget) return undefined;
+  return {
+    id: budget.id,
+    description: budget.description,
+    createdAt: budget.createdAt.valueOf(),
+    updatedAt: budget.updatedAt.valueOf(),
+  };
+};
+
+/**
+ * Convierte un objeto DeliveryTime en un objeto JSON.
+ *
+ * @function deliveryTimeJson
+ * @param {Object} deliveryTime - Instancia del modelo DeliveryTime.
+ * @returns {Object|undefined} Objeto JSON del DeliveryTime o `undefined`.
+ */
+const deliveryTimeJson = deliveryTime => {
+  if (!deliveryTime) return undefined;
+  return {
+    id: deliveryTime.id,
+    description: deliveryTime.description,
+    createdAt: deliveryTime.createdAt.valueOf(),
+    updatedAt: deliveryTime.updatedAt.valueOf(),
+  };
+};
+
+/**
+ * Convierte un objeto ProjectType en un objeto JSON.
+ *
+ * @function projectTypeJson
+ * @param {Object} projectType - Instancia del modelo ProjectType.
+ * @returns {Object|undefined} Objeto JSON del ProjectType o `undefined`.
+ */
+const projectTypeJson = projectType => {
+  if (!projectType) return undefined;
+  return {
+    id: projectType.id,
+    description: projectType.description,
+    createdAt: projectType.createdAt.valueOf(),
+    updatedAt: projectType.updatedAt.valueOf(),
+  };
+};
 
 /**
  * Convierte un objeto Milestone en un objeto JSON, incluyendo sus tareas.
@@ -329,6 +384,9 @@ exports.languageJson = languageJson;
 exports.objectiveJson = objectiveJson;
 exports.constraintJson = constraintJson;
 exports.roleJson = roleJson;
+exports.budgetJson = budgetJson;
+exports.deliveryTimeJson = deliveryTimeJson;
+exports.projectTypeJson = projectTypeJson;
 exports.milestoneJson = milestoneJson;
 exports.skillJson = skillJson;
 exports.taskJson = taskJson;

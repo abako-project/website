@@ -1,0 +1,26 @@
+<div id="appTwoColumns">
+
+    <div class="col1">
+        <!-- Sidebar -->
+        <%- include('../components/_mainSidebar') %>
+    </div>
+
+    <div class="col2">
+        <%- include('./headers/_project', { project }) %>
+
+        <div class="projectContainer1col">
+            <div class="projectProposal projectProposal__summary">
+
+                <%- include("../proposals/info/_body", {project}) %>
+
+
+                <% if (project.milestones?.length) { %>
+                    <%- include("../milestones/info/_showMilestones", {project}) %>
+                <% } %>
+            </div>
+
+            <%- include("./actions/body/_all", {project}) %>
+        </div>
+    </div>
+</div>
+

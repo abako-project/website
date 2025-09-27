@@ -1,0 +1,28 @@
+
+<style>
+    .contenedor {
+        display: grid;
+        grid-template-columns:  1fr auto;
+    }
+</style>
+
+<div class="contenedor projectHeader">
+
+    <div>
+        <h1> <%= locals.title ?? "" %> </h1>
+        <br />
+        <%= locals.subtitle ?? ""%>
+    </div>
+
+    <div>
+        <% for (let action of locals.actions ?? []) { %>
+            <button class="<%= action.class %>"
+                    onclick="<%= action.callback %>; return false;">
+                <%= action.title %>
+            </button>
+            <br/>
+        <% } %>
+    </div>
+
+</div>
+

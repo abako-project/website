@@ -10,6 +10,7 @@ const flash = require('express-flash');
 
 const authRouter = require('./routes/auth');
 const indexRouter = require('./routes/index');
+const dashboardRouter = require('./routes/dashboard');
 const clientsRouter = require('./routes/clients');
 const developersRouter = require('./routes/developers');
 const projectsRouter = require('./routes/projects');
@@ -99,6 +100,7 @@ app.use(function(req, res, next) {
 
 app.use('/auth', authRouter);
 app.use('/', indexRouter);
+app.use('/dashboard', dashboardRouter);
 app.use('/clients', clientsRouter);
 app.use('/developers', developersRouter);
 app.use('/projects', projectsRouter);

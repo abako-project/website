@@ -31,10 +31,11 @@
         </nav>
     </div>
 
-    <p class="state" style="grid-area: state;"> <%= project.state %> </p>
+    <p class="state" style="grid-area: state;"> <%= project.state ?? "Sin publicar aun"%> </p>
 
     <div  style="grid-area: flow;">
 
-        <%- include('_flow', {project}) %>
+        <%- include("../actions/header/_all") %>
+
     </div>
 </div>

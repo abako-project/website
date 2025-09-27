@@ -5,7 +5,7 @@ exports.proposalUpdateActionForm = projectId => "/projects/" + projectId + "?_me
 
 exports.objectiveCreateActionForm = projectId => "/projects/" + projectId + "/objectives";
 
-exports.constraintCreateActionForm = projectId => "/projects/" + projectId + "/constraints";
+exports.constraintCreateActionForm = projectId => "/projects/" + projectId + "/edit";
 
 exports.scopeSubmitActionForm = projectId => "/projects/" + projectId + "/scopeSubmit?_method=PUT";
 

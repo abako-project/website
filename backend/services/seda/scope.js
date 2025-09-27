@@ -10,7 +10,7 @@ const {
   }
 } = require('../../models');
 
-const states = require("../../controllers/state");
+const states = require("../../core/state");
 
 
 //-----------------------------------------------------------

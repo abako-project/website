@@ -4,12 +4,12 @@ const json = require("./json");
 
 const {
   models: {
-    Project, Client, Developer, User, Attachment,
+    Project, Client, Developer, User, Attachment, Budget, DeliveryTime, ProjectType,
     Objective, Constraint, Milestone, Task, Role, Comment, Assignation
   }
 } = require('../../models');
 
-const states = require("../../controllers/state");
+const states = require("../../core/state");
 
 
 //-----------------------------------------------------------
@@ -40,6 +40,9 @@ exports.project = async projectId => {
           {model: User, as: "user"},
           {model: Attachment, as: "attachment"}]
       },
+      {model: Budget, as: "budget"},
+      {model: DeliveryTime, as: "deliveryTime"},
+      {model: ProjectType, as: "projectType"},
       {
         model: Objective, as: 'objectives',
         separate: true,

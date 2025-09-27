@@ -1,0 +1,30 @@
+<%
+const actions = [];
+
+if (locals.loginUser.isAdmin) {
+    actions.push({
+        title: "Delete",
+        callback: "redirectProjectDelete(" + project.id + ")",
+    });
+
+    if (project.state && ["pending"].includes(project.state)) {
+        actions.push({
+            title: "Reject",
+            callback: "redirectProjectReject(" + project.id + ")",
+        });
+        actions.push({
+            title: "Approve",
+            callback: "redirectProjectApprove(" + project.id + ")",
+        });
+    }
+
+    if (project.state && ["approved"].includes(project.state)) {
+        actions.push({
+            title: "Select/Change Consultant",
+            callback: "redirectSelectProjectConsultant(" + project.id + ")",
+        });
+    }
+}
+%>
+
+<%- include("./__render", {actions}) %>

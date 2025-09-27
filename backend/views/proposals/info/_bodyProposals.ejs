@@ -1,0 +1,24 @@
+
+<div class="">
+
+
+    <div class="form-group">
+
+        <p><strong>Description:</strong> <%= project.description %></p>
+
+        <p><strong>Budget:</strong> <%= project.budget?.description %> </p>
+
+        <p><strong>Project type:</strong> <%= project.projectType?.description %> </p>
+
+        <p><strong>Delivery time:</strong> <%= project.deliveryTime?.description %> </p>
+        <p>
+            <strong>Delivery Date:</strong>
+            <span id="deliveryDate"></span>
+        </p>
+        <script type="module">
+          document.getElementById("deliveryDate").innerHTML = new Date(<%= project.deliveryDate.valueOf() %>).toLocaleString();
+        </script>
+
+    </div>
+
+</div>

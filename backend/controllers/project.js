@@ -20,7 +20,7 @@ exports.index = async (req, res, next) => {
 
     // No se puede usar el valor client en las opciones cuando
     // hay llamadas anidadas a la funcion include de EJS.
-    res.render('projects/index', {projects, c: client, developer});
+    res.render('dashboard/projects', {projects, c: client, developer});
   } catch (error) {
     next(error);
   }
@@ -28,32 +28,44 @@ exports.index = async (req, res, next) => {
 
 
 // Mostrar formulario de creación
-exports.newProposal = (req, res, next) => {
+exports.newProposal = async (req, res, next) => {
 
-  const project = {
-    title: "",
-    summary: "",
-    description: "",
-    url: "",
-    budget: "",
-    currency: "",
-    deliveryDate: Date.now() + 60 * 60 * 1000
-  };
+  try {
+    const project = {
+      title: "",
+      summary: "",
+      description: "",
+      url: "",
+      projectTypeId: undefined,
+      budgetId: undefined,
+      deliveryTimeId: 4,
+      deliveryDate: Date.now() + 60 * 60 * 1000
+    };
 
-  // Timezone offset del cliente
-  let browserTimezoneOffset = Number(req.query.browserTimezoneOffset ?? 0);
-  browserTimezoneOffset = Number.isNaN(browserTimezoneOffset) ? 0 : browserTimezoneOffset;
+    // Timezone offset del cliente
+    let browserTimezoneOffset = Number(req.query.browserTimezoneOffset ?? 0);
+    browserTimezoneOffset = Number.isNaN(browserTimezoneOffset) ? 0 : browserTimezoneOffset;
 
-  res.render('projects/newProposal', {
-    project,
-    browserTimezoneOffset,
-  });
+    const allBudgets = await seda.budgetIndex();
+    const allDeliveryTimes = await seda.deliveryTimeIndex();
+    const allProjectTypes = await seda.projectTypeIndex();
+
+    res.render('proposals/newProposal', {
+      project,
+      allBudgets,
+      allDeliveryTimes,
+      allProjectTypes,
+      browserTimezoneOffset,
+    });
+  } catch (error) {
+    next(error);
+  }
 };
 
 // Crear proyecto
 exports.createProposal = async (req, res, next) => {
 
-  let {title, summary, description, url, budget, currency, deliveryDate} = req.body;
+  let {title, summary, description, url, projectTypeId, budgetId, deliveryTimeId, deliveryDate} = req.body;
 
   let {browserTimezoneOffset} = req.query;
   browserTimezoneOffset = Number(browserTimezoneOffset);
@@ -62,6 +74,8 @@ exports.createProposal = async (req, res, next) => {
 
   deliveryDate = new Date(deliveryDate).valueOf() + browserTimezoneOffset - serverTimezoneOffset;
 
+  projectTypeId ||= undefined;
+
   const clientId = req.session.loginUser?.clientId;
 
   let proposal = {
@@ -69,8 +83,9 @@ exports.createProposal = async (req, res, next) => {
     summary,
     description,
     url,
-    budget,
-    currency,
+    projectTypeId,
+    budgetId,
+    deliveryTimeId,
     deliveryDate
   };
 
@@ -87,8 +102,15 @@ exports.createProposal = async (req, res, next) => {
       req.flash('error', 'Error: There are errors in the form:');
       error.errors.forEach(({message}) => req.flash('error', message));
 
-      res.render('projects/newProposal', {
+      const allBudgets = await seda.budgetIndex();
+      const allDeliveryTimes = await seda.deliveryTimeIndex();
+      const allProjectTypes = await seda.projectTypeIndex();
+
+      res.render('proposals/newProposal', {
         proposal,
+        allBudgets,
+        allDeliveryTimes,
+        allProjectTypes,
         browserTimezoneOffset,
       });
     } else {
@@ -104,21 +126,39 @@ exports.show = async (req, res, next) => {
   const projectId = req.params.projectId;
   const project = await seda.project(projectId);
 
+ // if (!project.state) {
+
+  //  res.redirect("/projects/" + projectId + "/submit")
+
+ // } else {
+
+    // Timezone offset del cliente
+    let browserTimezoneOffset = Number(req.query.browserTimezoneOffset ?? 0);
+    browserTimezoneOffset = Number.isNaN(browserTimezoneOffset) ? 0 : browserTimezoneOffset;
+
+
+    res.render('projects/showProject', {
+      project,
+      browserTimezoneOffset,
+    });
+//  }
+};
+
+
+// Mostrar la pantalla para ofrecer hacer un submit de la propuesta
+exports.submit = async (req, res, next) => {
+
+  const projectId = req.params.projectId;
+  const project = await seda.project(projectId);
+
   // Timezone offset del cliente
   let browserTimezoneOffset = Number(req.query.browserTimezoneOffset ?? 0);
   browserTimezoneOffset = Number.isNaN(browserTimezoneOffset) ? 0 : browserTimezoneOffset;
 
-  if (project.state) {
-    res.render('projects/overview', {
-      project,
-      browserTimezoneOffset,
-    });
-  } else {
-    res.render('projects/show', {
-      project,
-      browserTimezoneOffset,
-    });
-  }
+  res.render('proposals/submitProposal', {
+    project,
+    browserTimezoneOffset,
+  });
 };
 
 
@@ -133,9 +173,15 @@ exports.editProposal = async (req, res, next) => {
     let browserTimezoneOffset = Number(req.query.browserTimezoneOffset ?? 0);
     browserTimezoneOffset = Number.isNaN(browserTimezoneOffset) ? 0 : browserTimezoneOffset;
 
+    const allBudgets = await seda.budgetIndex();
+    const allDeliveryTimes = await seda.deliveryTimeIndex();
+    const allProjectTypes = await seda.projectTypeIndex();
 
-    res.render('projects/editProposal', {
+    res.render('proposals/editProposal', {
       project,
+      allBudgets,
+      allDeliveryTimes,
+      allProjectTypes,
       browserTimezoneOffset,
     });
   } catch (error) {
@@ -162,8 +208,9 @@ exports.updateProposal = async (req, res, next) => {
     summary: body.summary,
     description: body.description,
     url: body.url,
-    budget: body.budget,
-    currency: body.currency,
+    projectTypeId: body.projectTypeId || undefined,
+    budgetId: body.budgetId,
+    deliveryTimeId: body.deliveryTimeId,
     deliveryDate: new Date(body.deliveryDate).valueOf() + browserTimezoneOffset - serverTimezoneOffset
   };
 
@@ -179,8 +226,15 @@ exports.updateProposal = async (req, res, next) => {
       req.flash('error', 'Error: There are errors in the form:');
       error.errors.forEach(({message}) => req.flash('error', message));
 
-      res.render('projects/editProposal', {
+      const allBudgets = await seda.budgetIndex();
+      const allDeliveryTimes = await seda.deliveryTimeIndex();
+      const allProjectTypes = await seda.projectTypeIndex();
+
+      res.render('proposals/editProposal', {
         project,
+        allBudgets,
+        allDeliveryTimes,
+        allProjectTypes,
         browserTimezoneOffset,
       });
     } else {
@@ -347,7 +401,7 @@ exports.editObjectivesConstraints = async (req, res) => {
   browserTimezoneOffset = Number.isNaN(browserTimezoneOffset) ? 0 : browserTimezoneOffset;
 
 
-  res.render('projects/editObjectivesConstraints', {
+  res.render('proposals/editObjectivesConstraints', {
     project,
     browserTimezoneOffset,
   });

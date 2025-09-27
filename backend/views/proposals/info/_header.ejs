@@ -1,0 +1,27 @@
+
+
+<div>
+    <h1 style="font-size: xx-large; "> <%= project.title %> </h1>
+
+    <p style="font-size: small; "> <%= project.summary %> </p>
+
+    <div>
+        <img class="attachment" src="/clients/<%= project.clientId %>/attachment">
+    </div>
+
+    <div>
+        <%= project.client.name %>
+    </div>
+
+    <div>
+        <span id="creationDate"></span>
+    </div>
+    <script type="module">
+      document.getElementById("creationDate").innerHTML = new Date(<%= project.createdAt.valueOf() %>).toLocaleString();
+    </script>
+
+    <div>
+        <%= project.client.website %>
+    </div>
+
+</div>

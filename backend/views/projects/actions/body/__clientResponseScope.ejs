@@ -1,0 +1,44 @@
+
+<% if (locals.loginUser && locals.loginUser.clientId === project.clientId) { %>
+
+    <% if (project.state && ["validationNeeded"].includes(project.state)) { %>
+
+        <div style="display: flex;   justify-content: flex-end;">
+            <div style="padding: 5px; margin: 10px; width: 50%;  border: 5px dotted seagreen;">
+
+                <form id="responseScopeForm" method="POST">
+
+                    <div class="form-group">
+                        <div class="card-subtitle">Consultant&apos; proposal</div>
+
+                        <p><%= project.comments?.[0]?.consultantComment %></p>
+
+                    </div>
+
+                    <div class="form-group">
+                        <label for="clientResponse">Your Response:</label>
+                        <input type="text" id="clientResponse" name="clientResponse"
+                               value=""
+                               placeholder="Response" autocomplete="off">
+                    </div>
+
+                    <button class="right projectFlow"
+                            onclick="document.getElementById('responseScopeForm').action = '/projects/<%= project.id %>/scopeAccept?_method=PUT'; submitFormById('responseScopeForm'); return false;">
+                        Accept Scope
+                    </button>
+
+                    <button class="right projectFlow"
+                            onclick="document.getElementById('responseScopeForm').action = '/projects/<%= project.id %>/scopeReject?_method=PUT'; submitFormById('responseScopeForm'); return false;">
+                        Reject Scope
+                    </button>
+
+                    <div class="clear"></div>
+
+                </form>
+
+            </div>
+        </div>
+
+    <% } %>
+
+<% } %>

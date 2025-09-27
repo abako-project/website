@@ -50,7 +50,7 @@ exports.destroy = async (req, res) => {
 };
 
 
-// Intercambiar el orden de visualizacion de 2 constraints
+// Intercambiar el orden de visualizacion de 2 edit
 exports.swapOrder = async (req, res, next) => {
 
     try {
@@ -58,7 +58,7 @@ exports.swapOrder = async (req, res, next) => {
 
         await seda.constraintsSwapOrder(req.params.id1, req.params.id2);
 
-        console.log('constraints swapped successfully.');
+        console.log('edit swapped successfully.');
         res.redirect('/projects/' + constraint1.projectId + '/objectives_constraints/edit');
     } catch (error) {
         next(error);

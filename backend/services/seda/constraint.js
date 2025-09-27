@@ -52,14 +52,14 @@ exports.constraintCreate = async (projectId, description) => {
 //-----------------------------------------------------------
 
 /**
- * Intercambia el orden de visualización de dos constraints.
+ * Intercambia el orden de visualización de dos edit.
  *
  * @async
  * @function constraintsSwapOrder
  * @param {number} constraintId1 - ID del primer constraint.
  * @param {number} constraintId2 - ID del segundo constraint.
  * @returns {Promise<void>}
- * @throws {Error} Si alguno de los constraints no existe o falla la transacción.
+ * @throws {Error} Si alguno de los edit no existe o falla la transacción.
  */
 exports.constraintsSwapOrder = async (constraintId1, constraintId2) => {
 

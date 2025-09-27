@@ -1,0 +1,147 @@
+<nav id="appSidebar" role="navigation" class="appSidebar">
+
+    <div class="appSidebar__header">
+        <div class="logo">
+            <img src="/images/polkatalent_logo.svg" alt="Polka Talent brand logo"/>
+            <bold>PolkaTalent</bold>
+        </div>
+        <div class="notifications">
+            <span class="notifications__dot"></span>
+            <i class="ri-notification-2-line"></i>
+        </div>
+    </div>
+
+    <ul class="appSidebar__menu">
+        <!-- Dashboard -->
+        <li class="todo">
+
+            <% if (locals.loginUser?.isAdmin) { %>
+                <a href="/projects">
+                    <i class="ri-layout-vertical-line"></i><span> Dashboard</span>
+                </a>
+            <% } %>
+
+            <% if (locals.loginUser.clientId) { %>
+                <a href="/clients/<%= locals.loginUser.clientId %>/projects">
+                    <i class="ri-layout-vertical-line"></i><span> Dashboard</span>
+                </a>
+            <% } %>
+
+            <% if (locals.loginUser.developerId) { %>
+                <a href="/developers/<%= locals.loginUser.developerId %>/projects">
+                    <i class="ri-layout-vertical-line"></i><span> Dashboard</span>
+                </a>
+            <% } %>
+
+        </li>
+
+        <!-- Profile -->
+        <li class="todo">
+            <a href="#">
+                <% if (locals.loginUser.developerId) { %>
+                    <a href="/developers/<%= loginUser.developerId %>/edit">
+                        <i class="ri-user-line"></i>
+                        Profile
+                    </a>
+                <% } %>
+
+                <% if (locals.loginUser.clientId) { %>
+                    <a href="/clients/<%= loginUser.clientId %>/edit">
+                        <i class="ri-user-line"></i>
+                        Profile
+                    </a>
+                <% } %>
+            </a>
+        </li>
+
+
+        <!-- Reputation -->
+        <!--
+        < % if (locals.loginUser?.developerId) { % >
+        <li class="todo">
+            <a href="#">
+                <i class="ri-user-line"></i>
+                <span> Reputation </span>
+            </a>
+        </li>
+        < % } % >
+        -->
+
+        <!-- Governance -->
+        <% if (locals.loginUser?.developerId) { %>
+        <li class="todo">
+            <a href="#">
+                <i class="ri-bank-line"></i>
+                <span> Governance </span>
+            </a>
+        </li>
+        <% } %>
+
+        <!-- Payments -->
+        <li class="todo">
+            <a href="#">
+                <i class="ri-bank-card-line"></i>
+                <span>Payments</span>
+            </a>
+        </li>
+
+    <hr />
+
+    <!-- Projects -->
+    <% if (locals.loginUser?.isAdmin) { %>
+        <li>
+            <a href="/projects">
+                <i class="ri-notification-2-line"></i> <span>Proyectos ??</span>
+            </a>
+        </li>
+    <% } %>
+
+    <% if (locals.loginUser?.developerId) { %>
+        <li>
+            <a href="/developers/<%= loginUser.developerId %>/projects">
+                <i class="ri-notification-2-line"></i>
+                <span>Proyectos ??</span>
+            </a>
+        </li>
+    <% } %>
+
+    <% if (locals.loginUser?.clientId) { %>
+        <li>
+            <a href="/clients/<%= loginUser.clientId %>/projects">
+                <i class="ri-notification-2-line"></i> <span>Proyectos??</span>
+            </a>
+        </li>
+    <% } %>
+    </ul>
+
+    <hr />
+
+    <ul>
+        <li>
+            <% if (locals.loginUser.isAdmin) { %>
+                <span class="adminDAO">
+                    <i class="ri-user-line"></i>
+                     Admin
+                </span>
+            <% } %>
+
+            <% if (locals.loginUser.developerId) { %>
+                 <img class="attachment"
+                      src="/developers/<%= loginUser.developerId %>/attachment"
+                 />
+                 <%= loginUser.name %>
+            <% } %>
+
+            <% if (locals.loginUser.clientId) { %>
+                <img class="attachment"
+                     src="/clients/<%= loginUser.clientId %>/attachment"
+                />
+                <%= loginUser.name %>
+            <% } %>
+
+            <a href="/auth/logout?_method=DELETE">
+                <i class="ri-logout-box-r-line"></i>
+            </a>
+        </li>
+    </ul>
+</nav>

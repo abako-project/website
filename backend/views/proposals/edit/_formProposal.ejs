@@ -1,0 +1,99 @@
+<div class="projectProposal projectProposal__form">
+  <div class="form-group area1">
+    <label for="title">Title:</label>
+    <input
+      type="text"
+      id="title"
+      name="title"
+      value="<%= project.title %>"
+      placeholder="Title"
+      autocomplete="off"
+      required
+    />
+  </div>
+
+  <div class="form-group area2">
+    <label for="summary">Summary:</label>
+    <textarea id="summary" name="summary"><%= project.summary %></textarea>
+  </div>
+
+  <div class="form-group area5">
+    <label for="description">Description:</label>
+    <textarea id="description" name="description">
+    <%= project.description %></textarea
+    >
+  </div>
+
+  <div class="form-group ">
+    <label for="url">URL:</label>
+    <input
+      type="text"
+      id="url"
+      name="url"
+      value="<%= project.url %>"
+      placeholder="URL"
+      autocomplete="off"
+    />
+  </div>
+
+  <div class="form-group ">
+    <label for="budgetId">Budget (USD):</label>
+      <% for (const budget of allBudgets) { %>
+          <p>
+              <input type="radio"
+                     id="budgetId"
+                     name="budgetId"
+                     value="<%= budget.id %>"
+                      <%= project.budgetId === budget.id && "checked" %>
+              />
+              <b><%= budget.description %></b>
+          </p>
+      <% } %>
+
+  </div>
+
+
+    <div class="form-group">
+        <label for="deliveryTimeId">Delivery time:</label>
+        <% for (const deliveryTime of allDeliveryTimes) { %>
+            <p>
+                <input type="radio"
+                       id="deliveryTimeId"
+                       name="deliveryTimeId"
+                       value="<%= deliveryTime.id %>"
+                        <%= project.deliveryTimeId === deliveryTime.id && "checked" %>
+                />
+                <b><%= deliveryTime.description %></b>
+            </p>
+        <% } %>
+
+    </div>
+
+
+  <div class="form-group area3">
+    <label for="deliveryDate">Delivery Date:</label>
+    <input
+      type="datetime-local"
+      id="deliveryDate"
+      name="deliveryDate"
+      value="<%= new Date(project.deliveryDate - browserTimezoneOffset).toISOString().slice(0, 16) %>"
+      placeholder="Delivery Date"
+      autocomplete="off"
+    />
+  </div>
+
+    <div class="form-group">
+        <label for="projectTypeId">Project Type:</label>
+        <select id="projectTypeId" name="projectTypeId">
+            <option value="">None</option>
+            <% for (const projectType of allProjectTypes) { %>
+                <option value="<%= projectType.id %>"
+                        <%= project.projectTypeId === projectType.id && "selected" %> >
+                    <%= projectType.description %> %>
+                </option>
+            <% } %>
+        </select>
+    </div>
+
+
+</div>

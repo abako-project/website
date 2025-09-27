@@ -1,6 +1,6 @@
 'use strict';
 
-const states = require("../controllers/state");
+const states = require("../core/state");
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     const sequelize = queryInterface.sequelize;
@@ -13,8 +13,11 @@ module.exports = {
     const Milestone = require("../models/milestone")(sequelize);
     const Task = require("../models/task")(sequelize);
     const Role = require("../models/role")(sequelize);
+    const Budget = require("../models/budget")(sequelize);
+    const DeliveryTime = require('../models/deliveryTime')(sequelize);
+    const ProjectType = require('../models/projectType')(sequelize);
 
-    const states = require("../controllers/state");
+    const states = require("../core/state");
 
     // Relation 1-to-N between Project and Objective:
     Project.hasMany(Objective, {as: 'objectives', foreignKey: 'projectId'});
@@ -44,15 +47,28 @@ module.exports = {
     Role.hasMany(Task, {as: 'tasks', foreignKey: 'roleId'});
     Task.belongsTo(Role, {as: 'role', foreignKey: 'roleId'});
 
+    // Relation 1-to-N between Budget and Project
+    Budget.hasMany(Project, {as: 'projects', foreignKey: 'budgetId'});
+    Project.belongsTo(Budget, {as: 'budget', foreignKey: 'budgetId'});
+
+    // Relation 1-to-N between DeliveryTime and Project
+    DeliveryTime.hasMany(Project, {as: 'projects', foreignKey: 'deliveryTimeId'});
+    Project.belongsTo(DeliveryTime, {as: 'deliveryTime', foreignKey: 'deliveryTimeId'});
+
+    // Relation 1-to-N between ProjectType and Project
+    ProjectType.hasMany(Project, {as: 'projects', foreignKey: 'projectTypeId'});
+    Project.belongsTo(ProjectType, {as: 'projectType', foreignKey: 'projectTypeId'});
+
     const projects = [
       {
         title: 'Servidor Quiz',
         description: 'Sevidor adivinanzas',
         summary: 'Servicio Web desarrollado con express',
+        projectTypeId: 4,
         state: states.ProjectState.InProgress,
         url: 'https://quiz.dit.upm.es',
-        budget: '5000',
-        currency: 'EUR',
+        budgetId: 1,
+        deliveryTimeId: 4,
         deliveryDate: new Date(new Date().getTime() + (3 * 60 * 60 * 1000)),
         clientId: 1,
         consultantId: 1,
@@ -71,14 +87,12 @@ module.exports = {
             title: 'Prototipo',
             description: 'Desarrollo de un prototipo',
             budget: '3000',
-            currency: 'EUR',
             deliveryDate: new Date(new Date().getTime() + (1 * 60 * 60 * 1000)),
             tasks: [
               {
                 title: 'Pt1',
                 description: 'Tarea 1',
                 budget: '2000',
-                currency: 'EUR',
                 deliveryDate: new Date(new Date().getTime() + (1 * 60 * 60 * 1000)),
                 roleId: 1
               },
@@ -86,7 +100,6 @@ module.exports = {
                 title: 'PT2',
                 description: 'Tarea 1Dos',
                 budget: '1000',
-                currency: 'EUR',
                 deliveryDate: new Date(new Date().getTime() + (1 * 60 * 60 * 1000)),
                 roleId: 2
               }
@@ -96,14 +109,12 @@ module.exports = {
             title: 'Producto Final',
             description: 'Desarrollo de un producto final',
             budget: '2000',
-            currency: 'EUR',
             deliveryDate: new Date(new Date().getTime() + (2 * 60 * 60 * 1000)),
             tasks: [
               {
                 title: 'FT11',
                 description: 'Tarea Subfinal 1',
                 budget: '1000',
-                currency: 'EUR',
                 deliveryDate: new Date(new Date().getTime() + (1 * 60 * 60 * 1000)),
                 roleId: 1
               },
@@ -111,7 +122,6 @@ module.exports = {
                 title: 'FT2',
                 description: 'Tarea Subfinal 2',
                 budget: '300',
-                currency: 'EUR',
                 deliveryDate: new Date(new Date().getTime() + (1 * 60 * 60 * 1000)),
                 roleId: 2
               },
@@ -119,7 +129,6 @@ module.exports = {
                 title: 'FT3',
                 description: 'Tarea Subfinal 3',
                 budget: '700',
-                currency: 'EUR',
                 deliveryDate: new Date(new Date().getTime() + (1 * 60 * 60 * 1000)),
                 roleId: 2
               }
@@ -131,10 +140,11 @@ module.exports = {
         title: 'Gana el Último',
         description: 'SwiftUI App',
         summary: 'Aplicacion para iPhone',
+        projectTypeId: 6,
         state: states.ProjectState.InProgress,
         url: 'https://dit.upm.es',
-        budget: '5000',
-        currency: 'EUR',
+        budgetId: 2,
+        deliveryTimeId: 4,
         deliveryDate: new Date(new Date().getTime() + (4 * 60 * 60 * 1000)),
         clientId: 1,
         consultantId: 2,
@@ -150,14 +160,12 @@ module.exports = {
             title: 'Vistas',
             description: 'Desarrollo de las vistas',
             budget: '1000',
-            currency: 'EUR',
             deliveryDate: new Date(new Date().getTime() + (1 * 60 * 60 * 1000)),
             tasks: [
               {
                 title: 'Layout',
                 description: 'Tarea Subfinal 1',
                 budget: '500',
-                currency: 'EUR',
                 deliveryDate: new Date(new Date().getTime() + (1 * 60 * 60 * 1000)),
                 roleId: 1
               },
@@ -165,7 +173,6 @@ module.exports = {
                 title: 'Vistas principales',
                 description: 'Tarea Subfinal 2',
                 budget: '300',
-                currency: 'EUR',
                 deliveryDate: new Date(new Date().getTime() + (1 * 60 * 60 * 1000)),
                 roleId: 2
               },
@@ -173,7 +180,6 @@ module.exports = {
                 title: 'FT3',
                 description: 'Parciales',
                 budget: '200',
-                currency: 'EUR',
                 deliveryDate: new Date(new Date().getTime() + (1 * 60 * 60 * 1000)),
                 roleId: 2
               }
@@ -183,14 +189,12 @@ module.exports = {
             title: 'Modelo',
             description: 'Desarrollo del modelo',
             budget: '1500',
-            currency: 'EUR',
             deliveryDate: new Date(new Date().getTime() + (2 * 60 * 60 * 1000)),
             tasks: [
               {
                 title: 'Crear BBDD',
                 description: 'Crear ls BBDD',
                 budget: '1000',
-                currency: 'EUR',
                 deliveryDate: new Date(new Date().getTime() + (1 * 60 * 60 * 1000)),
                 roleId: 1
               },
@@ -198,7 +202,6 @@ module.exports = {
                 title: 'Crear MIgraciones',
                 description: 'Crear las Tablas',
                 budget: '300',
-                currency: 'EUR',
                 deliveryDate: new Date(new Date().getTime() + (1 * 60 * 60 * 1000)),
                 roleId: 2
               },
@@ -206,7 +209,6 @@ module.exports = {
                 title: 'Crear Seeder',
                 description: 'Rellenar tablas',
                 budget: '700',
-                currency: 'EUR',
                 deliveryDate: new Date(new Date().getTime() + (1 * 60 * 60 * 1000)),
                 roleId: 2
               }
@@ -216,14 +218,12 @@ module.exports = {
             title: 'Controladores',
             description: 'Desarrollo de los controladores',
             budget: '2500',
-            currency: 'EUR',
             deliveryDate: new Date(new Date().getTime() + (4 * 60 * 60 * 1000)),
             tasks: [
               {
                 title: 'C1',
                 description: 'Tarea Controladores 1',
                 budget: '1000',
-                currency: 'EUR',
                 deliveryDate: new Date(new Date().getTime() + (1 * 60 * 60 * 1000)),
                 roleId: 1
               },
@@ -231,7 +231,6 @@ module.exports = {
                 title: 'C2',
                 description: 'Tarea Controladores 2',
                 budget: '1500',
-                currency: 'EUR',
                 deliveryDate: new Date(new Date().getTime() + (1 * 60 * 60 * 1000)),
                 roleId: 2
               }
@@ -243,10 +242,11 @@ module.exports = {
         title: 'SmarTerp',
         description: 'Servicio de Interpretes',
         summary: 'Proyecto de investigación para dessarrollar el MVP de un servicio blockchain',
+        projectTypeId: 4,
         state: states.ProjectState.InProgress,
         url: 'https://kunveno.com',
-        budget: '75000',
-        currency: 'DOT',
+        budgetId: 3,
+        deliveryTimeId: 3,
         deliveryDate: new Date(new Date().getTime() + (5 * 60 * 60 * 1000)),
         clientId: 2,
         consultantId: 1,
@@ -262,14 +262,12 @@ module.exports = {
             title: 'Todito',
             description: 'Sin tonterias intermedias',
             budget: '75000',
-            currency: 'DOT',
             deliveryDate: new Date(new Date().getTime() + (5 * 60 * 60 * 1000)),
             tasks: [
               {
                 title: 'Todito Tarea 1',
                 description: 'Tarea Subfinal 1',
                 budget: '25000',
-                currency: 'DOT',
                 deliveryDate: new Date(new Date().getTime() + (1 * 60 * 60 * 1000)),
                 roleId: 1
               },
@@ -277,7 +275,6 @@ module.exports = {
                 title: 'Todito Tarea 2',
                 description: 'Tarea Subfinal 2',
                 budget: '10000',
-                currency: 'DOT',
                 deliveryDate: new Date(new Date().getTime() + (3 * 60 * 60 * 1000)),
                 roleId: 2
               },
@@ -285,7 +282,6 @@ module.exports = {
                 title: 'FT3',
                 title: 'Todito Tarea 3',
                 budget: '40000',
-                currency: 'DOT',
                 deliveryDate: new Date(new Date().getTime() + (5 * 60 * 60 * 1000)),
                 roleId: 2
               }
@@ -295,17 +291,18 @@ module.exports = {
       }
     ];
 
-    for (const {title, description, summary, state, url, budget, currency, deliveryDate,
+    for (const {title, description, summary, projectTypeId, state, url, budgetId, deliveryTimeId, deliveryDate,
       clientId, consultantId, objectives, constraints, milestones} of projects) {
       try {
         const project = await Project.create({
           title,
           description,
           summary,
+          projectTypeId,
           state,
           url,
-          budget,
-          currency,
+          budgetId,
+          deliveryTimeId,
           deliveryDate,
           consultantId,
           clientId
@@ -318,11 +315,11 @@ module.exports = {
           const constraint = await Constraint.create({description});
           await project.addConstraint(constraint);
         }
-        for (const {title, description, budget, currency, deliveryDate, roleId, tasks} of milestones) {
-          const milestone = await Milestone.create({title, description, budget, currency, deliveryDate, roleId});
+        for (const {title, description, budget, deliveryDate, roleId, tasks} of milestones) {
+          const milestone = await Milestone.create({title, description, budget, deliveryDate, roleId});
 
-          for (const {title, description, budget, currency, deliveryDate, roleId} of tasks) {
-            const task = await Task.create({title, description, budget, currency, deliveryDate, roleId});
+          for (const {title, description, budget, deliveryDate, roleId} of tasks) {
+            const task = await Task.create({title, description, budget, deliveryDate, roleId});
             await milestone.addTask(task);
           }
 

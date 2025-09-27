@@ -39,6 +39,7 @@ exports.carlosLogin = async (req, res, next) => {
     req.session.loginUser = {
       id: client.user.id,
       email: client.user.email,
+      name: client.name,
       clientId: client.id,
       developerId: undefined
     };
@@ -66,6 +67,7 @@ exports.danielaLogin = async (req, res, next) => {
     req.session.loginUser = {
       id: developer.user.id,
       email: developer.user.email,
+      name: developer.name,
       clientId: undefined,
       developerId: developer.id
     };

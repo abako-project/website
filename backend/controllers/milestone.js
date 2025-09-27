@@ -3,6 +3,31 @@ const seda = require("../services/seda");
 
 
 
+// Listar todos los milestones o los de un cliente o los de un developer
+// GET + /milestones
+// GET + /clients/:clientId/milestones
+// GET + /developers/:developerId/milestones
+exports.milestones = async (req, res, next) => {
+
+  try {
+
+    const clientId = req.params.clientId;
+    const client = clientId ? await seda.client(clientId) : null;
+
+    const developerId = req.params.developerId;
+    const developer = developerId ? await seda.developer(developerId) : null;
+
+    const projects = await seda.projectsIndex(clientId, developerId, developerId);
+
+    // No se puede usar el valor client en las opciones cuando
+    // hay llamadas anidadas a la funcion include de EJS.
+    res.render('dashboard/milestones', {projects, c: client, developer});
+  } catch (error) {
+    next(error);
+  }
+};
+
+
 // Editar todos los milestones de un proyecto
 exports.editAll = async (req, res, next) => {
 
@@ -10,7 +35,7 @@ exports.editAll = async (req, res, next) => {
     const projectId = req.params.projectId;
     const project = await seda.project(projectId);
 
-    res.render('projects/editMilestones', {project});
+    res.render('milestones/editMilestones', {project});
   } catch (error) {
     next(error);
   }
@@ -26,7 +51,6 @@ exports.new = async (req, res, next) => {
     title: "",
     description: "",
     budget: "",
-    currency: "",
     deliveryDate: Date.now() + 60 * 60 * 1000
   };
 
@@ -34,7 +58,7 @@ exports.new = async (req, res, next) => {
   let browserTimezoneOffset = Number(req.query.browserTimezoneOffset ?? 0);
   browserTimezoneOffset = Number.isNaN(browserTimezoneOffset) ? 0 : browserTimezoneOffset;
 
-  res.render('projects/milestones/new', {
+  res.render('milestones/newMilestone', {
     milestone,
     project,
     browserTimezoneOffset,
@@ -49,7 +73,7 @@ exports.create = async (req, res, next) => {
   const projectId = req.params.projectId;
   const project = await seda.project(projectId);
 
-  let {title, description, budget, currency, deliveryDate} = req.body;
+  let {title, description, budget, deliveryDate} = req.body;
 
   let {browserTimezoneOffset} = req.query;
   browserTimezoneOffset = Number(browserTimezoneOffset);
@@ -62,7 +86,6 @@ exports.create = async (req, res, next) => {
     title,
     description,
     budget,
-    currency,
     deliveryDate
   };
 
@@ -76,7 +99,7 @@ exports.create = async (req, res, next) => {
       req.flash('error', 'Error: There are errors in the form:');
       error.errors.forEach(({message}) => req.flash('error', message));
 
-      res.render('projects/milestones/new', {
+      res.render('milestones/newMilestone', {
         milestone,
         project,
         browserTimezoneOffset,
@@ -101,7 +124,7 @@ exports.edit = async (req, res) => {
   let browserTimezoneOffset = Number(req.query.browserTimezoneOffset ?? 0);
   browserTimezoneOffset = Number.isNaN(browserTimezoneOffset) ? 0 : browserTimezoneOffset;
 
-  res.render('projects/milestones/edit', {
+  res.render('milestones/editMilestone', {
     project,
     milestone,
     browserTimezoneOffset,
@@ -128,7 +151,6 @@ exports.update = async (req, res) => {
   milestone.title = body.title;
   milestone.description = body.description;
   milestone.budget = body.budget;
-  milestone.currency = body.currency;
   milestone.deliveryDate = new Date(body.deliveryDate).valueOf() + browserTimezoneOffset - serverTimezoneOffset;
 
   try {
@@ -142,7 +164,7 @@ exports.update = async (req, res) => {
       req.flash('error', 'Error: There are errors in the form:');
       error.errors.forEach(({message}) => req.flash('error', message));
 
-      res.render('projects/milestones/edit', {
+      res.render('milestones/editMilestone', {
         project,
         milestone,
         browserTimezoneOffset,

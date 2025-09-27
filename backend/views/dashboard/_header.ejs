@@ -1,0 +1,42 @@
+
+<style>
+    .contenedor {
+
+        display: grid;
+        grid-template-columns:  1fr 1fr auto;
+
+    }
+</style>
+
+<div class="contenedor projectHeader">
+
+    <h1> Dashboard </h1>
+
+    <small>
+        Learn more about projects -&gt;
+    </small>
+
+    <div class=right">
+        <% if (locals.loginUser.clientId) { %>
+            <button class="projectFlow btn btn_primary"
+                    onclick="redirectProjectNew(); return false;">
+                Create New Project
+            </button>
+        <% } %>
+    </div>
+
+    <% if (locals.loginUser.developerId) { %>
+        <div>
+            <button class=""
+                    onclick="redirectDeveloperProjects(<%= locals.loginUser.developerId %>); return false;">
+                Projects
+            </button>
+
+            <button class=""
+                    onclick="redirectDeveloperMilestones(<%= locals.loginUser.developerId %>); return false;">
+                Milestones
+            </button>
+        </div>
+    <% } %>
+
+</div>
