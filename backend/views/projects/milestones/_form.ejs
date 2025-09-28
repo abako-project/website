@@ -30,7 +30,7 @@
 
 <div class="form-group">
     <label for="deliveryDate">Delivery Date:</label>
-    <input type="datetime-local" id="deliveryDate" name="deliveryDate"
+    <input type="datetime-local" id="deliveryDate" name="deliveryDate" class="date-picker"
            value="<%= new Date(milestone.deliveryDate - browserTimezoneOffset).toISOString().slice(0, 16) %>"
            placeholder="Delivery Date" autocomplete="off">
 </div>

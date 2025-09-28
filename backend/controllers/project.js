@@ -44,7 +44,7 @@ exports.newProposal = (req, res, next) => {
   let browserTimezoneOffset = Number(req.query.browserTimezoneOffset ?? 0);
   browserTimezoneOffset = Number.isNaN(browserTimezoneOffset) ? 0 : browserTimezoneOffset;
 
-  res.render('projects/newProposal', {
+  res.render('projects/newProposalFlow/newProposal', {
     project,
     browserTimezoneOffset,
   });
@@ -87,7 +87,7 @@ exports.createProposal = async (req, res, next) => {
       req.flash('error', 'Error: There are errors in the form:');
       error.errors.forEach(({message}) => req.flash('error', message));
 
-      res.render('projects/newProposal', {
+      res.render('projects/newProposalFlow/newProposal', {
         proposal,
         browserTimezoneOffset,
       });
@@ -347,7 +347,7 @@ exports.editObjectivesConstraints = async (req, res) => {
   browserTimezoneOffset = Number.isNaN(browserTimezoneOffset) ? 0 : browserTimezoneOffset;
 
 
-  res.render('projects/editObjectivesConstraints', {
+  res.render('projects/newProposalFlow/editObjectivesConstraints', {
     project,
     browserTimezoneOffset,
   });

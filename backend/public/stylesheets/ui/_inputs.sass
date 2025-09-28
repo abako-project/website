@@ -32,6 +32,25 @@ input, select, textarea
     line-height: $lh-xs
     color: $text-dark-2
 
+.date-picker
+  position: relative
+  input
+    &::-webkit-calendar-picker-indicator
+      position: absolute
+      top: 0
+      right: $sp-4
+      width: 50%
+      height: 40%
+      transform: translateY(70%)
+      opacity: 0
+      cursor: pointer
+      border: 1px solid pink
+  i
+    position: absolute
+    right: $sp-8
+    top: 45%
+    color: $fill-5
+
 /**--------------------------------------------------------------------------------------
  TEXT
 

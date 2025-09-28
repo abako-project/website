@@ -1,11 +1,11 @@
 
-<%- include('./headers/_empty', {project, title: "Let´s start with your project description"})  %>
+<%- include('../headers/_empty', {project, title: "Let´s start with your project description"})  %>
 
 <div class="projectContainer1col">
     <form is="form-with-tzo" id="newProposalForm" action="/projects" method="POST">
         
         <!-- <div class="projectProposal projectProposal__form"> -->
-            <%- include("./proposals/_form", {project, browserTimezoneOffset}) %>
+            <%- include("../proposals/_form", {project, browserTimezoneOffset}) %>
         <!-- </div> -->
         
     </form>
