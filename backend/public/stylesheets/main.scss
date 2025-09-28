@@ -19,11 +19,13 @@
 // cComponents
 @import './components/_appSidebar.sass';
 @import './components/_appHeader.sass'; // cambiar nombre pq no tiene sentido ya
+@import './components/_headers.sass';
 
 
 // Pages
 @import './pages/_onboarding.sass';
 @import './pages/_project.sass';
+@import './pages/_projectProposal.sass';
 
 * {
     // border: 1px solid tomato;
@@ -81,8 +83,6 @@ i {
   padding: 20px;
   display: grid;
   grid-template-rows: auto auto 1fr;
-
-  color: var(--primary);
 }
 
 // Para las vistas con sidebar
