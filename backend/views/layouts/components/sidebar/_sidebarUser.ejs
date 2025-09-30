@@ -1,11 +1,14 @@
-<header id="appHeader">
-  <div class="login">
+<header id="sidebarUser" class="sidebarUser">
+
+  <div class="sidebarUser__wrapper">
+
     <% if (!locals.loginUser) { %>
     <a href="/auth/login"> <button>Login</button></a>
     <a href="/auth/register"><button>Registro</button></a>
     <% } else { %> <% if (locals.loginUser.isAdmin) { %>
     <span class="adminDAO">Admin</span>
     <% } %> <% if (locals.loginUser.developerId) { %>
+
     <div class="userContainer">
       <span class="userContainer__avatar">
         <img
@@ -16,7 +19,7 @@
       <span class="userContainer__info">
         <a href="/developers/<%= loginUser.developerId %>/edit"
           ><%= loginUser.email %></a
-        > 
+        >
       </span>
     </div>
     <% } %> <% if (locals.loginUser.clientId) { %>
@@ -31,7 +34,7 @@
       <span class="userContainer__info">
         <a href="/clients/<%= loginUser.clientId %>/edit"
           ><%= loginUser.email %></a
-        > 
+        >
       </span>
     </div>
     <% } %>
