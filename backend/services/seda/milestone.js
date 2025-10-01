@@ -56,14 +56,13 @@ exports.milestone = async milestoneId => {
  * @param {string} data.title - Título del milestone.
  * @param {string} data.description - Descripción del milestone.
  * @param {number} data.budget - Presupuesto asignado.
- * @param {string} data.currency - Moneda del presupuesto.
  * @param {string} data.deliveryDate - Fecha estimada de entrega.
  * @returns {Promise<Object>} Objeto JSON del milestone creado.
  */
-exports.milestoneCreate = async (projectId, {title, description, budget, currency, deliveryDate}) => {
+exports.milestoneCreate = async (projectId, {title, description, budget, deliveryDate}) => {
 
   const milestone = await Milestone.create({
-    title, description, budget, currency, deliveryDate, projectId
+    title, description, budget, deliveryDate, projectId
   });
 
   return json.milestoneJson(milestone);
@@ -81,16 +80,15 @@ exports.milestoneCreate = async (projectId, {title, description, budget, currenc
  * @param {string} data.title
  * @param {string} data.description
  * @param {number} data.budget
- * @param {string} data.currency
  * @param {string} data.deliveryDate
  * @returns {Promise<Object>} Objeto JSON con los datos actualizados.
  */
-exports.milestoneUpdate = async (milestoneId, {title, description, budget, currency, deliveryDate}) => {
+exports.milestoneUpdate = async (milestoneId, {title, description, budget, deliveryDate}) => {
 
   let milestone = await Milestone.findByPk(milestoneId);
 
   milestone = await milestone.update({
-    title, description, budget, currency, deliveryDate
+    title, description, budget, deliveryDate
   });
 
   return json.milestoneJson(milestone);

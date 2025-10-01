@@ -21,9 +21,6 @@ module.exports = {
                 budget: {
                     type: Sequelize.FLOAT
                 },
-                currency: {
-                    type: Sequelize.STRING
-                },
               deliveryDate: {
                 type: Sequelize.DATE
               },

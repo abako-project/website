@@ -277,7 +277,6 @@ const milestoneJson = milestone => {
     title: milestone.title,
     description: milestone.description,
     budget: milestone.budget,
-    currency: milestone.currency,
     deliveryDate: milestone.deliveryDate.valueOf(),
     displayOrder: milestone.displayOrder,
     projectId: milestone.projectId,
