@@ -78,12 +78,14 @@ module.exports = {
             title: 'Prototipo',
             description: 'Desarrollo de un prototipo',
             budget: '3000',
+            deliveryTimeId: 4,
             deliveryDate: new Date(new Date().getTime() + (1 * 60 * 60 * 1000))
           },
           {
             title: 'Producto Final',
             description: 'Desarrollo de un producto final',
             budget: '2000',
+            deliveryTimeId: 4,
             deliveryDate: new Date(new Date().getTime() + (2 * 60 * 60 * 1000))
           },
         ]
@@ -112,18 +114,21 @@ module.exports = {
             title: 'Vistas',
             description: 'Desarrollo de las vistas',
             budget: '1000',
+            deliveryTimeId: 4,
             deliveryDate: new Date(new Date().getTime() + (1 * 60 * 60 * 1000))
           },
           {
             title: 'Modelo',
             description: 'Desarrollo del modelo',
             budget: '1500',
+            deliveryTimeId: 4,
             deliveryDate: new Date(new Date().getTime() + (2 * 60 * 60 * 1000)),
           },
           {
             title: 'Controladores',
             description: 'Desarrollo de los controladores',
             budget: '2500',
+            deliveryTimeId: 4,
             deliveryDate: new Date(new Date().getTime() + (4 * 60 * 60 * 1000))
           }
         ]
@@ -152,6 +157,7 @@ module.exports = {
             title: 'Todito',
             description: 'Sin tonterias intermedias',
             budget: '75000',
+            deliveryTimeId: 4,
             deliveryDate: new Date(new Date().getTime() + (5 * 60 * 60 * 1000))
           }
         ]
@@ -182,8 +188,8 @@ module.exports = {
           const constraint = await Constraint.create({description});
           await project.addConstraint(constraint);
         }
-        for (const {title, description, budget, deliveryDate, roleId} of milestones) {
-          const milestone = await Milestone.create({title, description, budget, deliveryDate, roleId});
+        for (const {title, description, budget, deliveryDate, deliveryTimeId, roleId} of milestones) {
+          const milestone = await Milestone.create({title, description, budget, deliveryTimeId, deliveryDate, roleId});
 
           await project.addMilestone(milestone);
         }

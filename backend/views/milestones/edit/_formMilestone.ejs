@@ -20,6 +20,25 @@
            name="budget" placeholder="budget" autocomplete="off">
 </div>
 
+
+
+<div class="form-group">
+    <label for="deliveryTimeId">Delivery time:</label>
+    <% for (const deliveryTime of allDeliveryTimes) { %>
+        <p>
+            <input type="radio"
+                   id="deliveryTimeId"
+                   name="deliveryTimeId"
+                   value="<%= deliveryTime.id %>"
+                    <%= milestone.deliveryTimeId === deliveryTime.id && "checked" %>
+            />
+            <b><%= deliveryTime.description %></b>
+        </p>
+    <% } %>
+
+</div>
+
+
 <div class="form-group">
     <label for="deliveryDate">Delivery Date:</label>
     <input type="datetime-local" id="deliveryDate" name="deliveryDate"

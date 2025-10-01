@@ -67,7 +67,8 @@ exports.project = async projectId => {
                 {model: Attachment, as: "attachment"}]
             }]
           },
-           //   {model: Role, as: 'role'},
+          {model: DeliveryTime, as: "deliveryTime"},
+          //   {model: Role, as: 'role'},
         ]
       },
       {

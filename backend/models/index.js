@@ -93,6 +93,10 @@ Project.belongsTo(Budget, {as: 'budget', foreignKey: 'budgetId'});
 DeliveryTime.hasMany(Project, {as: 'projects', foreignKey: 'deliveryTimeId'});
 Project.belongsTo(DeliveryTime, {as: 'deliveryTime', foreignKey: 'deliveryTimeId'});
 
+// Relation 1-to-N between DeliveryTime and Milestone
+DeliveryTime.hasMany(Milestone, {as: 'milestones', foreignKey: 'deliveryTimeId'});
+Milestone.belongsTo(DeliveryTime, {as: 'deliveryTime', foreignKey: 'deliveryTimeId'});
+
 // Relation 1-to-N between ProjectType and Project
 ProjectType.hasMany(Project, {as: 'projects', foreignKey: 'projectTypeId'});
 Project.belongsTo(ProjectType, {as: 'projectType', foreignKey: 'projectTypeId'});

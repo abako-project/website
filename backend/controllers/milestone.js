@@ -58,9 +58,12 @@ exports.new = async (req, res, next) => {
   let browserTimezoneOffset = Number(req.query.browserTimezoneOffset ?? 0);
   browserTimezoneOffset = Number.isNaN(browserTimezoneOffset) ? 0 : browserTimezoneOffset;
 
+  const allDeliveryTimes = await seda.deliveryTimeIndex();
+
   res.render('milestones/newMilestone', {
     milestone,
     project,
+    allDeliveryTimes,
     browserTimezoneOffset,
   });
 };
@@ -73,7 +76,7 @@ exports.create = async (req, res, next) => {
   const projectId = req.params.projectId;
   const project = await seda.project(projectId);
 
-  let {title, description, budget, deliveryDate} = req.body;
+  let {title, description, budget, deliveryTimeId, deliveryDate} = req.body;
 
   let {browserTimezoneOffset} = req.query;
   browserTimezoneOffset = Number(browserTimezoneOffset);
@@ -86,6 +89,7 @@ exports.create = async (req, res, next) => {
     title,
     description,
     budget,
+    deliveryTimeId,
     deliveryDate
   };
 
@@ -99,9 +103,12 @@ exports.create = async (req, res, next) => {
       req.flash('error', 'Error: There are errors in the form:');
       error.errors.forEach(({message}) => req.flash('error', message));
 
+      const allDeliveryTimes = await seda.deliveryTimeIndex();
+
       res.render('milestones/newMilestone', {
         milestone,
         project,
+        allDeliveryTimes,
         browserTimezoneOffset,
       });
     } else {
@@ -124,9 +131,12 @@ exports.edit = async (req, res) => {
   let browserTimezoneOffset = Number(req.query.browserTimezoneOffset ?? 0);
   browserTimezoneOffset = Number.isNaN(browserTimezoneOffset) ? 0 : browserTimezoneOffset;
 
+  const allDeliveryTimes = await seda.deliveryTimeIndex();
+
   res.render('milestones/editMilestone', {
     project,
     milestone,
+    allDeliveryTimes,
     browserTimezoneOffset,
   });
 };
@@ -151,6 +161,7 @@ exports.update = async (req, res) => {
   milestone.title = body.title;
   milestone.description = body.description;
   milestone.budget = body.budget;
+  milestone.deliveryTimeId = body.deliveryTimeId;
   milestone.deliveryDate = new Date(body.deliveryDate).valueOf() + browserTimezoneOffset - serverTimezoneOffset;
 
   try {
@@ -164,9 +175,12 @@ exports.update = async (req, res) => {
       req.flash('error', 'Error: There are errors in the form:');
       error.errors.forEach(({message}) => req.flash('error', message));
 
+      const allDeliveryTimes = await seda.deliveryTimeIndex();
+
       res.render('milestones/editMilestone', {
         project,
         milestone,
+        allDeliveryTimes,
         browserTimezoneOffset,
       });
     } else {

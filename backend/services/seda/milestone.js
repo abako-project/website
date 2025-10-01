@@ -2,7 +2,7 @@
 const json = require("./json");
 
 const {
-  models: {Developer, User, Attachment, Project,  Milestone, Role, Assignation}
+  models: {Developer, User, Attachment, Project,  Milestone, Role, DeliveryTime, Assignation}
 } = require('../../models');
 
 const sequelize = require("../../models");
@@ -25,6 +25,7 @@ exports.milestone = async milestoneId => {
     include: [
       {model: Project, as: 'project'},
       // {model: Role, as: 'role'},
+      {model: DeliveryTime, as: "deliveryTime"},
       {
         model: Assignation, as: 'assignation',
         include: [{
@@ -56,13 +57,14 @@ exports.milestone = async milestoneId => {
  * @param {string} data.title - Título del milestone.
  * @param {string} data.description - Descripción del milestone.
  * @param {number} data.budget - Presupuesto asignado.
+ * @param {number} data.deliveryTimeId - Id de la hora de entrega estimado.
  * @param {string} data.deliveryDate - Fecha estimada de entrega.
  * @returns {Promise<Object>} Objeto JSON del milestone creado.
  */
-exports.milestoneCreate = async (projectId, {title, description, budget, deliveryDate}) => {
+exports.milestoneCreate = async (projectId, {title, description, budget, deliveryTimeId, deliveryDate}) => {
 
   const milestone = await Milestone.create({
-    title, description, budget, deliveryDate, projectId
+    title, description, budget, deliveryTimeId, deliveryDate, projectId
   });
 
   return json.milestoneJson(milestone);
@@ -80,15 +82,16 @@ exports.milestoneCreate = async (projectId, {title, description, budget, deliver
  * @param {string} data.title
  * @param {string} data.description
  * @param {number} data.budget
+ * @param {number} data.deliveryTimeId - Id de la hora de entrega estimado.
  * @param {string} data.deliveryDate
  * @returns {Promise<Object>} Objeto JSON con los datos actualizados.
  */
-exports.milestoneUpdate = async (milestoneId, {title, description, budget, deliveryDate}) => {
+exports.milestoneUpdate = async (milestoneId, {title, description, budget, deliveryTimeId, deliveryDate}) => {
 
   let milestone = await Milestone.findByPk(milestoneId);
 
   milestone = await milestone.update({
-    title, description, budget, deliveryDate
+    title, description, budget, deliveryTimeId, deliveryDate
   });
 
   return json.milestoneJson(milestone);
