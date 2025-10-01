@@ -112,8 +112,7 @@ exports.developerCreate = async (email, name, address) => {
  * @param {string} [data.experienceLevel]
  * @param {string} [data.githubUsername]
  * @param {string} [data.portfolioUrl]
- * @param {string} [data.city]
- * @param {string} [data.country]
+ * @param {string} [data.location]
  * @param {string} [data.availability]
  * @param {number[]} [data.languageIds]
  * @param {number[]} [data.skillIds]
@@ -122,14 +121,14 @@ exports.developerCreate = async (email, name, address) => {
  * @returns {Promise<Object>} Objeto JSON con los datos actualizados del desarrollador.
  */
 exports.developerUpdate = async (developerId, {
-  name, bio, background, roleId, experienceLevel, githubUsername, portfolioUrl, city, country, availability,
+  name, bio, background, roleId, experienceLevel, githubUsername, portfolioUrl, location, availability,
   languageIds, skillIds,
   mime, image
 }) => {
 
   await Developer.update({
       developerId,
-      name, bio, background, roleId, experienceLevel, githubUsername, portfolioUrl, city, country, availability
+      name, bio, background, roleId, experienceLevel, githubUsername, portfolioUrl, location, availability
     }, {
       where: {
         id: developerId

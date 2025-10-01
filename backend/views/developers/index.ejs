@@ -19,10 +19,7 @@
         <th>Experience</th>
         <th>github</th>
         <th>Portfolio</th>
-        <th>City
-            <br/>
-            Country
-        </th>
+        <th>City</th>
         <th>Availability</th>
         <th>Languages</th>
         <th>Skills</th>
@@ -52,9 +49,7 @@
             <td><%= developer.experienceLevel %></td>
             <td><%= developer.githubUsername %></td>
             <td><%= developer.portfolioUrl ? "Si" : "No" %></td>
-            <td><%= developer.city %>
-                <br/>
-                <%= developer.country %></td>
+            <td><%= developer.location %></td>
             <td><%= developer.availability %></td>
             <td><%= developer.languages.map(l => l.code).join(", ") %></td>
             <td><%= developer.skills.map(s => s.name).join(", ") %></td>

@@ -33,10 +33,7 @@ module.exports = {
                 portfolioUrl: {
                     type: Sequelize.STRING
                 },
-                city: {
-                    type: Sequelize.STRING
-                },
-                country: {
+                location: {
                     type: Sequelize.STRING
                 },
                 availability: {

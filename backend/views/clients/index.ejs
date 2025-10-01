@@ -18,11 +18,7 @@
             Web site
         </th>
         <th>Description</th>
-        <th>
-            City
-            <br/>
-            Country
-        </th>
+        <th>Location</th>
         <th>Actions</th>
     </tr>
     </thead>
@@ -48,11 +44,7 @@
                 <%= client.website %>
             </td>
             <td><%= client.description ? "Si" : "No" %></td>
-            <td>
-                <%= client.city %>
-                <br/>
-                <%= client.country %>
-            </td>
+            <td><%= client.location %></td>
 
             <td class="actions">
                 <a href="/clients/<%= client.id %>/edit" class="button">Edit</a>

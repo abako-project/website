@@ -54,7 +54,7 @@ exports.update = async (req, res, next) => {
     city: body.city,
     country: body.country,
     availability: body.availability,
-    languageIds: body.languages.map(str => +str),
+    languageIds: (body.languages || []).map(str => +str),
     skillIds: body.skills.map(str => +str),
     mime: req.file?.mimetype,
     image: req.file?.buffer

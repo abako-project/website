@@ -33,10 +33,7 @@ module.exports = {
                 description: {
                     type: Sequelize.TEXT
                 },
-                city: {
-                    type: Sequelize.STRING
-                },
-                country: {
+                location: {
                     type: Sequelize.STRING
                 },
                 userId: {

@@ -40,10 +40,7 @@ module.exports = (sequelize) => {
             description: {
                 type: DataTypes.TEXT
             },
-            city: {
-                type: DataTypes.STRING
-            },
-            country: {
+            location: {
                 type: DataTypes.STRING
             }
         }, {

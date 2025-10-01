@@ -102,8 +102,7 @@ exports.clientCreate = async (email, password) => {
  * @param {string} [data.department]
  * @param {string} [data.website]
  * @param {string} [data.description]
- * @param {string} [data.city]
- * @param {string} [data.country]
+ * @param {string} [data.location]
  * @param {string} [data.password] - Nuevo password (opcional).
  * @param {string} [data.mime] - Tipo MIME de la nueva imagen (opcional).
  * @param {string} [data.image] - Imagen codificada en base64 (opcional).
@@ -111,20 +110,20 @@ exports.clientCreate = async (email, password) => {
  * @throws {Error} Si ocurre un error en la actualización.
  */
 exports.clientUpdate = async (clientId, {
-  name, company, department, website, description, city, country, password,
+  name, company, department, website, description, location, password,
   mime, image
 }) => {
 
   // ¿Cambio el password?
   if (password) {
     await Client.update({
-      name, company, department, website, description, city, country, password
+      name, company, department, website, description, location, password
     }, {
       where: {id: clientId}
     });
   } else {
     await Client.update({
-      name, company, department, website, description, city, country
+      name, company, department, website, description, location
     }, {
       where: {id: clientId}
     });
