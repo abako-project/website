@@ -4,7 +4,7 @@ const json = require("./json");
 
 const {
   models: {
-    Client, User, Attachment
+    Client, User, Language, Attachment
   }
 } = require('../../models');
 
@@ -25,6 +25,7 @@ exports.clientIndex = async () => {
     include: [
       {model: User, as: "user"},
       {model: Attachment, as: "attachment"},
+      {model: Language, as: "languages"},
     ]
   });
 
@@ -49,6 +50,7 @@ exports.client = async clientId => {
     include: [
       {model: User, as: "user"},
       {model: Attachment, as: "attachment"},
+      {model: Language, as: "languages"},
     ]
   });
   if (client) {
@@ -103,6 +105,7 @@ exports.clientCreate = async (email, password) => {
  * @param {string} [data.website]
  * @param {string} [data.description]
  * @param {string} [data.location]
+ * @param {number[]} [data.languageIds]
  * @param {string} [data.password] - Nuevo password (opcional).
  * @param {string} [data.mime] - Tipo MIME de la nueva imagen (opcional).
  * @param {string} [data.image] - Imagen codificada en base64 (opcional).
@@ -110,7 +113,7 @@ exports.clientCreate = async (email, password) => {
  * @throws {Error} Si ocurre un error en la actualización.
  */
 exports.clientUpdate = async (clientId, {
-  name, company, department, website, description, location, password,
+  name, company, department, website, description, location, password, languageIds,
   mime, image
 }) => {
 
@@ -130,6 +133,8 @@ exports.clientUpdate = async (clientId, {
   }
 
   const client = await Client.findByPk(clientId);
+
+  await client.setLanguages(languageIds);
 
   // Hay un attachment nuevo
   if (mime && image) {

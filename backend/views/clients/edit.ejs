@@ -45,6 +45,22 @@
             <input type="text" class="itemWide" id="location" name="location" value="<%= client.location %>" placeholder="Location"
                    autocomplete="off"/>
         </div>
+
+        <div class="card">
+            <div class="card-title">Languages</div>
+
+            <% for (let language of allLanguages) { %>
+                <input type="checkbox"
+                       name="<%= `languages[]` %>"
+                       value="<%= language.id %>"
+                        <%= client.languages.map(i => i.id).includes(language.id) && "checked" %>
+                />
+                <b><%= language.code %> - <%= language.name %></b>
+                <br />
+            <% } %>
+        </div>
+
+
     </div>
 
     <div class="card">

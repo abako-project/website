@@ -253,8 +253,6 @@ exports.setDeveloper = async (req, res, next) => {
   const projectId = req.params.projectId;
   const taskId = req.params.taskId;
 
-  console.log(">>>>>>>>>>>>>> TaskId =", taskId, "   DevloperId =", body.developerId);
-
   try {
     await seda.taskSetDeveloper(taskId, body.developerId);
 

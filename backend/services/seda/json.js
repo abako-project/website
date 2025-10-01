@@ -97,6 +97,7 @@ const clientJson = client => {
     updatedAt: client.updatedAt.valueOf(),
 
     user: userJson(client.user),
+    languages: client.languages?.map(language => languageJson(language)) || [],
     projects: client.projects?.map(project => projectJson(project)) || [],
   };
 };

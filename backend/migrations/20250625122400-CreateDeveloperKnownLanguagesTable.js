@@ -5,7 +5,7 @@ module.exports = {
   up: async (queryInterface, Sequelize) => {
 
     await queryInterface.createTable(
-      'KnownLanguages',
+      'DeveloperKnownLanguages',
       {
         developerId: {
           type: Sequelize.INTEGER,
@@ -45,6 +45,6 @@ module.exports = {
   },
 
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('KnownLanguages');
+    await queryInterface.dropTable('DeveloperKnownLanguages');
   }
 };

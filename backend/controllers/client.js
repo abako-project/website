@@ -18,9 +18,8 @@ exports.load = async (req, res, next, clientId) => {
 
 exports.index = async (req, res, next) => {
 
-    try {
-        const clients = await seda.clientIndex();
-
+  try {
+    const clients = await seda.clientIndex();
         res.render('clients/index', {clients});
     } catch (error) {
         next(error);
@@ -28,16 +27,16 @@ exports.index = async (req, res, next) => {
 };
 
 
-
-
 // GET /clients/:clientId/edit
-exports.edit = (req, res, next) => {
+exports.edit = async (req, res, next) => {
 
-    const {client} = req.load;
+  const {client} = req.load;
 
-    // No se puede usar el valor client en las opciones cuando
-    // hay llamadas anidadas a la fumcion include de EJS.
-    res.render('clients/edit', {c: client});
+  const allLanguages = await seda.languageIndex();
+
+  // No se puede usar el valor client en las opciones cuando
+  // hay llamadas anidadas a la fumcion include de EJS.
+  res.render('clients/edit', {c: client, allLanguages});
 };
 
 
@@ -54,8 +53,8 @@ exports.update = async (req, res, next) => {
         department: body.department,
         website: body.website,
         description: body.description,
-        city: body.city,
-        country: body.country,
+        location: body.location,
+        languageIds: (body.languages || []).map(str => +str),
         password: body.password,
         mime: req.file?.mimetype,
         image: req.file?.buffer

@@ -240,8 +240,6 @@ exports.setDeveloper = async (req, res, next) => {
   const projectId = req.params.projectId;
   const milestoneId = req.params.milestoneId;
 
-  console.log(">>>>>>>>>>>>>> MilestoneId =", milestoneId, "   DevloperId =", body.developerId);
-
   try {
     await seda.milestoneSetDeveloper(milestoneId, body.developerId);
 

@@ -7,6 +7,9 @@ exports.home = async (req, res, next) => {
 
 // GET + /dashboard/projects
 exports.projects = async (req, res, next) => {
+
+
+
   if (req.session.loginUser?.isAdmin) {
     res.redirect("/projects");
   } else if (req.session.loginUser.clientId) {

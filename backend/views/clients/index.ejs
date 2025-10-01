@@ -19,6 +19,7 @@
         </th>
         <th>Description</th>
         <th>Location</th>
+        <th>Languages</th>
         <th>Actions</th>
     </tr>
     </thead>
@@ -45,6 +46,7 @@
             </td>
             <td><%= client.description ? "Si" : "No" %></td>
             <td><%= client.location %></td>
+            <td><%= client.languages.map(l => l.code).join(", ") %></td>
 
             <td class="actions">
                 <a href="/clients/<%= client.id %>/edit" class="button">Edit</a>
