@@ -208,3 +208,49 @@ exports.swapOrder = async (req, res, next) => {
     next(error);
   }
 };
+
+
+// Mostrar formulario para seleccioanr el developer de un milestone
+exports.selectDeveloper = async (req, res, next) => {
+
+  const projectId = req.params.projectId;
+  const project = await seda.project(projectId);
+
+  const milestoneId = req.params.milestoneId;
+  const milestone = await seda.milestone(milestoneId);
+
+  try {
+    const validDevelopers = await seda.developersWithRole(milestone.roleId);
+
+    res.render('milestones/selectDeveloper', {
+      project,
+      milestone,
+      validDevelopers
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+// Actualizar el developer de un milestone
+exports.setDeveloper = async (req, res, next) => {
+
+  const {body} = req;
+
+  const projectId = req.params.projectId;
+  const milestoneId = req.params.milestoneId;
+
+  console.log(">>>>>>>>>>>>>> MilestoneId =", milestoneId, "   DevloperId =", body.developerId);
+
+  try {
+    await seda.milestoneSetDeveloper(milestoneId, body.developerId);
+
+    console.log('Milestone developer assigned successfully.');
+
+    res.redirect('/projects/' + projectId);
+
+  } catch (error) {
+    next(error);
+  }
+}
+

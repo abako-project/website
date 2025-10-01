@@ -196,43 +196,6 @@ exports.update = async (req, res, next) => {
 };
 
 
-// Eliminar task
-exports.destroy = async (req, res, next) => {
-
-  const projectId = req.params.projectId;
-
-  const taskId = req.params.taskId;
-
-  try {
-    await seda.taskDestroy(taskId);
-
-    console.log('Task deleted successfully.');
-    res.redirect('/projects/' + projectId + '/tasks/edit');
-  } catch (error) {
-    next(error);
-  }
-};
-
-
-
-// Intercambiar el orden de visualizacion de 2 tasks
-exports.swapOrder = async (req, res, next) => {
-
-  try {
-    const task1 = await seda.task(req.params.id1);
-    const milestone = await seda.milestone(task1.milestoneId);
-    const projectId = milestone.projectId;
-
-    await seda.tasksSwapOrder(req.params.id1, req.params.id2);
-
-    console.log('Tasks swapped successfully.');
-    res.redirect('/projects/' + projectId + '/tasks/edit');
-  } catch
-    (error) {
-    next(error);
-  }
-};
-
 
 
 // Publicar las tasks creadas

@@ -5,7 +5,7 @@ const json = require("./json");
 const {
   models: {
     Project, Client, Developer, User, Attachment, Budget, DeliveryTime, ProjectType,
-    Objective, Constraint, Milestone, Task, Role, Comment, Assignation
+    Objective, Constraint, Milestone, Role, Comment, Assignation
   }
 } = require('../../models');
 
@@ -59,22 +59,15 @@ exports.project = async projectId => {
         order: [['displayOrder', 'ASC']],
         include: [
           {
-            model: Task, as: 'tasks',
-            separate: true,
-            order: [['displayOrder', 'ASC']],
-            include: [
-              {model: Role, as: 'role'},
-              {
-                model: Assignation, as: 'assignation',
-                include: [{
-                  model: Developer, as: 'developer',
-                  include: [
-                    {model: User, as: "user"},
-                    {model: Attachment, as: "attachment"}]
-                }]
-              }
-            ]
-          }
+            model: Assignation, as: 'assignation',
+            include: [{
+              model: Developer, as: 'developer',
+              include: [
+                {model: User, as: "user"},
+                {model: Attachment, as: "attachment"}]
+            }]
+          },
+           //   {model: Role, as: 'role'},
         ]
       },
       {
@@ -169,16 +162,11 @@ exports.projectsIndex = async (clientId, consultantId, developerId) => {
         model: Milestone, as: 'milestones',
         include: [
           {
-            model: Task, as: 'tasks',
-            include: [
-              {
-                model: Assignation, as: 'assignation',
-                required: true,
-                include: [{
-                  model: Developer, as: 'developer'
-                }]
-              }
-            ]
+            model: Assignation, as: 'assignation',
+            required: true,
+            include: [{
+              model: Developer, as: 'developer'
+            }]
           }
         ]
       }
@@ -193,7 +181,7 @@ exports.projectsIndex = async (clientId, consultantId, developerId) => {
     orItems.push({consultantId});
   }
   if (developerId) {
-    orItems.push({'$milestones.tasks.assignation.developer.id$': developerId});
+    orItems.push({'$milestones.assignation.developer.id$': developerId});
   }
   if (orItems.length > 0) {
     options.where = {

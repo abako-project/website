@@ -285,7 +285,8 @@ const milestoneJson = milestone => {
     createdAt: milestone.createdAt.valueOf(),
     updatedAt: milestone.updatedAt.valueOf(),
 
-    tasks: milestone.tasks?.map(task => taskJson(task)) || [],
+    assignation: assignationJson(milestone.assignation),
+
   };
 };
 
@@ -313,25 +314,25 @@ const skillJson = skill => {
  * @param {Object} task - Instancia del modelo Task.
  * @returns {Object|undefined} Objeto JSON de la tarea o `undefined`.
  */
-const taskJson = task => {
-  if (!task) return undefined;
-  return {
-    id: task.id,
-    title: task.title,
-    description: task.description,
-    budget: task.budget,
-    currency: task.currency,
-    deliveryDate: task.deliveryDate.valueOf(),
-    displayOrder: task.displayOrder,
-    milestoneId: task.milestoneId,
-    roleId: task.roleId,
-    createdAt: task.createdAt.valueOf(),
-    updatedAt: task.updatedAt.valueOf(),
-
-    role: roleJson(task.role),
-    assignation: assignationJson(task.assignation),
-  };
-};
+// const taskJson = task => {
+//   if (!task) return undefined;
+//   return {
+//     id: task.id,
+//     title: task.title,
+//     description: task.description,
+//     budget: task.budget,
+//     currency: task.currency,
+//     deliveryDate: task.deliveryDate.valueOf(),
+//     displayOrder: task.displayOrder,
+//     milestoneId: task.milestoneId,
+//     roleId: task.roleId,
+//     createdAt: task.createdAt.valueOf(),
+//     updatedAt: task.updatedAt.valueOf(),
+//
+//     role: roleJson(task.role),
+//     assignation: assignationJson(task.assignation),
+//   };
+// };
 
 /**
  * Convierte un objeto Comment en un objeto JSON.
@@ -366,7 +367,7 @@ const assignationJson = assignation => {
     comment: assignation.comment,
     state: assignation.state,
     developerId: assignation.developerId,
-    taskId: assignation.taskId,
+    milestoneId: assignation.milestoneId,
     createdAt: assignation.createdAt.valueOf(),
     updatedAt: assignation.updatedAt.valueOf(),
 
@@ -389,6 +390,5 @@ exports.deliveryTimeJson = deliveryTimeJson;
 exports.projectTypeJson = projectTypeJson;
 exports.milestoneJson = milestoneJson;
 exports.skillJson = skillJson;
-exports.taskJson = taskJson;
 exports.commentJson = commentJson;
 exports.assignationJson = assignationJson;

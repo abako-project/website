@@ -3,8 +3,7 @@ const json = require("./json");
 
 const {
   models: {
-    Project, Client, Developer, User, Attachment,
-    Objective, Constraint, Milestone, Task, Role, Comment, Assignation
+    Constraint
   }
 } = require('../../models');
 const sequelize = require("../../models");

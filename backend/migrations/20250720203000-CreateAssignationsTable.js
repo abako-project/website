@@ -30,10 +30,10 @@ module.exports = {
           onUpdate: 'CASCADE',
           onDelete: 'SET NULL'
         },
-        taskId: {
+        milestoneId: {
           type: Sequelize.INTEGER,
           references: {
-            model: "Tasks",
+            model: "Milestones",
             key: "id"
           },
           onUpdate: 'CASCADE',

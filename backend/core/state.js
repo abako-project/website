@@ -12,9 +12,8 @@ module.exports = exports = {
     ScopingInProgress: "scopingInProgress", // consultor definiendo el scope
     ValidationNeeded: "validationNeeded", // el cliente tiene que validar el milestone
 
-    TasksPending: "tasksPending", // creando tasks
+    TeamAssignmentPending: "teamAssignmentPending", // La DAO/Admin esta asignando el team de desarrolladores
 
-    TeamAssignmentPending: "teamAssignmentPending", // se esta asignado el team de desarrolladores
     InProgress: "inProgress", // trabajando
     DisputeOpen: "disputeOpen", // por la entrega o el scope
     Completed: "completed", // entregado, validado y pagado

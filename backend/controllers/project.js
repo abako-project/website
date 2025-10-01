@@ -309,7 +309,9 @@ exports.scopeSubmit = async (req, res, next) => {
 };
 
 
-// Aceptar el scope: estado = taskingInProgress
+// El cliente acepta el scope (milestones):
+// Estamos en el estado validationNeeded y
+// pasamos al estado TeamAssignmentPending.
 exports.scopeAccept = async (req, res, next) => {
 
   const projectId = req.params.projectId;

@@ -5,8 +5,7 @@ const json = require("./json");
 
 const {
   models: {
-    Project, Client, Developer, User, Attachment,
-    Objective, Constraint, Milestone, Task, Role, Comment, Assignation
+    Project, Comment
   }
 } = require('../../models');
 
@@ -43,7 +42,7 @@ exports.scopeSubmit = async (projectId, consultantComment) => {
 
 /**
  * Acepta el scope del proyecto por parte del cliente.
- * Cambia el estado del proyecto a `TasksPending` y actualiza
+ * Cambia el estado del proyecto a `TeamAssignmentPending` y actualiza
  * el último comentario con la respuesta del cliente.
  *
  * @async
@@ -56,7 +55,7 @@ exports.scopeSubmit = async (projectId, consultantComment) => {
 exports.scopeAccept = async (projectId, clientResponse) => {
 
   await Project.update({
-    state: states.ProjectState.TasksPending
+    state: states.ProjectState.TeamAssignmentPending
   }, {where: {id: projectId}});
 
 

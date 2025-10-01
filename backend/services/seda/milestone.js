@@ -2,7 +2,7 @@
 const json = require("./json");
 
 const {
-  models: {Project,  Milestone, Task}
+  models: {Developer, User, Attachment, Project,  Milestone, Role, Assignation}
 } = require('../../models');
 
 const sequelize = require("../../models");
@@ -24,8 +24,17 @@ exports.milestone = async milestoneId => {
   const milestone = await Milestone.findByPk(milestoneId, {
     include: [
       {model: Project, as: 'project'},
-      {model: Task, as: 'tasks'}
-    ],
+      // {model: Role, as: 'role'},
+      {
+        model: Assignation, as: 'assignation',
+        include: [{
+          model: Developer, as: 'developer',
+          include: [
+            {model: User, as: "user"},
+            {model: Attachment, as: "attachment"}]
+        }]
+      }
+      ],
   });
 
   if (milestone) {
@@ -141,6 +150,34 @@ exports.milestoneSwapOrder = async (milestoneId1, milestoneId2) => {
  */
 exports.milestoneDestroy = async milestoneId => {
   await Milestone.destroy({where: {id: milestoneId}});
+};
+
+//-----------------------------------------------------------
+
+/**
+ * Asigna un desarrollador a un milestgone, eliminando cualquier asignación previa.
+ * Si `developerId` es null o undefined, solo se elimina la asignación actual.
+ *
+ * @async
+ * @function milestoneSetDeveloper
+ * @param {number} milestoneId - ID del milestone.
+ * @param {number} [developerId] - ID del desarrollador (opcional).
+ * @returns {Promise<void>}
+ */
+exports.milestoneSetDeveloper = async (milestoneId, developerId) => {
+
+  // Borrar asignacion actual:
+  await Assignation.destroy({where: {milestoneId}});
+
+  if (developerId) {
+    // Crear nueva asignacion:
+    const newAssignation = await Assignation.create({
+      developerId,
+      state: "Pending",
+      comment: "",
+      milestoneId
+    });
+  }
 };
 
 //-----------------------------------------------------------

@@ -1,0 +1,36 @@
+
+
+<div class="form-group">
+    Developer:
+
+    <% if (milestone.assignation) { %>
+
+        <% if (milestone.assignation.state !== 'None') { %>
+            <img class="attachment"
+                 src="/developers/<%= milestone.assignation.developerId %>/attachment">
+            <%= milestone.assignation.developer?.name ?? "Anonymous" %>
+            <% if (milestone.assignation.state === "Pending") { %>
+                [Pending]
+            <% } else if (milestone.assignation.state === "Accepted") { %>
+                [Accepted]
+            <% } else if (milestone.assignation.state === "Rejected") { %>
+                [Rejected]
+            <% } else { %>
+                [Unknown state]
+            <% } %>
+        <% } else { %>
+                [Unassigned]
+        <% } %>
+
+    <% } else { %>
+        [Unassigned]
+    <% } %>
+
+</div>
+
+<% if (locals.loginUser && locals.loginUser.isAdmin) { %>
+    <button class="adminDAO"
+            onclick="redirectSelectMilestoneDeveloper(<%= project.id %>, <%= milestone.id %>); return false;">
+        Select/Change Milestone Developer
+    </button>
+<% } %>

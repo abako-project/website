@@ -22,7 +22,6 @@ const Project = require('./project')(sequelize);
 const Objective = require('./objective')(sequelize);
 const Constraint = require('./constraint')(sequelize);
 const Milestone = require('./milestone')(sequelize);
-const Task = require('./task')(sequelize);
 
 const Comment = require('./comment')(sequelize);
 
@@ -91,21 +90,13 @@ Project.belongsTo(DeliveryTime, {as: 'deliveryTime', foreignKey: 'deliveryTimeId
 ProjectType.hasMany(Project, {as: 'projects', foreignKey: 'projectTypeId'});
 Project.belongsTo(ProjectType, {as: 'projectType', foreignKey: 'projectTypeId'});
 
-// Relation 1-to-N between Milestone and Tasks
-Milestone.hasMany(Task, {as: 'tasks', foreignKey: 'milestoneId'});
-Task.belongsTo(Milestone, {as: 'milestone', foreignKey: 'milestoneId'});
-
-// Relation 1-to-N between Role and Tasks
-Role.hasMany(Task, {as: 'tasks', foreignKey: 'roleId'});
-Task.belongsTo(Role, {as: 'role', foreignKey: 'roleId'});
-
 // Relation 1-to-N between Project and Comment
 Project.hasMany(Comment, {as: 'comments', foreignKey: 'projectId'});
 Comment.belongsTo(Project, {as: 'project', foreignKey: 'projectId'});
 
-// Relation 1-to-1 between Assignation and Task
-Task.hasOne(Assignation, {as: 'assignation', foreignKey: 'taskId'});
-Assignation.belongsTo(Task, {as: 'task', foreignKey: 'taskId'});
+// Relation 1-to-1 between Assignation and Milestone
+Milestone.hasOne(Assignation, {as: 'assignation', foreignKey: 'milestoneId'});
+Assignation.belongsTo(Milestone, {as: 'milestone', foreignKey: 'milestoneId'});
 
 // Relation 1-to-N between Developer and Assignation
 Developer.hasMany(Assignation, {as: 'assignations', foreignKey: 'developerId'});

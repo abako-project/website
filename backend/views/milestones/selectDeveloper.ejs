@@ -1,9 +1,9 @@
 
 
-<h1>Seleccionar el Developer de la task <%= task.title %></h1>
+<h1>Seleccionar el Developer del milestone <%= milestone.title %></h1>
 
 
-    <form method="post" action="/projects/<%= project.id %>/milestones/<%= milestone.id %>/tasks/<%= task.id %>/developer">
+    <form method="post" action="/projects/<%= project.id %>/milestones/<%= milestone.id %>/developer">
         <p style="border: 1px dotted grey;">
             <input type="radio" name="developerId" value="" /> Nadie
         </p>
@@ -12,7 +12,7 @@
                 <input type="radio"
                        name="developerId"
                        value="<%= developer.id %>"
-                        <%= developer.id === task.assignation?.developerId && "checked" %>
+                        <%= developer.id === milestone.assignation?.developerId && "checked" %>
                 />
                 <b><%= developer.name %></b>
             </p>

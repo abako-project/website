@@ -4,8 +4,7 @@ const json = require("./json");
 
 const {
   models: {
-    Project, Client, Developer, User, Attachment, Language, Skill,
-    Objective, Constraint, Milestone, Task, Role, Comment, Assignation
+    Developer, User, Attachment, Language, Skill, Role
   }
 } = require('../../models');
 
@@ -193,7 +192,7 @@ exports.developerFindByEmail = async (email) => {
 exports.developersWithRole = async (roleId) => {
 
   const developers = await Developer.findAll({
-    where: {roleId}
+  //  where: {roleId}
   });
 
   return developers.map(developer => json.developerJson(developer));

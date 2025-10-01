@@ -114,60 +114,8 @@ exports.taskUpdate = async (taskId, {title, description, budget, currency, deliv
   return json.taskJson(task);
 };
 
-//-----------------------------------------------------------
 
-/**
- * Intercambia el orden de visualización de dos tareas.
- *
- * @async
- * @function tasksSwapOrder
- * @param {number} taskId1 - ID de la primera tarea.
- * @param {number} taskId2 - ID de la segunda tarea.
- * @returns {Promise<void>}
- * @throws {Error} Si alguna de las tareas no existe o falla la transacción.
- */
-exports.tasksSwapOrder = async (taskId1, taskId2) => {
 
-  const transaction = await sequelize.transaction();
-  try {
-    const task1 = await Task.findByPk(taskId1, {transaction});
-    if (!task1) {
-      throw new Error('Task 1 not found.');
-    }
-
-    const task2 = await Task.findByPk(taskId2, {transaction});
-    if (!task2) {
-      throw new Error('Task 2 not found.');
-    }
-
-    const displayOrder1 = task1.displayOrder;
-    const displayOrder2 = task2.displayOrder;
-
-    // Intercambiamos posiciones
-    await task1.update({displayOrder: displayOrder2}, {transaction}),
-      await task2.update({displayOrder: displayOrder1}, {transaction})
-
-    await transaction.commit();
-
-  } catch(error) {
-    await transaction.rollback();
-    throw error;
-  }
-};
-
-//-----------------------------------------------------------
-
-/**
- * Elimina una tarea por su ID.
- *
- * @async
- * @function taskDestroy
- * @param {number} taskId - ID de la tarea a eliminar.
- * @returns {Promise<void>}
- */
-exports.taskDestroy = async taskId => {
-  await Task.destroy({where: {id: taskId}});
-};
 
 //-----------------------------------------------------------
 

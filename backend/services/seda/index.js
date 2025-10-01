@@ -16,7 +16,6 @@ const sedaProposal = require("./proposal");
 const sedaObjective = require("./objective");
 const sedaConstraint = require("./constraint");
 const sedaMilestone = require("./milestone");
-const sedaTask = require("./task");
 const sedaScope = require("./scope");
 const sedaClient = require("./client");
 const sedaDeveloper = require("./developer");
@@ -59,18 +58,18 @@ exports.milestoneCreate = sedaMilestone.milestoneCreate;
 exports.milestoneUpdate = sedaMilestone.milestoneUpdate;
 exports.milestonesSwapOrder = sedaMilestone.milestoneSwapOrder;
 exports.milestoneDestroy = sedaMilestone.milestoneDestroy;
+exports.milestoneSetDeveloper = sedaMilestone.milestoneSetDeveloper;
 
 exports.scopeSubmit = sedaScope.scopeSubmit;
 exports.scopeAccept = sedaScope.scopeAccept;
 exports.scopeReject = sedaScope.scopeReject;
 
-exports.task = sedaTask.task;
-exports.taskCreate = sedaTask.taskCreate;
-exports.taskUpdate = sedaTask.taskUpdate;
-exports.tasksSwapOrder = sedaTask.tasksSwapOrder;
-exports.taskDestroy = sedaTask.taskDestroy;
-exports.tasksSubmit = sedaTask.tasksSubmit;
-exports.taskSetDeveloper = sedaTask.taskSetDeveloper;
+// exports.task = sedaTask.task;
+// exports.taskCreate = sedaTask.taskCreate;
+// exports.taskUpdate = sedaTask.taskUpdate;
+// exports.tasksSwapOrder = sedaTask.tasksSwapOrder;
+// exports.taskDestroy = sedaTask.taskDestroy;
+// exports.tasksSubmit = sedaTask.tasksSubmit;
 
 exports.clientIndex = sedaClient.clientIndex;
 exports.client = sedaClient.client;

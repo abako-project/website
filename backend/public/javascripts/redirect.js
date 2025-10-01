@@ -109,32 +109,6 @@ function redirectMilestonesSwapOrder(projectId, milestoneId1, milestoneId2) {
   location.href = "/projects/" + projectId + "/milestones/swaporder/" + milestoneId1 + "/" + milestoneId2 + "?_method=PUT";
 }
 
-// Tasks:
-
-function redirectTasksEdit(projectId) {
-  location.href = addTZO("/projects/" + projectId + "/tasks/edit");
-}
-
-function redirectTasksSubmit(projectId) {
-  location.href = "/projects/" + projectId + "/submitTasks?_method=PUT";
-}
-
-function redirectTasksSwapOrder(projectId, taskId1, taskId2) {
-  location.href = "/projects/" + projectId + "/tasks/swaporder/" + taskId1 + "/" + taskId2 + "?_method=PUT";
-}
-
-function redirectTaskNew(projectId, milestoneId) {
-  location.href = addTZO("/projects/" + projectId + "/milestones/" + milestoneId + "/tasks/new");
-}
-
-function redirectTaskEdit(projectId, milestoneId, taskId) {
-  location.href = addTZO("/projects/" + projectId + "/milestones/" + milestoneId + "/tasks/" + taskId + "/edit");
-}
-
-function redirectTaskDelete(projectId, milestoneId, taskId) {
-  location.href = "/projects/" + projectId + "/milestones/" + milestoneId + "/tasks/" + taskId + "?_method=DELETE";
-}
-
-function redirectSelectTaskDeveloper(projectId, milestoneId, taskId) {
-  location.href = "/projects/" + projectId + "/milestones/" + milestoneId + "/tasks/" + taskId + "/developer/select";
+function redirectSelectMilestoneDeveloper(projectId, milestoneId) {
+  location.href = "/projects/" + projectId + "/milestones/" + milestoneId + "/developer/select";
 }

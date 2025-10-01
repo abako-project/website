@@ -5,7 +5,6 @@ const projectController = require('../controllers/project');
 const objectiveController = require('../controllers/objective');
 const constraintController = require('../controllers/constraint');
 const milestoneController = require('../controllers/milestone');
-const taskController = require('../controllers/task');
 
 const permissionController = require('../controllers/permission');
 
@@ -80,7 +79,7 @@ router.put('/:projectId(\\d+)/scopeSubmit',
   permissionController.userTypesRequired({projectConsultant: true}),
   projectController.scopeSubmit);
 
-// Aprobar el scope del proyecto: estado = taskingInProgress
+// Aprobar el scope del proyecto: estado =
 router.put('/:projectId(\\d+)/scopeAccept',
   permissionController.isAuthenticated,
   permissionController.projectClientRequired,
@@ -202,77 +201,18 @@ router.put('/:projectId(\\d+)/milestones/swaporder/:id1(\\d+)/:id2(\\d+)',
   permissionController.projectConsultantRequired,
   milestoneController.swapOrder);
 
+// === Milestone Developer
 
-// === Tasks
-
-// Editar todos las tasks de todos los milestones del projecto
-router.get('/:projectId(\\d+)/tasks/edit',
-  permissionController.isAuthenticated,
-  taskController.editAll);
-
-// Listar todos las tasks de todos los milestones del projecto
-router.get('/:projectId(\\d+)/tasks',
-  permissionController.isAuthenticated,
-  taskController.showAll);
-
-// Mostrar formulario de creación de una Task
-router.get('/:projectId(\\d+)/milestones/:milestoneId(\\d+)/tasks/new',
-  permissionController.isAuthenticated,
-  permissionController.projectConsultantRequired,
-  taskController.new);
-
-// Crear task
-router.post('/:projectId(\\d+)/milestones/:milestoneId(\\d+)/tasks',
-  permissionController.isAuthenticated,
-  permissionController.projectConsultantRequired,
-  taskController.create);
-
-
-// Mostrar formulario de edición de una task
-router.get('/:projectId(\\d+)/milestones/:milestoneId(\\d+)/tasks/:taskId(\\d+)/edit',
-  permissionController.isAuthenticated,
-  permissionController.projectConsultantRequired,
-  taskController.edit);
-
-
-// Actualizar task
-router.put('/:projectId(\\d+)/milestones/:milestoneId(\\d+)/tasks/:taskId(\\d+)',
-  permissionController.isAuthenticated,
-  permissionController.projectConsultantRequired,
-  taskController.update);
-
-
-// Eliminar task
-router.delete('/:projectId(\\d+)/milestones/:milestoneId(\\d+)/tasks/:taskId(\\d+)',
-  permissionController.isAuthenticated,
-  permissionController.projectConsultantRequired,
-  taskController.destroy);
-
-// Intercambiar orden de mostrar dos tasks
-router.put('/:projectId(\\d+)/tasks/swaporder/:id1(\\d+)/:id2(\\d+)',
-  permissionController.isAuthenticated,
-  permissionController.projectConsultantRequired,
-  taskController.swapOrder);
-
-
-// Publicar las tasks creadas
-router.put('/:projectId(\\d+)/submitTasks',
-  permissionController.isAuthenticated,
-  permissionController.userTypesRequired({projectConsultant: true}),
-  taskController.submitTasks);
-
-// === Task Developer
-
-// Mostrar formulario para asignar developer a una task
-router.get('/:projectId(\\d+)/milestones/:milestoneId(\\d+)/tasks/:taskId(\\d+)/developer/select',
+// Mostrar formulario para asignar developer a un milestone
+router.get('/:projectId(\\d+)/milestones/:milestoneId(\\d+)/developer/select',
   permissionController.isAuthenticated,
   permissionController.adminRequired,
-  taskController.selectDeveloper);
+  milestoneController.selectDeveloper);
 
-// Actualizar el developer de una task
-router.post('/:projectId(\\d+)/milestones/:milestoneId(\\d+)/tasks/:taskId(\\d+)/developer',
+// Actualizar el developer de un milesrtone
+router.post('/:projectId(\\d+)/milestones/:milestoneId(\\d+)/developer',
   permissionController.isAuthenticated,
   permissionController.adminRequired,
-  taskController.setDeveloper);
+  milestoneController.setDeveloper);
 
 module.exports = router;

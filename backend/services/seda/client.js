@@ -4,8 +4,7 @@ const json = require("./json");
 
 const {
   models: {
-    Project, Client, Developer, User, Attachment,
-    Objective, Constraint, Milestone, Task, Role, Comment, Assignation
+    Client, User, Attachment
   }
 } = require('../../models');
 
