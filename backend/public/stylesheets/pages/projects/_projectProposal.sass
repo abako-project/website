@@ -1,76 +1,7 @@
-
-/* ------------------------- 
- Project List (index)
-
-.projects
-    padding: $sp-12 $sp-17
-    display: grid
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr))
-    gap: 24px
-
-    .projectsIndex
-        @extend .bubble
-        @include flex-start
-        flex-direction: column
-        gap: $sp-8
-        padding: $sp-10
-        // width: auto
-        width: 100%
-        overflow: hidden
-        background-color: $base-2
-        // border-radius: $radi-6
-
-        .title
-            display: block
-            max-width: 100%
-            overflow: hidden
-            text-overflow: ellipsis
-            white-space: nowrap
-
-        .users
-            display: flex
-            justify-content: start
-            align-items: center
-            gap: $sp-12
-            .user
-                display: flex
-                justify-content: start
-                align-items: center
-                gap: $sp-4
-                // overflow: hidden
-                // text-overflow: ellipsis
-                margin: 0px 10px
-
-        .actions
-            width: 100%
-            @include flex-end
-            gap: $sp-6
-
-.state
-    padding: 0 $sp-5
-    height: fit-content
-    border-radius: $radi-6
-    border: 1px solid $brand
-    // align-self: end
-    overflow: hidden
-    text-overflow: ellipsis
-    white-space: nowrap
-    i
-        @include material-icon($text-dark-3)
-
-/* ------------------------- 
- Project Detail (show)
-
-.projectContainer
-    padding: $sp-12 $sp-17
-    display: flex
-    &__col1
-        width: 100%
-    &__col2
-        width: 100%
-
-.projectContainer1col
-    padding: $sp-12 $sp-17
+// proposals
+    // new proposal flow
+    // objectives & constriants
+    // milestones
 
 .project
     margin: 0 112px
@@ -157,11 +88,8 @@
 
 /* ------------------------- */
 
-.projectHeader
-    padding: $sp-12 $sp-17
+.proposalFormHeader
     gap: $sp-6 // $sp-12
-    background-color: $base-2
-    border-bottom: 1px solid $stroke
 
 #projectNav
     text-align: left
@@ -173,11 +101,16 @@
 .buttonContainer
     display: flex
     justify-content: space-between
-
-.projectProposal
-    padding: $sp-15
+.formContainer
     @extend .bubble
     background-color: $base-2
+    padding: $sp-15
+    .buttonWrapper
+        margin-top: $sp-14
+        display: flex
+        justify-content: end
+
+.projectProposal
     &__form
         display: grid
         gap: $sp-14
@@ -189,25 +122,9 @@
             grid-area: 2/1/2/2
         .area3 // date
             grid-area: 1/2/2/-1
-        .area4 
+        .area4
             grid-area: 2/1/1/1
         .area5 // description
             grid-area: 3/1/-1/-1
+
     &__summary
-
-
-
-// Revisar
-
-.form-group
-    label
-        font-size: $text-base
-        line-height: $lh-base
-        font-weight: 500
-        color: $text-dark-2
-    input, textarea
-        width: 100%
-        // background-color: $base-1
-
-.projectFlow.btn
-    margin: 1rem

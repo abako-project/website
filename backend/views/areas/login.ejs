@@ -1,36 +1,33 @@
 <div class="onboarding">
-
   <%- include('../layouts/onboarding/_appLeft') %>
-
-
+  
   <section class="onboarding__right">
-    <article class="signup">
-      <p>Don't have an account yet?</p>
-      <button class="btn">Sign up</button>
-    </article>
-    <div class="modalLogin">
-      <div class="card-title">Developer</div>
-      
-    <div class="form-group">
-      <a class="btn btn_primary" href="/auth/login/developer/new">Login</a>
-    </div>
-  </div>
-  
-  <div class="modalLogin">
-    <div class="card-title">Company/Organization</div>
+    <%- include('../layouts/onboarding/_signupBtn') %>
     
-    <div class="form-group">
-      <a class="btn btn_primary" href="/auth/login/client/new">Login</a>
-    </div>
-  </div>
-  
-  <article class="modalLogin">
-    <h3>Login</h3>
-    <a class="btn btn_primary" href="/views/onboarding/register.ejs">
-      Login with Web 3.0 Adress
-      <!-- <button class="btn btn_primary">Login with Web 3.0 Adress</button> -->
-    </a>
-  </article>
-</section>
+    <div class="content">
+      <div class="card">
+        <h3 class="card__title">Developer</h3>
 
-  </div>
+        <div class="form-group">
+          <a class="btn btn_primary" href="/auth/login/developer/new">Login</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 class="card__title">Company/Organization</h3>
+
+        <div class="form-group">
+          <a class="btn btn_primary" href="/auth/login/client/new">Login</a>
+        </div>
+      </div>
+
+      <article class="card">
+        <h3 class="card__title">Login</h3>
+        <a class="btn btn_primary" href="/views/onboarding/register.ejs">
+          Login with Web 3.0 Adress
+          <!-- <button class="btn btn_primary">Login with Web 3.0 Adress</button> -->
+        </a>
+      </article>
+    </div>
+  </section>
+</div>

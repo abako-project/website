@@ -1,28 +1,28 @@
-<!-- Login de un Developer -->
+<!-- Login Developer -->
 
 <div class="onboarding">
   <%- include('../layouts/onboarding/_appLeft') %>
 
   <section class="onboarding__right">
-<form id="loginForm" action="/auth/login/developer" method="POST">
-  <h2>Login de un Developer</h2>
-  <div class="form">
-    <div class="form-group">
-      <label for="email">Email:</label>
-      <input type="text" id="email" name="email" placeholder="email" />
-    </div>
+    <form id="loginForm" class="content" action="/auth/login/developer" method="POST">
+      <h1>Login de un Developer</h1>
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="text" id="email" name="email" placeholder="email" />
+      </div>
 
-    <input type="hidden" id="preparedData" name="preparedData" />
+      <input type="hidden" id="preparedData" name="preparedData" />
 
-    <div class="form-group">
-      <button class="btn btn_primary" type="submit" id="loginButton">Login</button>
-    </div>
+      <div class="form-group">
+        <button class="btn btn_primary" type="submit" id="loginButton">
+          Login
+        </button>
+      </div>
 
-    <div class="form-group">
-      <p id="status"></p>
-    </div>
-  </div>
-</form>
+      <div class="form-group hidden">
+        <p id="status"></p>
+      </div>
+    </form>
   </section>
 </div>
 
