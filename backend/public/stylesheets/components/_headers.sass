@@ -57,12 +57,14 @@
             margin-bottom: 0
 
 // forms header
-.formsHeader
+.cancelTopBar
+    @extend .sticky
     display: flex
     justify-content: space-between
     align-items: center
     padding: $sp-8 $sp-22
     border-bottom: 1px solid $stroke
+    background-color: $base-1
     &__nav
         i
             color: $fill-5

@@ -14,13 +14,11 @@
 // @import "./ui/_icons.sass";
 // @import "./ui/_divider.sass";
 
-/* components */
-@import "./components/_mainHeader.sass";
-
 // Components
 @import './components/_mainSidebar.sass';
 @import './components/_sidebarUser.sass'; // nombre?
-@import './components/_appHeaders.sass';
+@import './components/_progressSidebar.sass';
+@import './components/_headers.sass';
 
 
 // Pages
