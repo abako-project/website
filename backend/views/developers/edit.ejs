@@ -32,17 +32,24 @@
                 <option value="">None</option>
                 <% for (const role of allRoles) { %>
                     <option value="<%= role.id %>"
-                            <%= developer.roleId === role.id && "selected" %>
-                    > <%= role.name %> %> </option>
+                            <%= developer.roleId === role.id && "selected" %> >
+                        <%= role.name %> %>
+                    </option>
                 <% } %>
             </select>
         </div>
 
         <div class="form-group">
-            <label for="experienceLevel">Experience Level:</label>
-            <input type="text" id="experienceLevel" name="experienceLevel"
-                   value="<%= developer.experienceLevel %>"
-                   placeholder="Experience Level" autocomplete="off"/>
+            <label for="proficiency">Proficiency:</label>
+            <select id="proficiency" name="proficiencyId">
+                <option value="">None</option>
+                <% for (const proficiency of allProficiencies) { %>
+                    <option value="<%= proficiency.id %>"
+                            <%= developer.proficiencyId === proficiency.id && "selected" %> >
+                        <%= proficiency.description %> %>
+                    </option>
+                <% } %>
+            </select>
         </div>
 
         <div class="form-group">

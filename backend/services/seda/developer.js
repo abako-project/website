@@ -4,7 +4,7 @@ const json = require("./json");
 
 const {
   models: {
-    Developer, User, Attachment, Language, Skill, Role
+    Developer, User, Attachment, Language, Skill, Role, Proficiency
   }
 } = require('../../models');
 
@@ -26,6 +26,7 @@ exports.developerIndex = async () => {
       {model: Attachment, as: "attachment"},
       {model: Language, as: "languages"},
       {model: Role, as: "role"},
+      {model: Proficiency, as: "proficiency"},
       {model: Skill, as: "skills"},
     ]
   });
@@ -52,6 +53,8 @@ exports.developer = async developerId => {
       {model: User, as: "user"},
       {model: Attachment, as: "attachment"},
       {model: Language, as: "languages"},
+      {model: Role, as: "role"},
+      {model: Proficiency, as: "proficiency"},
       {model: Skill, as: "skills"},
     ]
   });
@@ -109,7 +112,7 @@ exports.developerCreate = async (email, name, address) => {
  * @param {string} [data.bio]
  * @param {string} [data.background]
  * @param {number} [data.roleId]
- * @param {string} [data.experienceLevel]
+ * @param {number} [data.proficiencyId]
  * @param {string} [data.githubUsername]
  * @param {string} [data.portfolioUrl]
  * @param {string} [data.location]
@@ -121,14 +124,14 @@ exports.developerCreate = async (email, name, address) => {
  * @returns {Promise<Object>} Objeto JSON con los datos actualizados del desarrollador.
  */
 exports.developerUpdate = async (developerId, {
-  name, bio, background, roleId, experienceLevel, githubUsername, portfolioUrl, location, availability,
+  name, bio, background, roleId, proficiencyId, githubUsername, portfolioUrl, location, availability,
   languageIds, skillIds,
   mime, image
 }) => {
 
   await Developer.update({
       developerId,
-      name, bio, background, roleId, experienceLevel, githubUsername, portfolioUrl, location, availability
+      name, bio, background, roleId, proficiencyId, githubUsername, portfolioUrl, location, availability
     }, {
       where: {
         id: developerId

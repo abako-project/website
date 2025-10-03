@@ -3,10 +3,10 @@
 const {Model, DataTypes} = require('sequelize');
 
 module.exports = (sequelize) => {
-  class ProjectType extends Model {
+  class Proficiency extends Model {
   }
 
-  ProjectType.init({
+  Proficiency.init({
     description: {
       type: DataTypes.STRING
     }
@@ -14,5 +14,5 @@ module.exports = (sequelize) => {
     sequelize,
   });
 
-  return ProjectType;
+  return Proficiency;
 };

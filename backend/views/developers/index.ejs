@@ -16,7 +16,7 @@
             Background
         </th>
         <th>Role</th>
-        <th>Experience</th>
+        <th>Proficiency</th>
         <th>github</th>
         <th>Portfolio</th>
         <th>Location</th>
@@ -46,7 +46,7 @@
                 <%= developer.background ? "Si" : "No" %>
             </td>
             <td><%= developer.role?.name %></td>
-            <td><%= developer.experienceLevel %></td>
+            <td><%= developer.proficiency?.description %></td>
             <td><%= developer.githubUsername %></td>
             <td><%= developer.portfolioUrl ? "Si" : "No" %></td>
             <td><%= developer.location %></td>

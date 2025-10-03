@@ -13,6 +13,7 @@ const Client = require('./client')(sequelize);
 const Developer = require('./developer')(sequelize);
 const Language = require('./language')(sequelize);
 const Role = require('./role')(sequelize);
+const Proficiency = require('./proficiency')(sequelize);
 const Skill = require('./skill')(sequelize);
 const Budget = require('./budget')(sequelize);
 const DeliveryTime = require('./deliveryTime')(sequelize);
@@ -54,10 +55,13 @@ Developer.belongsToMany(Language, {as: 'languages', through: "DeveloperKnownLang
 Language.belongsToMany(Developer, {as: 'developers', through: "DeveloperKnownLanguages",
   foreignKey: 'languageId', otherKey: 'developerId'});
 
-
 // Relation 1-to-1 between developer and role
 Role.hasMany(Developer, {as: 'developers', foreignKey: 'roleId'});
 Developer.belongsTo(Role, {as: 'role', foreignKey: 'roleId'});
+
+// Relation 1-to-1 between developer and proficiency
+Proficiency.hasMany(Developer, {as: 'developers', foreignKey: 'proficiencyId'});
+Developer.belongsTo(Proficiency, {as: 'proficiency', foreignKey: 'proficiencyId'});
 
 // Relation 1-to-N between developer and skill
 Developer.belongsToMany(Skill, {as: 'skills', through: "DeveloperSkills",

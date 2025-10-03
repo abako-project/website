@@ -30,9 +30,10 @@ exports.edit = async (req, res, next) => {
 
   const allLanguages = await seda.languageIndex();
   const allRoles = await seda.roleIndex();
+  const allProficiencies = await seda.proficiencyIndex();
   const allSkills = await seda.skillIndex();
 
-  res.render('developers/edit', {developer, allLanguages, allRoles, allSkills});
+  res.render('developers/edit', {developer, allLanguages, allRoles, allProficiencies, allSkills});
 };
 
 
@@ -48,7 +49,7 @@ exports.update = async (req, res, next) => {
     bio: body.bio,
     background: body.background,
     roleId: body.roleId || null,
-    experienceLevel: body.experienceLevel,
+    proficiencyId: body.proficiencyId || null,
     githubUsername: body.githubUsername,
     portfolioUrl: body.portfolioUrl,
     location: body.location,
@@ -69,7 +70,14 @@ exports.update = async (req, res, next) => {
     if (error instanceof seda.ValidationError) {
       console.log('There are errors in the form:');
       error.errors.forEach(({message}) => console.log(message));
-      res.render('clients/edit', {client});
+
+      const allLanguages = await seda.languageIndex();
+      const allRoles = await seda.roleIndex();
+      const allProficiencies = await seda.proficiencyIndex();
+      const allSkills = await seda.skillIndex();
+
+      res.render('developers/edit', {developer, allLanguages, allRoles, allProficiencies, allSkills});
+
     } else {
       next(error);
     }

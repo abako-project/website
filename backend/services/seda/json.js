@@ -118,19 +118,20 @@ const developerJson = developer => {
     address: developer.address,
     bio: developer.bio,
     background: developer.background,
-    experienceLevel: developer.experienceLevel,
     githubUsername: developer.githubUsername,
     portfolioUrl: developer.portfolioUrl,
     location: developer.location,
     availability: developer.availability,
     userId: developer.userId,
     roleId: developer.roleId,
+    proficiencyId: developer.proficiencyId,
     createdAt: developer.createdAt.valueOf(),
     updatedAt: developer.updatedAt.valueOf(),
 
     user: userJson(developer.user),
     languages: developer.languages?.map(language => languageJson(language)) || [],
     role: roleJson(developer.role),
+    proficiency: proficiencyJson(developer.proficiency),
     skills: developer.skills?.map(skill => skillJson(skill)) || [],
     consultantProjects: developer.consultantProjects?.map(project => projectJson(project)) || [],
     assignations: developer.assignations?.map(assignation => assignationJson(assignation)) || [],
@@ -209,6 +210,23 @@ const roleJson = role => {
     updatedAt: role.updatedAt.valueOf(),
 
     developers: role.developers?.map(developer => developerJson(developer)) || [],
+  };
+};
+
+/**
+ * Convierte un objeto Proficiency en un objeto JSON.
+ *
+ * @function proficiencyJson
+ * @param {Object} proficiency - Instancia del modelo Proficiency.
+ * @returns {Object|undefined} Objeto JSON del nivel de experiencia o `undefined`.
+ */
+const proficiencyJson = proficiency => {
+  if (!proficiency) return undefined;
+  return {
+    id: proficiency.id,
+    description: proficiency.description,
+    createdAt: proficiency.createdAt.valueOf(),
+    updatedAt: proficiency.updatedAt.valueOf(),
   };
 };
 
@@ -385,6 +403,7 @@ exports.languageJson = languageJson;
 exports.objectiveJson = objectiveJson;
 exports.constraintJson = constraintJson;
 exports.roleJson = roleJson;
+exports.proficiencyJson = proficiencyJson;
 exports.budgetJson = budgetJson;
 exports.deliveryTimeJson = deliveryTimeJson;
 exports.projectTypeJson = projectTypeJson;
