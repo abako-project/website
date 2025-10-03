@@ -85,36 +85,35 @@
             </a>
         </li>
 
-    <hr />
+        <!-- Projects -->
+        <% if (locals.loginUser?.isAdmin) { %>
+            <li>
+                <a href="/projects">
+                    <i class="ri-notification-2-line"></i> <span>Proyectos</span>
+                </a>
+            </li>
+        <% } %>
 
-    <!-- Projects -->
-    <% if (locals.loginUser?.isAdmin) { %>
-        <li>
-            <a href="/projects">
-                <i class="ri-notification-2-line"></i> <span>Proyectos ??</span>
-            </a>
-        </li>
-    <% } %>
+        <% if (locals.loginUser?.developerId) { %>
+            <li>
+                <a href="/developers/<%= loginUser.developerId %>/projects">
+                    <i class="ri-notification-2-line"></i>
+                    <span>Proyectos</span>
+                </a>
+            </li>
+        <% } %>
 
-    <% if (locals.loginUser?.developerId) { %>
-        <li>
-            <a href="/developers/<%= loginUser.developerId %>/projects">
-                <i class="ri-notification-2-line"></i>
-                <span>Proyectos ??</span>
-            </a>
-        </li>
-    <% } %>
+        <% if (locals.loginUser?.clientId) { %>
+            <li>
+                <a href="/clients/<%= loginUser.clientId %>/projects">
+                    <i class="ri-notification-2-line"></i> <span>Proyectos</span>
+                </a>
+            </li>
+        <% } %>
 
-    <% if (locals.loginUser?.clientId) { %>
-        <li>
-            <a href="/clients/<%= loginUser.clientId %>/projects">
-                <i class="ri-notification-2-line"></i> <span>Proyectos??</span>
-            </a>
-        </li>
-    <% } %>
+        <div class="divider divider-h"></div>
     </ul>
 
-    <!-- <hr /> -->
 
     <ul class="sidebarUser">
         <li class="sidebarUser__wrapper menuBtn">

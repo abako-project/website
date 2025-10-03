@@ -1,0 +1,71 @@
+.appHeader // dashboard, project/s, etc.
+    @extend .sticky
+    padding: $sp-12 $sp-17
+    height: fit-content
+    background-color: $base-2
+    border-bottom: 1px solid $stroke
+    height: fit-content
+    &__title
+    &__subtitle
+        color: $text-dark-2
+    &__right // dashboard
+        margin-bottom: $sp-12
+        @include flex-end
+        align-items: center
+        gap: 40px
+        .link
+            color: $brand
+    &__client // project
+        @include flex-start
+        flex-direction: column
+        gap: $sp-4
+        .user
+            @include flex-start
+            align-items: center
+            gap: $sp-8
+            img
+                height: 44px
+                width: 44px
+        .website
+            padding-left: $sp-7
+            @include flex-start
+            align-items: center
+            gap: $sp-8
+            i
+                color: $text-dark-2
+    &__actions
+        @include flex-start
+        width: fit-content
+        div
+            @include flex-start
+            gap: $sp-8
+            width: fit-content
+
+    &__tabs
+        @include flex-start
+        gap: $sp-12
+        .tab
+            padding: 0
+            min-height: 56px
+
+    &--dashboard
+        padding: $sp-12 $sp-17 0 $sp-17
+        .appHeader__title
+            margin-bottom: $sp-12
+    &--project
+        .appHeader__title
+            margin-bottom: 0
+
+// forms header
+.formsHeader
+    display: flex
+    justify-content: space-between
+    align-items: center
+    padding: $sp-8 $sp-22
+    border-bottom: 1px solid $stroke
+    &__nav
+        i
+            color: $fill-5
+    &__logo > img
+        width: $icon-2xl
+    &__spacer
