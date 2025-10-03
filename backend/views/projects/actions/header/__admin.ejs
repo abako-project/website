@@ -7,18 +7,8 @@ if (locals.loginUser.isAdmin) {
         callback: "redirectProjectDelete(" + project.id + ")",
     });
 
-    if (project.state && ["pending"].includes(project.state)) {
-        actions.push({
-            title: "Reject",
-            callback: "redirectProjectReject(" + project.id + ")",
-        });
-        actions.push({
-            title: "Approve",
-            callback: "redirectProjectApprove(" + project.id + ")",
-        });
-    }
 
-    if (project.state && ["approved"].includes(project.state)) {
+    if (project.state && ["ProposalPending"].includes(project.state)) {
         actions.push({
             title: "Select/Change Consultant",
             callback: "redirectSelectProjectConsultant(" + project.id + ")",

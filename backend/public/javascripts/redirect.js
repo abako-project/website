@@ -35,16 +35,16 @@ function redirectProjectDelete(projectId) {
   location.href = addTZO("/projects/" + projectId + "?_method=DELETE");
 }
 
-function redirectProjectSubmit(projectId) {
-  location.href = "/projects/" + projectId + "/projectSubmit?_method=PUT";
+function redirectProposalSubmit(projectId) {
+  location.href = "/projects/" + projectId + "/proposal_submit?_method=PUT";
 }
 
-function redirectProjectReject(projectId) {
-  location.href = "/projects/" + projectId + "/reject?_method=PUT";
+function redirectProposalReject(projectId) {
+  location.href = "/projects/" + projectId + "/proposal_reject?_method=PUT";
 }
 
-function redirectProjectApprove(projectId) {
-  location.href = "/projects/" + projectId + "/approve?_method=PUT";
+function redirectProposalApprove(projectId) {
+  location.href = "/projects/" + projectId + "/proposal_approve?_method=PUT";
 }
 
 function redirectSelectProjectConsultant(projectId) {
@@ -111,4 +111,10 @@ function redirectMilestonesSwapOrder(projectId, milestoneId1, milestoneId2) {
 
 function redirectSelectMilestoneDeveloper(projectId, milestoneId) {
   location.href = "/projects/" + projectId + "/milestones/" + milestoneId + "/developer/select";
+}
+
+// Escrow
+
+function redirectProjectStart(projectId) {
+  location.href = "/projects/" + projectId + "/start";
 }

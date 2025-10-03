@@ -260,8 +260,8 @@ exports.destroy = async (req, res, next) => {
 };
 
 
-// Publicar el proyecto: estado = pending
-exports.projectSubmit = async (req, res, next) => {
+// Publicar la propuesta: estado = ProposalPending
+exports.proposalSubmit = async (req, res, next) => {
 
   const projectId = req.params.projectId;
 
@@ -269,9 +269,11 @@ exports.projectSubmit = async (req, res, next) => {
 
   try {
     // Save into the data base
-    await seda.projectSubmit(projectId);
+    await seda.proposalSubmit(projectId);
 
     console.log('Success: Project submitted successfully.');
+
+    req.flash("info", "Project submitted successfully. You will be notified al soon as the project gets reviewed.");
 
     if (clientId) {
       res.redirect('/clients/' + clientId + '/projects');
@@ -284,7 +286,7 @@ exports.projectSubmit = async (req, res, next) => {
 };
 
 
-// Publicar el scope: estado = validationNeeded
+// El consultor publicar el scope:
 exports.scopeSubmit = async (req, res, next) => {
 
   const projectId = req.params.projectId;
@@ -310,7 +312,7 @@ exports.scopeSubmit = async (req, res, next) => {
 
 
 // El cliente acepta el scope (milestones):
-// Estamos en el estado validationNeeded y
+// Estamos en el estado ScopeValidationNeeded y
 // pasamos al estado TeamAssignmentPending.
 exports.scopeAccept = async (req, res, next) => {
 
@@ -326,7 +328,7 @@ exports.scopeAccept = async (req, res, next) => {
     console.log('Success: Scope accepted successfully.');
 
     if (clientId) {
-      res.redirect('/projects/' + projectId);
+      res.redirect('/projects/' + projectId + '/escrow');
     } else {
       res.redirect('/projects/');
     }
@@ -336,7 +338,7 @@ exports.scopeAccept = async (req, res, next) => {
 };
 
 
-// Rechazar el scope: estado = scopingInProgress
+// Rechazar el scope: estado = ScopingInProgress
 exports.scopeReject = async (req, res, next) => {
 
   const projectId = req.params.projectId;
@@ -360,13 +362,13 @@ exports.scopeReject = async (req, res, next) => {
   }
 };
 
-// Rechazar el proyecto: estado = rejected
-exports.reject = async (req, res, next) => {
+// Rechazar el proyecto:
+exports.rejectProposal = async (req, res, next) => {
 
   const projectId = req.params.projectId;
 
   try {
-    await seda.projectReject(projectId);
+    await seda.rejectProposal(projectId);
 
     console.log('Success: Project rejected successfully.');
     res.redirect('/projects/' + projectId);
@@ -376,13 +378,13 @@ exports.reject = async (req, res, next) => {
 };
 
 
-// Aprobar el proyecto: estado = rejected
-exports.approve = async (req, res, next) => {
+// Aprobar el proyecto:
+exports.approveProposal = async (req, res, next) => {
 
   const projectId = req.params.projectId;
 
   try {
-    await seda.projectApprove(projectId);
+    await seda.approveProposal(projectId);
 
     console.log('Success: Project approved successfully.');
     res.redirect('/projects/' + projectId);

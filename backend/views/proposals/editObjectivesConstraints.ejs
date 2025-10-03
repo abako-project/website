@@ -21,7 +21,7 @@
                                 !project.state) ||
                         (locals.loginUser.developerId === project.consultantId &&
                                 project.state &&
-                                ["scopingInProgress"].includes(project.state))) { %>
+                                ["ScopingInProgress"].includes(project.state))) { %>
 
                     <%- include("./edit/_newObjective", {project}) %>
 
@@ -36,7 +36,7 @@
                                 !project.state) ||
                         (locals.loginUser.developerId === project.consultantId &&
                                 project.state &&
-                                ["scopingInProgress"].includes(project.state))) { %>
+                                ["ScopingInProgress"].includes(project.state))) { %>
                     <%- include("./edit/_newConstraint", {project}) %>
 
                 <% } %>
@@ -48,7 +48,7 @@
 
                 <% if (locals.loginUser.clientId === project.clientId &&
                         (!project.state ||
-                         ["rejected"].includes(project.state))) { %>
+                         ["ProposalRejected"].includes(project.state))) { %>
 
                     <button class="button" onclick="redirectProjectShow(<%= project.id %>); return false;">
                         Next: Review & Submit

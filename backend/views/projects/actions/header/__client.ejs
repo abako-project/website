@@ -10,14 +10,25 @@ if (locals.loginUser.clientId === project.clientId) {
         });
         actions.push({
             title: "Submit Project",
-            callback: "redirectProjectSubmit(" + project.id + ")",
+            callback: "redirectProposalSubmit(" + project.id + ")",
         });
     }
 
-    if (project.state && ["rejected"].includes(project.state)) {
+    if (project.state && ["ProposalRejected"].includes(project.state)) {
         actions.push({
             title: "Review",
             callback: "redirectProjectEdit(" + project.id + ")",
+        });
+        actions.push({
+            title: "Submit Project",
+            callback: "redirectProposalSubmit(" + project.id + ")",
+        });
+    }
+
+    if (project.state && ["EscrowFundingNeeded"].includes(project.state)) {
+        actions.push({
+            title: "Lock the Funds and Start the Project",
+            callback: "redirectProjectStart(" + project.id + ")",
         });
     }
 }

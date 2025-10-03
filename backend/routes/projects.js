@@ -5,6 +5,7 @@ const projectController = require('../controllers/project');
 const objectiveController = require('../controllers/objective');
 const constraintController = require('../controllers/constraint');
 const milestoneController = require('../controllers/milestone');
+const escrowController = require('../controllers/escrow');
 
 const permissionController = require('../controllers/permission');
 
@@ -55,25 +56,25 @@ router.delete('/:projectId(\\d+)',
   permissionController.userTypesRequired({admin: true}),
     projectController.destroy);
 
-// Publicar el proyecto: estado = pending
-router.put('/:projectId(\\d+)/projectSubmit',
+// Publicar la propuesta: estado = ProposalPending
+router.put('/:projectId(\\d+)/proposal_submit',
   permissionController.isAuthenticated,
   permissionController.userTypesRequired({client: true}),
-  projectController.projectSubmit);
+  projectController.proposalSubmit);
 
-// Rechazar el proyecto: estado = rejected
-router.put('/:projectId(\\d+)/reject',
+// Rechazar el proyecto: estado = ProposalAccepted
+router.put('/:projectId(\\d+)/proposal_reject',
   permissionController.isAuthenticated,
-  permissionController.userTypesRequired({admin: true}),
-  projectController.reject);
+  permissionController.userTypesRequired({projectConsultant: true}),
+  projectController.rejectProposal);
 
-// Aprobar el proyecto: estado = rejected
-router.put('/:projectId(\\d+)/approve',
+// Aprobar el proyecto: estado = ProposalAccepted
+router.put('/:projectId(\\d+)/proposal_approve',
   permissionController.isAuthenticated,
-  permissionController.userTypesRequired({admin: true}),
-  projectController.approve);
+  permissionController.userTypesRequired({projectConsultant: true}),
+  projectController.approveProposal);
 
-// Publicar el scope: estado = validationNeeded
+// Publicar el scope: estado = ScopeValidationNeeded
 router.put('/:projectId(\\d+)/scopeSubmit',
   permissionController.isAuthenticated,
   permissionController.userTypesRequired({projectConsultant: true}),
@@ -86,7 +87,7 @@ router.put('/:projectId(\\d+)/scopeAccept',
   // Falta comprobar estado
   projectController.scopeAccept);
 
-// Rechazar el scope del proyecto: estado = scopingInProgress
+// Rechazar el scope del proyecto: estado = ScopingInProgress
 router.put('/:projectId(\\d+)/scopeReject',
   permissionController.isAuthenticated,
   permissionController.projectClientRequired,
@@ -214,5 +215,21 @@ router.post('/:projectId(\\d+)/milestones/:milestoneId(\\d+)/developer',
   permissionController.isAuthenticated,
   permissionController.adminRequired,
   milestoneController.setDeveloper);
+
+
+// === Escrow
+
+router.get('/:projectId(\\d+)/escrow',
+  permissionController.isAuthenticated,
+  permissionController.userTypesRequired({client: true}),
+  escrowController.escrow);
+
+
+router.get('/:projectId(\\d+)/start',
+  permissionController.isAuthenticated,
+  permissionController.userTypesRequired({client: true}),
+  escrowController.startProject);
+
+
 
 module.exports = router;

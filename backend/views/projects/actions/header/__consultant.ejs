@@ -3,7 +3,19 @@ const actions = [];
 
 if (locals.loginUser.developerId === project.consultantId) {
 
-    if (project.state && ["scopingInProgress"].includes(project.state)) {
+
+    if (project.state && ["ProposalAccepted"].includes(project.state)) {
+        actions.push({
+            title: "Reject",
+            callback: "redirectProposalReject(" + project.id + ")",
+        });
+        actions.push({
+            title: "Approve",
+            callback: "redirectProposalApprove(" + project.id + ")",
+        });
+    }
+
+    if (project.state && ["ScopingInProgress"].includes(project.state)) {
         actions.push({
             title: "Review Project",
             callback: "redirectMilestonesEdit(" + project.id + ")",
@@ -29,3 +41,5 @@ if (locals.loginUser.developerId === project.consultantId) {
 %>
 
 <%- include("./__render", {actions}) %>
+
+

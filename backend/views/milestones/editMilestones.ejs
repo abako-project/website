@@ -69,7 +69,7 @@
 
 <% if (locals.loginUser.developerId === project.consultantId &&
         project.state &&
-        ["scopingInProgress"].includes(project.state)) { %>
+        ["ScopingInProgress"].includes(project.state)) { %>
     <button class="button" onclick="redirectProjectShow(<%= project.id %>); return false;"
             data-project-id="<%= project.id %>">
         Next

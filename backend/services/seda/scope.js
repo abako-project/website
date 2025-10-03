@@ -1,5 +1,4 @@
 
-const {Sequelize, Op} = require("sequelize");
 
 const json = require("./json");
 
@@ -17,7 +16,7 @@ const states = require("../../core/state");
 
 /**
  * Publica el scope del proyecto.
- * Cambia el estado del proyecto a `ValidationNeeded`
+ * Cambia el estado del proyecto a `ScopeValidationNeeded`
  * y crea un comentario del consultor.
  *
  * @async
@@ -30,7 +29,7 @@ const states = require("../../core/state");
 exports.scopeSubmit = async (projectId, consultantComment) => {
 
   await Project.update({
-    state: states.ProjectState.ValidationNeeded
+    state: states.ProjectState.ScopeValidationNeeded
   }, {where: {id: projectId}});
 
   await Comment.create({projectId, consultantComment});
@@ -55,7 +54,7 @@ exports.scopeSubmit = async (projectId, consultantComment) => {
 exports.scopeAccept = async (projectId, clientResponse) => {
 
   await Project.update({
-    state: states.ProjectState.TeamAssignmentPending
+    state: states.ProjectState.EscrowFundingNeeded
   }, {where: {id: projectId}});
 
 

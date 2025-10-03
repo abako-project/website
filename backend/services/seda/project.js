@@ -1,4 +1,4 @@
-const {Sequelize, Op} = require("sequelize");
+const {Op} = require("sequelize");
 
 const json = require("./json");
 
@@ -216,17 +216,51 @@ exports.projectSetState = async (projectId, state) => {
 //-----------------------------------------------------------
 
 /**
- * Publica una propuesta de proyecto y cambia su estado a `Pending`.
+ * Si la propuesta no se ha publicado ya, entonces publica la propuesta y cambia su estado a `ProposalPending`.
+ * Si la propuesta fue publicada y rechazada, entonces la republica y pasa al estado ProposalAccepted.
  *
  * @async
- * @function projectSubmit
+ * @function proposalSubmit
  * @param {number} projectId - ID del proyecto.
  * @returns {Promise<void>}
  * @throws {Error} Si falla la actualización del estado.
  */
-exports.projectSubmit = async (projectId) => {
+exports.proposalSubmit = async (projectId) => {
+
+  const project = await Project.findByPk(projectId);
+
+  if (!project) {
+    throw new Error('There is no project with id=' + projectId);
+  }
+
+  if (!project.state) {
+    await Project.update({
+      state: states.ProjectState.ProposalPending
+    }, {where: {id: projectId}});
+  } else if (project?.state === states.ProjectState.ProposalRejected) {
+    await Project.update({
+      state: states.ProjectState.ProposalAccepted
+    }, {where: {id: projectId}});
+  } else {
+    throw new Error('Internal Error. Invalid project state.');
+  }
+};
+
+
+//-----------------------------------------------------------
+
+/**
+ * Aprueba un proyecto (rol DAO/Admin) cambiando su estado a `ScopingInProgress`.
+ *
+ * @async
+ * @function approveProposal
+ * @param {number} projectId - ID del proyecto.
+ * @returns {Promise<void>}
+ * @throws {Error} Si falla la actualización del estado.
+ */
+exports.approveProposal = async (projectId) => {
   await Project.update({
-    state: states.ProjectState.Pending
+    state: states.ProjectState.ScopingInProgress
   }, {where: {id: projectId}});
 };
 
@@ -234,42 +268,24 @@ exports.projectSubmit = async (projectId) => {
 //-----------------------------------------------------------
 
 /**
- * Aprueba un proyecto (rol DAO/Admin) cambiando su estado a `Approved`.
+ * Rechaza un proyecto (rol DAO/Admin) cambiando su estado a `ProposalRejected`.
  *
  * @async
- * @function projectApprove
+ * @function rejectProposal
  * @param {number} projectId - ID del proyecto.
  * @returns {Promise<void>}
  * @throws {Error} Si falla la actualización del estado.
  */
-exports.projectApprove = async (projectId) => {
+exports.rejectProposal = async (projectId) => {
   await Project.update({
-    state: states.ProjectState.Approved
-  }, {where: {id: projectId}});
-};
-
-
-//-----------------------------------------------------------
-
-/**
- * Rechaza un proyecto (rol DAO/Admin) cambiando su estado a `Rejected`.
- *
- * @async
- * @function projectReject
- * @param {number} projectId - ID del proyecto.
- * @returns {Promise<void>}
- * @throws {Error} Si falla la actualización del estado.
- */
-exports.projectReject = async (projectId) => {
-  await Project.update({
-    state: states.ProjectState.Rejected
+    state: states.ProjectState.ProposalRejected
   }, {where: {id: projectId}});
 };
 
 //-----------------------------------------------------------
 
 /**
- * Asigna un consultor a un proyecto y cambia el estado a `ScopingInProgress`.
+ * Asigna un consultor a un proyecto y cambia el estado a `ProposalAccepted`.
  *
  * @async
  * @function projectSetConsultant
@@ -282,8 +298,29 @@ exports.projectSetConsultant = async (projectId, consultantId) => {
 
   await Project.update({
     consultantId,
-    state: states.ProjectState.ScopingInProgress
+    state: states.ProjectState.ProposalAccepted
   }, {where: {id: projectId}});
+};
+
+
+//-----------------------------------------------------------
+
+/**
+ * Ya se ha hecho el pago y ahora empieza el projecto.
+ * Lo primero va a ser seleccionar al equipo de desarrolladores.
+ *
+ * @async
+ * @function projectStart
+ * @param {number} projectId - ID del proyecto.
+ * @returns {Promise<void>}
+ * @throws {Error} Si falla la actualización del proyecto.
+ */
+exports.projectStart = async (projectId) => {
+
+  await Project.update({
+    state: states.ProjectState.TeamAssignmentPending
+  }, {where: {id: projectId}});
+
 };
 
 //-----------------------------------------------------------

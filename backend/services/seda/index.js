@@ -35,11 +35,13 @@ exports.project = sedaProject.project;
 exports.projectClientId = sedaProject.projectClientId;
 exports.projectConsultantId = sedaProject.projectConsultantId;
 exports.projectSetState = sedaProject.projectSetState;
-exports.projectSubmit = sedaProject.projectSubmit;
+exports.proposalSubmit = sedaProject.proposalSubmit;
 exports.projectDestroy = sedaProject.projectDestroy;
-exports.projectApprove = sedaProject.projectApprove;
-exports.projectReject = sedaProject.projectReject;
+exports.approveProposal = sedaProject.approveProposal;
+exports.rejectProposal = sedaProject.rejectProposal;
 exports.projectSetConsultant = sedaProject.projectSetConsultant;
+
+exports.projectStart = sedaProject.projectStart;
 
 exports.proposalCreate = sedaProposal.proposalCreate;
 exports.proposalUpdate = sedaProposal.proposalUpdate;
