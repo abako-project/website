@@ -83,7 +83,7 @@ exports.create = async (req, res, next) => {
   const project = await seda.project(projectId);
 
   let {title, description, budget, deliveryTimeId, deliveryDate,
-    roleId, proficiencyId, skills} = req.body;
+    roleId, proficiencyId, skills, availability} = req.body;
 
   let {browserTimezoneOffset} = req.query;
   browserTimezoneOffset = Number(browserTimezoneOffset);
@@ -104,7 +104,10 @@ exports.create = async (req, res, next) => {
     deliveryDate,
     roleId,
     proficiencyId,
-    skillIds
+    skillIds,
+    neededFullTimeDeveloper: availability === "fulltime",
+    neededPartTimeDeveloper: availability === "parttime",
+    neededHourlyDeveloper: availability === "hourly"
   };
 
   try {
@@ -192,7 +195,9 @@ exports.update = async (req, res) => {
   milestone.roleId = body.roleId || null;
   milestone.proficiencyId = body.proficiencyId || null;
   milestone.skillIds = (body.skills ?? []).map(str => +str);
-
+  milestone.neededFullTimeDeveloper = body.availability === "fulltime";
+    milestone.neededPartTimeDeveloper = body.availability === "parttime";
+    milestone.neededHourlyDeveloper = body.availability === "hourly";
   try {
     await seda.milestoneUpdate(milestone.id, milestone);
 

@@ -1,5 +1,6 @@
 'use strict';
 
+const {DataTypes} = require("sequelize");
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.createTable('Developers',
@@ -34,9 +35,6 @@ module.exports = {
           type: Sequelize.STRING
         },
         location: {
-          type: Sequelize.STRING
-        },
-        availability: {
           type: Sequelize.STRING
         },
         userId: {
@@ -74,6 +72,26 @@ module.exports = {
           },
           onUpdate: 'CASCADE',
           onDelete: 'CASCADE'
+        },
+        isAvailableForHire: {
+          type: Sequelize.BOOLEAN,
+          defaultValue: false
+        },
+        isAvailableFullTime: {
+          type: Sequelize.BOOLEAN,
+          defaultValue: false
+        },
+        isAvailablePartTime: {
+          type: Sequelize.BOOLEAN,
+          defaultValue: false
+        },
+        isAvailableHourly: {
+          type: Sequelize.BOOLEAN,
+          defaultValue: false
+        },
+        availableHoursPerWeek: {
+          type: Sequelize.INTEGER,
+          defaultValue: 0
         },
         createdAt: {
           type: Sequelize.DATE,

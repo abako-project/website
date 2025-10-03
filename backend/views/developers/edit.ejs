@@ -106,6 +106,54 @@
     </div>
 
     <div class="card">
+        <div class="card-title">Availability</div>
+
+        <input type="checkbox"
+               name="isAvailableForHire"
+               value="1"
+               <%= developer.isAvailableForHire && "checked" %> />
+        <b>Availability for Hire</b>
+        <br />
+
+
+        <input type="checkbox"
+               name="isAvailableFullTime"
+               value="1"
+                <%= developer.isAvailableFullTime && "checked" %> />
+        <b>Full Time</b>
+        <br />
+
+
+        <input type="checkbox"
+               name="isAvailablePartTime"
+               value="1"
+                <%= developer.isAvailablePartTime && "checked" %>  />
+        <b>Part Time</b>
+        <br />
+
+
+        <input type="checkbox"
+               name="isAvailableHourly"
+               value="1"
+                <%= developer.isAvailableHourly && "checked" %> />
+        <b>Hours per Week</b>
+        <br />
+
+
+        <input type="number"
+               name="availableHoursPerWeek"
+               value="<%= developer.availableHoursPerWeek %>"
+        />
+        <b>Hours/Week</b>
+        <br />
+
+
+
+
+    </div>
+
+
+    <div class="card">
 
         <div class="card-title">Photo</div>
 

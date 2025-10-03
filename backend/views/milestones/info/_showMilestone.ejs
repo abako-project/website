@@ -12,7 +12,11 @@
 
     <%= milestone.proficiency?.description %>
 
-  AAAAAA  <%= milestone.skills.map(s => s.name).join(", ") %>
+    <%= milestone.skills.map(s => s.name).join(", ") %>
+
+    <%= milestone.neededFullTimeDeveloper ? "[Full Time]" : "" %>
+    <%= milestone.neededPartTimeDeveloper ? "[Part Time]" : "" %>
+    <%= milestone.neededHourlyDeveloper ? "[Hours per Week]" : ""%>
 
 </div>
 

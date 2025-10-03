@@ -1,4 +1,3 @@
-const {Sequelize, Op} = require("sequelize");
 
 const json = require("./json");
 
@@ -116,7 +115,11 @@ exports.developerCreate = async (email, name, address) => {
  * @param {string} [data.githubUsername]
  * @param {string} [data.portfolioUrl]
  * @param {string} [data.location]
- * @param {string} [data.availability]
+ * @param {boolean} [data.isAvailableForHire]
+ * @param {boolean} [data.isAvailableFullTime]
+ * @param {boolean} [data.isAvailablePartTime]
+ * @param {boolean} [data.isAvailableHourly]
+ * @param {number} [data.availableHoursPerWeek]
  * @param {number[]} [data.languageIds]
  * @param {number[]} [data.skillIds]
  * @param {string} [data.mime] - Tipo MIME del nuevo adjunto.
@@ -124,14 +127,16 @@ exports.developerCreate = async (email, name, address) => {
  * @returns {Promise<Object>} Objeto JSON con los datos actualizados del desarrollador.
  */
 exports.developerUpdate = async (developerId, {
-  name, bio, background, roleId, proficiencyId, githubUsername, portfolioUrl, location, availability,
+  name, bio, background, roleId, proficiencyId, githubUsername, portfolioUrl, location,
   languageIds, skillIds,
+  isAvailableForHire, isAvailableFullTime, isAvailablePartTime, isAvailableHourly, availableHoursPerWeek,
   mime, image
 }) => {
 
   await Developer.update({
       developerId,
-      name, bio, background, roleId, proficiencyId, githubUsername, portfolioUrl, location, availability
+      name, bio, background, roleId, proficiencyId, githubUsername, portfolioUrl, location,
+      isAvailableForHire, isAvailableFullTime, isAvailablePartTime, isAvailableHourly, availableHoursPerWeek
     }, {
       where: {
         id: developerId

@@ -125,6 +125,11 @@ const developerJson = developer => {
     userId: developer.userId,
     roleId: developer.roleId,
     proficiencyId: developer.proficiencyId,
+    isAvailableForHire: developer.isAvailableForHire,
+    isAvailableFullTime: developer.isAvailableFullTime,
+    isAvailablePartTime: developer.isAvailablePartTime,
+    isAvailableHourly: developer.isAvailableHourly,
+    availableHoursPerWeek: developer.availableHoursPerWeek,
     createdAt: developer.createdAt.valueOf(),
     updatedAt: developer.updatedAt.valueOf(),
 
@@ -301,6 +306,9 @@ const milestoneJson = milestone => {
     proficiencyId: milestone.proficiencyId,
     displayOrder: milestone.displayOrder,
     projectId: milestone.projectId,
+    neededFullTimeDeveloper: milestone.neededFullTimeDeveloper,
+    neededPartTimeDeveloper: milestone.neededPartTimeDeveloper,
+    neededHourlyDeveloper: milestone.neededHourlyDeveloper,
     createdAt: milestone.createdAt.valueOf(),
     updatedAt: milestone.updatedAt.valueOf(),
 

@@ -65,13 +65,18 @@ exports.milestone = async milestoneId => {
  * @param {number} [data.roleId]
  * @param {number} [data.proficiencyId]
  * @param {number[]} [data.skillIds]
+ * @param {boolean} [data.neededFullTimeDeveloper]
+ * @param {boolean} [data.neededPartTimeDeveloper]
+ * @param {boolean} [data.neededHourlyDeveloper]
  * @returns {Promise<Object>} Objeto JSON del milestone creado.
  */
 exports.milestoneCreate = async (projectId, {title, description, budget, deliveryTimeId, deliveryDate,
-  roleId, proficiencyId, skillIds}) => {
+  roleId, proficiencyId, skillIds,
+  neededFullTimeDeveloper, neededPartTimeDeveloper, neededHourlyDeveloper}) => {
 
   let milestone = await Milestone.create({
-    title, description, budget, deliveryTimeId, deliveryDate, projectId, roleId, proficiencyId
+    title, description, budget, deliveryTimeId, deliveryDate, projectId, roleId, proficiencyId,
+    neededFullTimeDeveloper, neededPartTimeDeveloper, neededHourlyDeveloper
   });
 
   await milestone.setSkills(skillIds);
@@ -97,15 +102,19 @@ exports.milestoneCreate = async (projectId, {title, description, budget, deliver
  * @param {number} [data.roleId]
  * @param {number} [data.proficiencyId]
  * @param {number[]} [data.skillIds]
+ * @param {boolean} [data.neededFullTimeDeveloper]
+ * @param {boolean} [data.neededPartTimeDeveloper]
+ * @param {boolean} [data.neededHourlyDeveloper]
  * @returns {Promise<Object>} Objeto JSON con los datos actualizados.
  */
 exports.milestoneUpdate = async (milestoneId, {title, description, budget, deliveryTimeId, deliveryDate,
-  roleId, proficiencyId, skillIds}) => {
+  roleId, proficiencyId, skillIds, neededFullTimeDeveloper, neededPartTimeDeveloper, neededHourlyDeveloper}) => {
 
   let milestone = await Milestone.findByPk(milestoneId);
 
   milestone = await milestone.update({
-    title, description, budget, deliveryTimeId, deliveryDate, roleId, proficiencyId
+    title, description, budget, deliveryTimeId, deliveryDate, roleId, proficiencyId,
+    neededFullTimeDeveloper, neededPartTimeDeveloper, neededHourlyDeveloper
   });
 
   await milestone.setSkills(skillIds);

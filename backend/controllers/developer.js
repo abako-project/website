@@ -1,6 +1,7 @@
 "use strict";
 
 const seda = require("../services/seda");
+const {DataTypes} = require("sequelize");
 
 // Autoload the developer with id equals to :developerId
 exports.load = async (req, res, next, developerId) => {
@@ -56,6 +57,11 @@ exports.update = async (req, res, next) => {
     availability: body.availability,
     languageIds: (body.languages || []).map(str => +str),
     skillIds: body.skills.map(str => +str),
+    isAvailableForHire: !!body.isAvailableForHire,
+    isAvailableFullTime: !!body.isAvailableFullTime,
+    isAvailablePartTime: !!body.isAvailablePartTime,
+    isAvailableHourly: !!body.isAvailableHourly,
+    availableHoursPerWeek: body.availableHoursPerWeek,
     mime: req.file?.mimetype,
     image: req.file?.buffer
   };
