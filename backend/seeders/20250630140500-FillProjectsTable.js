@@ -12,6 +12,7 @@ module.exports = {
     const Constraint = require("../models/constraint")(sequelize);
     const Milestone = require("../models/milestone")(sequelize);
     const Role = require("../models/role")(sequelize);
+    const Proficiency = require('../models/proficiency')(sequelize);
     const Budget = require("../models/budget")(sequelize);
     const DeliveryTime = require('../models/deliveryTime')(sequelize);
     const ProjectType = require('../models/projectType')(sequelize);
@@ -50,6 +51,14 @@ module.exports = {
     ProjectType.hasMany(Project, {as: 'projects', foreignKey: 'projectTypeId'});
     Project.belongsTo(ProjectType, {as: 'projectType', foreignKey: 'projectTypeId'});
 
+    // Relation 1-to-1 between milestone and role
+    Role.hasMany(Milestone, {as: 'milestones', foreignKey: 'roleId'});
+    Milestone.belongsTo(Role, {as: 'role', foreignKey: 'roleId'});
+
+    // Relation 1-to-1 between milestone and proficiency
+    Proficiency.hasMany(Milestone, {as: 'milestones', foreignKey: 'proficiencyId'});
+    Milestone.belongsTo(Proficiency, {as: 'proficiency', foreignKey: 'proficiencyId'});
+
     const projects = [
       {
         title: 'Servidor Quiz',
@@ -78,6 +87,8 @@ module.exports = {
             title: 'Prototipo',
             description: 'Desarrollo de un prototipo',
             budget: '3000',
+            roleId: 1,
+            proficiencyId: 1,
             deliveryTimeId: 4,
             deliveryDate: new Date(new Date().getTime() + (1 * 60 * 60 * 1000))
           },
@@ -85,6 +96,8 @@ module.exports = {
             title: 'Producto Final',
             description: 'Desarrollo de un producto final',
             budget: '2000',
+            roleId: 2,
+            proficiencyId: 3,
             deliveryTimeId: 4,
             deliveryDate: new Date(new Date().getTime() + (2 * 60 * 60 * 1000))
           },
@@ -114,6 +127,8 @@ module.exports = {
             title: 'Vistas',
             description: 'Desarrollo de las vistas',
             budget: '1000',
+            roleId: 2,
+            proficiencyId: 1,
             deliveryTimeId: 4,
             deliveryDate: new Date(new Date().getTime() + (1 * 60 * 60 * 1000))
           },
@@ -121,6 +136,8 @@ module.exports = {
             title: 'Modelo',
             description: 'Desarrollo del modelo',
             budget: '1500',
+            roleId: 3,
+            proficiencyId: 1,
             deliveryTimeId: 4,
             deliveryDate: new Date(new Date().getTime() + (2 * 60 * 60 * 1000)),
           },
@@ -128,6 +145,8 @@ module.exports = {
             title: 'Controladores',
             description: 'Desarrollo de los controladores',
             budget: '2500',
+            roleId: 3,
+            proficiencyId: 3,
             deliveryTimeId: 4,
             deliveryDate: new Date(new Date().getTime() + (4 * 60 * 60 * 1000))
           }
@@ -157,6 +176,8 @@ module.exports = {
             title: 'Todito',
             description: 'Sin tonterias intermedias',
             budget: '75000',
+            roleId: 1,
+            proficiencyId: 2,
             deliveryTimeId: 4,
             deliveryDate: new Date(new Date().getTime() + (5 * 60 * 60 * 1000))
           }
@@ -188,8 +209,8 @@ module.exports = {
           const constraint = await Constraint.create({description});
           await project.addConstraint(constraint);
         }
-        for (const {title, description, budget, deliveryDate, deliveryTimeId, roleId} of milestones) {
-          const milestone = await Milestone.create({title, description, budget, deliveryTimeId, deliveryDate, roleId});
+        for (const {title, description, budget, deliveryDate, deliveryTimeId, roleId, proficiencyId} of milestones) {
+          const milestone = await Milestone.create({title, description, budget, deliveryTimeId, deliveryDate, roleId, proficiencyId});
 
           await project.addMilestone(milestone);
         }

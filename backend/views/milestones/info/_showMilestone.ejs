@@ -8,5 +8,11 @@
 
 
 <div class="form-group">
+    <%= milestone.role?.name %>
+    <%= milestone.proficiency?.description %>
+</div>
+
+
+<div class="form-group">
     <%- include("./__showDeveloper", {milestone}) %>
 </div>

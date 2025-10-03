@@ -101,6 +101,14 @@ Project.belongsTo(DeliveryTime, {as: 'deliveryTime', foreignKey: 'deliveryTimeId
 DeliveryTime.hasMany(Milestone, {as: 'milestones', foreignKey: 'deliveryTimeId'});
 Milestone.belongsTo(DeliveryTime, {as: 'deliveryTime', foreignKey: 'deliveryTimeId'});
 
+// Relation 1-to-1 between milestone and role
+Role.hasMany(Milestone, {as: 'milestones', foreignKey: 'roleId'});
+Milestone.belongsTo(Role, {as: 'role', foreignKey: 'roleId'});
+
+// Relation 1-to-1 between milestone and proficiency
+Proficiency.hasMany(Milestone, {as: 'milestones', foreignKey: 'proficiencyId'});
+Milestone.belongsTo(Proficiency, {as: 'proficiency', foreignKey: 'proficiencyId'});
+
 // Relation 1-to-N between ProjectType and Project
 ProjectType.hasMany(Project, {as: 'projects', foreignKey: 'projectTypeId'});
 Project.belongsTo(ProjectType, {as: 'projectType', foreignKey: 'projectTypeId'});

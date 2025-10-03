@@ -297,6 +297,8 @@ const milestoneJson = milestone => {
     budget: milestone.budget,
     deliveryTimeId: milestone.deliveryTimeId,
     deliveryDate: milestone.deliveryDate.valueOf(),
+    roleId: milestone.roleId,
+    proficiencyId: milestone.proficiencyId,
     displayOrder: milestone.displayOrder,
     projectId: milestone.projectId,
     createdAt: milestone.createdAt.valueOf(),
@@ -304,7 +306,8 @@ const milestoneJson = milestone => {
 
     assignation: assignationJson(milestone.assignation),
     deliveryTime: deliveryTimeJson(milestone.deliveryTime),
-
+    role: roleJson(milestone.role),
+    proficiency: proficiencyJson(milestone.proficiency),
   };
 };
 

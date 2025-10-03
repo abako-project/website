@@ -59,11 +59,15 @@ exports.new = async (req, res, next) => {
   browserTimezoneOffset = Number.isNaN(browserTimezoneOffset) ? 0 : browserTimezoneOffset;
 
   const allDeliveryTimes = await seda.deliveryTimeIndex();
+  const allRoles = await seda.roleIndex();
+  const allProficiencies = await seda.proficiencyIndex();
 
   res.render('milestones/newMilestone', {
     milestone,
     project,
     allDeliveryTimes,
+    allRoles,
+    allProficiencies,
     browserTimezoneOffset,
   });
 };
@@ -76,7 +80,8 @@ exports.create = async (req, res, next) => {
   const projectId = req.params.projectId;
   const project = await seda.project(projectId);
 
-  let {title, description, budget, deliveryTimeId, deliveryDate} = req.body;
+  let {title, description, budget, deliveryTimeId, deliveryDate,
+    roleId, proficiencyId} = req.body;
 
   let {browserTimezoneOffset} = req.query;
   browserTimezoneOffset = Number(browserTimezoneOffset);
@@ -85,12 +90,17 @@ exports.create = async (req, res, next) => {
 
   deliveryDate = new Date(deliveryDate).valueOf() + browserTimezoneOffset - serverTimezoneOffset;
 
+  roleId ||= null;
+  proficiencyId ||= null;
+
   let milestone = {
     title,
     description,
     budget,
     deliveryTimeId,
-    deliveryDate
+    deliveryDate,
+    roleId,
+    proficiencyId,
   };
 
   try {
@@ -104,12 +114,16 @@ exports.create = async (req, res, next) => {
       error.errors.forEach(({message}) => req.flash('error', message));
 
       const allDeliveryTimes = await seda.deliveryTimeIndex();
+      const allRoles = await seda.roleIndex();
+      const allProficiencies = await seda.proficiencyIndex();
 
       res.render('milestones/newMilestone', {
         milestone,
         project,
         allDeliveryTimes,
-        browserTimezoneOffset,
+        allRoles,
+        allProficiencies,
+        browserTimezoneOffset
       });
     } else {
       next(error);
@@ -132,11 +146,15 @@ exports.edit = async (req, res) => {
   browserTimezoneOffset = Number.isNaN(browserTimezoneOffset) ? 0 : browserTimezoneOffset;
 
   const allDeliveryTimes = await seda.deliveryTimeIndex();
+  const allRoles = await seda.roleIndex();
+  const allProficiencies = await seda.proficiencyIndex();
 
   res.render('milestones/editMilestone', {
     project,
     milestone,
     allDeliveryTimes,
+    allRoles,
+    allProficiencies,
     browserTimezoneOffset,
   });
 };
@@ -163,6 +181,8 @@ exports.update = async (req, res) => {
   milestone.budget = body.budget;
   milestone.deliveryTimeId = body.deliveryTimeId;
   milestone.deliveryDate = new Date(body.deliveryDate).valueOf() + browserTimezoneOffset - serverTimezoneOffset;
+  milestone.roleId = body.roleId || null;
+  milestone.proficiencyId = body.proficiencyId || null;
 
   try {
     await seda.milestoneUpdate(milestone.id, milestone);
@@ -176,11 +196,15 @@ exports.update = async (req, res) => {
       error.errors.forEach(({message}) => req.flash('error', message));
 
       const allDeliveryTimes = await seda.deliveryTimeIndex();
+      const allRoles = await seda.roleIndex();
+      const allProficiencies = await seda.proficiencyIndex();
 
       res.render('milestones/editMilestone', {
         project,
         milestone,
         allDeliveryTimes,
+        allRoles,
+        allProficiencies,
         browserTimezoneOffset,
       });
     } else {

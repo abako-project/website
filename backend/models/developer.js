@@ -25,10 +25,6 @@ module.exports = (sequelize) => {
             background: {
                 type: DataTypes.TEXT
             },
-            experienceLevel: {
-                type: DataTypes.ENUM,
-                values: ['Beginner', 'Intermediate', 'Advanced']
-            },
             githubUsername: {
                 type: DataTypes.STRING
             },
