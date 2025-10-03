@@ -71,3 +71,18 @@
         <% } %>
     </select>
 </div>
+
+
+<div class="card">
+    <div class="card-title">Skills</div>
+
+    <% for (let skill of allSkills) { %>
+        <input type="checkbox"
+               name="<%= `skills[]` %>"
+               value="<%= skill.id %>"
+                <%= (milestone.skills || []).map(s => s.id).includes(skill.id) && "checked" %>
+        />
+        <b><%= skill.name %></b>
+        <br />
+    <% } %>
+</div>

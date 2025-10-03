@@ -5,7 +5,7 @@ const json = require("./json");
 const {
   models: {
     Project, Client, Developer, User, Attachment, Budget, DeliveryTime, ProjectType,
-    Objective, Constraint, Milestone, Role, Proficiency, Comment, Assignation
+    Objective, Constraint, Milestone, Role, Proficiency, Comment, Assignation, Skill
   }
 } = require('../../models');
 
@@ -70,6 +70,7 @@ exports.project = async projectId => {
           {model: DeliveryTime, as: "deliveryTime"},
           {model: Role, as: 'role'},
           {model: Proficiency, as: 'proficiency'},
+          {model: Skill, as: 'skills'},
         ]
       },
       {

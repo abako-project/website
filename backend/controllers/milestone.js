@@ -61,6 +61,7 @@ exports.new = async (req, res, next) => {
   const allDeliveryTimes = await seda.deliveryTimeIndex();
   const allRoles = await seda.roleIndex();
   const allProficiencies = await seda.proficiencyIndex();
+  const allSkills = await seda.skillIndex();
 
   res.render('milestones/newMilestone', {
     milestone,
@@ -68,6 +69,7 @@ exports.new = async (req, res, next) => {
     allDeliveryTimes,
     allRoles,
     allProficiencies,
+    allSkills,
     browserTimezoneOffset,
   });
 };
@@ -81,7 +83,7 @@ exports.create = async (req, res, next) => {
   const project = await seda.project(projectId);
 
   let {title, description, budget, deliveryTimeId, deliveryDate,
-    roleId, proficiencyId} = req.body;
+    roleId, proficiencyId, skills} = req.body;
 
   let {browserTimezoneOffset} = req.query;
   browserTimezoneOffset = Number(browserTimezoneOffset);
@@ -92,6 +94,7 @@ exports.create = async (req, res, next) => {
 
   roleId ||= null;
   proficiencyId ||= null;
+  let skillIds = (skills ?? []).map(str => +str);
 
   let milestone = {
     title,
@@ -101,6 +104,7 @@ exports.create = async (req, res, next) => {
     deliveryDate,
     roleId,
     proficiencyId,
+    skillIds
   };
 
   try {
@@ -116,6 +120,7 @@ exports.create = async (req, res, next) => {
       const allDeliveryTimes = await seda.deliveryTimeIndex();
       const allRoles = await seda.roleIndex();
       const allProficiencies = await seda.proficiencyIndex();
+      const allSkills = await seda.skillIndex();
 
       res.render('milestones/newMilestone', {
         milestone,
@@ -123,6 +128,7 @@ exports.create = async (req, res, next) => {
         allDeliveryTimes,
         allRoles,
         allProficiencies,
+        allSkills,
         browserTimezoneOffset
       });
     } else {
@@ -148,6 +154,7 @@ exports.edit = async (req, res) => {
   const allDeliveryTimes = await seda.deliveryTimeIndex();
   const allRoles = await seda.roleIndex();
   const allProficiencies = await seda.proficiencyIndex();
+  const allSkills = await seda.skillIndex();
 
   res.render('milestones/editMilestone', {
     project,
@@ -155,6 +162,7 @@ exports.edit = async (req, res) => {
     allDeliveryTimes,
     allRoles,
     allProficiencies,
+    allSkills,
     browserTimezoneOffset,
   });
 };
@@ -183,6 +191,7 @@ exports.update = async (req, res) => {
   milestone.deliveryDate = new Date(body.deliveryDate).valueOf() + browserTimezoneOffset - serverTimezoneOffset;
   milestone.roleId = body.roleId || null;
   milestone.proficiencyId = body.proficiencyId || null;
+  milestone.skillIds = (body.skills ?? []).map(str => +str);
 
   try {
     await seda.milestoneUpdate(milestone.id, milestone);
@@ -198,6 +207,7 @@ exports.update = async (req, res) => {
       const allDeliveryTimes = await seda.deliveryTimeIndex();
       const allRoles = await seda.roleIndex();
       const allProficiencies = await seda.proficiencyIndex();
+      const allSkills = await seda.skillIndex();
 
       res.render('milestones/editMilestone', {
         project,
@@ -205,6 +215,7 @@ exports.update = async (req, res) => {
         allDeliveryTimes,
         allRoles,
         allProficiencies,
+        allSkills,
         browserTimezoneOffset,
       });
     } else {

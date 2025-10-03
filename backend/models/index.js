@@ -69,6 +69,12 @@ Developer.belongsToMany(Skill, {as: 'skills', through: "DeveloperSkills",
 Skill.belongsToMany(Developer, {as: 'developers', through: "DeveloperSkills",
   foreignKey: 'skillId', otherKey: 'developerId'});
 
+// Relation 1-to-N between milestone and skill
+Milestone.belongsToMany(Skill, {as: 'skills', through: "MilestoneSkills",
+  foreignKey: 'milestoneId', otherKey: 'skillId'});
+Skill.belongsToMany(Milestone, {as: 'milestones', through: "MilestoneSkills",
+  foreignKey: 'skillId', otherKey: 'milestoneId'});
+
 // Relation 1-to-N between Client and Projects:
 Client.hasMany(Project, {as: 'projects', foreignKey: 'clientId'});
 Project.belongsTo(Client, {as: 'client', foreignKey: 'clientId'});

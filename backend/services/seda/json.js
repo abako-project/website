@@ -307,6 +307,7 @@ const milestoneJson = milestone => {
     assignation: assignationJson(milestone.assignation),
     deliveryTime: deliveryTimeJson(milestone.deliveryTime),
     role: roleJson(milestone.role),
+    skills: milestone.skills?.map(skill => skillJson(skill)) || [],
     proficiency: proficiencyJson(milestone.proficiency),
   };
 };

@@ -3,7 +3,7 @@ const json = require("./json");
 
 const {
   models: {Developer, User, Attachment, Project,  Milestone, Role, Proficiency,
-    DeliveryTime, Assignation}
+    Skill, DeliveryTime, Assignation}
 } = require('../../models');
 
 const sequelize = require("../../models");
@@ -28,6 +28,7 @@ exports.milestone = async milestoneId => {
       {model: Role, as: 'role'},
       {model: Proficiency, as: "proficiency"},
       {model: DeliveryTime, as: "deliveryTime"},
+      {model: Skill, as: "skills"},
       {
         model: Assignation, as: 'assignation',
         include: [{
@@ -63,14 +64,18 @@ exports.milestone = async milestoneId => {
  * @param {string} data.deliveryDate - Fecha estimada de entrega.
  * @param {number} [data.roleId]
  * @param {number} [data.proficiencyId]
+ * @param {number[]} [data.skillIds]
  * @returns {Promise<Object>} Objeto JSON del milestone creado.
  */
 exports.milestoneCreate = async (projectId, {title, description, budget, deliveryTimeId, deliveryDate,
-  roleId, proficiencyId}) => {
+  roleId, proficiencyId, skillIds}) => {
 
-  const milestone = await Milestone.create({
+  let milestone = await Milestone.create({
     title, description, budget, deliveryTimeId, deliveryDate, projectId, roleId, proficiencyId
   });
+
+  await milestone.setSkills(skillIds);
+
 
   return json.milestoneJson(milestone);
 };
@@ -91,16 +96,19 @@ exports.milestoneCreate = async (projectId, {title, description, budget, deliver
  * @param {string} data.deliveryDate
  * @param {number} [data.roleId]
  * @param {number} [data.proficiencyId]
+ * @param {number[]} [data.skillIds]
  * @returns {Promise<Object>} Objeto JSON con los datos actualizados.
  */
 exports.milestoneUpdate = async (milestoneId, {title, description, budget, deliveryTimeId, deliveryDate,
-  roleId, proficiencyId}) => {
+  roleId, proficiencyId, skillIds}) => {
 
   let milestone = await Milestone.findByPk(milestoneId);
 
   milestone = await milestone.update({
     title, description, budget, deliveryTimeId, deliveryDate, roleId, proficiencyId
   });
+
+  await milestone.setSkills(skillIds);
 
   return json.milestoneJson(milestone);
 };
