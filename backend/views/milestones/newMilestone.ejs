@@ -3,7 +3,7 @@
 <form is="form-with-tzo" id="newMilestoneForm" action="/projects/<%= project.id %>/milestones" method="POST">
 
     <div class="card">
-        <%- include("./edit/_formMilestone", {project, milestone, browserTimezoneOffset}) %>
+        <%- include("./edit/_formMilestone", {project, milestone}) %>
     </div>
 
 </form>

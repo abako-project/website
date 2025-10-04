@@ -4,9 +4,6 @@
     <small>(<%= milestone.budget %> USD)</small> -
 
     <small>Delivery:</small> <%= milestone.deliveryTime?.description %>
-    <small> (<span id="deliveryDate<%= milestone.id %>"></span>) </small>
-    <script type="module">
-      document.getElementById("deliveryDate<%= milestone.id %>").innerHTML = new Date(<%= milestone.deliveryDate.valueOf() %>).toLocaleString();
-    </script>
+    <small> (<%= new Date(milestone.deliveryDate - browserTimezoneOffset + serverTimezoneOffset).toLocaleString() %>) </small>
 </div>
 

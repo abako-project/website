@@ -39,12 +39,8 @@ exports.newProposal = async (req, res, next) => {
       projectTypeId: undefined,
       budgetId: undefined,
       deliveryTimeId: 4,
-      deliveryDate: Date.now() + 60 * 60 * 1000
+      deliveryDate: Date.now()
     };
-
-    // Timezone offset del cliente
-    let browserTimezoneOffset = Number(req.query.browserTimezoneOffset ?? 0);
-    browserTimezoneOffset = Number.isNaN(browserTimezoneOffset) ? 0 : browserTimezoneOffset;
 
     const allBudgets = await seda.budgetIndex();
     const allDeliveryTimes = await seda.deliveryTimeIndex();
@@ -55,7 +51,6 @@ exports.newProposal = async (req, res, next) => {
       allBudgets,
       allDeliveryTimes,
       allProjectTypes,
-      browserTimezoneOffset,
     });
   } catch (error) {
     next(error);
@@ -67,12 +62,7 @@ exports.createProposal = async (req, res, next) => {
 
   let {title, summary, description, url, projectTypeId, budgetId, deliveryTimeId, deliveryDate} = req.body;
 
-  let {browserTimezoneOffset} = req.query;
-  browserTimezoneOffset = Number(browserTimezoneOffset);
-
-  const serverTimezoneOffset = new Date().getTimezoneOffset() * 60 * 1000;
-
-  deliveryDate = new Date(deliveryDate).valueOf() + browserTimezoneOffset - serverTimezoneOffset;
+  deliveryDate = new Date(deliveryDate).valueOf() + req.session.browserTimezoneOffset - req.session.serverTimezoneOffset;
 
   projectTypeId ||= undefined;
 
@@ -111,7 +101,6 @@ exports.createProposal = async (req, res, next) => {
         allBudgets,
         allDeliveryTimes,
         allProjectTypes,
-        browserTimezoneOffset,
       });
     } else {
       next(error);
@@ -132,14 +121,8 @@ exports.show = async (req, res, next) => {
 
  // } else {
 
-    // Timezone offset del cliente
-    let browserTimezoneOffset = Number(req.query.browserTimezoneOffset ?? 0);
-    browserTimezoneOffset = Number.isNaN(browserTimezoneOffset) ? 0 : browserTimezoneOffset;
-
-
     res.render('projects/showProject', {
       project,
-      browserTimezoneOffset,
     });
 //  }
 };
@@ -151,13 +134,8 @@ exports.submit = async (req, res, next) => {
   const projectId = req.params.projectId;
   const project = await seda.project(projectId);
 
-  // Timezone offset del cliente
-  let browserTimezoneOffset = Number(req.query.browserTimezoneOffset ?? 0);
-  browserTimezoneOffset = Number.isNaN(browserTimezoneOffset) ? 0 : browserTimezoneOffset;
-
   res.render('proposals/submitProposal', {
     project,
-    browserTimezoneOffset,
   });
 };
 
@@ -169,10 +147,6 @@ exports.editProposal = async (req, res, next) => {
     const projectId = req.params.projectId;
     const project = await seda.project(projectId);
 
-    // Timezone offset del cliente
-    let browserTimezoneOffset = Number(req.query.browserTimezoneOffset ?? 0);
-    browserTimezoneOffset = Number.isNaN(browserTimezoneOffset) ? 0 : browserTimezoneOffset;
-
     const allBudgets = await seda.budgetIndex();
     const allDeliveryTimes = await seda.deliveryTimeIndex();
     const allProjectTypes = await seda.projectTypeIndex();
@@ -182,7 +156,6 @@ exports.editProposal = async (req, res, next) => {
       allBudgets,
       allDeliveryTimes,
       allProjectTypes,
-      browserTimezoneOffset,
     });
   } catch (error) {
     next(error);
@@ -198,11 +171,6 @@ exports.updateProposal = async (req, res, next) => {
   const projectId = req.params.projectId;
   const project = await seda.project(projectId);
 
-  let {browserTimezoneOffset} = req.query;
-  browserTimezoneOffset = Number(browserTimezoneOffset);
-
-  const serverTimezoneOffset = new Date().getTimezoneOffset() * 60 * 1000;
-
   const proposal = {
     title: body.title,
     summary: body.summary,
@@ -211,7 +179,7 @@ exports.updateProposal = async (req, res, next) => {
     projectTypeId: body.projectTypeId || undefined,
     budgetId: body.budgetId,
     deliveryTimeId: body.deliveryTimeId,
-    deliveryDate: new Date(body.deliveryDate).valueOf() + browserTimezoneOffset - serverTimezoneOffset
+    deliveryDate: new Date(body.deliveryDate).valueOf() + req.session.browserTimezoneOffset - req.session.serverTimezoneOffset
   };
 
   try {
@@ -235,7 +203,6 @@ exports.updateProposal = async (req, res, next) => {
         allBudgets,
         allDeliveryTimes,
         allProjectTypes,
-        browserTimezoneOffset,
       });
     } else {
       next(error);
@@ -400,14 +367,8 @@ exports.editObjectivesConstraints = async (req, res) => {
   const projectId = req.params.projectId;
   const project = await seda.project(projectId);
 
-  // Timezone offset del cliente
-  let browserTimezoneOffset = Number(req.query.browserTimezoneOffset ?? 0);
-  browserTimezoneOffset = Number.isNaN(browserTimezoneOffset) ? 0 : browserTimezoneOffset;
-
-
   res.render('proposals/editObjectivesConstraints', {
     project,
-    browserTimezoneOffset,
   });
 };
 

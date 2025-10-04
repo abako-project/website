@@ -51,12 +51,8 @@ exports.new = async (req, res, next) => {
     title: "",
     description: "",
     budget: "",
-    deliveryDate: Date.now() + 60 * 60 * 1000
+    deliveryDate: Date.now()
   };
-
-  // Timezone offset del cliente
-  let browserTimezoneOffset = Number(req.query.browserTimezoneOffset ?? 0);
-  browserTimezoneOffset = Number.isNaN(browserTimezoneOffset) ? 0 : browserTimezoneOffset;
 
   const allDeliveryTimes = await seda.deliveryTimeIndex();
   const allRoles = await seda.roleIndex();
@@ -70,7 +66,6 @@ exports.new = async (req, res, next) => {
     allRoles,
     allProficiencies,
     allSkills,
-    browserTimezoneOffset,
   });
 };
 
@@ -85,12 +80,7 @@ exports.create = async (req, res, next) => {
   let {title, description, budget, deliveryTimeId, deliveryDate,
     roleId, proficiencyId, skills, availability} = req.body;
 
-  let {browserTimezoneOffset} = req.query;
-  browserTimezoneOffset = Number(browserTimezoneOffset);
-
-  const serverTimezoneOffset = new Date().getTimezoneOffset() * 60 * 1000;
-
-  deliveryDate = new Date(deliveryDate).valueOf() + browserTimezoneOffset - serverTimezoneOffset;
+  deliveryDate = new Date(deliveryDate).valueOf() + req.session.browserTimezoneOffset - req.session.serverTimezoneOffset;
 
   roleId ||= null;
   proficiencyId ||= null;
@@ -132,7 +122,6 @@ exports.create = async (req, res, next) => {
         allRoles,
         allProficiencies,
         allSkills,
-        browserTimezoneOffset
       });
     } else {
       next(error);
@@ -150,10 +139,6 @@ exports.edit = async (req, res) => {
   const milestoneId = req.params.milestoneId;
   const milestone = await seda.milestone(milestoneId);
 
-  // Timezone offset del cliente
-  let browserTimezoneOffset = Number(req.query.browserTimezoneOffset ?? 0);
-  browserTimezoneOffset = Number.isNaN(browserTimezoneOffset) ? 0 : browserTimezoneOffset;
-
   const allDeliveryTimes = await seda.deliveryTimeIndex();
   const allRoles = await seda.roleIndex();
   const allProficiencies = await seda.proficiencyIndex();
@@ -166,7 +151,6 @@ exports.edit = async (req, res) => {
     allRoles,
     allProficiencies,
     allSkills,
-    browserTimezoneOffset,
   });
 };
 
@@ -182,16 +166,11 @@ exports.update = async (req, res) => {
   const milestoneId = req.params.milestoneId;
   const milestone = await seda.milestone(milestoneId);
 
-  let {browserTimezoneOffset} = req.query;
-  browserTimezoneOffset = Number(browserTimezoneOffset);
-
-  const serverTimezoneOffset = new Date().getTimezoneOffset() * 60 * 1000;
-
   milestone.title = body.title;
   milestone.description = body.description;
   milestone.budget = body.budget;
   milestone.deliveryTimeId = body.deliveryTimeId;
-  milestone.deliveryDate = new Date(body.deliveryDate).valueOf() + browserTimezoneOffset - serverTimezoneOffset;
+  milestone.deliveryDate = new Date(body.deliveryDate).valueOf() + req.session.browserTimezoneOffset - req.session.serverTimezoneOffset;
   milestone.roleId = body.roleId || null;
   milestone.proficiencyId = body.proficiencyId || null;
   milestone.skillIds = (body.skills ?? []).map(str => +str);
@@ -221,7 +200,6 @@ exports.update = async (req, res) => {
         allRoles,
         allProficiencies,
         allSkills,
-        browserTimezoneOffset,
       });
     } else {
       next(error);

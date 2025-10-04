@@ -10,22 +10,32 @@ exports.index = async (req, res) => {
 // Login como Admin
 exports.adminLogin = async (req, res) => {
 
-    req.session.loginUser = {
-        id: 0,
-      email: "admin@sitio.es",
-      name: "admin",
-        isAdmin: true,
-        clientId: undefined,
-        developerId: undefined
-    };
+  // Guardar la zona horaria del navegador y del servidor en la session
+  let browserTimezoneOffset = Number(req.query.browserTimezoneOffset ?? 0);
+  req.session.browserTimezoneOffset = Number.isNaN(browserTimezoneOffset) ? 0 : browserTimezoneOffset;
+  req.session.serverTimezoneOffset = new Date().getTimezoneOffset() * 60 * 1000;
 
-    res.redirect(`/projects`);
+  req.session.loginUser = {
+    id: 0,
+    email: "admin@sitio.es",
+    name: "admin",
+    isAdmin: true,
+    clientId: undefined,
+    developerId: undefined
+  };
+
+  res.redirect(`/projects`);
 };
 
 
 
 // Login como el cliente Carlos
 exports.carlosLogin = async (req, res, next) => {
+
+  // Guardar la zona horaria del navegador y del servidor en la session
+  let browserTimezoneOffset = Number(req.query.browserTimezoneOffset ?? 0);
+  req.session.browserTimezoneOffset = Number.isNaN(browserTimezoneOffset) ? 0 : browserTimezoneOffset;
+  req.session.serverTimezoneOffset = new Date().getTimezoneOffset() * 60 * 1000;
 
   const email = "carlos@sitio.es";
 
@@ -52,8 +62,13 @@ exports.carlosLogin = async (req, res, next) => {
 };
 
 
-// Login como el developer Daniela
+// Guardar la zona horaria del navegador y del servidor en la session
 exports.danielaLogin = async (req, res, next) => {
+
+  // Guardar la zona horaria del navegador en la session
+  let browserTimezoneOffset = Number(req.query.browserTimezoneOffset ?? 0);
+  req.session.browserTimezoneOffset = Number.isNaN(browserTimezoneOffset) ? 0 : browserTimezoneOffset;
+  req.session.serverTimezoneOffset = new Date().getTimezoneOffset() * 60 * 1000;
 
   const email = "daniela@sitio.es";
 

@@ -20,19 +20,19 @@ function redirectDeveloperMilestones(developerId) {
 
 
 function redirectProjectShow(projectId) {
-  location.href = addTZO("/projects/" + projectId);
+  location.href = "/projects/" + projectId;
 }
 
 function redirectProjectEdit(projectId) {
-  location.href = addTZO("/projects/" + projectId + "/edit");
+  location.href = "/projects/" + projectId + "/edit";
 }
 
 function redirectProjectNew() {
-  location.href = addTZO("/projects/new");
+  location.href = "/projects/new";
 }
 
 function redirectProjectDelete(projectId) {
-  location.href = addTZO("/projects/" + projectId + "?_method=DELETE");
+  location.href = "/projects/" + projectId + "?_method=DELETE";
 }
 
 function redirectProposalSubmit(projectId) {
@@ -54,7 +54,7 @@ function redirectSelectProjectConsultant(projectId) {
 // Objectives & Constraints:
 
 function redirectObjectivesConstraintsEdit(projectId, objectiveId) {
-  location.href = addTZO("/projects/" + projectId + "/objectives_constraints/edit");
+  location.href = "/projects/" + projectId + "/objectives_constraints/edit";
 }
 
 function redirectObjectiveDelete(projectId, objectiveId) {
@@ -90,15 +90,15 @@ function redirectScopeAcept(projectId) {
 // Milestones:
 
 function redirectMilestonesEdit(projectId) {
-  location.href = addTZO("/projects/" + projectId + "/milestones/edit");
+  location.href = "/projects/" + projectId + "/milestones/edit";
 }
 
 function redirectMilestoneNew(projectId) {
-  location.href = addTZO("/projects/" + projectId + "/milestones/new");
+  location.href = "/projects/" + projectId + "/milestones/new";
 }
 
 function redirectMilestoneEdit(projectId, milestoneId) {
-  location.href = addTZO("/projects/" + projectId + "/milestones/" + milestoneId + "/edit");
+  location.href = "/projects/" + projectId + "/milestones/" + milestoneId + "/edit";
 }
 
 function redirectMilestoneDelete(projectId, milestoneId) {
