@@ -354,9 +354,6 @@ exports.acceptOrRejectMilestoneUpdate = async (req, res, next) => {
 
         let {comment, accept} = req.body;
 
-        console.log("****** BODY =", JSON.stringify(req.body, undefined, 2));
-
-
         const projectId = req.params.projectId;
         const milestoneId = req.params.milestoneId;
 

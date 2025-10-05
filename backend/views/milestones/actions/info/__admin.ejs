@@ -6,18 +6,5 @@
         Select/Change Milestone Developer
     </button>
 
-    <% if (milestone.assignation?.developerId) { %>
-
-        <button class="adminDAO"
-                onclick="redirectDAODeveloperMilestoneAccept(<%= project.id %>, <%= milestone.id %>, <%= milestone.assignation.developerId %>); return false;">
-            (DAO TMP) Developer: Accept Milestone
-        </button>
-
-        <button class="adminDAO"
-                onclick="redirectDAODeveloperMilestoneReject(<%= project.id %>, <%= milestone.id %>, <%= milestone.assignation.developerId %>); return false;">
-            (DAO TMP) Developer: Reject Milestone
-        </button>
-    <% } %>
-
 <% } %>
 

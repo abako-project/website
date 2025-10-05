@@ -178,8 +178,6 @@ exports.userTypesRequired = ({
 
   if (milestoneDeveloper) {
 
-      console.log("**** Permisos milestoneDeveloper");
-
       const developerIsLogged = !!req.session.loginUser?.developerId;
 
       const milestoneId = req.params.milestoneId;

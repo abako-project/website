@@ -216,19 +216,6 @@ router.post('/:projectId(\\d+)/milestones/:milestoneId(\\d+)/developer',
   permissionController.adminRequired,
   milestoneController.setDeveloper);
 
-// El developer acepta un milestone que le asigno la DAO
-router.put('/:projectId(\\d+)/milestones/:milestoneId(\\d+)/developers/:developerId(\\d+)/accept',
-  permissionController.isAuthenticated,
-  permissionController.userTypesRequired({admin: true, milestoneDeveloper: true}),
-  milestoneController.developerAcceptMilestone);
-
-// El developer rechaza un milestone que le asigno la DAO
-router.put('/:projectId(\\d+)/milestones/:milestoneId(\\d+)/developers/:developerId(\\d+)/reject',
-  permissionController.isAuthenticated,
-  permissionController.userTypesRequired({admin: true, milestoneDeveloper: true}),
-  milestoneController.developerRejectMilestone);
-
-
 // Muestra la pagina para que el developer acepte o rechace un milestone.
 router.get('/:projectId(\\d+)/milestones/:milestoneId(\\d+)/acceptOrReject',
     permissionController.isAuthenticated,
