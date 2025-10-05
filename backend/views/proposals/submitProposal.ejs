@@ -12,7 +12,7 @@
 
     <div class="col2">
         <%- include('../components/headers/_basic', {
-               title: "Ready to share this with the DAO?",
+               title: "Ready to share this with our team?",
                subtitle: "Once submitted, your project will be reviewed and voted on by DAO members within 48–72 hours."}) %>
 
         <%- include('./info/_header', {project}) %>
@@ -24,7 +24,7 @@
 
             </div>
 
-            <button class="projectFlow btn btn_primary"
+            <button class="projectFlow btn"
                     onclick="redirectProjectEdit(<%= project.id %>); return false;">Review</button>
 
             <button class="projectFlow btn btn_primary"

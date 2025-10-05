@@ -10,22 +10,20 @@
 /* ui */
 @import "./ui/_buttons.sass";
 @import "./ui/_inputs.sass";
+@import "./ui/_labels.sass";
 // @import "./ui/_icons.sass";
 // @import "./ui/_divider.sass";
-
-/* components */
-// @import "./components/_mainHeader.sass";
 
 // Components
 @import './components/_mainSidebar.sass';
 @import './components/_sidebarUser.sass'; // nombre?
+@import './components/_progressSidebar.sass';
 @import './components/_headers.sass';
 
 
 // Pages
 @import './pages/_onboarding.sass';
 @import './pages/projects/_project.sass';
-@import './pages/projects/_projectHeader.sass';
 @import './pages/projects/_projectProposal.sass';
 
 * {
@@ -34,35 +32,27 @@
 }
 
 html, body {
-    // --primary: #2a4f03;
-    // --secondary: #dfd88d;
-    // font: 16px "Lucida Grande", Helvetica, Arial, sans-serif;
+  // --primary: #2a4f03;
+  // --secondary: #dfd88d;
+  // font: 16px "Lucida Grande", Helvetica, Arial, sans-serif;
 
-    // margin: 0px;
-    // padding: 0px;
+  // margin: 0px;
+  // padding: 0px;
 
-    min-width: 100dvw;
-    min-height: 100dvh;
-    background-color: $base-1;
-    color: $text-dark;
+  min-width: 100dvw;
+  min-height: 100dvh;
+  background-color: $base-1;
+  color: $text-dark;
+
+  // No están working
+  overflow: auto; /* mantiene el scroll */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE y Edge */
+
+  &::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+  }
 }
-
-/* Reorg */
-// Además revisar inputs y formularios del login y register (onboarding) y projects
-button {
-    @extend .btn;
-    input {
-      border: none;
-      background: transparent;
-      font-weight: inherit;
-    }
-    &.form-group {
-      margin-top: $sp-12;
-    }
-}
-.form-group > button {
-margin-top: $sp-12;
-}/* Reorg */
 
 i {
   @include remix-icon;

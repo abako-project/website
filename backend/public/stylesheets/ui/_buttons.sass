@@ -16,6 +16,8 @@
     &_primary
         color: $base-1
         background-color: $brand
+        i
+            color: $base-1 !important
     &_icon
         width: 44px
         padding: 0
@@ -23,5 +25,26 @@
         @include material-icon($text-dark-3)
         font-size: 24px // icon large
 
+button
+    @extend .btn
+    input
+        border: none
+        background: transparent
+        font-weight: inherit
+    &.form-group
+        margin-top: $sp-12
+    &.tab // button w/ .tab
+        border-radius: 0
+        border: 1px solid transparent
+        width: fit-content
+        font-size: $text-lg
+        font-weight: 500
+        color: $text-dark-2
+        &:hover
+            color: $text-dark
+            font-weight: 600
+            box-shadow: none
+            border-bottom: 2px solid $brand
 
-    // &_secondary
+.form-group > button
+    margin-top: $sp-12

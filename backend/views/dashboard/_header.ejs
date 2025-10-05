@@ -1,42 +1,44 @@
-
 <style>
-    .contenedor {
-
-        display: grid;
-        grid-template-columns:  1fr 1fr auto;
-
-    }
+  .contenedor {
+    display: grid;
+    grid-template-columns: auto auto;
+  }
 </style>
 
-<div class="contenedor projectHeader">
+<div class="contenedor appHeader appHeader--dashboard">
+  <h1 class="appHeader__title">Dashboard</h1>
 
-    <h1> Dashboard </h1>
-
-    <small>
-        Learn more about projects -&gt;
+  <div class="appHeader__right">
+    <small class="link">
+      <span> Learn more about projects </span>
+      <i class="ri-arrow-right-line"></i>
     </small>
-
-    <div class=right">
-        <% if (locals.loginUser.clientId) { %>
-            <button class="projectFlow btn btn_primary"
-                    onclick="redirectProjectNew(); return false;">
-                Create New Project
-            </button>
-        <% } %>
-    </div>
-
-    <% if (locals.loginUser.developerId) { %>
-        <div>
-            <button class=""
-                    onclick="redirectDeveloperProjects(<%= locals.loginUser.developerId %>); return false;">
-                Projects
-            </button>
-
-            <button class=""
-                    onclick="redirectDeveloperMilestones(<%= locals.loginUser.developerId %>); return false;">
-                Milestones
-            </button>
-        </div>
+    <% if (locals.loginUser.clientId) { %>
+    <button
+      class="projectFlow btn btn_primary"
+      onclick="redirectProjectNew(); return false;"
+    >
+      <i class="ri-add-line"></i>
+      <span>New Project</span>
+    </button>
     <% } %>
+  </div>
 
+  <% if (locals.loginUser.developerId) { %>
+  <div class="appHeader__tabs">
+    <button
+      class="tab"
+      onclick="redirectDeveloperProjects(<%= locals.loginUser.developerId %>); return false;"
+    >
+      Projects
+    </button>
+
+    <button
+      class="tab"
+      onclick="redirectDeveloperMilestones(<%= locals.loginUser.developerId %>); return false;"
+    >
+      Milestones
+    </button>
+  </div>
+  <% } %>
 </div>
