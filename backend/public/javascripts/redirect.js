@@ -113,14 +113,17 @@ function redirectSelectMilestoneDeveloper(projectId, milestoneId) {
   location.href = "/projects/" + projectId + "/milestones/" + milestoneId + "/developer/select";
 }
 
-function redirectDeveloperMilestoneAccept(projectId, milestoneId, developerId) {
+function redirectDAODeveloperMilestoneAccept(projectId, milestoneId, developerId) {
   location.href = "/projects/" + projectId + "/milestones/" + milestoneId + "/developers/" + developerId + "/accept?_method=PUT";
 }
 
-function redirectDeveloperMilestoneReject(projectId, milestoneId, developerId) {
+function redirectDAODeveloperMilestoneReject(projectId, milestoneId, developerId) {
   location.href = "/projects/" + projectId + "/milestones/" + milestoneId + "/developers/" + developerId + "/reject?_method=PUT";
 }
 
+function redirectDeveloperAcceptOrRejectMilestone(projectId, milestoneId, developerId) {
+    location.href = "/projects/" + projectId + "/milestones/" + milestoneId + "/acceptOrReject";
+}
 
 // Escrow
 

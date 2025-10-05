@@ -293,10 +293,9 @@ exports.developerAcceptMilestone = async (req, res, next) => {
 
   const projectId = req.params.projectId;
   const milestoneId = req.params.milestoneId;
-  const developerId = req.params.developerId;
 
   try {
-    await seda.milestoneDeveloperAccept(milestoneId, body.developerId) ;
+    await seda.milestoneDeveloperAccept(milestoneId) ;
 
     console.log('Milestone state updateded successfully.');
 
@@ -316,10 +315,9 @@ exports.developerRejectMilestone = async (req, res, next) => {
 
     const projectId = req.params.projectId;
     const milestoneId = req.params.milestoneId;
-    const developerId = req.params.developerId;
 
     try {
-        await seda.milestoneDeveloperReject(milestoneId, body.developerId) ;
+        await seda.milestoneDeveloperReject(milestoneId) ;
 
         console.log('Milestone state updateded successfully.');
 
@@ -330,3 +328,49 @@ exports.developerRejectMilestone = async (req, res, next) => {
     }
 };
 
+// Devuelve la pagina para que un developer acepte o rechace un milestone
+exports.acceptOrRejectMilestonePage = async (req, res, next) => {
+
+    try {
+        const projectId = req.params.projectId;
+        const project = await seda.project(projectId);
+
+        const milestoneId = req.params.milestoneId;
+        const milestone = await seda.milestone(milestoneId);
+
+        res.render('milestones/acceptOrRejectMilestone', {
+            project,
+            milestone
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+// Actualiza el estadop del ,milestone a aceptado o rechazado
+exports.acceptOrRejectMilestoneUpdate = async (req, res, next) => {
+
+    try {
+
+        let {comment, accept} = req.body;
+
+        console.log("****** BODY =", JSON.stringify(req.body, undefined, 2));
+
+
+        const projectId = req.params.projectId;
+        const milestoneId = req.params.milestoneId;
+
+        if (accept === "accept") {
+            await seda.milestoneDeveloperAccept(milestoneId, comment) ;
+        } if (accept === "reject") {
+            await seda.milestoneDeveloperReject(milestoneId, comment) ;
+        } else {
+            req.flash("error", "El developer solo puede aceptar o rechazar los milestones que le han asignado");
+        }
+
+        res.redirect('/projects/' + projectId);
+
+    } catch (error) {
+        next(error);
+    }
+};

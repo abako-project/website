@@ -1,0 +1,14 @@
+<% if (milestone.assignation) { %>
+
+    <% if (locals.loginUser && locals.loginUser.developerId === milestone.assignation.developerId) { %>
+
+        <% if (milestone.assignation.state === "WaitingDeveloperAccept") { %>
+
+            <button class="right projectFlow"
+                    onclick="redirectDeveloperAcceptOrRejectMilestone(<%= project.id %>, <%= milestone.id %>); return false;">
+                Accept Or Reject
+            </button>
+
+        <% } %>
+    <% } %>
+<% } %>

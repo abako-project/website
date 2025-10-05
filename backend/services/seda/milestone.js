@@ -210,7 +210,7 @@ exports.milestoneSetDeveloper = async (milestoneId, developerId) => {
 
 //-----------------------------------------------------------
 
-exports.milestoneDeveloperAccept = async (milestoneId, developerId) => {
+exports.milestoneDeveloperAccept = async (milestoneId) => {
 
     try {
         const milestone = await Milestone.findByPk(milestoneId, {
@@ -228,7 +228,7 @@ exports.milestoneDeveloperAccept = async (milestoneId, developerId) => {
 
 //-----------------------------------------------------------
 
-exports.milestoneDeveloperReject = async (milestoneId, developerId) => {
+exports.milestoneDeveloperReject = async (milestoneId) => {
 
     try {
         // Borrar asignacion actual:

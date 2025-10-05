@@ -4,7 +4,9 @@
     <% if (milestone.assignation) { %>
         <img class="attachment"
              src="/developers/<%= milestone.assignation.developerId %>/attachment">
+
         <%= milestone.assignation.developer?.name ?? "Anonymous" %>
+
         <% if (milestone.assignation.state === "WaitingDeveloperAccept") { %>
             [Waiting For Developer Accept]
         <% } else if (milestone.assignation.state === "InProgress") { %>
@@ -24,23 +26,4 @@
 
 </div>
 
-<% if (locals.loginUser && locals.loginUser.isAdmin) { %>
-    <button class="adminDAO"
-            onclick="redirectSelectMilestoneDeveloper(<%= project.id %>, <%= milestone.id %>); return false;">
-        Select/Change Milestone Developer
-    </button>
 
-    <% if (milestone.assignation?.developerId) { %>
-
-        <button class="adminDAO"
-                onclick="redirectDeveloperMilestoneAccept(<%= project.id %>, <%= milestone.id %>, <%= milestone.assignation.developerId %>); return false;">
-            (DAO TMP) Developer: Accept Milestone
-        </button>
-
-        <button class="adminDAO"
-                onclick="redirectDeveloperMilestoneReject(<%= project.id %>, <%= milestone.id %>, <%= milestone.assignation.developerId %>); return false;">
-            (DAO TMP) Developer: Reject Milestone
-        </button>
-    <% } %>
-
-<% } %>

@@ -6,7 +6,15 @@
         <% for (const milestone of project.milestones) { %>
 
             <li>
-                <%- include("./_showMilestone", {milestone}) %>
+                <%- include("./_showMilestone", {project, milestone}) %>
+
+
+                <div class="form-group">
+                    <%- include("../actions/info/_all", {project, milestone}) %>
+                </div>
+
+
+                <hr style="clear: both;" />
             </li>
 
         <% } %>

@@ -229,6 +229,19 @@ router.put('/:projectId(\\d+)/milestones/:milestoneId(\\d+)/developers/:develope
   milestoneController.developerRejectMilestone);
 
 
+// Muestra la pagina para que el developer acepte o rechace un milestone.
+router.get('/:projectId(\\d+)/milestones/:milestoneId(\\d+)/acceptOrReject',
+    permissionController.isAuthenticated,
+    permissionController.userTypesRequired({milestoneDeveloper: true}),
+    milestoneController.acceptOrRejectMilestonePage);
+
+
+// El developer acepta o rechaza el milestone.
+router.put('/:projectId(\\d+)/milestones/:milestoneId(\\d+)/acceptOrReject',
+    permissionController.isAuthenticated,
+    permissionController.userTypesRequired({milestoneDeveloper: true}),
+    milestoneController.acceptOrRejectMilestoneUpdate);
+
 
 // === Escrow
 
