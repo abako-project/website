@@ -40,7 +40,7 @@
 /** ---------------------------------
  ICONS
 
-@mixin material-icon($color: currentColor)
+@mixin material-icon($color: $fill-5)
   font-family: 'Material Icons'
   font-weight: normal
   font-style: normal
@@ -55,7 +55,7 @@
   -webkit-font-smoothing: antialiased
   color: $color
 
-@mixin remix-icon($color: currentColor)
+@mixin remix-icon($color: $fill-5)
   font-family: 'remixicon'
   font-weight: normal
   font-style: normal
@@ -81,6 +81,10 @@
   display: none !important
   opacity: 0 !important
 
+.sticky
+  position: sticky
+  top: 0
+
 .bubble
   padding: 0 $size-8
     // max-width: 40ch
@@ -88,8 +92,6 @@
   border: 1px solid $text-dark-3
   box-shadow: $shadow-1
   box-sizing: border-box
-  
-
 
 .notification-dot
   position: absolute
