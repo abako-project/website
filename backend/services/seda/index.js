@@ -62,6 +62,8 @@ exports.milestoneUpdate = sedaMilestone.milestoneUpdate;
 exports.milestonesSwapOrder = sedaMilestone.milestoneSwapOrder;
 exports.milestoneDestroy = sedaMilestone.milestoneDestroy;
 exports.milestoneSetDeveloper = sedaMilestone.milestoneSetDeveloper;
+exports.milestoneDeveloperAccept = sedaMilestone.milestoneDeveloperAccept;
+exports.milestoneDeveloperReject = sedaMilestone.milestoneDeveloperReject;
 
 exports.scopeSubmit = sedaScope.scopeSubmit;
 exports.scopeAccept = sedaScope.scopeAccept;

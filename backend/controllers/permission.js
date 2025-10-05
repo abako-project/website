@@ -90,20 +90,39 @@ exports.projectDeveloperRequired = (req, res, next) => {
 };
 
 
+// MW that allows actions only if the logged in user is the developer assigned to the milestone.
+exports.milestoneDeveloperRequired = async (req, res, next) => {
+  const developerIsLogged = !!req.session.loginUser?.developerId;
+
+  const milestoneId = req.params.milestoneId;
+  const milestoneDeveloperId = await seda.milestoneDeveloperId(milestoneId);
+
+  const developerLoggedIsMilestoneDeveloper = milestoneDeveloperId === req.session.loginUser?.developerId;
+
+  if (developerIsLogged && developerLoggedIsMilestoneDeveloper) {
+    next();
+  } else {
+    console.log('Prohibited operation: The logged in user is not the milestone developer.');
+    next(new Error('Prohibited operation: The logged in user is not the milestone developer.'));
+  }
+};
+
 // MW that allows actions only if the logged in user type is one of these:
 //   admin  - logged user is admin
 //   client - logged user is a client
 //   projectClient - The logged user is the project client
 //   developer - logged user is a developer
 //   projectDeveloper - The logged user is one of the project tasks developer
-//   consultant - The logged user is the project consultant
+//   projectConsultant - The logged user is the project consultant
+//   milestoneDeveloper - The logged user is the developer assigned to the milestone
 exports.userTypesRequired = ({
                               admin = false,
                               client = false,
                               projectClient = false,
                               developer = false,
                               projectDeveloper = false,
-                              projectConsultant = false
+                              projectConsultant = false,
+                              milestoneDeveloper = false
                             }) => async (req, res, next) => {
 
   if (admin) {
@@ -156,6 +175,21 @@ exports.userTypesRequired = ({
       return next();
     }
   }
+
+  if (milestoneDeveloper) {
+      const developerIsLogged = !!req.session.loginUser?.developerId;
+
+      const milestoneId = req.params.milestoneId;
+      const milestone = await seda.milestone(milestoneId);
+      const milestoneDeveloperId = milestone?.assignation?.developerId;
+
+      const developerLoggedIsMilestoneDeveloper = milestoneDeveloperId === req.session.loginUser?.developerId;
+
+      if (developerIsLogged && developerLoggedIsMilestoneDeveloper) {
+          next();
+      }
+  }
+
   console.log('Prohibited operation: The logged in user has not the required permissions.');
   next(new Error('Prohibited operation: The logged in user has not the required permissions.'));
 };

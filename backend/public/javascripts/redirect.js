@@ -113,6 +113,15 @@ function redirectSelectMilestoneDeveloper(projectId, milestoneId) {
   location.href = "/projects/" + projectId + "/milestones/" + milestoneId + "/developer/select";
 }
 
+function redirectDeveloperMilestoneAccept(projectId, milestoneId, developerId) {
+  location.href = "/projects/" + projectId + "/milestones/" + milestoneId + "/developers/" + developerId + "/accept?_method=PUT";
+}
+
+function redirectDeveloperMilestoneReject(projectId, milestoneId, developerId) {
+  location.href = "/projects/" + projectId + "/milestones/" + milestoneId + "/developers/" + developerId + "/reject?_method=PUT";
+}
+
+
 // Escrow
 
 function redirectProjectStart(projectId) {

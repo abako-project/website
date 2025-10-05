@@ -8,6 +8,8 @@ const {
 
 const sequelize = require("../../models");
 
+const states = require("../../core/state");
+
 //-----------------------------------------------------------
 
 /**
@@ -199,11 +201,42 @@ exports.milestoneSetDeveloper = async (milestoneId, developerId) => {
     // Crear nueva asignacion:
     const newAssignation = await Assignation.create({
       developerId,
-      state: "Pending",
+      state: states.MilestoneState.WaitingDeveloperAccept,
       comment: "",
       milestoneId
     });
   }
+};
+
+//-----------------------------------------------------------
+
+exports.milestoneDeveloperAccept = async (milestoneId, developerId) => {
+
+    try {
+        const milestone = await Milestone.findByPk(milestoneId, {
+            include: [
+                {model: Assignation, as: "assignation"},
+            ]
+        });
+
+        await milestone?.assignation?.update({state: states.MilestoneState.InProgress});
+
+    } catch (error) {
+        throw error;
+    }
+};
+
+//-----------------------------------------------------------
+
+exports.milestoneDeveloperReject = async (milestoneId, developerId) => {
+
+    try {
+        // Borrar asignacion actual:
+        await Assignation.destroy({where: {milestoneId}});
+
+    } catch (error) {
+        throw error;
+    }
 };
 
 //-----------------------------------------------------------

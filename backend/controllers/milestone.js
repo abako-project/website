@@ -1,6 +1,7 @@
 
 const seda = require("../services/seda");
 
+const states = require("../core/state");
 
 
 // Listar todos los milestones o los de un cliente o los de un developer
@@ -283,4 +284,49 @@ exports.setDeveloper = async (req, res, next) => {
     next(error);
   }
 }
+
+
+// El developer acepta un milestone
+exports.developerAcceptMilestone = async (req, res, next) => {
+
+  const {body} = req;
+
+  const projectId = req.params.projectId;
+  const milestoneId = req.params.milestoneId;
+  const developerId = req.params.developerId;
+
+  try {
+    await seda.milestoneDeveloperAccept(milestoneId, body.developerId) ;
+
+    console.log('Milestone state updateded successfully.');
+
+    res.redirect('/projects/' + projectId);
+
+  } catch (error) {
+    next(error);
+  }
+};
+
+
+
+// El developer rechaza un milestone
+exports.developerRejectMilestone = async (req, res, next) => {
+
+    const {body} = req;
+
+    const projectId = req.params.projectId;
+    const milestoneId = req.params.milestoneId;
+    const developerId = req.params.developerId;
+
+    try {
+        await seda.milestoneDeveloperReject(milestoneId, body.developerId) ;
+
+        console.log('Milestone state updateded successfully.');
+
+        res.redirect('/projects/' + projectId);
+
+    } catch (error) {
+        next(error);
+    }
+};
 

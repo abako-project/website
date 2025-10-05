@@ -2,7 +2,6 @@
 
 // Constantes
 //
-// Usar null cuando aun no lo ha publicado el cliente.
 module.exports = exports = {
   ProjectState: {
 
@@ -39,7 +38,28 @@ module.exports = exports = {
     Completed: "completed", // entregado, validado y pagado
     Cancelled: "cancelled", // cancelado por el cliente
 
-  }
+  },
+
+    MilestoneState: {
+
+        // La DAO todavia no ha asignado un developer al milestone.
+        DeveloperPending: "DeveloperPending",
+
+        // Esperando a que el developer acepte el milestone, o lo rechace
+        WaitingDeveloperAccept: "WaitingDeveloperAccept",
+
+        // El desarrollador ha aceptado el milestone y empieza el trabajo.
+        InProgress: "InProgress",
+
+        // El consultor ha enviado el milestone para que lo valide el cliente, y estamos esperando a su valoracion
+        ClientValidationNeeded: "ClientValidationNeeded",
+
+        // El cliente ha rechazado el trabajo entregado
+        RejectedByClient: "RejectedByClient",
+
+        // El trabajo del milestone se ha completado (y ha sido aceptado por el cliente)
+        Completed: "Completed",
+    }
 }
 
 
