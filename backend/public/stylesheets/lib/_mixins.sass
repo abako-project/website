@@ -17,7 +17,6 @@
   place-content: end
   align-items: end
 
-
 /** ---------------------------------
  IMAGE
 
@@ -71,6 +70,18 @@
   color: $color
 
 /** --------------------------------------------------------------
+ SCROLLBARS
+ */
+
+.hideScrollbar
+  overflow: auto //* mantiene el scroll */
+  scrollbar-width: none //* Firefox */
+  -ms-overflow-style: none //* IE y Edge */
+
+  &::-webkit-scrollbar
+    display: none //* Chrome, Safari, Opera */
+
+/** --------------------------------------------------------------
  HELPERS
  */
 
@@ -99,7 +110,6 @@
   &--active
     background-color: $brand
 
-
 .bubble
   padding: 0 $size-8
     // max-width: 40ch
@@ -116,4 +126,3 @@
   background-color: $brand
   border-radius: $full
   outline: 2px solid $base-1
-

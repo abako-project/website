@@ -8,13 +8,13 @@
         <%- include('../components/_progressSidebar', {step: 1}) %>
     </div>
 
-    <div class="col2">
+    <div class="col2 projectContainer1col">
 
         <%- include('../components/headers/_basic', {title: "Let´s start with your project description"}) %>
 
-        <div class="projectContainer1col">
+        <div class="proposalForm">
 
-            <form is="form-with-tzo" id="editProposalForm" action="/projects/<%= project.id %>?_method=PUT"
+            <form class="proposalForm__form" is="form-with-tzo" id="editProposalForm" action="/projects/<%= project.id %>?_method=PUT"
                   method="POST">
                 <!-- <div class="projectProposal projectProposal__form"> -->
                 <%- include("./edit/_formProposal", {project, allBudgets, allDeliveryTimes, allProjectTypes, browserTimezoneOffset}) %>

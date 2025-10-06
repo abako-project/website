@@ -84,6 +84,8 @@
                 <span>Payments</span>
             </a>
         </li>
+        
+        <div class="divider divider-h"></div>
 
         <!-- Projects -->
         <% if (locals.loginUser?.isAdmin) { %>
@@ -110,8 +112,6 @@
                 </a>
             </li>
         <% } %>
-
-        <div class="divider divider-h"></div>
     </ul>
 
 
@@ -160,6 +160,7 @@
                 <i class="ri-logout-box-r-line"></i>
             </a>
         </li>
+        <!-- %- include('../components/Sidebar/_sidebarUser') %> -->
         
     </ul>
 </nav>

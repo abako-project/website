@@ -7,15 +7,16 @@
         <%- include('../components/_progressSidebar', {step: 2}) %>
     </div>
 
-    <div class="col2">
+    <div class="col2 projectContainer1col">
 
         <%- include('../components/headers/_basic', {title: "What do you want to achieve?"}) %>
 
 
-        <div class="projectContainer1col">
+        <div class="proposalForm">
 
             <div class="card">
                 <%- include("./edit/_editObjectives", {project}) %>
+                <p>Write these in terms of user value or outcomes. For example: “Build a simple front-end to interact with my contract”</p>
 
                 <% if ((locals.loginUser.clientId === project.clientId &&
                                 !project.state) ||
@@ -50,7 +51,7 @@
                         (!project.state ||
                          ["rejected"].includes(project.state))) { %>
 
-                    <button class="button" onclick="redirectProjectShow(<%= project.id %>); return false;">
+                    <button class="btn btn_primary" onclick="redirectProjectShow(<%= project.id %>); return false;">
                         Next: Review & Submit
                     </button>
 
