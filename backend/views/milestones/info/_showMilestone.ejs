@@ -1,12 +1,29 @@
-<div class="form-group">
+<div class="milestone__header">
     <%- include("./_headerMilestone", {milestone}) %>
 </div>
 
-<div class="form-group">
+<div class="milestone__description">
   <small><%= milestone.description %></small>
 </div>
 
 
+<<<<<<< Updated upstream
 <div class="form-group">
+=======
+<div class="milestone__role">
+    <%= milestone.role?.name %>
+
+    <%= milestone.proficiency?.description %>
+
+    <%= milestone.skills.map(s => s.name).join(", ") %>
+
+    <%= milestone.neededFullTimeDeveloper ? "[Full Time]" : "" %>
+    <%= milestone.neededPartTimeDeveloper ? "[Part Time]" : "" %>
+    <%= milestone.neededHourlyDeveloper ? "[Hours per Week]" : ""%>
+</div>
+
+
+<div class="milestone__dev">
+>>>>>>> Stashed changes
     <%- include("./__showDeveloper", {milestone}) %>
 </div>
