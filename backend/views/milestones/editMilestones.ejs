@@ -1,4 +1,3 @@
-
 <%- include('../components/headers/_basic', {title: "Review the Project Scope and Milestones"}) %>
 
 
@@ -20,37 +19,36 @@
 
         <% if (locals.loginUser && locals.loginUser.developerId === project.consultantId) { %>
 
-            <button class="right button"
-                    onclick="redirectMilestoneEdit(<%= project.id %>, <%= milestone.id %>); return false;"
-                    >
+            <a class="right btn btn_primary btn_href"
+               href="/projects/<%= project.id %>/milestones/<%= milestone.id %>/edit">
                 Edit
-            </button>
+            </a>
 
-            <button class="right button"
-                    onclick="redirectMilestoneDelete(<%= project.id %>, <%= milestone.id %>); return false;">
+            <a class="right btn btn_primary btn_href"
+               href="/projects/<%= project.id %>/milestones/<%= milestone.id %>?_method=DELETE">
                 🗑️
-            </button>
+            </a>
 
             <% if (+i > 0) { %>
-                <button class="right button"
-                        onclick="redirectMilestonesSwapOrder(<%= project.id %>, <%= milestone.id %>, <%= project.milestones[+i - 1].id %>); return false;">
+                <a class="right btn btn_primary btn_href"
+                   href="/projects/<%= project.id %>/milestones/swaporder/<%= milestone.id %>/<%= project.milestones[+i - 1].id %>?_method=PUT">
                     ▲
-                </button>
+                </a>
             <% } else { %>
-                <button class="right button">
-                    ▲
-                </button>
+                <a class="right btn btn_primary btn_href">
+                   ▲
+                </a>
             <% } %>
 
             <% if (+i < project.milestones.length - 1) { %>
-                <button class="right button"
-                        onclick="redirectMilestonesSwapOrder(<%= project.id %>, <%= milestone.id %>, <%= project.milestones[+i + 1].id %>); return false;">
+                <a class="right btn btn_primary btn_href"
+                   href="/projects/<%= project.id %>/milestones/swaporder/<%= milestone.id %>/<%= project.milestones[+i + 1].id %>?_method=PUT">
                     ▼
-                </button>
+                </a>
             <% } else { %>
-                <button class="right button">
-                    ▼
-                </button>
+                <a class="right btn btn_primary btn_href">
+                   ▼
+                </a>
             <% } %>
 
             <div class="clear"></div>
@@ -61,19 +59,20 @@
 <% } %>
 
 <% if (locals.loginUser && locals.loginUser.developerId === project.consultantId) { %>
-    <button class="right button" onclick="redirectMilestoneNew(<%= project.id %>); return false;">Add New Milestone
-    </button>
+    <a class="right btn btn_primary btn_href"
+       href="/projects/<%= project.id %>/milestones/new">
+        Add New Milestone
+    </a>
 <% } %>
-
 
 
 <% if (locals.loginUser.developerId === project.consultantId &&
         project.state &&
         ["ScopingInProgress"].includes(project.state)) { %>
-    <button class="button" onclick="redirectProjectShow(<%= project.id %>); return false;"
-            data-project-id="<%= project.id %>">
+    <a class="right btn btn_primary btn_href"
+       href="/projects/<%= project.id %>">
         Next
-    </button>
+    </a>
 <% } %>
 
 

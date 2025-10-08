@@ -4,10 +4,10 @@
 
         <% if (milestone.assignation.state === "WaitingDeveloperAccept") { %>
 
-            <button class="right projectFlow"
-                    onclick="redirectDeveloperAcceptOrRejectMilestone(<%= project.id %>, <%= milestone.id %>); return false;">
+            <a class="right projectFlow btn btn_primary btn_href"
+               href="/projects/<%= project.id %>/milestones/<%= milestone.id %>/acceptOrReject">
                 Accept Or Reject
-            </button>
+            </a>
 
         <% } %>
     <% } %>

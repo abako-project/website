@@ -48,17 +48,17 @@
             </div>
 
             <div class="actions">
-                <button class="btn btn_primary"
-                        onclick="redirectProjectShow(<%= project.id %>);">
+                <a class="btn btn_primary btn_href"
+                   href="/projects/<%= project.id %>" >
                     Show
-                </button>
+                </a>
 
                 <% if (locals.loginUser && locals.loginUser.isAdmin) { %>
 
-                    <button class="adminDAO btn btn_icon"
-                            onclick="redirectProjectDelete(<%= project.id %>); return false;">
+                    <a class="adminDAO btn btn_icon bth_href"
+                       href="/projects/<%= project.id %>?_method=DELETE" >
                         <i class="ri-delete-bin-7-line"></i>
-                    </button>
+                    </a>
 
                 <% } %>
             </div>

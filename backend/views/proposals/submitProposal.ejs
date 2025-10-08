@@ -24,11 +24,15 @@
 
             </div>
 
-            <button class="projectFlow btn"
-                    onclick="redirectProjectEdit(<%= project.id %>); return false;">Review</button>
+            <a class="projectFlow btn btn_primary btn_href"
+               href="/projects/<%= project.id %>/edit">
+                Review
+            </a>
 
-            <button class="projectFlow btn btn_primary"
-                    onclick="redirectProjectSubmit(<%= project.id %>); return false;">Submit Project</button>
+            <a class="projectFlow btn btn_primary btn_href"
+               href=/projects/<%= project.id %>/proposal_submit?_method=PUT">
+                Submit Project
+            </a>
         </div>
     </div>
 </div>

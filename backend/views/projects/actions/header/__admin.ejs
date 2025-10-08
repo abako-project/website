@@ -4,14 +4,14 @@ const actions = [];
 if (locals.loginUser.isAdmin) {
     actions.push({
         title: "Delete",
-        callback: "redirectProjectDelete(" + project.id + ")",
+        callback: "/projects/" + project.id + "?_method=DELETE",
     });
 
 
     if (project.state && ["ProposalPending"].includes(project.state)) {
         actions.push({
             title: "Select/Change Consultant",
-            callback: "redirectSelectProjectConsultant(" + project.id + ")",
+            callback: "/projects/" + project.id + "/consultant/select",
         });
     }
 }

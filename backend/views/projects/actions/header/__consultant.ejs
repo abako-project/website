@@ -7,35 +7,19 @@ if (locals.loginUser.developerId === project.consultantId) {
     if (project.state && ["ProposalAccepted"].includes(project.state)) {
         actions.push({
             title: "Reject",
-            callback: "redirectProposalReject(" + project.id + ")",
+            callback: "/projects/" + project.id + "/proposal_reject?_method=PUT",
         });
         actions.push({
             title: "Approve",
-            callback: "redirectProposalApprove(" + project.id + ")",
+            callback: "/projects/" + project.id + "/proposal_approve?_method=PUT",
         });
     }
 
     if (project.state && ["ScopingInProgress"].includes(project.state)) {
         actions.push({
             title: "Review Project",
-            callback: "redirectMilestonesEdit(" + project.id + ")",
+            callback: "/projects/" + project.id + "/milestones/edit",
         });
-    }
-
-    if (project.state && ["tasksPending"].includes(project.state)) {
-        actions.push({
-            title: "Review tasks",
-            callback: "redirectTasksEdit(" + project.id + ")",
-        });
-    }
-
-    if (project.state && ["tasksPending"].includes(project.state)) {
-        if (project.milestones.every(milestone => milestone.tasks.length !== 0)) {
-            actions.push({
-                title: "Send tasks",
-                callback: "redirectTasksSubmit(" + project.id + ")",
-            });
-        }
     }
 }
 %>

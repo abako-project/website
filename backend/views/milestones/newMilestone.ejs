@@ -8,9 +8,10 @@
 
 </form>
 
-<button class="button" onclick="redirectMilestonesEdit(<%= project.id %>); return false;">
+<a class="btn btn_primary btn_href"
+   href="/projects/<%= project.id %>/milestones/edit" >
     Cancel
-</button>
+</a>
 
 <button class="button" onclick="submitFormById('newMilestoneForm'); return false;">
     Save and Next

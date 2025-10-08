@@ -8,28 +8,28 @@
             <%= objective.description %>
 
             <% if (locals.loginUser.clientId === project.clientId) { %>
-                        <button class="right button"
-                                onclick="redirectObjectiveDelete(<%= project.id %>, <%= objective.id %>); return false;">
+                        <a class="right btn btn_primary btn_href"
+                           href="/projects/<%= project.id %>/objectives/<%= objective.id %>?_method=DELETE">
                                 🗑️
-                        </button>
+                        </a>
             <% } %>
 
             <% if (+i > 0) { %>
-                <button class="right button"
-                        onclick="redirectObjectivesSwapOrder(<%= project.id %>, <%= objective.id %>, <%= project.objectives[+i - 1].id %>); return false;">
+                <a class="right btn btn_primary btn_href"
+                        href="/projects/<%= project.id %>/objectives/swaporder/<%= objective.id %>/<%= project.objectives[+i - 1].id %>?_method=PUT">
                     ▲
-                </button>
+                </a>
             <% } else { %>
-                <button class="right button">▲</button>
+                <a class="right btn btn_primary btn_href">▲</a>
             <% } %>
 
             <% if (+i < project.objectives.length - 1) { %>
-                <button class="right button"
-                        onclick="redirectObjectivesSwapOrder(<%= project.id %>, <%= objective.id %>, <%= project.objectives[+i + 1].id %>); return false;">
+                <a class="right btn btn_primary btn_href"
+                   href="/projects/<%= project.id %>/objectives/swaporder/<%= objective.id %>/<%= project.objectives[+i + 1].id %>?_method=PUT">
                     ▼
-                </button>
+                </a>
             <% } else { %>
-                <button class="right button">▼</button>
+                <a class="right btn btn_primary btn_href">▼</a>
             <% } %>
 
             <div class="clear"></div>

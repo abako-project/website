@@ -1,6 +1,6 @@
 <% for (let action of actions) { %>
-    <button class="projectFlow btn btn_primary"
-            onclick="<%= action.callback %>; return false;">
+    <a class="projectFlow btn btn_primary btn_href"
+            href="<%= action.callback %>">
         <%= action.title %>
-    </button>
+    </a>
 <% } %>

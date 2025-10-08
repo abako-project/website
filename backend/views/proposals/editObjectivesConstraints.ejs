@@ -44,15 +44,19 @@
 
             <div class="buttonContainer">
 
-                <button class="button" onclick="redirectProjectEdit(<%= project.id %>); return false;">Back</button>
+                <a class="btn btn_primary btn_href"
+                   href="/projects/<%= project.id %>/edit">
+                    Back
+                </a>
 
                 <% if (locals.loginUser.clientId === project.clientId &&
                         (!project.state ||
                          ["ProposalRejected"].includes(project.state))) { %>
 
-                    <button class="button" onclick="redirectProjectShow(<%= project.id %>); return false;">
+                    <a class="btn btn_primary btn_href"
+                       href="/projects/<%= project.id %>">
                         Next: Review & Submit
-                    </button>
+                    </a>
 
                 <% } %>
             </div>

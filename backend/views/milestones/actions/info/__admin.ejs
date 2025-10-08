@@ -1,10 +1,10 @@
 
 
 <% if (locals.loginUser && locals.loginUser.isAdmin) { %>
-    <button class="adminDAO"
-            onclick="redirectSelectMilestoneDeveloper(<%= project.id %>, <%= milestone.id %>); return false;">
+    <a class="adminDAO btn btn_primary btn_href"
+       href="/projects/<%= project.id %>/milestones/<%= milestone.id %>/developer/select">
         Select/Change Milestone Developer
-    </button>
+    </a>
 
 <% } %>
 

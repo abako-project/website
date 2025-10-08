@@ -354,12 +354,14 @@ exports.acceptOrRejectMilestoneUpdate = async (req, res, next) => {
 
         let {comment, accept} = req.body;
 
+        console.log("************ accept =", accept);
+
         const projectId = req.params.projectId;
         const milestoneId = req.params.milestoneId;
 
         if (accept === "accept") {
             await seda.milestoneDeveloperAccept(milestoneId, comment) ;
-        } if (accept === "reject") {
+        } else if (accept === "reject") {
             await seda.milestoneDeveloperReject(milestoneId, comment) ;
         } else {
             req.flash("error", "El developer solo puede aceptar o rechazar los milestones que le han asignado");
