@@ -17,6 +17,19 @@
     <textarea id="summary" name="summary"><%= project.summary %></textarea>
   </div>
 
+  <div class="form-group area3">
+    <label for="projectTypeId">Project Type:</label>
+    <select id="projectTypeId" name="projectTypeId">
+        <option value="">None</option>
+        <% for (const projectType of allProjectTypes) { %>
+            <option value="<%= projectType.id %>"
+                    <%= project.projectTypeId === projectType.id && "selected" %> >
+                <%= projectType.description %> %>
+            </option>
+        <% } %>
+    </select>
+  </div>
+
   <div class="form-group area5">
     <label for="description">Description:</label>
     <textarea id="description" name="description">
@@ -36,51 +49,52 @@
     />
   </div>
 
-  <div class="form-group ">
-    <label for="budgetId">Budget (USD):</label>
+  <div class="form-group input--radio">
+    <label for="budgetId">Budget (USD)</label>
       <% for (const budget of allBudgets) { %>
-          <p>
+          <span>
               <input type="radio"
                      id="budgetId"
                      name="budgetId"
                      value="<%= budget.id %>"
                       <%= project.budgetId === budget.id && "checked" %>
               />
-              <b><%= budget.description %></b>
-          </p>
+              <p><%= budget.description %></p>
+          </span>
       <% } %>
 
   </div>
 
 
-    <div class="form-group">
-        <label for="deliveryTimeId">Delivery time:</label>
+    <div class="form-group input--radio">
+        <label for="deliveryTimeId">Delivery time</label>
         <% for (const deliveryTime of allDeliveryTimes) { %>
-            <p>
+            <span>
                 <input type="radio"
                        id="deliveryTimeId"
                        name="deliveryTimeId"
                        value="<%= deliveryTime.id %>"
                         <%= project.deliveryTimeId === deliveryTime.id && "checked" %>
                 />
-                <b><%= deliveryTime.description %></b>
-            </p>
+                <p><%= deliveryTime.description %></p>
+            </span>
         <% } %>
 
     </div>
 
 
-    <div class="form-group area3">
-    <label for="deliveryDate">Delivery Date:</label>
-    <input
-      type="datetime-local"
-      id="deliveryDate"
-      name="deliveryDate"
-      value="<%= new Date(project.deliveryDate - browserTimezoneOffset).toISOString().slice(0, 16) %>"
-      placeholder="Delivery Date"
-      autocomplete="off"
-    />
-  </div>
+
+    <div class="form-group">
+      <label for="deliveryDate">Delivery Date:</label>
+      <input
+        type="datetime-local"
+        id="deliveryDate"
+        name="deliveryDate"
+        value="<%= new Date(project.deliveryDate - browserTimezoneOffset).toISOString().slice(0, 16) %>"
+        placeholder="Delivery Date"
+        autocomplete="off"
+      />
+    </div>
 
     <div class="form-group">
         <label for="projectTypeId">Project Type:</label>

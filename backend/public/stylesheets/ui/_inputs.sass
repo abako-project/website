@@ -112,6 +112,24 @@ input, select, textarea
       color: $text-dark
 
 /**--------------------------------------------------------------------------------------
+ RADIO
+.input--radio
+  span
+    @include flex-start
+    align-items: center
+    gap: $sp-7
+    padding: 0
+    position: relative
+    font-weight: 500
+    input[type="radio"]
+      padding: 0
+      box-shadow: none
+      height: 24px
+      width: 24px
+      aspect-ratio: 1 / 1
+      border-radius: $rounded-full
+
+/**--------------------------------------------------------------------------------------
  CHECKBOX
 
 .input_checkbox

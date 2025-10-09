@@ -28,7 +28,7 @@
 
 * {
     // border: 1px solid tomato;
-    transition: ease-in-out, background-color .3s ease-in-out, height .4s ease-in-out
+    transition: ease-in-out, background-color .3s ease-in-out, height .4s ease-in-out;
 }
 
 html, body {
@@ -43,15 +43,6 @@ html, body {
   min-height: 100dvh;
   background-color: $base-1;
   color: $text-dark;
-
-  // No están working
-  overflow: auto; /* mantiene el scroll */
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* IE y Edge */
-
-  &::-webkit-scrollbar {
-    display: none; /* Chrome, Safari, Opera */
-  }
 }
 
 i {
@@ -83,18 +74,13 @@ i {
   max-height: 100dvh;
   display: grid;
   grid-template-columns: auto 1fr;
-  // .col2 {
-  //   overflow-y: scroll;
-  // }
 }
 
 #appMain {
   height: 100dvh;
   width: 100%;
-  overflow-y: scroll;
-  &::-webkit-scrollbar {
-      display: none;
-  }
+  // overflow-y: scroll;
+  @extend .hideScrollbar
 }
 
 /* ------------------------- */
