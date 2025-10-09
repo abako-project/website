@@ -82,8 +82,6 @@
 
     </div>
 
-
-
     <div class="form-group">
       <label for="deliveryDate">Delivery Date:</label>
       <input
@@ -95,19 +93,5 @@
         autocomplete="off"
       />
     </div>
-
-    <div class="form-group">
-        <label for="projectTypeId">Project Type:</label>
-        <select id="projectTypeId" name="projectTypeId">
-            <option value="">None</option>
-            <% for (const projectType of allProjectTypes) { %>
-                <option value="<%= projectType.id %>"
-                        <%= project.projectTypeId === projectType.id && "selected" %> >
-                    <%= projectType.description %> %>
-                </option>
-            <% } %>
-        </select>
-    </div>
-
 
 </div>
