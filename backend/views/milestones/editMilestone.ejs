@@ -1,6 +1,6 @@
 <h1>Editar Milestone</h1>
 
-<form is="form-with-tzo" id="editMilestoneForm" action="/projects/<%= project.id %>/milestones/<%= milestone.id %>?_method=PUT" method="POST">
+<form id="editMilestoneForm" action="/projects/<%= project.id %>/milestones/<%= milestone.id %>?_method=PUT" method="POST">
 
     <div class="card">
         <%- include("./edit/_formMilestone", {project, milestone}) %>
