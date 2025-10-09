@@ -1,20 +1,27 @@
-<div class="card">
+<div class="milestones">
 
-    <div class="card-title">Milestones</div>
+    <h4 class="milestones__title">Milestones</h4>
 
-    <ul>
+    <ul class="milestones__content">
         <% for (const milestone of project.milestones) { %>
 
-            <li>
-                <%- include("./_showMilestone", {project, milestone}) %>
+            <li class="milestoneWrapper">
+                <span class="milestoneWrapper__progress">
+                    <span class="dot"></span>
+                    <span class="line"></span>
+                </span>
+                <span class="milestoneWrapper__milestone milestone">
+
+                    <%- include("./_showMilestone", {project, milestone}) %>
 
 
-                <div class="form-group">
-                    <%- include("../actions/info/_all", {project, milestone}) %>
-                </div>
+                    <div class="milestone__actions">
+                        <%- include("../actions/info/_all", {project, milestone}) %>
+                    </div>
 
 
-                <hr style="clear: both;" />
+                    <hr style="clear: both;" />
+                </span>
             </li>
 
         <% } %>
