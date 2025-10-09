@@ -202,6 +202,15 @@ router.put('/:projectId(\\d+)/milestones/swaporder/:id1(\\d+)/:id2(\\d+)',
   permissionController.projectConsultantRequired,
   milestoneController.swapOrder);
 
+
+// Pagina para que el consultor suba un milestone para que lo revise el cliente
+router.get('/:projectId(\\d+)/milestones/:milestoneId(\\d+)/submitMilestone',
+    permissionController.isAuthenticated,
+    permissionController.projectConsultantRequired,
+    milestoneController.submitMilestone);
+
+
+
 // === Milestone Developer
 
 // Mostrar formulario para asignar developer a un milestone

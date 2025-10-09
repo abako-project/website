@@ -1,3 +1,9 @@
+
+
+<%- include('../components/_cancelTopbar', {step: 1}) %>
+
+<%- include('../projects/headers/_project', { project, showActions: false }) %>
+
 <%- include('../components/headers/_basic', {title: "Review the Project Scope and Milestones"}) %>
 
 
@@ -65,13 +71,14 @@
     </a>
 <% } %>
 
+<div style="height:20px; clear: both;"></div>
 
 <% if (locals.loginUser.developerId === project.consultantId &&
         project.state &&
         ["ScopingInProgress"].includes(project.state)) { %>
     <a class="right btn btn_primary btn_href"
        href="/projects/<%= project.id %>">
-        Next
+        Next: Submit Scope
     </a>
 <% } %>
 

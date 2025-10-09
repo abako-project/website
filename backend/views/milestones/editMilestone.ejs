@@ -1,4 +1,8 @@
-<h1>Editar Milestone</h1>
+<%- include('../components/_cancelTopbar', {step: 1}) %>
+
+<%- include('../projects/headers/_project', { project, showActions: false }) %>
+
+<%- include('../components/headers/_basic', {title: "Edit Milestone"}) %>
 
 <form id="editMilestoneForm" action="/projects/<%= project.id %>/milestones/<%= milestone.id %>?_method=PUT" method="POST">
 
@@ -6,13 +10,16 @@
         <%- include("./edit/_formMilestone", {project, milestone}) %>
     </div>
 
+
+    <a class="btn btn_primary btn_href"
+       href="/projects/<%= project.id %>/milestones/edit">
+        Cancel
+    </a>
+
+    <div style="height:20px; clear: both;"></div>
+
+    <button class="btn btn_primary" onclick="submitFormById('editMilestoneForm'); return false;">
+        Save
+    </button>
+
 </form>
-
-<a class="btn btn_primary btn_href"
-   href="/projects/<%= project.id %>/milestones/edit">
-    Cancel
-</a>
-
-<button class="button" onclick="submitFormById('editMilestoneForm'); return false;">
-    Save and Next
-</button>

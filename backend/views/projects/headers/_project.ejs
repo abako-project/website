@@ -44,9 +44,12 @@
         </small>
     </span>
 
+    <% if (typeof locals.showActions === "undefined" || !!locals.showActions) { %>
     <div class="appHeader__actions" style="grid-area: flow;">
 
         <%- include("../actions/header/_all") %>
 
     </div>
+    <% } %>
+
 </header>

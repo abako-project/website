@@ -29,14 +29,18 @@ module.exports = exports = {
     ScopeValidationNeeded: "ScopeValidationNeeded", // el cliente tiene que validar el milestone
 
     // El cliente ha aceptado el Scope propuesto por el consultor y ahora tiene que hacer el Escrow.
-    EscrowFundingNeeded: "EscrowFundingNeeded", // proyecto aprovado pera faltan los fondos del cliente
+    EscrowFundingNeeded: "EscrowFundingNeeded", // proyecto aprobado pera faltan los fondos del cliente
 
-    TeamAssignmentPending: "TeamAssignmentPending", // La DAO/Admin esta asignando el team de desarrolladores
+      // Despues de proporcionar los fondos, el proyecto empieza.
+      // Cada uno de los milestones evoluciona con su propio estado.
+      // Cada milestone empieza en el estado DeveloperPending esperando a que la DAO le asigne un developer.
+    ProjectInProgress: "ProjectInProgress", // Empieza a contar el timepo de desarrollo.
 
-    InProgress: "inProgress", // trabajando
     DisputeOpen: "disputeOpen", // por la entrega o el scope
     Completed: "completed", // entregado, validado y pagado
     Cancelled: "cancelled", // cancelado por el cliente
+
+     //  TeamAssignmentPending: "TeamAssignmentPending", // La DAO/Admin esta asignando el team de desarrolladores
 
   },
 

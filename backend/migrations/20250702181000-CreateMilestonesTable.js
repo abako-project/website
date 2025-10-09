@@ -78,6 +78,20 @@ module.exports = {
           type: Sequelize.BOOLEAN,
           defaultValue: false
         },
+          state: {
+              type: Sequelize.ENUM,
+              values: ['DeveloperPending', 'WaitingDeveloperAccept', 'InProgress', 'ClientValidationNeeded', "RejectedByClient", "Completed"],
+              defaultValue: 'DeveloperPending'
+          },
+          developerId: {
+              type: Sequelize.INTEGER,
+              references: {
+                  model: "Developers",
+                  key: "id"
+              },
+              onUpdate: 'CASCADE',
+              onDelete: 'SET NULL'
+          },
         createdAt: {
           type: Sequelize.DATE,
           allowNull: false

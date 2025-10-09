@@ -6,7 +6,7 @@ module.exports = exports = [
         description: 'Sevidor adivinanzas',
         summary: 'Servicio Web desarrollado con express',
         projectTypeId: 4,
-        state: states.ProjectState.TeamAssignmentPending,
+        state: states.ProjectState.ProjectInProgress,
         url: 'https://quiz.dit.upm.es',
         budgetId: 1,
         deliveryTimeId: 4,
@@ -32,11 +32,8 @@ module.exports = exports = [
                 proficiencyId: 1,
                 deliveryTimeId: 4,
                 deliveryDate: new Date(new Date().getTime() + (1 * 60 * 60 * 1000)),
-                assignation: {
-                    comment: "Sin aceptar",
-                    state: states.MilestoneState.WaitingDeveloperAccept,
-                    developerId: 2
-                }
+                state: states.MilestoneState.WaitingDeveloperAccept,
+                developerId: 2
             },
             {
                 title: 'Producto Final',
@@ -46,11 +43,8 @@ module.exports = exports = [
                 proficiencyId: 3,
                 deliveryTimeId: 4,
                 deliveryDate: new Date(new Date().getTime() + (2 * 60 * 60 * 1000)),
-                assignation: {
-                    comment: "Trabajando",
-                    state: states.MilestoneState.InProgress,
-                    developerId: 2
-                }
+                state: states.MilestoneState.InProgress,
+                developerId: 2
             },
         ]
     },
@@ -59,7 +53,7 @@ module.exports = exports = [
         description: 'SwiftUI App',
         summary: 'Aplicacion para iPhone',
         projectTypeId: 6,
-        state: states.ProjectState.TeamAssignmentPending,
+        state: states.ProjectState.ProjectInProgress,
         url: 'https://dit.upm.es',
         budgetId: 2,
         deliveryTimeId: 4,
@@ -82,11 +76,8 @@ module.exports = exports = [
                 proficiencyId: 1,
                 deliveryTimeId: 4,
                 deliveryDate: new Date(new Date().getTime() + (1 * 60 * 60 * 1000)),
-                assignation: {
-                    comment: "no se sabe si le gista al cliente",
-                    state: states.MilestoneState.ClientValidationNeeded,
-                    developerId: 2
-                }
+                state: states.MilestoneState.ClientValidationNeeded,
+                developerId: 2
             },
             {
                 title: 'Modelo',
@@ -96,11 +87,8 @@ module.exports = exports = [
                 proficiencyId: 1,
                 deliveryTimeId: 4,
                 deliveryDate: new Date(new Date().getTime() + (2 * 60 * 60 * 1000)),
-                assignation: {
-                    comment: "no gusta",
-                    state: states.MilestoneState.RejectedByClient,
-                    developerId: 2
-                }
+                state: states.MilestoneState.RejectedByClient,
+                developerId: 2
             },
             {
                 title: 'Controladores',
@@ -110,11 +98,8 @@ module.exports = exports = [
                 proficiencyId: 3,
                 deliveryTimeId: 4,
                 deliveryDate: new Date(new Date().getTime() + (4 * 60 * 60 * 1000)),
-                assignation: {
-                    comment: "Trabajando",
-                    state: states.MilestoneState.Completed,
-                    developerId: 2
-                }
+                state: states.MilestoneState.Completed,
+                developerId: 2
             }
         ]
     },
@@ -123,7 +108,7 @@ module.exports = exports = [
         description: 'Servicio de Interpretes',
         summary: 'Proyecto de investigación para dessarrollar el MVP de un servicio blockchain',
         projectTypeId: 4,
-        state: states.ProjectState.TeamAssignmentPending,
+        state: states.ProjectState.ProjectInProgress,
         url: 'https://kunveno.com',
         budgetId: 3,
         deliveryTimeId: 3,
@@ -145,11 +130,8 @@ module.exports = exports = [
                 proficiencyId: 2,
                 deliveryTimeId: 4,
                 deliveryDate: new Date(new Date().getTime() + (5 * 60 * 60 * 1000)),
-                assignation: {
-                    comment: "Trabajando",
-                    state: states.MilestoneState.Completed,
-                    developerId: 2
-                }
+                state: states.MilestoneState.Completed,
+                developerId: 2
             }
         ]
     }

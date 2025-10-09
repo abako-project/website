@@ -3,10 +3,10 @@ const {Op} = require("sequelize");
 const json = require("./json");
 
 const {
-  models: {
-    Project, Client, Developer, User, Attachment, Budget, DeliveryTime, ProjectType,
-    Objective, Constraint, Milestone, Role, Proficiency, Comment, Assignation, Skill
-  }
+    models: {
+        Project, Client, Developer, User, Attachment, Budget, DeliveryTime, ProjectType,
+        Objective, Constraint, Milestone, Role, Proficiency, Comment, Skill
+    }
 } = require('../../models');
 
 const states = require("../../core/state");
@@ -26,65 +26,62 @@ const states = require("../../core/state");
  */
 exports.project = async projectId => {
 
-  const project = await Project.findByPk(projectId, {
-    include: [
-      {
-        model: Client, as: 'client',
+    const project = await Project.findByPk(projectId, {
         include: [
-          {model: User, as: "user"},
-          {model: Attachment, as: "attachment"}]
-      },
-      {
-        model: Developer, as: 'consultant',
-        include: [
-          {model: User, as: "user"},
-          {model: Attachment, as: "attachment"}]
-      },
-      {model: Budget, as: "budget"},
-      {model: DeliveryTime, as: "deliveryTime"},
-      {model: ProjectType, as: "projectType"},
-      {
-        model: Objective, as: 'objectives',
-        separate: true,
-        order: [['displayOrder', 'ASC']]
-      },
-      {
-        model: Constraint, as: 'constraints',
-        separate: true,
-        order: [['displayOrder', 'ASC']]
-      },
-      {
-        model: Milestone, as: 'milestones',
-        separate: true,
-        order: [['displayOrder', 'ASC']],
-        include: [
-          {
-            model: Assignation, as: 'assignation',
-            include: [{
-              model: Developer, as: 'developer',
-              include: [
-                {model: User, as: "user"},
-                {model: Attachment, as: "attachment"}]
-            }]
-          },
-          {model: DeliveryTime, as: "deliveryTime"},
-          {model: Role, as: 'role'},
-          {model: Proficiency, as: 'proficiency'},
-          {model: Skill, as: 'skills'},
+            {
+                model: Client, as: 'client',
+                include: [
+                    {model: User, as: "user"},
+                    {model: Attachment, as: "attachment"}]
+            },
+            {
+                model: Developer, as: 'consultant',
+                include: [
+                    {model: User, as: "user"},
+                    {model: Attachment, as: "attachment"}]
+            },
+            {model: Budget, as: "budget"},
+            {model: DeliveryTime, as: "deliveryTime"},
+            {model: ProjectType, as: "projectType"},
+            {
+                model: Objective, as: 'objectives',
+                separate: true,
+                order: [['displayOrder', 'ASC']]
+            },
+            {
+                model: Constraint, as: 'constraints',
+                separate: true,
+                order: [['displayOrder', 'ASC']]
+            },
+            {
+                model: Milestone, as: 'milestones',
+                separate: true,
+                order: [['displayOrder', 'ASC']],
+                include: [
+                    {
+                        model: Developer, as: 'developer',
+                        include: [
+                            {model: User, as: "user"},
+                            {model: Attachment, as: "attachment"}]
+                    },
+                    {model: DeliveryTime, as: "deliveryTime"},
+                    {model: Role, as: 'role'},
+                    {model: Proficiency, as: 'proficiency'},
+                    {model: Skill, as: 'skills'},
+                ]
+            },
+            {
+                model: Comment, as: "comments",
+                separate: true,
+                order: [['createdAt', 'DESC']],
+            }
         ]
-      },
-      {
-        model: Comment, as: "comments",
-        separate: true,
-        order: [['createdAt', 'DESC']],
-      }
-    ]
-  });
-  if (project) {
-    return json.projectJson(project);
-  } else {
-    throw new Error('There is no project with id=' + projectId);
-  }
+    });
+    if (project) {
+        return json.projectJson(project);
+    } else {
+        throw new Error('There is no project with id=' + projectId);
+    }
 };
 
 //-----------------------------------------------------------
@@ -100,13 +97,13 @@ exports.project = async projectId => {
  */
 exports.projectClientId = async projectId => {
 
-  const project = await Project.findByPk(projectId);
+    const project = await Project.findByPk(projectId);
 
-  if (project) {
-    return project.clientId;
-  } else {
-    throw new Error('There is no project with id=' + projectId);
-  }
+    if (project) {
+        return project.clientId;
+    } else {
+        throw new Error('There is no project with id=' + projectId);
+    }
 };
 
 //-----------------------------------------------------------
@@ -122,13 +119,13 @@ exports.projectClientId = async projectId => {
  */
 exports.projectConsultantId = async projectId => {
 
-  const project = await Project.findByPk(projectId);
+    const project = await Project.findByPk(projectId);
 
-  if (project) {
-    return project.consultantId;
-  } else {
-    throw new Error('There is no project with id=' + projectId);
-  }
+    if (project) {
+        return project.consultantId;
+    } else {
+        throw new Error('There is no project with id=' + projectId);
+    }
 };
 
 //-----------------------------------------------------------
@@ -147,54 +144,48 @@ exports.projectConsultantId = async projectId => {
  */
 exports.projectsIndex = async (clientId, consultantId, developerId) => {
 
-  let options = {
-    include: [
-      {
-        model: Client, as: 'client',
+    let options = {
         include: [
-          {model: User, as: "user"},
-          {model: Attachment, as: "attachment"}]
-      },
-      {
-        model: Developer, as: 'consultant',
-        include: [
-          {model: User, as: "user"},
-          {model: Attachment, as: "attachment"}]
-      },
-      {
-        model: Milestone, as: 'milestones',
-        include: [
-          {
-            model: Assignation, as: 'assignation',
-            required: true,
-            include: [{
-              model: Developer, as: 'developer'
-            }]
-          }
+            {
+                model: Client, as: 'client',
+                include: [
+                    {model: User, as: "user"},
+                    {model: Attachment, as: "attachment"}]
+            },
+            {
+                model: Developer, as: 'consultant',
+                include: [
+                    {model: User, as: "user"},
+                    {model: Attachment, as: "attachment"}]
+            },
+            {
+                model: Milestone, as: 'milestones',
+                include: [
+                    {model: Developer, as: 'developer'}
+                ]
+            }
         ]
-      }
-    ]
-  };
-
-  const orItems = [];
-  if (clientId) {
-    orItems.push({clientId});
-  }
-  if (consultantId) {
-    orItems.push({consultantId});
-  }
-  if (developerId) {
-    orItems.push({'$milestones.assignation.developer.id$': developerId});
-  }
-  if (orItems.length > 0) {
-    options.where = {
-      [Op.or]: orItems
     };
-  }
 
-  const projects = await Project.findAll(options);
+    const orItems = [];
+    if (clientId) {
+        orItems.push({clientId});
+    }
+    if (consultantId) {
+        orItems.push({consultantId});
+    }
+    if (developerId) {
+        orItems.push({'$milestones.developerId$': developerId});
+    }
+    if (orItems.length > 0) {
+        options.where = {
+            [Op.or]: orItems
+        };
+    }
 
-  return projects.map(project => json.projectJson(project));
+    const projects = await Project.findAll(options);
+
+    return projects.map(project => json.projectJson(project));
 };
 
 //-----------------------------------------------------------
@@ -210,7 +201,7 @@ exports.projectsIndex = async (clientId, consultantId, developerId) => {
  * @throws {Error} Si falla la actualización del estado.
  */
 exports.projectSetState = async (projectId, state) => {
-  await Project.update({state}, {where: {id: projectId}});
+    await Project.update({state}, {where: {id: projectId}});
 };
 
 //-----------------------------------------------------------
@@ -227,23 +218,23 @@ exports.projectSetState = async (projectId, state) => {
  */
 exports.proposalSubmit = async (projectId) => {
 
-  const project = await Project.findByPk(projectId);
+    const project = await Project.findByPk(projectId);
 
-  if (!project) {
-    throw new Error('There is no project with id=' + projectId);
-  }
+    if (!project) {
+        throw new Error('There is no project with id=' + projectId);
+    }
 
-  if (!project.state) {
-    await Project.update({
-      state: states.ProjectState.ProposalPending
-    }, {where: {id: projectId}});
-  } else if (project?.state === states.ProjectState.ProposalRejected) {
-    await Project.update({
-      state: states.ProjectState.ProposalAccepted
-    }, {where: {id: projectId}});
-  } else {
-    throw new Error('Internal Error. Invalid project state.');
-  }
+    if (!project.state) {
+        await Project.update({
+            state: states.ProjectState.ProposalPending
+        }, {where: {id: projectId}});
+    } else if (project?.state === states.ProjectState.ProposalRejected) {
+        await Project.update({
+            state: states.ProjectState.ProposalAccepted
+        }, {where: {id: projectId}});
+    } else {
+        throw new Error('Internal Error. Invalid project state.');
+    }
 };
 
 
@@ -259,9 +250,9 @@ exports.proposalSubmit = async (projectId) => {
  * @throws {Error} Si falla la actualización del estado.
  */
 exports.approveProposal = async (projectId) => {
-  await Project.update({
-    state: states.ProjectState.ScopingInProgress
-  }, {where: {id: projectId}});
+    await Project.update({
+        state: states.ProjectState.ScopingInProgress
+    }, {where: {id: projectId}});
 };
 
 
@@ -277,9 +268,9 @@ exports.approveProposal = async (projectId) => {
  * @throws {Error} Si falla la actualización del estado.
  */
 exports.rejectProposal = async (projectId) => {
-  await Project.update({
-    state: states.ProjectState.ProposalRejected
-  }, {where: {id: projectId}});
+    await Project.update({
+        state: states.ProjectState.ProposalRejected
+    }, {where: {id: projectId}});
 };
 
 //-----------------------------------------------------------
@@ -296,10 +287,10 @@ exports.rejectProposal = async (projectId) => {
  */
 exports.projectSetConsultant = async (projectId, consultantId) => {
 
-  await Project.update({
-    consultantId,
-    state: states.ProjectState.ProposalAccepted
-  }, {where: {id: projectId}});
+    await Project.update({
+        consultantId,
+        state: states.ProjectState.ProposalAccepted
+    }, {where: {id: projectId}});
 };
 
 
@@ -317,9 +308,9 @@ exports.projectSetConsultant = async (projectId, consultantId) => {
  */
 exports.projectStart = async (projectId) => {
 
-  await Project.update({
-    state: states.ProjectState.TeamAssignmentPending
-  }, {where: {id: projectId}});
+    await Project.update({
+        state: states.ProjectState.ProjectInProgress
+    }, {where: {id: projectId}});
 
 };
 
@@ -335,7 +326,7 @@ exports.projectStart = async (projectId) => {
  * @throws {Error} Si ocurre un error al eliminar el proyecto.
  */
 exports.projectDestroy = async projectId => {
-  await Project.destroy({where: {id: projectId}});
+    await Project.destroy({where: {id: projectId}});
 };
 
 //-----------------------------------------------------------

@@ -1,29 +1,27 @@
 <div class="form-group">
     Developer:
 
-    <% if (milestone.assignation) { %>
+    <% if (!milestone.developerId) { %>
+        [Unassigned]
+    <% } else { %>
         <img class="attachment"
-             src="/developers/<%= milestone.assignation.developerId %>/attachment">
+             src="/developers/<%= milestone.developerId %>/attachment">
 
-        <%= milestone.assignation.developer?.name ?? "Anonymous" %>
+        <%= milestone.developer?.name ?? "Anonymous" %>
 
-        <% if (milestone.assignation.state === "WaitingDeveloperAccept") { %>
+        <% if (milestone.state === "WaitingDeveloperAccept") { %>
             [Waiting For Developer Accept]
-        <% } else if (milestone.assignation.state === "InProgress") { %>
+        <% } else if (milestone.state === "InProgress") { %>
             [In Progress]
-        <% } else if (milestone.assignation.state === "ClientValidationNeeded") { %>
+        <% } else if (milestone.state === "ClientValidationNeeded") { %>
             [Client Validation Needed]
-        <% } else if (milestone.assignation.state === "RejectedByClient") { %>
+        <% } else if (milestone.state === "RejectedByClient") { %>
             [Rejected By Client]
-        <% } else if (milestone.assignation.state === "Completed") { %>
+        <% } else if (milestone.state === "Completed") { %>
             [Completed]
         <% } else { %>
             [Unknown state]
         <% } %>
-    <% } else { %>
-        [Unassigned]
     <% } %>
 
 </div>
-
-

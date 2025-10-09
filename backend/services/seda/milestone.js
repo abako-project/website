@@ -3,7 +3,7 @@ const json = require("./json");
 
 const {
   models: {Developer, User, Attachment, Project,  Milestone, Role, Proficiency,
-    Skill, DeliveryTime, Assignation}
+    Skill, DeliveryTime}
 } = require('../../models');
 
 const sequelize = require("../../models");
@@ -24,24 +24,21 @@ const states = require("../../core/state");
  */
 exports.milestone = async milestoneId => {
 
-  const milestone = await Milestone.findByPk(milestoneId, {
-    include: [
-      {model: Project, as: 'project'},
-      {model: Role, as: 'role'},
-      {model: Proficiency, as: "proficiency"},
-      {model: DeliveryTime, as: "deliveryTime"},
-      {model: Skill, as: "skills"},
-      {
-        model: Assignation, as: 'assignation',
-        include: [{
-          model: Developer, as: 'developer',
-          include: [
-            {model: User, as: "user"},
-            {model: Attachment, as: "attachment"}]
-        }]
-      }
-      ],
-  });
+    const milestone = await Milestone.findByPk(milestoneId, {
+        include: [
+            {model: Project, as: 'project'},
+            {model: Role, as: 'role'},
+            {model: Proficiency, as: "proficiency"},
+            {model: DeliveryTime, as: "deliveryTime"},
+            {model: Skill, as: "skills"},
+            {
+                model: Developer, as: 'developer',
+                include: [
+                    {model: User, as: "user"},
+                    {model: Attachment, as: "attachment"}]
+            }
+        ],
+    });
 
   if (milestone) {
     return json.milestoneJson(milestone);
@@ -184,7 +181,6 @@ exports.milestoneDestroy = async milestoneId => {
 
 /**
  * Asigna un desarrollador a un milestgone, eliminando cualquier asignación previa.
- * Si `developerId` es null o undefined, solo se elimina la asignación actual.
  *
  * @async
  * @function milestoneSetDeveloper
@@ -194,18 +190,25 @@ exports.milestoneDestroy = async milestoneId => {
  */
 exports.milestoneSetDeveloper = async (milestoneId, developerId) => {
 
-  // Borrar asignacion actual:
-  await Assignation.destroy({where: {milestoneId}});
+    try {
+        let milestone = await Milestone.findByPk(milestoneId);
 
-  if (developerId) {
-    // Crear nueva asignacion:
-    const newAssignation = await Assignation.create({
-      developerId,
-      state: states.MilestoneState.WaitingDeveloperAccept,
-      comment: "",
-      milestoneId
-    });
-  }
+        if (developerId) {
+            // Crear nueva asignacion:
+            milestone = await milestone.update({
+                developerId,
+                state: states.MilestoneState.WaitingDeveloperAccept
+            });
+        } else {
+            // Borrar asignacion actual:
+            milestone = await milestone.update({
+                developerId: null,
+                state: states.MilestoneState.DeveloperPending
+            });
+        }
+    } catch (error) {
+        throw error;
+    }
 };
 
 //-----------------------------------------------------------
@@ -213,13 +216,9 @@ exports.milestoneSetDeveloper = async (milestoneId, developerId) => {
 exports.milestoneDeveloperAccept = async (milestoneId) => {
 
     try {
-        const milestone = await Milestone.findByPk(milestoneId, {
-            include: [
-                {model: Assignation, as: "assignation"},
-            ]
-        });
+        const milestone = await Milestone.findByPk(milestoneId);
 
-        await milestone?.assignation?.update({state: states.MilestoneState.InProgress});
+        await milestone?.update({state: states.MilestoneState.InProgress});
 
     } catch (error) {
         throw error;
@@ -231,8 +230,13 @@ exports.milestoneDeveloperAccept = async (milestoneId) => {
 exports.milestoneDeveloperReject = async (milestoneId) => {
 
     try {
+        let milestone = await Milestone.findByPk(milestoneId);
+
         // Borrar asignacion actual:
-        await Assignation.destroy({where: {milestoneId}});
+        milestone = await milestone.update({
+            developerId: null,
+            state: states.MilestoneState.DeveloperPending
+        });
 
     } catch (error) {
         throw error;

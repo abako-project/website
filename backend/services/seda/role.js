@@ -3,7 +3,7 @@
 const json = require("./json");
 
 const {
-  models: {Role, Comment, Assignation}
+  models: {Role, Comment}
 } = require('../../models');
 
 

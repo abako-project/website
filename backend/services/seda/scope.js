@@ -41,7 +41,7 @@ exports.scopeSubmit = async (projectId, consultantComment) => {
 
 /**
  * Acepta el scope del proyecto por parte del cliente.
- * Cambia el estado del proyecto a `TeamAssignmentPending` y actualiza
+ * Cambia el estado del proyecto a `EscrowFundingNeeded` y actualiza
  * el último comentario con la respuesta del cliente.
  *
  * @async

@@ -33,7 +33,7 @@
 
                 <li class="user" id="developer">
                     <% if (developer && project.milestones.some(m =>
-                            m.assignation.developerId === developer.id)) { %>
+                            m.developerId === developer.id)) { %>
                         <img class="attachment"
                              src="/developers/<%= developer.id %>/attachment"
                         />

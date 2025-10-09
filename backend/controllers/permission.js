@@ -182,7 +182,7 @@ exports.userTypesRequired = ({
 
       const milestoneId = req.params.milestoneId;
       const milestone = await seda.milestone(milestoneId);
-      const milestoneDeveloperId = milestone?.assignation?.developerId;
+      const milestoneDeveloperId = milestone?.developerId;
 
       const developerLoggedIsMilestoneDeveloper = milestoneDeveloperId === req.session.loginUser?.developerId;
 

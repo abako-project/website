@@ -1,0 +1,17 @@
+
+<%
+ // Pagina con el formulario para que un consultor envie (submit) un milestone
+ // para que lo revise el cliente.
+%>
+
+<% if (locals.loginUser && locals.loginUser.developerId === project.consultantId) { %>
+
+    <% if (milestone.state === "InProgress") { %>
+
+        <a class="projectFlow btn btn_primary btn_href"
+           href="/projects/<%= project.id %>/milestones/<%= milestone.id %>/submitMilestone">
+            Submit for Review
+        </a>
+
+    <% } %>
+<% } %>

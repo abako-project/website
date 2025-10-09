@@ -26,8 +26,6 @@ const Milestone = require('./milestone')(sequelize);
 
 const Comment = require('./comment')(sequelize);
 
-const Assignation = require('./assignation')(sequelize);
-
 
 User.hasOne(Client, {as: 'client', foreignKey: 'userId'});
 Client.belongsTo(User, {as: 'user', foreignKey: 'userId'});
@@ -123,13 +121,9 @@ Project.belongsTo(ProjectType, {as: 'projectType', foreignKey: 'projectTypeId'})
 Project.hasMany(Comment, {as: 'comments', foreignKey: 'projectId'});
 Comment.belongsTo(Project, {as: 'project', foreignKey: 'projectId'});
 
-// Relation 1-to-1 between Assignation and Milestone
-Milestone.hasOne(Assignation, {as: 'assignation', foreignKey: 'milestoneId'});
-Assignation.belongsTo(Milestone, {as: 'milestone', foreignKey: 'milestoneId'});
-
-// Relation 1-to-N between Developer and Assignation
-Developer.hasMany(Assignation, {as: 'assignations', foreignKey: 'developerId'});
-Assignation.belongsTo(Developer, {as: 'developer', foreignKey: 'developerId'});
+// Relation 1-to-N between Developer and Milestone
+Developer.hasMany(Milestone, {as: 'milestones', foreignKey: 'developerId'});
+Milestone.belongsTo(Developer, {as: 'developer', foreignKey: 'developerId'});
 
 
 module.exports = sequelize;

@@ -280,7 +280,7 @@ exports.scopeSubmit = async (req, res, next) => {
 
 // El cliente acepta el scope (milestones):
 // Estamos en el estado ScopeValidationNeeded y
-// pasamos al estado TeamAssignmentPending.
+// pasamos al estado EscrowFundingNeeded.
 exports.scopeAccept = async (req, res, next) => {
 
   const projectId = req.params.projectId;
