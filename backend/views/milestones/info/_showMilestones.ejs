@@ -5,10 +5,6 @@
     <ul class="milestones__content">
         <% for (const milestone of project.milestones) { %>
 
-<<<<<<< Updated upstream
-            <li>
-                <%- include("./_showMilestone", {milestone}) %>
-=======
             <li class="milestoneWrapper">
                 <span class="milestoneWrapper__progress">
                     <span class="dot"></span>
@@ -17,16 +13,15 @@
                 <span class="milestoneWrapper__milestone milestone">
 
                     <%- include("./_showMilestone", {project, milestone}) %>
-                    
-                    
+
+
                     <div class="milestone__actions">
                         <%- include("../actions/info/_all", {project, milestone}) %>
                     </div>
-                    
-                    
+
+
                     <hr style="clear: both;" />
                 </span>
->>>>>>> Stashed changes
             </li>
 
         <% } %>

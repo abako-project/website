@@ -14,11 +14,8 @@
     </div>
 
     <div>
-        <span id="creationDate"></span>
+        <%= new Date(project.createdAt - browserTimezoneOffset + serverTimezoneOffset).toLocaleString() %>
     </div>
-    <script type="module">
-      document.getElementById("creationDate").innerHTML = new Date(<%= project.createdAt.valueOf() %>).toLocaleString();
-    </script>
 
     <div>
         <%= project.client.website %>

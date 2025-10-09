@@ -6,18 +6,29 @@ if (locals.loginUser.clientId === project.clientId) {
     if (!project.state) {
         actions.push({
             title: "Review",
-            callback: "redirectProjectEdit(" + project.id + ")",
+            callback: "/projects/" + project.id + "/edit",
         });
         actions.push({
             title: "Submit Project",
-            callback: "redirectProjectSubmit(" + project.id + ")",
+            callback: "/projects/" + project.id + "/proposal_submit?_method=PUT",
         });
     }
 
-    if (project.state && ["rejected"].includes(project.state)) {
+    if (project.state && ["ProposalRejected"].includes(project.state)) {
         actions.push({
             title: "Review",
-            callback: "redirectProjectEdit(" + project.id + ")",
+            callback: "/projects/" + project.id + "/edit",
+        });
+        actions.push({
+            title: "Submit Project",
+            callback: "/projects/" + project.id + "/proposal_submit?_method=PUT",
+        });
+    }
+
+    if (project.state && ["EscrowFundingNeeded"].includes(project.state)) {
+        actions.push({
+            title: "Lock the Funds and Start the Project",
+            callback: "/projects/" + project.id + "/start",
         });
     }
 }

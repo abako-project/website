@@ -2,10 +2,13 @@
 const json = require("./json");
 
 const {
-  models: {Developer, User, Attachment, Project,  Milestone, Role, DeliveryTime, Assignation}
+  models: {Developer, User, Attachment, Project,  Milestone, Role, Proficiency,
+    Skill, DeliveryTime, Assignation}
 } = require('../../models');
 
 const sequelize = require("../../models");
+
+const states = require("../../core/state");
 
 //-----------------------------------------------------------
 
@@ -24,8 +27,10 @@ exports.milestone = async milestoneId => {
   const milestone = await Milestone.findByPk(milestoneId, {
     include: [
       {model: Project, as: 'project'},
-      // {model: Role, as: 'role'},
+      {model: Role, as: 'role'},
+      {model: Proficiency, as: "proficiency"},
       {model: DeliveryTime, as: "deliveryTime"},
+      {model: Skill, as: "skills"},
       {
         model: Assignation, as: 'assignation',
         include: [{
@@ -59,13 +64,25 @@ exports.milestone = async milestoneId => {
  * @param {number} data.budget - Presupuesto asignado.
  * @param {number} data.deliveryTimeId - Id de la hora de entrega estimado.
  * @param {string} data.deliveryDate - Fecha estimada de entrega.
+ * @param {number} [data.roleId]
+ * @param {number} [data.proficiencyId]
+ * @param {number[]} [data.skillIds]
+ * @param {boolean} [data.neededFullTimeDeveloper]
+ * @param {boolean} [data.neededPartTimeDeveloper]
+ * @param {boolean} [data.neededHourlyDeveloper]
  * @returns {Promise<Object>} Objeto JSON del milestone creado.
  */
-exports.milestoneCreate = async (projectId, {title, description, budget, deliveryTimeId, deliveryDate}) => {
+exports.milestoneCreate = async (projectId, {title, description, budget, deliveryTimeId, deliveryDate,
+  roleId, proficiencyId, skillIds,
+  neededFullTimeDeveloper, neededPartTimeDeveloper, neededHourlyDeveloper}) => {
 
-  const milestone = await Milestone.create({
-    title, description, budget, deliveryTimeId, deliveryDate, projectId
+  let milestone = await Milestone.create({
+    title, description, budget, deliveryTimeId, deliveryDate, projectId, roleId, proficiencyId,
+    neededFullTimeDeveloper, neededPartTimeDeveloper, neededHourlyDeveloper
   });
+
+  await milestone.setSkills(skillIds);
+
 
   return json.milestoneJson(milestone);
 };
@@ -84,15 +101,25 @@ exports.milestoneCreate = async (projectId, {title, description, budget, deliver
  * @param {number} data.budget
  * @param {number} data.deliveryTimeId - Id de la hora de entrega estimado.
  * @param {string} data.deliveryDate
+ * @param {number} [data.roleId]
+ * @param {number} [data.proficiencyId]
+ * @param {number[]} [data.skillIds]
+ * @param {boolean} [data.neededFullTimeDeveloper]
+ * @param {boolean} [data.neededPartTimeDeveloper]
+ * @param {boolean} [data.neededHourlyDeveloper]
  * @returns {Promise<Object>} Objeto JSON con los datos actualizados.
  */
-exports.milestoneUpdate = async (milestoneId, {title, description, budget, deliveryTimeId, deliveryDate}) => {
+exports.milestoneUpdate = async (milestoneId, {title, description, budget, deliveryTimeId, deliveryDate,
+  roleId, proficiencyId, skillIds, neededFullTimeDeveloper, neededPartTimeDeveloper, neededHourlyDeveloper}) => {
 
   let milestone = await Milestone.findByPk(milestoneId);
 
   milestone = await milestone.update({
-    title, description, budget, deliveryTimeId, deliveryDate
+    title, description, budget, deliveryTimeId, deliveryDate, roleId, proficiencyId,
+    neededFullTimeDeveloper, neededPartTimeDeveloper, neededHourlyDeveloper
   });
+
+  await milestone.setSkills(skillIds);
 
   return json.milestoneJson(milestone);
 };
@@ -174,11 +201,42 @@ exports.milestoneSetDeveloper = async (milestoneId, developerId) => {
     // Crear nueva asignacion:
     const newAssignation = await Assignation.create({
       developerId,
-      state: "Pending",
+      state: states.MilestoneState.WaitingDeveloperAccept,
       comment: "",
       milestoneId
     });
   }
+};
+
+//-----------------------------------------------------------
+
+exports.milestoneDeveloperAccept = async (milestoneId) => {
+
+    try {
+        const milestone = await Milestone.findByPk(milestoneId, {
+            include: [
+                {model: Assignation, as: "assignation"},
+            ]
+        });
+
+        await milestone?.assignation?.update({state: states.MilestoneState.InProgress});
+
+    } catch (error) {
+        throw error;
+    }
+};
+
+//-----------------------------------------------------------
+
+exports.milestoneDeveloperReject = async (milestoneId) => {
+
+    try {
+        // Borrar asignacion actual:
+        await Assignation.destroy({where: {milestoneId}});
+
+    } catch (error) {
+        throw error;
+    }
 };
 
 //-----------------------------------------------------------

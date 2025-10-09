@@ -8,7 +8,7 @@ module.exports = (sequelize) => {
 
   ProjectType.init({
     description: {
-      type: DataTypes.TEXT
+      type: DataTypes.STRING
     }
   }, {
     sequelize,

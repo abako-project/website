@@ -46,3 +46,65 @@
            placeholder="Delivery Date" autocomplete="off">
 </div>
 
+<div class="form-group">
+    <label for="role">Role:</label>
+    <select id="role" name="roleId">
+        <option value="">None</option>
+        <% for (const role of allRoles) { %>
+            <option value="<%= role.id %>"
+                    <%= milestone.roleId === role.id && "selected" %> >
+                <%= role.name %> %>
+            </option>
+        <% } %>
+    </select>
+</div>
+
+<div class="form-group">
+    <label for="proficiency">Proficiency:</label>
+    <select id="proficiency" name="proficiencyId">
+        <option value="">None</option>
+        <% for (const proficiency of allProficiencies) { %>
+            <option value="<%= proficiency.id %>"
+                    <%= milestone.proficiencyId === proficiency.id && "selected" %> >
+                <%= proficiency.description %>
+            </option>
+        <% } %>
+    </select>
+</div>
+
+
+<div class="card">
+    <div class="card-title">Skills</div>
+
+    <% for (let skill of allSkills) { %>
+        <input type="checkbox"
+               name="<%= `skills[]` %>"
+               value="<%= skill.id %>"
+                <%= (milestone.skills || []).map(s => s.id).includes(skill.id) && "checked" %>
+        />
+        <b><%= skill.name %></b>
+        <br />
+    <% } %>
+</div>
+
+
+<div class="card">
+    <div class="card-title">Availability</div>
+    <select id="availability" name="availability">
+        <option value="fulltime" <%= milestone.neededFullTimeDeveloper && "selected" %> >
+            Full Time
+        </option>
+        <option value="parttime" <%= milestone.neededPartTimeDeveloper && "selected" %> >
+            Part Time
+        </option>
+        <option value="hourly" <%= milestone.neededHourlyDeveloper && "selected" %> >
+            Hours per Week
+        </option>
+    </select>
+</div>
+
+
+
+
+
+

@@ -83,19 +83,23 @@ app.use(partials());
 app.use(flash());
 
 // Dynamic Helper:
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
 
-    // To use req.user in the views
-    res.locals.loginUser = req.session.loginUser && {
-        id: req.session.loginUser.id,
-        email: req.session.loginUser.email,
-        name: req.session.loginUser.name,
-        isAdmin: !!req.session.loginUser.isAdmin,
-        developerId: req.session.loginUser.developerId,
-        clientId: req.session.loginUser.clientId,
-    };
+  // To use req.user in the views
+  res.locals.loginUser = req.session.loginUser && {
+    id: req.session.loginUser.id,
+    email: req.session.loginUser.email,
+    name: req.session.loginUser.name,
+    isAdmin: !!req.session.loginUser.isAdmin,
+    developerId: req.session.loginUser.developerId,
+    clientId: req.session.loginUser.clientId,
+  };
 
-    next();
+  // Navigator and Server timezones offsets
+  res.locals.browserTimezoneOffset = req.session.browserTimezoneOffset ?? 0;
+  res.locals.serverTimezoneOffset = req.session.serverTimezoneOffset ?? 0;
+
+  next();
 });
 
 app.use('/auth', authRouter);

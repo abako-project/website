@@ -1,10 +1,9 @@
-const {Sequelize, Op} = require("sequelize");
 
 const json = require("./json");
 
 const {
   models: {
-    Developer, User, Attachment, Language, Skill, Role
+    Developer, User, Attachment, Language, Skill, Role, Proficiency
   }
 } = require('../../models');
 
@@ -26,6 +25,7 @@ exports.developerIndex = async () => {
       {model: Attachment, as: "attachment"},
       {model: Language, as: "languages"},
       {model: Role, as: "role"},
+      {model: Proficiency, as: "proficiency"},
       {model: Skill, as: "skills"},
     ]
   });
@@ -52,6 +52,8 @@ exports.developer = async developerId => {
       {model: User, as: "user"},
       {model: Attachment, as: "attachment"},
       {model: Language, as: "languages"},
+      {model: Role, as: "role"},
+      {model: Proficiency, as: "proficiency"},
       {model: Skill, as: "skills"},
     ]
   });
@@ -109,11 +111,15 @@ exports.developerCreate = async (email, name, address) => {
  * @param {string} [data.bio]
  * @param {string} [data.background]
  * @param {number} [data.roleId]
- * @param {string} [data.experienceLevel]
+ * @param {number} [data.proficiencyId]
  * @param {string} [data.githubUsername]
  * @param {string} [data.portfolioUrl]
  * @param {string} [data.location]
- * @param {string} [data.availability]
+ * @param {boolean} [data.isAvailableForHire]
+ * @param {boolean} [data.isAvailableFullTime]
+ * @param {boolean} [data.isAvailablePartTime]
+ * @param {boolean} [data.isAvailableHourly]
+ * @param {number} [data.availableHoursPerWeek]
  * @param {number[]} [data.languageIds]
  * @param {number[]} [data.skillIds]
  * @param {string} [data.mime] - Tipo MIME del nuevo adjunto.
@@ -121,14 +127,16 @@ exports.developerCreate = async (email, name, address) => {
  * @returns {Promise<Object>} Objeto JSON con los datos actualizados del desarrollador.
  */
 exports.developerUpdate = async (developerId, {
-  name, bio, background, roleId, experienceLevel, githubUsername, portfolioUrl, location, availability,
+  name, bio, background, roleId, proficiencyId, githubUsername, portfolioUrl, location,
   languageIds, skillIds,
+  isAvailableForHire, isAvailableFullTime, isAvailablePartTime, isAvailableHourly, availableHoursPerWeek,
   mime, image
 }) => {
 
   await Developer.update({
       developerId,
-      name, bio, background, roleId, experienceLevel, githubUsername, portfolioUrl, location, availability
+      name, bio, background, roleId, proficiencyId, githubUsername, portfolioUrl, location,
+      isAvailableForHire, isAvailableFullTime, isAvailablePartTime, isAvailableHourly, availableHoursPerWeek
     }, {
       where: {
         id: developerId

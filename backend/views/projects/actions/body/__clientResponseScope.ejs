@@ -1,7 +1,7 @@
 
 <% if (locals.loginUser && locals.loginUser.clientId === project.clientId) { %>
 
-    <% if (project.state && ["validationNeeded"].includes(project.state)) { %>
+    <% if (project.state && ["ScopeValidationNeeded"].includes(project.state)) { %>
 
         <div style="display: flex;   justify-content: flex-end;">
             <div style="padding: 5px; margin: 10px; width: 50%;  border: 5px dotted seagreen;">

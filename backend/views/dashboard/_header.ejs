@@ -8,37 +8,31 @@
 <div class="contenedor appHeader appHeader--dashboard">
   <h1 class="appHeader__title">Dashboard</h1>
 
-  <div class="appHeader__right">
+    <div class="appHeader__right">
     <small class="btn btn__link">
-      <span> Learn more about projects </span>
-      <i class="ri-arrow-right-line"></i>
-    </small>
-    <% if (locals.loginUser.clientId) { %>
-    <button
-      class="projectFlow btn btn_primary"
-      onclick="redirectProjectNew(); return false;"
-    >
-      <i class="ri-add-line"></i>
-      <span>New Project</span>
-    </button>
-    <% } %>
-  </div>
+            <span> Learn more about projects </span>
+            <i class="ri-arrow-right-line"></i>
+        </small>
+        <% if (locals.loginUser.clientId) { %>
+            <a class="projectFlow btn btn_primary btn_href"
+               href="/projects/new">
+                <i class="ri-add-line"></i>
+                <span>New Project</span>
+            </a>
+        <% } %>
+    </div>
 
   <% if (locals.loginUser.developerId) { %>
-  <div class="appHeader__tabs">
-    <button
-      class="tab"
-      onclick="redirectDeveloperProjects(<%= locals.loginUser.developerId %>); return false;"
-    >
-      Projects
-    </button>
+        <div class="appHeader__tabs">
+            <a class="tab btn btn_primary btn_href"
+               href="/developers/<%= locals.loginUser.developerId %>/projects">
+                Projects
+            </a>
 
-    <button
-      class="tab"
-      onclick="redirectDeveloperMilestones(<%= locals.loginUser.developerId %>); return false;"
-    >
-      Milestones
-    </button>
-  </div>
+            <a class="tab btn btn_primary btn_href"
+               href="/developers/<%= locals.loginUser.developerId %>/milestones">
+                Milestones
+            </a>
+        </div>
   <% } %>
 </div>

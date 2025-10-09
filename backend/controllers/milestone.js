@@ -1,6 +1,7 @@
 
 const seda = require("../services/seda");
 
+const states = require("../core/state");
 
 
 // Listar todos los milestones o los de un cliente o los de un developer
@@ -51,20 +52,21 @@ exports.new = async (req, res, next) => {
     title: "",
     description: "",
     budget: "",
-    deliveryDate: Date.now() + 60 * 60 * 1000
+    deliveryDate: Date.now()
   };
 
-  // Timezone offset del cliente
-  let browserTimezoneOffset = Number(req.query.browserTimezoneOffset ?? 0);
-  browserTimezoneOffset = Number.isNaN(browserTimezoneOffset) ? 0 : browserTimezoneOffset;
-
   const allDeliveryTimes = await seda.deliveryTimeIndex();
+  const allRoles = await seda.roleIndex();
+  const allProficiencies = await seda.proficiencyIndex();
+  const allSkills = await seda.skillIndex();
 
   res.render('milestones/newMilestone', {
     milestone,
     project,
     allDeliveryTimes,
-    browserTimezoneOffset,
+    allRoles,
+    allProficiencies,
+    allSkills,
   });
 };
 
@@ -76,21 +78,27 @@ exports.create = async (req, res, next) => {
   const projectId = req.params.projectId;
   const project = await seda.project(projectId);
 
-  let {title, description, budget, deliveryTimeId, deliveryDate} = req.body;
+  let {title, description, budget, deliveryTimeId, deliveryDate,
+    roleId, proficiencyId, skills, availability} = req.body;
 
-  let {browserTimezoneOffset} = req.query;
-  browserTimezoneOffset = Number(browserTimezoneOffset);
+  deliveryDate = new Date(deliveryDate).valueOf() + req.session.browserTimezoneOffset - req.session.serverTimezoneOffset;
 
-  const serverTimezoneOffset = new Date().getTimezoneOffset() * 60 * 1000;
-
-  deliveryDate = new Date(deliveryDate).valueOf() + browserTimezoneOffset - serverTimezoneOffset;
+  roleId ||= null;
+  proficiencyId ||= null;
+  let skillIds = (skills ?? []).map(str => +str);
 
   let milestone = {
     title,
     description,
     budget,
     deliveryTimeId,
-    deliveryDate
+    deliveryDate,
+    roleId,
+    proficiencyId,
+    skillIds,
+    neededFullTimeDeveloper: availability === "fulltime",
+    neededPartTimeDeveloper: availability === "parttime",
+    neededHourlyDeveloper: availability === "hourly"
   };
 
   try {
@@ -104,12 +112,17 @@ exports.create = async (req, res, next) => {
       error.errors.forEach(({message}) => req.flash('error', message));
 
       const allDeliveryTimes = await seda.deliveryTimeIndex();
+      const allRoles = await seda.roleIndex();
+      const allProficiencies = await seda.proficiencyIndex();
+      const allSkills = await seda.skillIndex();
 
       res.render('milestones/newMilestone', {
         milestone,
         project,
         allDeliveryTimes,
-        browserTimezoneOffset,
+        allRoles,
+        allProficiencies,
+        allSkills,
       });
     } else {
       next(error);
@@ -127,17 +140,18 @@ exports.edit = async (req, res) => {
   const milestoneId = req.params.milestoneId;
   const milestone = await seda.milestone(milestoneId);
 
-  // Timezone offset del cliente
-  let browserTimezoneOffset = Number(req.query.browserTimezoneOffset ?? 0);
-  browserTimezoneOffset = Number.isNaN(browserTimezoneOffset) ? 0 : browserTimezoneOffset;
-
   const allDeliveryTimes = await seda.deliveryTimeIndex();
+  const allRoles = await seda.roleIndex();
+  const allProficiencies = await seda.proficiencyIndex();
+  const allSkills = await seda.skillIndex();
 
   res.render('milestones/editMilestone', {
     project,
     milestone,
     allDeliveryTimes,
-    browserTimezoneOffset,
+    allRoles,
+    allProficiencies,
+    allSkills,
   });
 };
 
@@ -153,17 +167,17 @@ exports.update = async (req, res) => {
   const milestoneId = req.params.milestoneId;
   const milestone = await seda.milestone(milestoneId);
 
-  let {browserTimezoneOffset} = req.query;
-  browserTimezoneOffset = Number(browserTimezoneOffset);
-
-  const serverTimezoneOffset = new Date().getTimezoneOffset() * 60 * 1000;
-
   milestone.title = body.title;
   milestone.description = body.description;
   milestone.budget = body.budget;
   milestone.deliveryTimeId = body.deliveryTimeId;
-  milestone.deliveryDate = new Date(body.deliveryDate).valueOf() + browserTimezoneOffset - serverTimezoneOffset;
-
+  milestone.deliveryDate = new Date(body.deliveryDate).valueOf() + req.session.browserTimezoneOffset - req.session.serverTimezoneOffset;
+  milestone.roleId = body.roleId || null;
+  milestone.proficiencyId = body.proficiencyId || null;
+  milestone.skillIds = (body.skills ?? []).map(str => +str);
+  milestone.neededFullTimeDeveloper = body.availability === "fulltime";
+    milestone.neededPartTimeDeveloper = body.availability === "parttime";
+    milestone.neededHourlyDeveloper = body.availability === "hourly";
   try {
     await seda.milestoneUpdate(milestone.id, milestone);
 
@@ -176,12 +190,17 @@ exports.update = async (req, res) => {
       error.errors.forEach(({message}) => req.flash('error', message));
 
       const allDeliveryTimes = await seda.deliveryTimeIndex();
+      const allRoles = await seda.roleIndex();
+      const allProficiencies = await seda.proficiencyIndex();
+      const allSkills = await seda.skillIndex();
 
       res.render('milestones/editMilestone', {
         project,
         milestone,
         allDeliveryTimes,
-        browserTimezoneOffset,
+        allRoles,
+        allProficiencies,
+        allSkills,
       });
     } else {
       next(error);
@@ -266,3 +285,91 @@ exports.setDeveloper = async (req, res, next) => {
   }
 }
 
+
+// El developer acepta un milestone
+exports.developerAcceptMilestone = async (req, res, next) => {
+
+  const {body} = req;
+
+  const projectId = req.params.projectId;
+  const milestoneId = req.params.milestoneId;
+
+  try {
+    await seda.milestoneDeveloperAccept(milestoneId) ;
+
+    console.log('Milestone state updateded successfully.');
+
+    res.redirect('/projects/' + projectId);
+
+  } catch (error) {
+    next(error);
+  }
+};
+
+
+
+// El developer rechaza un milestone
+exports.developerRejectMilestone = async (req, res, next) => {
+
+    const {body} = req;
+
+    const projectId = req.params.projectId;
+    const milestoneId = req.params.milestoneId;
+
+    try {
+        await seda.milestoneDeveloperReject(milestoneId) ;
+
+        console.log('Milestone state updateded successfully.');
+
+        res.redirect('/projects/' + projectId);
+
+    } catch (error) {
+        next(error);
+    }
+};
+
+// Devuelve la pagina para que un developer acepte o rechace un milestone
+exports.acceptOrRejectMilestonePage = async (req, res, next) => {
+
+    try {
+        const projectId = req.params.projectId;
+        const project = await seda.project(projectId);
+
+        const milestoneId = req.params.milestoneId;
+        const milestone = await seda.milestone(milestoneId);
+
+        res.render('milestones/acceptOrRejectMilestone', {
+            project,
+            milestone
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+// Actualiza el estadop del ,milestone a aceptado o rechazado
+exports.acceptOrRejectMilestoneUpdate = async (req, res, next) => {
+
+    try {
+
+        let {comment, accept} = req.body;
+
+        console.log("************ accept =", accept);
+
+        const projectId = req.params.projectId;
+        const milestoneId = req.params.milestoneId;
+
+        if (accept === "accept") {
+            await seda.milestoneDeveloperAccept(milestoneId, comment) ;
+        } else if (accept === "reject") {
+            await seda.milestoneDeveloperReject(milestoneId, comment) ;
+        } else {
+            req.flash("error", "El developer solo puede aceptar o rechazar los milestones que le han asignado");
+        }
+
+        res.redirect('/projects/' + projectId);
+
+    } catch (error) {
+        next(error);
+    }
+};

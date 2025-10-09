@@ -1,36 +1,29 @@
-
-
 <div class="form-group">
     Developer:
 
     <% if (milestone.assignation) { %>
+        <img class="attachment"
+             src="/developers/<%= milestone.assignation.developerId %>/attachment">
 
-        <% if (milestone.assignation.state !== 'None') { %>
-            <img class="attachment"
-                 src="/developers/<%= milestone.assignation.developerId %>/attachment">
-            <%= milestone.assignation.developer?.name ?? "Anonymous" %>
-            <% if (milestone.assignation.state === "Pending") { %>
-                [Pending]
-            <% } else if (milestone.assignation.state === "Accepted") { %>
-                [Accepted]
-            <% } else if (milestone.assignation.state === "Rejected") { %>
-                [Rejected]
-            <% } else { %>
-                [Unknown state]
-            <% } %>
+        <%= milestone.assignation.developer?.name ?? "Anonymous" %>
+
+        <% if (milestone.assignation.state === "WaitingDeveloperAccept") { %>
+            [Waiting For Developer Accept]
+        <% } else if (milestone.assignation.state === "InProgress") { %>
+            [In Progress]
+        <% } else if (milestone.assignation.state === "ClientValidationNeeded") { %>
+            [Client Validation Needed]
+        <% } else if (milestone.assignation.state === "RejectedByClient") { %>
+            [Rejected By Client]
+        <% } else if (milestone.assignation.state === "Completed") { %>
+            [Completed]
         <% } else { %>
-                [Unassigned]
+            [Unknown state]
         <% } %>
-
     <% } else { %>
         [Unassigned]
     <% } %>
 
 </div>
 
-<% if (locals.loginUser && locals.loginUser.isAdmin) { %>
-    <button class="adminDAO"
-            onclick="redirectSelectMilestoneDeveloper(<%= project.id %>, <%= milestone.id %>); return false;">
-        Select/Change Milestone Developer
-    </button>
-<% } %>
+

@@ -1,0 +1,45 @@
+<% const client = c; %>
+
+<section class="milestones">
+
+    <% for (let project of projects) { %>
+
+        <h1> Proyecto <%= project.title %> </h1>
+
+        <div style="border: solid white 2px; margin: 15px 5px; padding: 5px;  background-color: darkslategrey;">
+            <% let developerPendingMilestones = project.milestones.filter(milestone => (milestone.assignation?.state === "InProgress")); %>
+            <h3> Scheduled Milestones (<%= developerPendingMilestones.length %>) </h3>
+            <% for (let milestone of developerPendingMilestones) { %>
+                <%- include("./__milestoneGridItem", {milestone}) %>
+            <% } %>
+        </div>
+
+        <div style="border: solid white 2px; margin: 15px 5px; padding: 5px;  background-color: darkslategrey;">
+            <% let clientValidationNeededMilestones = project.milestones.filter(milestone => (milestone.assignation?.state === "ClientValidationNeeded")); %>
+            <h3> In Client Review (<%= clientValidationNeededMilestones.length %>) </h3>
+            <% for (let milestone of clientValidationNeededMilestones) { %>
+                <%- include("./__milestoneGridItem", {milestone}) %>
+            <% } %>
+        </div>
+
+
+        <div style="border: solid white 2px; margin: 15px 5px; padding: 5px;  background-color: darkslategrey;">
+            <% let rejectedByClientMilestones = project.milestones.filter(milestone => (milestone.assignation?.state === "RejectedByClient")); %>
+            <h3> Rejected (<%= rejectedByClientMilestones.length %>) </h3>
+            <% for (let milestone of rejectedByClientMilestones) { %>
+                <%- include("./__milestoneGridItem", {milestone}) %>
+            <% } %>
+        </div>
+
+
+        <div style="border: solid white 2px; margin: 15px 5px; padding: 5px;  background-color: darkslategrey;">
+            <% let completedMilestones = project.milestones.filter(milestone => (milestone.assignation?.state === "Completed")); %>
+            <h3> Completed (<%= completedMilestones.length %>) </h3>
+            <% for (let milestone of completedMilestones) { %>
+                <%- include("./__milestoneGridItem", {milestone}) %>
+            <% } %>
+        </div>
+
+    <% } %>
+</section>
+

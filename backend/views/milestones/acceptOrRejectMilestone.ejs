@@ -1,0 +1,62 @@
+
+
+<%- include('../components/_cancelTopbar', {step: 1}) %>
+
+<%- include('../projects/headers/_project', { project }) %>
+
+<div id="appTwoColumns">
+
+
+    <div class="col1">
+
+        <div class="projectContainer1col">
+            <div class="projectProposal projectProposal__summary">
+
+                <%- include("../proposals/info/_bodyProposals", {project}) %>
+
+                <%- include("../milestones/info/_showMilestone", {project, milestone}) %>
+            </div>
+
+        </div>
+    </div>
+
+
+    <div class="col2">
+
+        Pagina para aceptar o rechazar un milestone
+
+        <form id="acceptRejectForm"
+              action="/projects/<%= project.id %>/milestones/<%= milestone.id %>/acceptOrReject?_method=PUT"
+              method="POST">
+
+            <div class="form-group">
+                <label for="comment">Your Commentary:</label>
+                <input type="text" id="comment" name="comment"
+                       value=""
+                       placeholder="Comment" autocomplete="off">
+
+                <input type="hidden" id="accept" name="accept" value="">
+            </div>
+
+            <button class="right projectFlow"
+                    onclick="setAcceptValue('accept'); submitFormById('acceptRejectForm'); return false;">
+                Accept
+            </button>
+
+            <button class="right projectFlow"
+                    onclick="setAcceptValue('reject'); submitFormById('acceptRejectForm'); return false;">
+                Reject
+            </button>
+
+            <script>
+                function setAcceptValue(value) {
+                    document.getElementById("accept").value = value;
+                }
+            </script>
+
+            <div class="clear"></div>
+
+        </form>
+    </div>
+</div>
+

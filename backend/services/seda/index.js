@@ -22,6 +22,7 @@ const sedaDeveloper = require("./developer");
 const sedaAttachment = require("./attachment");
 const sedaLanguage = require("./language");
 const sedaRole = require("./role");
+const sedaProficiency = require("./proficiency");
 const sedaBudget = require("./budget");
 const sedaDeliveryTime = require("./deliveryTime");
 const sedaProjectType = require("./projectType");
@@ -34,11 +35,13 @@ exports.project = sedaProject.project;
 exports.projectClientId = sedaProject.projectClientId;
 exports.projectConsultantId = sedaProject.projectConsultantId;
 exports.projectSetState = sedaProject.projectSetState;
-exports.projectSubmit = sedaProject.projectSubmit;
+exports.proposalSubmit = sedaProject.proposalSubmit;
 exports.projectDestroy = sedaProject.projectDestroy;
-exports.projectApprove = sedaProject.projectApprove;
-exports.projectReject = sedaProject.projectReject;
+exports.approveProposal = sedaProject.approveProposal;
+exports.rejectProposal = sedaProject.rejectProposal;
 exports.projectSetConsultant = sedaProject.projectSetConsultant;
+
+exports.projectStart = sedaProject.projectStart;
 
 exports.proposalCreate = sedaProposal.proposalCreate;
 exports.proposalUpdate = sedaProposal.proposalUpdate;
@@ -59,6 +62,8 @@ exports.milestoneUpdate = sedaMilestone.milestoneUpdate;
 exports.milestonesSwapOrder = sedaMilestone.milestoneSwapOrder;
 exports.milestoneDestroy = sedaMilestone.milestoneDestroy;
 exports.milestoneSetDeveloper = sedaMilestone.milestoneSetDeveloper;
+exports.milestoneDeveloperAccept = sedaMilestone.milestoneDeveloperAccept;
+exports.milestoneDeveloperReject = sedaMilestone.milestoneDeveloperReject;
 
 exports.scopeSubmit = sedaScope.scopeSubmit;
 exports.scopeAccept = sedaScope.scopeAccept;
@@ -96,6 +101,8 @@ exports.role = sedaRole.role;
 exports.roleCreate = sedaRole.roleCreate;
 exports.roleUpdate = sedaRole.roleUpdate;
 exports.roleDestroy = sedaRole.roleDestroy;
+
+exports.proficiencyIndex = sedaProficiency.proficiencyIndex;
 
 exports.budgetIndex = sedaBudget.budgetIndex;
 

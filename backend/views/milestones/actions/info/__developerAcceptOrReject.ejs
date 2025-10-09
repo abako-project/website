@@ -1,0 +1,14 @@
+<% if (milestone.assignation) { %>
+
+    <% if (locals.loginUser && locals.loginUser.developerId === milestone.assignation.developerId) { %>
+
+        <% if (milestone.assignation.state === "WaitingDeveloperAccept") { %>
+
+            <a class="right projectFlow btn btn_primary btn_href"
+               href="/projects/<%= project.id %>/milestones/<%= milestone.id %>/acceptOrReject">
+                Accept Or Reject
+            </a>
+
+        <% } %>
+    <% } %>
+<% } %>

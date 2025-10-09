@@ -20,6 +20,8 @@ router.get('/carlos',
   backdoorController.carlosLogin);
 router.get('/daniela',
   backdoorController.danielaLogin);
+router.get('/denisse',
+  backdoorController.denisseLogin);
 
 // Listar todos los clientes
 router.get('/clients',

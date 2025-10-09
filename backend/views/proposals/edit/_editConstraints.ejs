@@ -7,28 +7,28 @@
             <%= constraint.description %>
 
             <% if (locals.loginUser.clientId === project.clientId) { %>
-                        <button class="right button"
-                                onclick="redirectConstraintDelete(<%= project.id %>, <%= constraint.id %>); return false;">
+                        <a class="right btn btn_primary btn_href"
+                           href="/projects/<%= project.id %>/edit/<%= constraint.id %>?_method=DELETE">
                                 🗑️
-                        </button>
+                        </a>
             <% } %>
 
             <% if (+i > 0) { %>
-                        <button class="right button"
-                                onclick="redirectConstraintsSwapOrder(<%= project.id %>, <%= constraint.id %>, <%= project.constraints[+i - 1].id %>); return false;">
+                        <a class="right btn btn_primary btn_href"
+                                href="/projects/<%= project.id %>/edit/swaporder/<%= constraint.id %>/<%= project.constraints[+i - 1].id %>?_method=PUT">
                                 ▲
-                        </button>
+                        </a>
             <% } else { %>
-                <button class="right button">▲</button>
+                <button class="right btn btn_primary btn_href">▲</button>
             <% } %>
 
             <% if (+i < project.constraints.length - 1) { %>
-                        <button class="right button"
-                                onclick="redirectConstraintsSwapOrder(<%= project.id %>, <%= constraint.id %>, <%= project.constraints[+i + 1].id %>); return false;">
+                        <a class="right btn btn_primary btn_href"
+                           href="/projects/<%= project.id %>/edit/swaporder/<%= constraint.id %>/<%= project.constraints[+i + 1].id %>?_method=PUT">
                                 ▼
-                        </button>
+                        </a>
             <% } else { %>
-                <button class="right button">▼</button>
+                <a class="right btn btn_primary btn_href">▼</a>
             <% } %>
 
             <div class="clear"></div>

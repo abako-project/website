@@ -39,12 +39,8 @@ exports.newProposal = async (req, res, next) => {
       projectTypeId: undefined,
       budgetId: undefined,
       deliveryTimeId: 4,
-      deliveryDate: Date.now() + 60 * 60 * 1000
+      deliveryDate: Date.now()
     };
-
-    // Timezone offset del cliente
-    let browserTimezoneOffset = Number(req.query.browserTimezoneOffset ?? 0);
-    browserTimezoneOffset = Number.isNaN(browserTimezoneOffset) ? 0 : browserTimezoneOffset;
 
     const allBudgets = await seda.budgetIndex();
     const allDeliveryTimes = await seda.deliveryTimeIndex();
@@ -55,7 +51,6 @@ exports.newProposal = async (req, res, next) => {
       allBudgets,
       allDeliveryTimes,
       allProjectTypes,
-      browserTimezoneOffset,
     });
   } catch (error) {
     next(error);
@@ -67,12 +62,7 @@ exports.createProposal = async (req, res, next) => {
 
   let {title, summary, description, url, projectTypeId, budgetId, deliveryTimeId, deliveryDate} = req.body;
 
-  let {browserTimezoneOffset} = req.query;
-  browserTimezoneOffset = Number(browserTimezoneOffset);
-
-  const serverTimezoneOffset = new Date().getTimezoneOffset() * 60 * 1000;
-
-  deliveryDate = new Date(deliveryDate).valueOf() + browserTimezoneOffset - serverTimezoneOffset;
+  deliveryDate = new Date(deliveryDate).valueOf() + req.session.browserTimezoneOffset - req.session.serverTimezoneOffset;
 
   projectTypeId ||= undefined;
 
@@ -111,7 +101,6 @@ exports.createProposal = async (req, res, next) => {
         allBudgets,
         allDeliveryTimes,
         allProjectTypes,
-        browserTimezoneOffset,
       });
     } else {
       next(error);
@@ -132,14 +121,8 @@ exports.show = async (req, res, next) => {
 
  // } else {
 
-    // Timezone offset del cliente
-    let browserTimezoneOffset = Number(req.query.browserTimezoneOffset ?? 0);
-    browserTimezoneOffset = Number.isNaN(browserTimezoneOffset) ? 0 : browserTimezoneOffset;
-
-
     res.render('projects/showProject', {
       project,
-      browserTimezoneOffset,
     });
 //  }
 };
@@ -151,13 +134,8 @@ exports.submit = async (req, res, next) => {
   const projectId = req.params.projectId;
   const project = await seda.project(projectId);
 
-  // Timezone offset del cliente
-  let browserTimezoneOffset = Number(req.query.browserTimezoneOffset ?? 0);
-  browserTimezoneOffset = Number.isNaN(browserTimezoneOffset) ? 0 : browserTimezoneOffset;
-
   res.render('proposals/submitProposal', {
     project,
-    browserTimezoneOffset,
   });
 };
 
@@ -169,10 +147,6 @@ exports.editProposal = async (req, res, next) => {
     const projectId = req.params.projectId;
     const project = await seda.project(projectId);
 
-    // Timezone offset del cliente
-    let browserTimezoneOffset = Number(req.query.browserTimezoneOffset ?? 0);
-    browserTimezoneOffset = Number.isNaN(browserTimezoneOffset) ? 0 : browserTimezoneOffset;
-
     const allBudgets = await seda.budgetIndex();
     const allDeliveryTimes = await seda.deliveryTimeIndex();
     const allProjectTypes = await seda.projectTypeIndex();
@@ -182,7 +156,6 @@ exports.editProposal = async (req, res, next) => {
       allBudgets,
       allDeliveryTimes,
       allProjectTypes,
-      browserTimezoneOffset,
     });
   } catch (error) {
     next(error);
@@ -198,11 +171,6 @@ exports.updateProposal = async (req, res, next) => {
   const projectId = req.params.projectId;
   const project = await seda.project(projectId);
 
-  let {browserTimezoneOffset} = req.query;
-  browserTimezoneOffset = Number(browserTimezoneOffset);
-
-  const serverTimezoneOffset = new Date().getTimezoneOffset() * 60 * 1000;
-
   const proposal = {
     title: body.title,
     summary: body.summary,
@@ -211,7 +179,7 @@ exports.updateProposal = async (req, res, next) => {
     projectTypeId: body.projectTypeId || undefined,
     budgetId: body.budgetId,
     deliveryTimeId: body.deliveryTimeId,
-    deliveryDate: new Date(body.deliveryDate).valueOf() + browserTimezoneOffset - serverTimezoneOffset
+    deliveryDate: new Date(body.deliveryDate).valueOf() + req.session.browserTimezoneOffset - req.session.serverTimezoneOffset
   };
 
   try {
@@ -235,7 +203,6 @@ exports.updateProposal = async (req, res, next) => {
         allBudgets,
         allDeliveryTimes,
         allProjectTypes,
-        browserTimezoneOffset,
       });
     } else {
       next(error);
@@ -260,8 +227,8 @@ exports.destroy = async (req, res, next) => {
 };
 
 
-// Publicar el proyecto: estado = pending
-exports.projectSubmit = async (req, res, next) => {
+// Publicar la propuesta: estado = ProposalPending
+exports.proposalSubmit = async (req, res, next) => {
 
   const projectId = req.params.projectId;
 
@@ -269,9 +236,11 @@ exports.projectSubmit = async (req, res, next) => {
 
   try {
     // Save into the data base
-    await seda.projectSubmit(projectId);
+    await seda.proposalSubmit(projectId);
 
     console.log('Success: Project submitted successfully.');
+
+    req.flash("info", "Project submitted successfully. You will be notified al soon as the project gets reviewed.");
 
     if (clientId) {
       res.redirect('/clients/' + clientId + '/projects');
@@ -284,7 +253,7 @@ exports.projectSubmit = async (req, res, next) => {
 };
 
 
-// Publicar el scope: estado = validationNeeded
+// El consultor publicar el scope:
 exports.scopeSubmit = async (req, res, next) => {
 
   const projectId = req.params.projectId;
@@ -310,7 +279,7 @@ exports.scopeSubmit = async (req, res, next) => {
 
 
 // El cliente acepta el scope (milestones):
-// Estamos en el estado validationNeeded y
+// Estamos en el estado ScopeValidationNeeded y
 // pasamos al estado TeamAssignmentPending.
 exports.scopeAccept = async (req, res, next) => {
 
@@ -326,7 +295,7 @@ exports.scopeAccept = async (req, res, next) => {
     console.log('Success: Scope accepted successfully.');
 
     if (clientId) {
-      res.redirect('/projects/' + projectId);
+      res.redirect('/projects/' + projectId + '/escrow');
     } else {
       res.redirect('/projects/');
     }
@@ -336,7 +305,7 @@ exports.scopeAccept = async (req, res, next) => {
 };
 
 
-// Rechazar el scope: estado = scopingInProgress
+// Rechazar el scope: estado = ScopingInProgress
 exports.scopeReject = async (req, res, next) => {
 
   const projectId = req.params.projectId;
@@ -360,13 +329,13 @@ exports.scopeReject = async (req, res, next) => {
   }
 };
 
-// Rechazar el proyecto: estado = rejected
-exports.reject = async (req, res, next) => {
+// Rechazar el proyecto:
+exports.rejectProposal = async (req, res, next) => {
 
   const projectId = req.params.projectId;
 
   try {
-    await seda.projectReject(projectId);
+    await seda.rejectProposal(projectId);
 
     console.log('Success: Project rejected successfully.');
     res.redirect('/projects/' + projectId);
@@ -376,13 +345,13 @@ exports.reject = async (req, res, next) => {
 };
 
 
-// Aprobar el proyecto: estado = rejected
-exports.approve = async (req, res, next) => {
+// Aprobar el proyecto:
+exports.approveProposal = async (req, res, next) => {
 
   const projectId = req.params.projectId;
 
   try {
-    await seda.projectApprove(projectId);
+    await seda.approveProposal(projectId);
 
     console.log('Success: Project approved successfully.');
     res.redirect('/projects/' + projectId);
@@ -398,14 +367,8 @@ exports.editObjectivesConstraints = async (req, res) => {
   const projectId = req.params.projectId;
   const project = await seda.project(projectId);
 
-  // Timezone offset del cliente
-  let browserTimezoneOffset = Number(req.query.browserTimezoneOffset ?? 0);
-  browserTimezoneOffset = Number.isNaN(browserTimezoneOffset) ? 0 : browserTimezoneOffset;
-
-
   res.render('proposals/editObjectivesConstraints', {
     project,
-    browserTimezoneOffset,
   });
 };
 

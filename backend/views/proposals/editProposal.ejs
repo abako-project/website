@@ -17,7 +17,7 @@
             <form class="proposalForm__form" is="form-with-tzo" id="editProposalForm" action="/projects/<%= project.id %>?_method=PUT"
                   method="POST">
                 <!-- <div class="projectProposal projectProposal__form"> -->
-                <%- include("./edit/_formProposal", {project, allBudgets, allDeliveryTimes, allProjectTypes, browserTimezoneOffset}) %>
+                <%- include("./edit/_formProposal", {project, allBudgets, allDeliveryTimes, allProjectTypes}) %>
                 <!-- </div> -->
             </form>
 

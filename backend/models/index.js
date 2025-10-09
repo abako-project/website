@@ -13,6 +13,7 @@ const Client = require('./client')(sequelize);
 const Developer = require('./developer')(sequelize);
 const Language = require('./language')(sequelize);
 const Role = require('./role')(sequelize);
+const Proficiency = require('./proficiency')(sequelize);
 const Skill = require('./skill')(sequelize);
 const Budget = require('./budget')(sequelize);
 const DeliveryTime = require('./deliveryTime')(sequelize);
@@ -54,16 +55,25 @@ Developer.belongsToMany(Language, {as: 'languages', through: "DeveloperKnownLang
 Language.belongsToMany(Developer, {as: 'developers', through: "DeveloperKnownLanguages",
   foreignKey: 'languageId', otherKey: 'developerId'});
 
-
 // Relation 1-to-1 between developer and role
 Role.hasMany(Developer, {as: 'developers', foreignKey: 'roleId'});
 Developer.belongsTo(Role, {as: 'role', foreignKey: 'roleId'});
+
+// Relation 1-to-1 between developer and proficiency
+Proficiency.hasMany(Developer, {as: 'developers', foreignKey: 'proficiencyId'});
+Developer.belongsTo(Proficiency, {as: 'proficiency', foreignKey: 'proficiencyId'});
 
 // Relation 1-to-N between developer and skill
 Developer.belongsToMany(Skill, {as: 'skills', through: "DeveloperSkills",
   foreignKey: 'developerId', otherKey: 'skillId'});
 Skill.belongsToMany(Developer, {as: 'developers', through: "DeveloperSkills",
   foreignKey: 'skillId', otherKey: 'developerId'});
+
+// Relation 1-to-N between milestone and skill
+Milestone.belongsToMany(Skill, {as: 'skills', through: "MilestoneSkills",
+  foreignKey: 'milestoneId', otherKey: 'skillId'});
+Skill.belongsToMany(Milestone, {as: 'milestones', through: "MilestoneSkills",
+  foreignKey: 'skillId', otherKey: 'milestoneId'});
 
 // Relation 1-to-N between Client and Projects:
 Client.hasMany(Project, {as: 'projects', foreignKey: 'clientId'});
@@ -97,6 +107,14 @@ Project.belongsTo(DeliveryTime, {as: 'deliveryTime', foreignKey: 'deliveryTimeId
 DeliveryTime.hasMany(Milestone, {as: 'milestones', foreignKey: 'deliveryTimeId'});
 Milestone.belongsTo(DeliveryTime, {as: 'deliveryTime', foreignKey: 'deliveryTimeId'});
 
+// Relation N-to-1 between milestone and role
+Role.hasMany(Milestone, {as: 'milestones', foreignKey: 'roleId'});
+Milestone.belongsTo(Role, {as: 'role', foreignKey: 'roleId'});
+
+// Relation N-to-1 between milestone and proficiency
+Proficiency.hasMany(Milestone, {as: 'milestones', foreignKey: 'proficiencyId'});
+Milestone.belongsTo(Proficiency, {as: 'proficiency', foreignKey: 'proficiencyId'});
+
 // Relation 1-to-N between ProjectType and Project
 ProjectType.hasMany(Project, {as: 'projects', foreignKey: 'projectTypeId'});
 Project.belongsTo(ProjectType, {as: 'projectType', foreignKey: 'projectTypeId'});
@@ -112,5 +130,6 @@ Assignation.belongsTo(Milestone, {as: 'milestone', foreignKey: 'milestoneId'});
 // Relation 1-to-N between Developer and Assignation
 Developer.hasMany(Assignation, {as: 'assignations', foreignKey: 'developerId'});
 Assignation.belongsTo(Developer, {as: 'developer', foreignKey: 'developerId'});
+
 
 module.exports = sequelize;

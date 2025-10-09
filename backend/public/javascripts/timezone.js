@@ -68,7 +68,7 @@ customElements.define('a-with-tzo', AWithTimezoneOffset, { extends: 'a' });
 // Extensión de la etiqueta <form> como un customized built-in element.
 // Añade el valor browserTimezoneOffset=NUMERO a la query del atributo action.
 // Se usa asi:
-//       <form is="form--with-tzo">.
+//       <form is="form-with-tzo">.
 //
 class FormWithTimezoneOffset extends HTMLFormElement {
   constructor() {
