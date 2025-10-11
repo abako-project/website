@@ -1,21 +1,25 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
+
+const authRouter = require('./auth');
+const homeRouter = require('./home');
+const dashboardRouter = require('./dashboard');
+const clientsRouter = require('./clients');
+const developersRouter = require('./developers');
+const projectsRouter = require('./projects');
+const virtoRouter = require('./virto');
+const rolesRouter = require('./roles');
+const backdoorRouter = require('./backdoor');
 
 
-/* GET root page. */
-router.get('/', function(req, res, next) {
-
-  if (req.session.loginUser) {
-        if (req.session.loginUser.clientId) {
-          res.redirect('/clients/' + req.session.loginUser.clientId + '/projects/');
-        } else if (req.session.loginUser.developerId) {
-            res.redirect('/clients/' + req.session.loginUser.developerId + '/projects/');
-        } else {
-            res.redirect('/projects');
-        }
-    } else {
-        res.redirect('/auth/login');
-    }
-});
+router.use('/auth', authRouter);
+router.use('/', homeRouter);
+router.use('/dashboard', dashboardRouter);
+router.use('/clients', clientsRouter);
+router.use('/developers', developersRouter);
+router.use('/projects', projectsRouter);
+router.use('/roles', rolesRouter);
+router.use('/virto', virtoRouter);
+router.use('/backdoor', backdoorRouter);
 
 module.exports = router;

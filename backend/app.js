@@ -8,15 +8,7 @@ const partials = require('express-partials');
 const methodOverride = require('method-override');
 const flash = require('express-flash');
 
-const authRouter = require('./routes/auth');
-const indexRouter = require('./routes/index');
-const dashboardRouter = require('./routes/dashboard');
-const clientsRouter = require('./routes/clients');
-const developersRouter = require('./routes/developers');
-const projectsRouter = require('./routes/projects');
-const virtoRouter = require('./routes/virto');
-const rolesRouter = require('./routes/roles');
-const backdoorRouter = require('./routes/backdoor');
+const router = require('./routes');
 
 const sequelize = require("./models");
 
@@ -102,15 +94,7 @@ app.use(function (req, res, next) {
   next();
 });
 
-app.use('/auth', authRouter);
-app.use('/', indexRouter);
-app.use('/dashboard', dashboardRouter);
-app.use('/clients', clientsRouter);
-app.use('/developers', developersRouter);
-app.use('/projects', projectsRouter);
-app.use('/roles', rolesRouter);
-app.use('/virto', virtoRouter);
-app.use('/backdoor', backdoorRouter);
+app.use(router);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
