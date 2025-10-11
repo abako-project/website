@@ -29,21 +29,21 @@ exports.adminLogin = async (req, res) => {
 
 
 
-// Login como el cliente Carlos
-exports.carlosLogin = async (req, res, next) => {
+// Login de un cliente
+exports.clientLogin = async (req, res, next) => {
 
   // Guardar la zona horaria del navegador y del servidor en la session
   let browserTimezoneOffset = Number(req.query.browserTimezoneOffset ?? 0);
   req.session.browserTimezoneOffset = Number.isNaN(browserTimezoneOffset) ? 0 : browserTimezoneOffset;
   req.session.serverTimezoneOffset = new Date().getTimezoneOffset() * 60 * 1000;
 
-  const email = "carlos@sitio.es";
+    const {email} = req.params;
 
   try {
     const client = await seda.clientFindByEmail(email);
 
     if (!client) {
-        return next("No encuentro a Carlos.");
+        return next(`No encuentro un cliente con el email ${email}.`);
     }
 
     req.session.loginUser = {
@@ -62,68 +62,36 @@ exports.carlosLogin = async (req, res, next) => {
 };
 
 
-// Login como el developer Damiela
-exports.danielaLogin = async (req, res, next) => {
 
-  // Guardar la zona horaria del navegador y del servidor en la session
-  let browserTimezoneOffset = Number(req.query.browserTimezoneOffset ?? 0);
-  req.session.browserTimezoneOffset = Number.isNaN(browserTimezoneOffset) ? 0 : browserTimezoneOffset;
-  req.session.serverTimezoneOffset = new Date().getTimezoneOffset() * 60 * 1000;
+// Login de un developer
+exports.developerLogin = async (req, res, next) => {
 
-  const email = "daniela@sitio.es";
+    // Guardar la zona horaria del navegador y del servidor en la session
+    let browserTimezoneOffset = Number(req.query.browserTimezoneOffset ?? 0);
+    req.session.browserTimezoneOffset = Number.isNaN(browserTimezoneOffset) ? 0 : browserTimezoneOffset;
+    req.session.serverTimezoneOffset = new Date().getTimezoneOffset() * 60 * 1000;
 
-  try {
-    const developer = await seda.developerFindByEmail(email);
+    const {email} = req.params;
 
-    if (!developer) {
-      return next("No encuentro a Daniela.");
+    try {
+        const developer = await seda.developerFindByEmail(email);
+
+        if (!developer) {
+            return next(`No encuentro un desarrollador con el email ${email}.`);
+        }
+
+        req.session.loginUser = {
+            id: developer.user.id,
+            email: developer.user.email,
+            name: developer.name,
+            clientId: undefined,
+            developerId: developer.id
+        };
+
+        res.redirect(`/developers/${developer.id}/projects`);
+    } catch (error) {
+        console.log('Error: An error has occurred: ' + error);
+        next(error);
     }
-
-    req.session.loginUser = {
-      id: developer.user.id,
-      email: developer.user.email,
-      name: developer.name,
-      clientId: undefined,
-      developerId: developer.id
-    };
-
-    res.redirect(`/developers/${developer.id}/projects`);
-  } catch (error) {
-    console.log('Error: An error has occurred: ' + error);
-    next(error);
-  }
-};
-
-
-// Login como el developer Denisse
-exports.denisseLogin = async (req, res, next) => {
-
-  // Guardar la zona horaria del navegador y del servidor en la session
-  let browserTimezoneOffset = Number(req.query.browserTimezoneOffset ?? 0);
-  req.session.browserTimezoneOffset = Number.isNaN(browserTimezoneOffset) ? 0 : browserTimezoneOffset;
-  req.session.serverTimezoneOffset = new Date().getTimezoneOffset() * 60 * 1000;
-
-  const email = "denisse@aqui.es";
-
-  try {
-    const developer = await seda.developerFindByEmail(email);
-
-    if (!developer) {
-      return next("No encuentro a Denisse.");
-    }
-
-    req.session.loginUser = {
-      id: developer.user.id,
-      email: developer.user.email,
-      name: developer.name,
-      clientId: undefined,
-      developerId: developer.id
-    };
-
-    res.redirect(`/developers/${developer.id}/projects`);
-  } catch (error) {
-    console.log('Error: An error has occurred: ' + error);
-    next(error);
-  }
 };
 

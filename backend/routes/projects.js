@@ -207,7 +207,13 @@ router.put('/:projectId(\\d+)/milestones/swaporder/:id1(\\d+)/:id2(\\d+)',
 router.get('/:projectId(\\d+)/milestones/:milestoneId(\\d+)/submitMilestone',
     permissionController.isAuthenticated,
     permissionController.projectConsultantRequired,
-    milestoneController.submitMilestone);
+    milestoneController.submitMilestoneForm);
+
+// Action del formulario usado por el consultor para subir un milestone para que lo revise el cliente
+router.put('/:projectId(\\d+)/milestones/:milestoneId(\\d+)/submitMilestone',
+    permissionController.isAuthenticated,
+    permissionController.projectConsultantRequired,
+    milestoneController.submitMilestoneAction);
 
 
 

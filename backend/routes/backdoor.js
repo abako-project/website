@@ -7,6 +7,8 @@ const developerController = require('../controllers/developer');
 const projectController = require('../controllers/project');
 const roleController = require('../controllers/role');
 
+const permissionController = require('../controllers/permission');
+
 
 // Menu inicial
 router.get('/',
@@ -16,28 +18,34 @@ router.get('/',
 // Login de admin/clientes/developers
 router.get('/admin',
   backdoorController.adminLogin);
-router.get('/carlos',
-  backdoorController.carlosLogin);
-router.get('/daniela',
-  backdoorController.danielaLogin);
-router.get('/denisse',
-  backdoorController.denisseLogin);
+router.get('/client/:email/Login',
+    backdoorController.clientLogin);
+router.get('/developer/:email/Login',
+    backdoorController.developerLogin);
 
 // Listar todos los clientes
 router.get('/clients',
-  clientController.index);
+    permissionController.isAuthenticated,
+    permissionController.adminRequired,
+    clientController.index);
 
 // Listar todos los desarrolladores
 router.get('/developers',
+    permissionController.isAuthenticated,
+    permissionController.adminRequired,
     developerController.index);
 
 
 // Listar todos los proyectos
 router.get('/projects',
-  projectController.index);
+    permissionController.isAuthenticated,
+    permissionController.adminRequired,
+    projectController.index);
 
 // Listar todos los roles
 router.get('/roles',
+    permissionController.isAuthenticated,
+    permissionController.adminRequired,
     roleController.index);
 
 module.exports = router;

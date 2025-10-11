@@ -41,6 +41,12 @@ module.exports = (sequelize) => {
             type: DataTypes.ENUM,
             values: ['DeveloperPending', 'WaitingDeveloperAccept', 'InProgress', 'ClientValidationNeeded', "RejectedByClient", "Completed"],
             defaultValue: 'DeveloperPending'
+        },
+        documentation: {
+            type: DataTypes.TEXT
+        },
+        links: {
+            type: DataTypes.TEXT
         }
     }, {
         sequelize,

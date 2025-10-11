@@ -9,6 +9,7 @@ const {
 const sequelize = require("../../models");
 
 const states = require("../../core/state");
+const seda = require("./index");
 
 //-----------------------------------------------------------
 
@@ -236,6 +237,25 @@ exports.milestoneDeveloperReject = async (milestoneId) => {
         milestone = await milestone.update({
             developerId: null,
             state: states.MilestoneState.DeveloperPending
+        });
+
+    } catch (error) {
+        throw error;
+    }
+};
+
+//-----------------------------------------------------------
+
+exports.milestoneConsultantSubmit = async (milestoneId, documentation, links) => {
+
+    try {
+        let milestone = await Milestone.findByPk(milestoneId);
+
+        // Actualizar el estado, y guardar doc y links
+        milestone = await milestone.update({
+            state: states.MilestoneState.ClientValidationNeeded,
+            documentation,
+            links
         });
 
     } catch (error) {

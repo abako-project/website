@@ -375,7 +375,7 @@ exports.acceptOrRejectMilestoneUpdate = async (req, res, next) => {
 };
 
 // Devolver ls pagina para que el consultor suba un milestone para que lo revise el cliente
-exports.submitMilestone = async (req, res, next) => {
+exports.submitMilestoneForm = async (req, res, next) => {
 
     try {
 
@@ -389,6 +389,30 @@ exports.submitMilestone = async (req, res, next) => {
             project,
             milestone
         });
+
+    } catch (error) {
+        next(error);
+    }
+};
+
+
+// Action del formulario usado por el consultor para subir un milestone para que lo revise el cliente
+exports.submitMilestoneAction = async (req, res, next) => {
+
+    try {
+
+        let {documentation, links} = req.body;
+
+        const projectId = req.params.projectId;
+        const project = await seda.project(projectId);
+
+        const milestoneId = req.params.milestoneId;
+        const milestone = await seda.milestone(milestoneId);
+
+        await seda.milestoneConsultantSubmit(milestoneId, documentation, links) ;
+
+        res.redirect('/projects/' + projectId);
+
 
     } catch (error) {
         next(error);

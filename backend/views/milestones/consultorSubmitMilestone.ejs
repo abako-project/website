@@ -1,27 +1,51 @@
 <%- include('../components/_cancelTopbar', {step: 1}) %>
 
-<p>
-    Datos y fotos del consultor
-</p>
-
 <%- include('../projects/headers/_project', { project }) %>
 
-<p>
-    Datos del milestone
-</p>
+<h1>
+    <img class="attachment"
+         src="/developers/<%= project.consultantId %>/attachment"
+    />
+    Your Submission
+</h1>
 
-<p>
-    Formulario:
-</p>
 
-<p>
-    input pàra meter documentacion.
-</p>
+<section style="border: solid white 2px; margin: 15px 5px; padding: 2px;">
 
-<p>
-    input pàra meter otros enlaces.
-</p>
+    <%- include('../milestones/info/_headerMilestone', { milestone }) %>
 
-<p>
-    Boton submit el formulario
-</p>
+    <div class="milestone__description">
+        <small><%= milestone.description %></small>
+    </div>
+
+    <div class="milestone__dev">
+        <%- include("../milestones/info/__showDeveloper", {milestone}) %>
+    </div>
+
+</section>
+
+<form id="submitMilestoneForm"
+      action="/projects/<%= project.id %>/milestones/<%= milestone.id %>/submitMilestone?_method=PUT"
+      method="POST">
+
+    <div class="form-group">
+        <label for="documentation">Documentation:</label>
+        <input type="text" id="documentation" name="documentation"
+               value=""
+               placeholder="Provide a link to your documentation"
+               autocomplete="off">
+    </div>
+
+    <div class="form-group">
+        <label for="links">Other links:</label>
+        <input type="text" id="links" name="links"
+               value=""
+               placeholder="Add links to supporting documents"
+               autocomplete="off">
+    </div>
+
+    <div class="form-group">
+        <button type="submit">Submit Milestone</button>
+    </div>
+
+</form>

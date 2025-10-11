@@ -64,6 +64,7 @@ exports.milestoneDestroy = sedaMilestone.milestoneDestroy;
 exports.milestoneSetDeveloper = sedaMilestone.milestoneSetDeveloper;
 exports.milestoneDeveloperAccept = sedaMilestone.milestoneDeveloperAccept;
 exports.milestoneDeveloperReject = sedaMilestone.milestoneDeveloperReject;
+exports.milestoneConsultantSubmit = sedaMilestone.milestoneConsultantSubmit;
 
 exports.scopeSubmit = sedaScope.scopeSubmit;
 exports.scopeAccept = sedaScope.scopeAccept;
