@@ -33,7 +33,7 @@ module.exports = exports = {
 
       // Despues de proporcionar los fondos, el proyecto empieza.
       // Cada uno de los milestones evoluciona con su propio estado.
-      // Cada milestone empieza en el estado DeveloperPending esperando a que la DAO le asigne un developer.
+      // Cada milestone empieza en el estado WaitingDeveloperAssignation esperando a que la DAO le asigne un developer.
     ProjectInProgress: "ProjectInProgress", // Empieza a contar el timepo de desarrollo.
 
     DisputeOpen: "disputeOpen", // por la entrega o el scope
@@ -47,19 +47,19 @@ module.exports = exports = {
     MilestoneState: {
 
         // La DAO todavia no ha asignado un developer al milestone.
-        DeveloperPending: "DeveloperPending",
+        WaitingDeveloperAssignation: "WaitingDeveloperAssignation",
 
         // Esperando a que el developer acepte el milestone, o lo rechace
-        WaitingDeveloperAccept: "WaitingDeveloperAccept",
+        WaitingDeveloperAcceptAssignation: "WaitingDeveloperAcceptAssignation",
 
         // El desarrollador ha aceptado el milestone y empieza el trabajo.
         InProgress: "InProgress",
 
         // El consultor ha enviado el milestone para que lo valide el cliente, y estamos esperando a su valoracion
-        ClientValidationNeeded: "ClientValidationNeeded",
+        WaitingClientAcceptSubmission: "WaitingClientAcceptSubmission",
 
         // El cliente ha rechazado el trabajo entregado
-        RejectedByClient: "RejectedByClient",
+        SubmissionRejectedByClient: "SubmissionRejectedByClient",
 
         // El trabajo del milestone se ha completado (y ha sido aceptado por el cliente)
         Completed: "Completed",

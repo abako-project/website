@@ -265,8 +265,8 @@ exports.selectDeveloper = async (req, res, next) => {
   }
 }
 
-// Actualizar el developer de un milestone
-exports.setDeveloper = async (req, res, next) => {
+// Assignar el developer de un milestone
+exports.assignDeveloper = async (req, res, next) => {
 
   const {body} = req;
 
@@ -274,7 +274,7 @@ exports.setDeveloper = async (req, res, next) => {
   const milestoneId = req.params.milestoneId;
 
   try {
-    await seda.milestoneSetDeveloper(milestoneId, body.developerId);
+    await seda.milestoneAssignDeveloper(milestoneId, body.developerId);
 
     console.log('Milestone developer assigned successfully.');
 
@@ -287,7 +287,7 @@ exports.setDeveloper = async (req, res, next) => {
 
 
 // El developer acepta un milestone
-exports.developerAcceptMilestone = async (req, res, next) => {
+exports.developerAcceptAssignedMilestone = async (req, res, next) => {
 
   const {body} = req;
 
@@ -309,7 +309,7 @@ exports.developerAcceptMilestone = async (req, res, next) => {
 
 
 // El developer rechaza un milestone
-exports.developerRejectMilestone = async (req, res, next) => {
+exports.developerRejectAssignedMilestone = async (req, res, next) => {
 
     const {body} = req;
 
@@ -329,7 +329,7 @@ exports.developerRejectMilestone = async (req, res, next) => {
 };
 
 // Devuelve la pagina para que un developer acepte o rechace un milestone
-exports.acceptOrRejectMilestonePage = async (req, res, next) => {
+exports.developerAcceptOrRejectAssignedMilestonePage = async (req, res, next) => {
 
     try {
         const projectId = req.params.projectId;
@@ -338,7 +338,7 @@ exports.acceptOrRejectMilestonePage = async (req, res, next) => {
         const milestoneId = req.params.milestoneId;
         const milestone = await seda.milestone(milestoneId);
 
-        res.render('milestones/acceptOrRejectMilestone', {
+        res.render('milestones/developerAcceptOrRejectAssignedMilestone', {
             project,
             milestone
         });
@@ -347,14 +347,12 @@ exports.acceptOrRejectMilestonePage = async (req, res, next) => {
     }
 };
 
-// Actualiza el estadop del ,milestone a aceptado o rechazado
-exports.acceptOrRejectMilestoneUpdate = async (req, res, next) => {
+// Actualiza el estadop del milestone a aceptado o rechazado
+exports.developerAcceptOrRejectAssignedMilestoneUpdate = async (req, res, next) => {
 
     try {
 
         let {comment, accept} = req.body;
-
-        console.log("************ accept =", accept);
 
         const projectId = req.params.projectId;
         const milestoneId = req.params.milestoneId;
@@ -418,3 +416,51 @@ exports.submitMilestoneAction = async (req, res, next) => {
         next(error);
     }
 };
+
+
+// Devuelve la pagina para que un cliente acepte o rechace un milestone submission
+exports.clientAcceptOrRejectSubmittedMilestonePage = async (req, res, next) => {
+
+    try {
+        const projectId = req.params.projectId;
+        const project = await seda.project(projectId);
+
+        const milestoneId = req.params.milestoneId;
+        const milestone = await seda.milestone(milestoneId);
+
+        res.render('milestones/clientAcceptOrRejectSubmittedMilestone', {
+            project,
+            milestone
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+
+// Actualiza el estado del milestone a SubmissionRejectedByClient o Completed
+exports.clientAcceptOrRejectSubmittedMilestoneUpdate = async (req, res, next) => {
+
+    try {
+
+        let {comment, accept} = req.body;
+
+        const projectId = req.params.projectId;
+        const milestoneId = req.params.milestoneId;
+
+        if (accept === "accept") {
+            await seda.milestoneClientAcceptSubmission(milestoneId, comment) ;
+        } else if (accept === "reject") {
+            await seda.milestoneClientRejectSubmission(milestoneId, comment) ;
+        } else {
+            req.flash("error", "El cliente solo puede aceptar o rechazar los milestones que le han entregado");
+        }
+
+        res.redirect('/projects/' + projectId);
+
+    } catch (error) {
+        next(error);
+    }
+};
+
+

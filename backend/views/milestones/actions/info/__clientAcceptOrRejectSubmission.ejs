@@ -1,0 +1,11 @@
+<% if (locals.loginUser && locals.loginUser.clientId === project.clientId) { %>
+
+    <% if (milestone.state === "WaitingClientAcceptSubmission") { %>
+
+        <a class="right projectFlow btn btn_primary btn_href"
+           href="/projects/<%= project.id %>/milestones/<%= milestone.id %>/acceptOrRejectSubmission">
+            Accept/Reject Submission
+        </a>
+
+    <% } %>
+<% } %>

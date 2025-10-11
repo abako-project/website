@@ -229,23 +229,23 @@ router.get('/:projectId(\\d+)/milestones/:milestoneId(\\d+)/developer/select',
 router.post('/:projectId(\\d+)/milestones/:milestoneId(\\d+)/developer',
   permissionController.isAuthenticated,
   permissionController.adminRequired,
-  milestoneController.setDeveloper);
+  milestoneController.assignDeveloper);
 
 // Muestra la pagina para que el developer acepte o rechace un milestone.
-router.get('/:projectId(\\d+)/milestones/:milestoneId(\\d+)/acceptOrReject',
+router.get('/:projectId(\\d+)/milestones/:milestoneId(\\d+)/acceptOrRejectAssignation',
     permissionController.isAuthenticated,
     permissionController.userTypesRequired({milestoneDeveloper: true}),
-    milestoneController.acceptOrRejectMilestonePage);
+    milestoneController.developerAcceptOrRejectAssignedMilestonePage);
 
 
 // El developer acepta o rechaza el milestone.
-router.put('/:projectId(\\d+)/milestones/:milestoneId(\\d+)/acceptOrReject',
+router.put('/:projectId(\\d+)/milestones/:milestoneId(\\d+)/acceptOrRejectAssignation',
     permissionController.isAuthenticated,
     permissionController.userTypesRequired({milestoneDeveloper: true}),
-    milestoneController.acceptOrRejectMilestoneUpdate);
+    milestoneController.developerAcceptOrRejectAssignedMilestoneUpdate);
 
 
-// === Escrow
+// === Client
 
 router.get('/:projectId(\\d+)/escrow',
   permissionController.isAuthenticated,
@@ -258,6 +258,17 @@ router.get('/:projectId(\\d+)/start',
   permissionController.userTypesRequired({client: true}),
   escrowController.startProject);
 
+// Muestra la pagina para que el cliente acepte o rechace un milestone submission.
+router.get('/:projectId(\\d+)/milestones/:milestoneId(\\d+)/acceptOrRejectSubmission',
+    permissionController.isAuthenticated,
+    permissionController.userTypesRequired({projectClient: true}),
+    milestoneController.clientAcceptOrRejectSubmittedMilestonePage);
 
+
+// El cliente acepta o rechaza el milestone submission.
+router.put('/:projectId(\\d+)/milestones/:milestoneId(\\d+)/acceptOrRejectSubmission',
+    permissionController.isAuthenticated,
+    permissionController.userTypesRequired({projectClient: true}),
+    milestoneController.clientAcceptOrRejectSubmittedMilestoneUpdate);
 
 module.exports = router;

@@ -1,10 +1,13 @@
-
-
 <% if (locals.loginUser && locals.loginUser.isAdmin) { %>
-    <a class="adminDAO btn btn_primary btn_href"
-       href="/projects/<%= project.id %>/milestones/<%= milestone.id %>/developer/select">
-        Select/Change Milestone Developer
-    </a>
+
+    <% if (!milestone.developer) { %>
+
+        <a class="adminDAO btn btn_primary btn_href"
+           href="/projects/<%= project.id %>/milestones/<%= milestone.id %>/developer/select">
+            Assign Milestone Developer
+        </a>
+
+    <% } %>
 
 <% } %>
 

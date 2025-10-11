@@ -184,12 +184,12 @@ exports.milestoneDestroy = async milestoneId => {
  * Asigna un desarrollador a un milestgone, eliminando cualquier asignación previa.
  *
  * @async
- * @function milestoneSetDeveloper
+ * @function milestoneAssignDeveloper
  * @param {number} milestoneId - ID del milestone.
  * @param {number} [developerId] - ID del desarrollador (opcional).
  * @returns {Promise<void>}
  */
-exports.milestoneSetDeveloper = async (milestoneId, developerId) => {
+exports.milestoneAssignDeveloper = async (milestoneId, developerId) => {
 
     try {
         let milestone = await Milestone.findByPk(milestoneId);
@@ -198,13 +198,13 @@ exports.milestoneSetDeveloper = async (milestoneId, developerId) => {
             // Crear nueva asignacion:
             milestone = await milestone.update({
                 developerId,
-                state: states.MilestoneState.WaitingDeveloperAccept
+                state: states.MilestoneState.WaitingDeveloperAcceptAssignation
             });
         } else {
             // Borrar asignacion actual:
             milestone = await milestone.update({
                 developerId: null,
-                state: states.MilestoneState.DeveloperPending
+                state: states.MilestoneState.WaitingDeveloperAssignation
             });
         }
     } catch (error) {
@@ -236,7 +236,7 @@ exports.milestoneDeveloperReject = async (milestoneId) => {
         // Borrar asignacion actual:
         milestone = await milestone.update({
             developerId: null,
-            state: states.MilestoneState.DeveloperPending
+            state: states.MilestoneState.WaitingDeveloperAssignation
         });
 
     } catch (error) {
@@ -253,7 +253,7 @@ exports.milestoneConsultantSubmit = async (milestoneId, documentation, links) =>
 
         // Actualizar el estado, y guardar doc y links
         milestone = await milestone.update({
-            state: states.MilestoneState.ClientValidationNeeded,
+            state: states.MilestoneState.WaitingClientAcceptSubmission,
             documentation,
             links
         });
@@ -264,3 +264,33 @@ exports.milestoneConsultantSubmit = async (milestoneId, documentation, links) =>
 };
 
 //-----------------------------------------------------------
+
+exports.milestoneClientAcceptSubmission = async (milestoneId, comment) => {
+
+    try {
+        const milestone = await Milestone.findByPk(milestoneId);
+
+        await milestone?.update({state: states.MilestoneState.Completed});
+
+    } catch (error) {
+        throw error;
+    }
+};
+
+//-----------------------------------------------------------
+
+exports.milestoneClientRejectSubmission = async (milestoneId, comment) => {
+
+    try {
+        let milestone = await Milestone.findByPk(milestoneId);
+
+        // Borrar asignacion actual:
+        milestone = await milestone.update({
+            developerId: null,
+            state: states.MilestoneState.SubmissionRejectedByClient
+        });
+
+    } catch (error) {
+        throw error;
+    }
+};

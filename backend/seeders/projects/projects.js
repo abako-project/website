@@ -32,7 +32,7 @@ module.exports = exports = [
                 proficiencyId: 1,
                 deliveryTimeId: 4,
                 deliveryDate: new Date(new Date().getTime() + (1 * 60 * 60 * 1000)),
-                state: states.MilestoneState.WaitingDeveloperAccept,
+                state: states.MilestoneState.WaitingDeveloperAcceptAssignation,
                 developerId: 2
             },
             {
@@ -76,7 +76,7 @@ module.exports = exports = [
                 proficiencyId: 1,
                 deliveryTimeId: 4,
                 deliveryDate: new Date(new Date().getTime() + (1 * 60 * 60 * 1000)),
-                state: states.MilestoneState.ClientValidationNeeded,
+                state: states.MilestoneState.WaitingClientAcceptSubmission,
                 developerId: 2
             },
             {
@@ -87,7 +87,7 @@ module.exports = exports = [
                 proficiencyId: 1,
                 deliveryTimeId: 4,
                 deliveryDate: new Date(new Date().getTime() + (2 * 60 * 60 * 1000)),
-                state: states.MilestoneState.RejectedByClient,
+                state: states.MilestoneState.SubmissionRejectedByClient,
                 developerId: 2
             },
             {

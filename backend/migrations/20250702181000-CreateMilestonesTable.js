@@ -80,8 +80,9 @@ module.exports = {
                 },
                 state: {
                     type: Sequelize.ENUM,
-                    values: ['DeveloperPending', 'WaitingDeveloperAccept', 'InProgress', 'ClientValidationNeeded', "RejectedByClient", "Completed"],
-                    defaultValue: 'DeveloperPending'
+                    values: ['WaitingDeveloperAssignation', 'WaitingDeveloperAcceptAssignation',
+                        'InProgress', 'WaitingClientAcceptSubmission', "SubmissionRejectedByClient", "Completed"],
+                    defaultValue: 'WaitingDeveloperAssignation'
                 },
                 documentation: {
                     type: Sequelize.TEXT

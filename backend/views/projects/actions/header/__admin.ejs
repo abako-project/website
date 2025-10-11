@@ -10,7 +10,7 @@ if (locals.loginUser.isAdmin) {
 
     if (project.state && ["ProposalPending"].includes(project.state)) {
         actions.push({
-            title: "Select/Change Consultant",
+            title: "Assign Consultant",
             callback: "/projects/" + project.id + "/consultant/select",
         });
     }

@@ -61,10 +61,12 @@ exports.milestoneCreate = sedaMilestone.milestoneCreate;
 exports.milestoneUpdate = sedaMilestone.milestoneUpdate;
 exports.milestonesSwapOrder = sedaMilestone.milestoneSwapOrder;
 exports.milestoneDestroy = sedaMilestone.milestoneDestroy;
-exports.milestoneSetDeveloper = sedaMilestone.milestoneSetDeveloper;
+exports.milestoneAssignDeveloper = sedaMilestone.milestoneAssignDeveloper;
 exports.milestoneDeveloperAccept = sedaMilestone.milestoneDeveloperAccept;
 exports.milestoneDeveloperReject = sedaMilestone.milestoneDeveloperReject;
 exports.milestoneConsultantSubmit = sedaMilestone.milestoneConsultantSubmit;
+exports.milestoneClientAcceptSubmission = sedaMilestone.milestoneClientAcceptSubmission;
+exports.milestoneClientRejectSubmission = sedaMilestone.milestoneClientRejectSubmission;
 
 exports.scopeSubmit = sedaScope.scopeSubmit;
 exports.scopeAccept = sedaScope.scopeAccept;

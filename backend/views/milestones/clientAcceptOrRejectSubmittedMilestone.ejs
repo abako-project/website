@@ -1,0 +1,117 @@
+<%- include('../components/_cancelTopbar', {step: 1}) %>
+
+<%- include('../projects/headers/_project', { project }) %>
+
+<h1>
+    <img class="attachment"
+         src="/developers/<%= project.consultantId %>/attachment"
+    />
+    Project consultant (<%= project.consultant.name %>) submitted a Milestone
+</h1>
+
+<div id="appTwoColumns">
+
+    <div class="col1">
+
+        <section style="border: solid white 2px; margin: 15px 5px; padding: 2px;">
+
+            <%- include('../milestones/info/_headerMilestone', { milestone }) %>
+
+            <div class="milestone__description">
+                <small><%= milestone.description %></small>
+            </div>
+
+            <div class="milestone__dev">
+                <%- include("../milestones/info/__showDeveloper", {milestone}) %>
+            </div>
+
+            <p>
+                Documentation:
+                <br/>
+                <small><%= milestone.documentation %></small>
+            </p>
+
+            <p>
+                Other Links:
+                <br/>
+                <small><%= milestone.links %></small>
+            </p>
+
+        </section>
+    </div>
+
+    <div class="col2">
+
+        <section style="border: solid white 2px; margin: 15px 5px; padding: 2px;">
+
+            <h1>Accept Submission</h1>
+
+            <form action="/projects/<%= project.id %>/milestones/<%= milestone.id %>/acceptOrRejectSubmission?_method=PUT"
+                  method="POST">
+
+                <div class="form-group">
+                    <label for="comment">Add Comment:</label>
+                    <input type="text" id="comment" name="comment"
+                           value=""
+                           placeholder="Add a Comment (optional)" autocomplete="off">
+
+                    <input type="hidden" id="accept" name="accept" value="accept">
+                </div>
+
+                <button class="projectFlow btn btn_primary" type="submit">
+                    Submit Response
+                </button>
+            </form>
+        </section>
+
+        <section style="border: solid white 2px; margin: 15px 5px; padding: 2px;">
+
+            <h1>Reject Submission</h1>
+
+            <div style="background-color: brown; padding: 12px;">
+                <p style="color: pink">
+                    You’re about to reject a milestone submission.
+                </p>
+
+                <p>
+                    Rejecting this milestone submission initiates a formal dispute.
+                </p>
+
+                <p>
+                    Here’s how it works:
+                </p>
+
+                <ol>
+                    <li>
+                        1. You, as the client, will state your reasons, which are added to the dispute record.
+                    </li>
+                    <li>
+                        2. The Project Coordinator can then add their arguments and change their submission.
+                    </li>
+                    <li>
+                        3. Until you don’t accept the milestone, the payment will be held.
+                    </li>
+                </ol>
+            </div>
+            <form action="/projects/<%= project.id %>/milestones/<%= milestone.id %>/acceptOrRejectSubmission?_method=PUT"
+                  method="POST">
+
+                <div class="form-group">
+                    <label for="comment">Add Comment:</label>
+                    <input type="text" id="comment" name="comment"
+                           value=""
+                           placeholder="Add a Comment (optional)" autocomplete="off">
+
+                    <input type="hidden" id="accept" name="accept" value="reject">
+                </div>
+
+                <button class="projectFlow btn btn_primary" type="submit">
+                    Submit Response
+                </button>
+            </form>
+
+        </section>
+
+
+    </div>
+</div>
