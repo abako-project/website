@@ -1,0 +1,27 @@
+
+
+<% if (locals.loginUser && locals.loginUser.clientId === project.clientId) { %>
+
+    <% if (milestone.state === "SubmissionRejectedByClient") { %>
+
+        <a class="right projectFlow btn btn_primary btn_href"
+           href="/projects/<%= project.id %>/milestones/<%= milestone.id %>/history">
+            Show Details
+        </a>
+
+    <% } %>
+<% } %>
+
+
+
+<% if (locals.loginUser && locals.loginUser.developerId === project.consultantId) { %>
+
+    <% if (milestone.state === "SubmissionRejectedByClient") { %>
+
+        <a class="projectFlow btn btn_primary btn_href"
+           href="/projects/<%= project.id %>/milestones/<%= milestone.id %>/history">
+            Show Details
+        </a>
+
+    <% } %>
+<% } %>

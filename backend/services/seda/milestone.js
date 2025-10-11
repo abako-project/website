@@ -286,9 +286,56 @@ exports.milestoneClientRejectSubmission = async (milestoneId, comment) => {
 
         // Borrar asignacion actual:
         milestone = await milestone.update({
-            developerId: null,
             state: states.MilestoneState.SubmissionRejectedByClient
         });
+
+    } catch (error) {
+        throw error;
+    }
+};
+
+//-----------------------------------------------------------
+
+exports.milestoneClientRollbackRejectedSubmission = async (milestoneId, comment) => {
+
+    try {
+        let milestone = await Milestone.findByPk(milestoneId);
+
+        // Borrar asignacion actual:
+        milestone = await milestone.update({
+            state: states.MilestoneState.WaitingClientAcceptSubmission
+        });
+
+    } catch (error) {
+        throw error;
+    }
+};
+
+
+//-----------------------------------------------------------
+
+exports.milestoneClientAddHistoryComment = async (milestoneId, comment) => {
+
+    try {
+        let milestone = await Milestone.findByPk(milestoneId);
+
+        // Pendiente añadir a la historia:
+
+
+    } catch (error) {
+        throw error;
+    }
+};
+
+//-----------------------------------------------------------
+
+exports.milestoneConsultantAddHistoryComment = async (milestoneId, comment) => {
+
+    try {
+        let milestone = await Milestone.findByPk(milestoneId);
+
+        // Pendiente añadir a la historia:
+
 
     } catch (error) {
         throw error;

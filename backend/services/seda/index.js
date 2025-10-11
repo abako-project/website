@@ -67,6 +67,9 @@ exports.milestoneDeveloperReject = sedaMilestone.milestoneDeveloperReject;
 exports.milestoneConsultantSubmit = sedaMilestone.milestoneConsultantSubmit;
 exports.milestoneClientAcceptSubmission = sedaMilestone.milestoneClientAcceptSubmission;
 exports.milestoneClientRejectSubmission = sedaMilestone.milestoneClientRejectSubmission;
+exports.milestoneClientRollbackRejectedSubmission = sedaMilestone.milestoneClientRollbackRejectedSubmission;
+exports.milestoneClientAddHistoryComment = sedaMilestone.milestoneClientAddHistoryComment;
+exports.milestoneConsultantAddHistoryComment = sedaMilestone.milestoneConsultantAddHistoryComment;
 
 exports.scopeSubmit = sedaScope.scopeSubmit;
 exports.scopeAccept = sedaScope.scopeAccept;

@@ -2,6 +2,7 @@
 const seda = require("../services/seda");
 
 const states = require("../core/state");
+const permissionController = require("./permission");
 
 
 // Listar todos los milestones o los de un cliente o los de un developer
@@ -462,5 +463,86 @@ exports.clientAcceptOrRejectSubmittedMilestoneUpdate = async (req, res, next) =>
         next(error);
     }
 };
+
+
+
+// Muestra la pagina con la historia del milestone para que el cliente y el consultor se envien mensajes
+// y resuelvan los conflictos.
+exports.historyPage = async (req, res, next) => {
+
+    try {
+        const projectId = req.params.projectId;
+        const project = await seda.project(projectId);
+
+        const milestoneId = req.params.milestoneId;
+        const milestone = await seda.milestone(milestoneId);
+
+        res.render('milestones/showMilestoneHistory', {
+            project,
+            milestone
+        });
+
+    } catch (error) {
+        next(error);
+    }
+};
+
+// El cliente hace un rollback del rechazo del milestome submission.
+exports.clientRollbackRejectedSubmission = async (req, res, next) => {
+
+    try {
+
+        const projectId = req.params.projectId;
+        const milestoneId = req.params.milestoneId;
+
+        await seda.milestoneClientRollbackRejectedSubmission(milestoneId);
+
+        res.redirect('/projects/' + projectId);
+
+    } catch (error) {
+        next(error);
+    }
+};
+
+
+// El cliente añade un comentario a la historia de un milestone
+exports.createClientHistoryComments = async (req, res, next) => {
+
+    try {
+        const {comment} = req.body;
+
+        const projectId = req.params.projectId;
+        const milestoneId = req.params.milestoneId;
+
+        await seda.milestoneClientAddHistoryComment(milestoneId, comment);
+
+        res.redirect('/projects/' + projectId + '/milestones/' + milestoneId + '/history');
+
+    } catch (error) {
+        next(error);
+    }
+};
+
+// El consultor añade un comentario a la historia de un milestone
+
+exports.createConsultantHistoryComments = async (req, res, next) => {
+
+    try {
+        const {comment} = req.body;
+
+        const projectId = req.params.projectId;
+        const milestoneId = req.params.milestoneId;
+
+        await seda.milestoneConsultantAddHistoryComment(milestoneId, comment);
+
+        res.redirect('/projects/' + projectId + '/milestones/' + milestoneId + '/history');
+
+    } catch (error) {
+        next(error);
+    }
+};
+
+
+
 
 

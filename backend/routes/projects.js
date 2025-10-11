@@ -271,4 +271,36 @@ router.put('/:projectId(\\d+)/milestones/:milestoneId(\\d+)/acceptOrRejectSubmis
     permissionController.userTypesRequired({projectClient: true}),
     milestoneController.clientAcceptOrRejectSubmittedMilestoneUpdate);
 
+
+// === Disputa
+
+// Muestra la pagina con la historia del milestone para que el cliente y el consultor se envien mensajes
+// y resuelvan los conflictos.
+router.get('/:projectId(\\d+)/milestones/:milestoneId(\\d+)/history',
+    permissionController.isAuthenticated,
+    permissionController.userTypesRequired({client: true, projectConsultant: true}),
+    milestoneController.historyPage);
+
+// El cliente hace un roolback del rechazo del milestone submission.
+router.put('/:projectId(\\d+)/milestones/:milestoneId(\\d+)/rollbackSubmission',
+    permissionController.isAuthenticated,
+    permissionController.userTypesRequired({projectClient: true}),
+    milestoneController.clientRollbackRejectedSubmission);
+
+// El cliente añade un comentario a la historia del milestone
+router.post('/:projectId(\\d+)/milestones/:milestoneId(\\d+)/history/clientComments',
+    permissionController.isAuthenticated,
+    permissionController.userTypesRequired({projectClient: true}),
+    milestoneController.createClientHistoryComments);
+
+
+// El consultor añade un comentario a la historia del milestone
+router.post('/:projectId(\\d+)/milestones/:milestoneId(\\d+)/history/consultantComments',
+    permissionController.isAuthenticated,
+    permissionController.userTypesRequired({projectConsultant: true}),
+    milestoneController.createConsultantHistoryComments);
+
+
+
+
 module.exports = router;
