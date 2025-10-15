@@ -23,6 +23,7 @@ const Project = require('./project')(sequelize);
 const Objective = require('./objective')(sequelize);
 const Constraint = require('./constraint')(sequelize);
 const Milestone = require('./milestone')(sequelize);
+const MilestoneLog = require('./milestoneLog')(sequelize);
 
 const Comment = require('./comment')(sequelize);
 
@@ -124,6 +125,10 @@ Comment.belongsTo(Project, {as: 'project', foreignKey: 'projectId'});
 // Relation 1-to-N between Developer and Milestone
 Developer.hasMany(Milestone, {as: 'milestones', foreignKey: 'developerId'});
 Milestone.belongsTo(Developer, {as: 'developer', foreignKey: 'developerId'});
+
+// Relations between MilestoneLog and Milestone
+Milestone.hasMany(MilestoneLog, {as: 'milestoneLogs', foreignKey: 'milestoneId'});
+MilestoneLog.belongsTo(Milestone, {as: 'milestone', foreignKey: 'milestoneId'});
 
 
 module.exports = sequelize;

@@ -16,6 +16,7 @@ const sedaProposal = require("./proposal");
 const sedaObjective = require("./objective");
 const sedaConstraint = require("./constraint");
 const sedaMilestone = require("./milestone");
+const sedaMilestoneLog = require("./milestoneLog");
 const sedaScope = require("./scope");
 const sedaClient = require("./client");
 const sedaDeveloper = require("./developer");
@@ -70,6 +71,8 @@ exports.milestoneClientRejectSubmission = sedaMilestone.milestoneClientRejectSub
 exports.milestoneClientRollbackRejectedSubmission = sedaMilestone.milestoneClientRollbackRejectedSubmission;
 exports.milestoneClientAddHistoryComment = sedaMilestone.milestoneClientAddHistoryComment;
 exports.milestoneConsultantAddHistoryComment = sedaMilestone.milestoneConsultantAddHistoryComment;
+
+exports.milestoneLogs = sedaMilestoneLog.milestoneLogs;
 
 exports.scopeSubmit = sedaScope.scopeSubmit;
 exports.scopeAccept = sedaScope.scopeAccept;

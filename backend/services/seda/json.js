@@ -1,3 +1,11 @@
+
+const md = require('markdown-it')({
+    html: false,        // Disable HTML tags in source
+    breaks: true,       // Convert '\n' in paragraphs into <br>
+    linkify: true,      // Autoconvert URL-like text to links
+    typographer: false, // Disable some language-neutral replacement + quotes beautification
+});
+
 /**
  * Convierte un objeto Attachment en un objeto JSON simplificado.
  *
@@ -320,6 +328,29 @@ const milestoneJson = milestone => {
     };
 };
 
+
+/**
+ * Convierte un objeto MilestoneLog en un objeto JSON.
+ *
+ * @function milestoneLogJson
+ * @param {Object} milestoneLog - Instancia del modelo MilestoneLog.
+ * @returns {Object|undefined} Objeto JSON del milestoneLog o `undefined`.
+ */
+const milestoneLogJson = milestoneLog => {
+
+    if (!milestoneLog) return undefined;
+
+
+    return {
+        fromClient: milestoneLog.fromClient,
+        fromConsultant: milestoneLog.fromConsultant,
+        title: milestoneLog.title,
+        msg: md.render(milestoneLog.msg ?? ""),
+        showDeveloper: milestoneLog.showDeveloper,
+        createdAt: milestoneLog.createdAt.valueOf()
+    };
+}
+
 /**
  * Convierte un objeto Skill en un objeto JSON.
  *
@@ -372,5 +403,6 @@ exports.budgetJson = budgetJson;
 exports.deliveryTimeJson = deliveryTimeJson;
 exports.projectTypeJson = projectTypeJson;
 exports.milestoneJson = milestoneJson;
+exports.milestoneLogJson = milestoneLogJson;
 exports.skillJson = skillJson;
 exports.commentJson = commentJson;

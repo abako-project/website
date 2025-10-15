@@ -4,9 +4,45 @@
 
 <h1>Historia del Milestone</h1>
 
-<p>
-    Bla bla bla con toda la historia
-</p>
+<section>
+
+    <% for (let milestoneLog of milestoneLogs) { %>
+
+        <article style="border: solid white 1px; margin: 5px; padding: 5px;   background-color: darkslateblue;">
+
+            <h1><%= milestoneLog.title %></h1>
+
+            <% if (milestoneLog.fromClient) { %>
+                <img class="attachment"
+                     src="/clients/<%= project.clientId %>/attachment">
+                <%= project.clientId?.name ?? "Anonymous" %>
+            <% } %>
+
+            <% if (milestoneLog.fromConsultant) { %>
+                <img class="attachment"
+                     src="/developers/<%= project.consultantId %>/attachment">
+                <%= project.consultantId?.name ?? "Anonymous" %>
+            <% } %>
+
+            <p>
+                <%- milestoneLog.msg %>
+            </p>
+
+            <p>
+                <small>
+                    (<%= new Date(milestoneLog.createdAt - browserTimezoneOffset + serverTimezoneOffset).toLocaleString() %>)
+                </small>
+            </p>
+
+            <% if (milestoneLog.showDeveloper) { %>
+                <img class="attachment"
+                     src="/developers/<%= milestone.developerId %>/attachment">
+                <%= milestone.developerId?.name ?? "Anonymous" %>
+            <% } %>
+        </article>
+
+    <% } %>
+</section>
 
 <% if (locals.loginUser && locals.loginUser.clientId === project.clientId) { %>
     <p>

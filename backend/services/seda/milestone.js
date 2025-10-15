@@ -3,7 +3,7 @@ const json = require("./json");
 
 const {
   models: {Developer, User, Attachment, Project,  Milestone, Role, Proficiency,
-    Skill, DeliveryTime}
+    Skill, DeliveryTime, MilestoneLog}
 } = require('../../models');
 
 const sequelize = require("../../models");
@@ -81,8 +81,21 @@ exports.milestoneCreate = async (projectId, {title, description, budget, deliver
 
   await milestone.setSkills(skillIds);
 
+   const milestoneLog = await MilestoneLog.create({
+       fromConsultant: true,
+        title: "Milestone Defined",
+        msg: `
+          * ${title}
+          * ${description}
+          * ${budget}
+          * ${deliveryTimeId}
+        `
+    });
 
-  return json.milestoneJson(milestone);
+    await milestoneLog.setMilestone(milestone);
+
+
+    return json.milestoneJson(milestone);
 };
 
 //-----------------------------------------------------------
@@ -119,7 +132,20 @@ exports.milestoneUpdate = async (milestoneId, {title, description, budget, deliv
 
   await milestone.setSkills(skillIds);
 
-  return json.milestoneJson(milestone);
+    const milestoneLog = await MilestoneLog.create({
+        fromConsultant: true,
+        title: "Milestone Edited",
+        msg: `
+          * ${title}
+          * ${description}
+          * ${budget}
+          * ${deliveryTimeId}
+        `
+    });
+
+    await milestoneLog.setMilestone(milestone);
+
+    return json.milestoneJson(milestone);
 };
 
 //-----------------------------------------------------------
@@ -221,6 +247,14 @@ exports.milestoneDeveloperAccept = async (milestoneId) => {
 
         await milestone?.update({state: states.MilestoneState.InProgress});
 
+
+        const milestoneLog = await MilestoneLog.create({
+            fromClient: true,
+            title: "Client approved Milestone",
+        });
+
+        await milestoneLog.setMilestone(milestone);
+
     } catch (error) {
         throw error;
     }
@@ -238,6 +272,14 @@ exports.milestoneDeveloperReject = async (milestoneId) => {
             developerId: null,
             state: states.MilestoneState.WaitingDeveloperAssignation
         });
+
+
+        const milestoneLog = await MilestoneLog.create({
+            fromClient: true,
+            title: "Client rejected Milestone",
+        });
+
+        await milestoneLog.setMilestone(milestone);
 
     } catch (error) {
         throw error;

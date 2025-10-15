@@ -477,9 +477,12 @@ exports.historyPage = async (req, res, next) => {
         const milestoneId = req.params.milestoneId;
         const milestone = await seda.milestone(milestoneId);
 
-        res.render('milestones/showMilestoneHistory', {
+        const milestoneLogs = await seda.milestoneLogs(milestoneId);
+
+        res.render('milestones/showMilestoneLogs', {
             project,
-            milestone
+            milestone,
+            milestoneLogs
         });
 
     } catch (error) {
