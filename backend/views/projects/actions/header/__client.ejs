@@ -6,10 +6,12 @@ if (locals.loginUser.clientId === project.clientId) {
     if (!project.state) {
         actions.push({
             title: "Review",
+            classes: "",
             callback: "/projects/" + project.id + "/edit",
         });
         actions.push({
             title: "Submit Project",
+            classes: "btn_primary",
             callback: "/projects/" + project.id + "/proposal_submit?_method=PUT",
         });
     }
@@ -17,10 +19,12 @@ if (locals.loginUser.clientId === project.clientId) {
     if (project.state && ["ProposalRejected"].includes(project.state)) {
         actions.push({
             title: "Review",
+            classes: "",
             callback: "/projects/" + project.id + "/edit",
         });
         actions.push({
             title: "Submit Project",
+            classes: "btn_primary",
             callback: "/projects/" + project.id + "/proposal_submit?_method=PUT",
         });
     }
@@ -28,6 +32,7 @@ if (locals.loginUser.clientId === project.clientId) {
     if (project.state && ["EscrowFundingNeeded"].includes(project.state)) {
         actions.push({
             title: "Lock the Funds and Start the Project",
+            classes: "btn_primary",
             callback: "/projects/" + project.id + "/start",
         });
     }

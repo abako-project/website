@@ -6,27 +6,28 @@
 
 <div id="appTwoColumns">
 
-
-    <div class="">
-
-        <div class="projectContainer1col">
-            <div class="projectProposal projectProposal__summary projectContainer">
-
-                <%- include("../proposals/info/_body", {project}) %>
-
-
-            <% if (project.milestones?.length) { %>
-                    <%- include("../milestones/info/_showMilestones", {project}) %>
-                <% } %>
-            </div>
-
-        </div>
+    <div class="col1">
+        <!-- Sidebar -->
+        <%- include('../components/_progressSidebar', {step: 3}) %>
     </div>
 
+    <div class="col2 projectContainer1col">
 
 
 
-    <div class="">
-        <%- include("./actions/body/_all", {project}) %>
+        <div class="projectProposal">
+
+            <%- include("../proposals/info/_body", {project}) %>
+
+
+        <% if (project.milestones?.length) { %>
+                <%- include("../milestones/info/_showMilestones", {project}) %>
+            <% } %>
+        </div>
+
+
+        <div class="">
+            <%- include("./actions/body/_all", {project}) %>
+        </div>
     </div>
 </div>

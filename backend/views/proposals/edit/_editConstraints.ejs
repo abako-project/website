@@ -1,35 +1,40 @@
-<div class="card-title">Constraints</div>
+<h5>Technical or functional constraints (optional)</h5>
 
 <ul>
     <% for (const i in project.constraints) { %>
         <% const constraint = project.constraints[i]; %>
-        <li>
-            <%= constraint.description %>
+        <li class="editConstraint">
+            <span class="description">
+                <%= constraint.description %>
+            </span>
 
-            <% if (locals.loginUser.clientId === project.clientId) { %>
-                        <a class="right btn btn_primary btn_href"
-                           href="/projects/<%= project.id %>/edit/<%= constraint.id %>?_method=DELETE">
-                                🗑️
-                        </a>
-            <% } %>
-
+            
             <% if (+i > 0) { %>
-                        <a class="right btn btn_primary btn_href"
-                                href="/projects/<%= project.id %>/edit/swaporder/<%= constraint.id %>/<%= project.constraints[+i - 1].id %>?_method=PUT">
-                                ▲
-                        </a>
+                <a class="right btn"
+                href="/projects/<%= project.id %>/edit/swaporder/<%= constraint.id %>/<%= project.constraints[+i - 1].id %>?_method=PUT">
+                ▲
+            </a>
             <% } else { %>
-                <button class="right btn btn_primary btn_href">▲</button>
-            <% } %>
+                <button class="right btn">▲</button>
+                <% } %>
+                
+                <% if (+i < project.constraints.length - 1) { %>
+                    <a class="right btn"
+                    href="/projects/<%= project.id %>/edit/swaporder/<%= constraint.id %>/<%= project.constraints[+i + 1].id %>?_method=PUT">
+                    ▼
+                </a>
+                <% } else { %>
+                    <a class="right btn">▼</a>
+                    <% } %>
+                    
+                    <!-- delete btn -->
+                    <% if (locals.loginUser.clientId === project.clientId) { %>
+                                <a class="right btn"
+                                   href="/projects/<%= project.id %>/edit/<%= constraint.id %>?_method=DELETE">
+                                        <i class="ri-delete-bin-7-line"></i>
+                                </a>
+                    <% } %>
 
-            <% if (+i < project.constraints.length - 1) { %>
-                        <a class="right btn btn_primary btn_href"
-                           href="/projects/<%= project.id %>/edit/swaporder/<%= constraint.id %>/<%= project.constraints[+i + 1].id %>?_method=PUT">
-                                ▼
-                        </a>
-            <% } else { %>
-                <a class="right btn btn_primary btn_href">▼</a>
-            <% } %>
 
             <div class="clear"></div>
         </li>

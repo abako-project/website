@@ -62,8 +62,7 @@
  Project Proposal
  */
 .buttonContainer
-    display: flex
-    justify-content: space-between
+
 .formContainer
     @extend .bubble
     background-color: $base-2
@@ -78,20 +77,21 @@
     padding: $sp-15
     @extend .bubble
     background-color: $base-2
-    // @include flex-start
-    // flex-direction: column
-    // gap: $sp-14
     &__form
-    &__btn
+    &__btnContainer
+        margin-top: $sp-12
         @include flex-end
+        justify-content: space-between  
 
 .projectProposal
     &__form
         display: grid
         grid-template-columns: repeat(2, 1fr)
-        grid-template-rows: repeat(3, 1fr)
+        grid-template-rows: repeat(3, auto)
+        align-items: start
         gap: $sp-14
-
+        & > div
+            height: fit-content
 
         .area1 // title
             grid-area: 1/1/2/2
@@ -112,3 +112,7 @@
                     margin: 0
 
     &__summary
+        @extend .bubble
+        padding: $sp-10 $sp-10 $sp-10 $sp-12
+        background-color: $base-2
+

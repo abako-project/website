@@ -15,11 +15,12 @@
   <div class="form-group area2">
     <label for="summary">Summary:</label>
     <textarea id="summary" name="summary"><%= project.summary %></textarea>
+    <small>Max. 280 characters</small>
   </div>
 
   <div class="form-group area3">
     <label for="projectTypeId">Project Type:</label>
-    <select id="projectTypeId" name="projectTypeId">
+    <select id="projectTypeId" name="projectTypeId" class="select">
         <option value="">None</option>
         <% for (const projectType of allProjectTypes) { %>
             <option value="<%= projectType.id %>"
@@ -37,16 +38,17 @@
     >
   </div>
 
-  <div class="form-group ">
+  <div class="form-group icon-left">
     <label for="url">URL:</label>
     <input
       type="text"
       id="url"
       name="url"
       value="<%= project.url %>"
-      placeholder="URL"
+      placeholder="       URL"
       autocomplete="off"
     />
+    <i class="ri-global-fill LAURA"></i>
   </div>
 
   <div class="form-group input--radio">
@@ -82,7 +84,7 @@
 
     </div>
 
-    <div class="form-group">
+    <div class="form-group icon-right LAURA">
       <label for="deliveryDate">Delivery Date:</label>
       <input
         type="datetime-local"
@@ -92,6 +94,7 @@
         placeholder="Delivery Date"
         autocomplete="off"
       />
+      <i class="ri-calendar-2-line LAURA"></i>
     </div>
 
 </div>
