@@ -17,6 +17,7 @@
     "express-flash": "^0.0.2",
     "express-partials": "^0.3.0",
     "express-session": "^1.17.3",
+    "markdown-it": "^14.1.0",
     "method-override": "^3.0.0",
     "multer": "^2.0.1",
     "node-localstorage": "^3.0.5",
