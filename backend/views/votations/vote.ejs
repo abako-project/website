@@ -1,0 +1,60 @@
+
+
+<%
+const members = [
+  { name: "CodeCrafter", role: "Frontend Developer", rating: 0 },
+  { name: "John Doe", role: "Project Manager", rating: 5 },
+  { name: "TuringAI", role: "Backend Engineer", rating: 3 },
+  { name: "PixelWiz", role: "UX Designer", rating: 3 }
+];
+%>
+<style>
+  .contenedor {
+    display: grid;
+    grid-template-columns: auto auto;
+  }
+</style>
+
+<%- include('../components/_cancelTopbar', {step: 1}) %>
+
+<div class="contenedor appHeader appHeader--votations">
+
+  <div class="appHeader__left">
+    <small class="link">
+      <i class="ri-arrow-left-line"></i>
+      <span> Polkadot Treasury Dashboard</span>
+    </small>
+    <h1 class="appHeader__title">Evaluate team members</h1>
+    <p class="appHeader__subtitle">Choose the evaluation for each team member</p>
+  </div>
+
+  <div class="appHeader__right">
+    <button class="btn btn_primary submitVotations">Submit Reviews</button>
+  </div>
+
+</div>
+
+<section class="votations">
+  <% members.forEach((member,index) => { %>
+    <div class="votationCard" data-member="<%= member.name %>">
+      <div class="votationCard__left">
+        <img class="attachment" src="/images/elbicho.png"/>
+        <div> 
+          <div class="votationCard__title"><%= member.name %></div>
+          <div class="votationCard__subtitle"><%= member.role %></div>
+        </div>
+      </div>
+
+      <div class="votationCard__right">
+        <!--TO DO AÑADIR NUMERO DE ESTRELLA SELECCIONADAS--->
+        <span class="votationCard__stars">
+          <% for (let i = 1; i <= 5; i++) { %>
+            <i class="star" data-value="<%= i %>">☆</i>
+          <% } %>
+        </span>
+      </div>
+    </div>
+  <% }) %>
+</section>
+
+<script src="/javascripts/votations.js"></script>

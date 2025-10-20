@@ -1,0 +1,46 @@
+.votations
+    display: flex
+    flex-direction: column
+    gap: 8px
+    padding: 40px 280px 
+.votationCard
+    display: flex
+    justify-content: space-between
+    align-items: center
+    background-color: $base-2
+    border-radius: 8px
+    padding: 10px 24px
+    color: $text-dark
+    border: 1px solid $stroke
+    &__left
+        display: flex
+        align-items: center
+        gap: 12px
+        div
+            display: flex
+            flex-direction: column
+            gap: 2px
+        .attachment
+            width: 45px
+            height: 45px
+    &__title
+        font-weight: bold
+        font-size: 1.1em
+    &__subtitle
+        font-size: .9em
+        opacity: .8
+    &__right
+        display: flex
+        align-items: center
+        gap: 6px
+    &__score
+        font-size: .9em
+        font-weight: bold
+    &__stars
+        cursor: pointer
+        color: $brand
+        font-size: 1.1em
+        .star
+            transition: color 0.2s
+            &:hover
+                color: darken($brand, 10%)

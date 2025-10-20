@@ -10,6 +10,7 @@ const projectsRouter = require('./projects');
 const virtoRouter = require('./virto');
 const rolesRouter = require('./roles');
 const backdoorRouter = require('./backdoor');
+const votesRouter = require('./votes');
 
 
 router.use('/auth', authRouter);
@@ -21,5 +22,6 @@ router.use('/projects', projectsRouter);
 router.use('/roles', rolesRouter);
 router.use('/virto', virtoRouter);
 router.use('/backdoor', backdoorRouter);
+router.use('/votes', votesRouter);
 
 module.exports = router;
