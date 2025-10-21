@@ -12,11 +12,13 @@ function initializeVotations() {
 // incialización de cada tarjeta de votación
 function setupCard(card) {
   const stars = card.querySelectorAll(".star");
+  const scoreElement = card.querySelector(".votationCard__score");
 
   stars.forEach(star => {
     star.addEventListener("click", () => {
       const rating = parseInt(star.dataset.value);
       updateStars(stars, rating);
+      scoreElement.textContent = rating;
       card.dataset.rating = rating;
     });
   });
