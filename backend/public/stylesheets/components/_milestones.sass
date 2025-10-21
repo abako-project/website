@@ -1,3 +1,28 @@
+
+.milestone
+    background-color: blue
+    &__header
+        display: flex
+        flex-direction: column
+        gap: $sp-2
+        .title
+            font-weight: 600
+        .subtitle
+            display: inline-flex
+            gap: $sp-5
+            color: $text-dark-2
+            small
+                width: fit-content
+    &__description
+    &__role
+    &__dev
+        margin-top: $sp-5
+        @include flex-start
+        align-items: center
+        gap: $sp-5
+    &__actions
+        margin-top: $sp-8 
+    
 .milestones
     &__title
         margin-bottom: 8px
@@ -17,11 +42,47 @@
                 background-color: $base-2
         &__milestone
 
+// Vista del dashboard
+.dashboardMilestones
+    display: flex
+    gap: $sp-10
+    align-items: strech
+    &__milestoneCol
+        padding: $sp-8 $sp-7
+        border-radius: $radi-6
+        background-color: $fill-1
+        flex: 1
+        display: flex
+        flex-direction: column
+        gap: $sp-7
+        h3 // es un wrapper que hay que separar en título y counter
+            min-height: 40px
+            padding: 0 $sp-7
+            @include flex-start
+            align-items: center
+            gap: $sp-5
+            border-radius: $radi-6
+            border: 1px solid $stroke
+            background-color: $base-2
+            box-shadow: $elevation-xs
 
-        .milestone
-            background-color: blue
-            &__title
-            &__description
-            &__role
-            &__dev
-            &__actions
+            font-size: $text-lg
+            line-height: $lh-lg
+            font-weight: 500
+        .milestoneCard
+            padding: $sp-7
+            border-radius: $radi-6
+            border: 1px solid $stroke
+            background-color: $base-1
+            box-shadow: $elevation-xs
+
+
+/* Notas sobre componente Milestone
+    - componente primitivo .milestone
+    - componente desde las distintas vistas
+        * showProject
+        * developer/dashboard/milestones
+        *
+
+
+            

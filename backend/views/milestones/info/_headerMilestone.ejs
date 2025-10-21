@@ -1,9 +1,11 @@
-<div class="form-group">
-    <strong><%= milestone.title %></strong> -
+<h5 class="title"><%= milestone.title %></h5>
 
-    <small>(<%= milestone.budget %> USD)</small> -
-
-    <small>Delivery:</small> <%= milestone.deliveryTime?.description %>
+<span class="subtitle">
+    <small>(<%= milestone.budget %> USD)</small>
+</span>
+<span class="subtitle">
+    <small>Delivery: </small> <%= milestone.deliveryTime?.description %> 
     <small> (<%= new Date(milestone.deliveryDate - browserTimezoneOffset + serverTimezoneOffset).toLocaleString() %>) </small>
-</div>
+</span>
+
 

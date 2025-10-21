@@ -11,30 +11,30 @@
         <% let submissionRejectedByClientMilestones = project.milestones.filter(milestone => (milestone.state === "RejectedByClient")); %>
         <% let completedMilestones = project.milestones.filter(milestone => (milestone.state === "Completed")); %>
 
-        <section style="display: flex; align-items: strech;">
+        <section class="dashboardMilestones">
 
-            <div style="flex: 1; border: solid white 2px; margin: 15px 5px; padding: 5px;  background-color: darkslategrey;">
+            <div class="dashboardMilestones__milestoneCol">
                 <h3> Scheduled Milestones (<%= milestonesWaitingForDeveloperAssignation.length %>) </h3>
                 <% for (let milestone of milestonesWaitingForDeveloperAssignation) { %>
                     <%- include("./__milestoneGridItem", {project, milestone}) %>
                 <% } %>
             </div>
 
-            <div style="flex: 1; border: solid white 2px; margin: 15px 5px; padding: 5px;  background-color: darkslategrey;">
+            <div class="dashboardMilestones__milestoneCol">
                 <h3> In Client Review (<%= milestonesWaitingForClientAcceptSubmission.length %>) </h3>
                 <% for (let milestone of milestonesWaitingForClientAcceptSubmission) { %>
                     <%- include("./__milestoneGridItem", {project, milestone}) %>
                 <% } %>
             </div>
 
-            <div style="flex: 1; border: solid white 2px; margin: 15px 5px; padding: 5px;  background-color: darkslategrey;">
+            <div  class="dashboardMilestones__milestoneCol">
                 <h3> Rejected (<%= submissionRejectedByClientMilestones.length %>) </h3>
                 <% for (let milestone of submissionRejectedByClientMilestones) { %>
                     <%- include("./__milestoneGridItem", {project, milestone}) %>
                 <% } %>
             </div>
 
-            <div style="flex: 1; border: solid white 2px; margin: 15px 5px; padding: 5px;  background-color: darkslategrey;">
+            <div  class="dashboardMilestones__milestoneCol">
                 <h3> Completed (<%= completedMilestones.length %>) </h3>
                 <% for (let milestone of completedMilestones) { %>
                     <%- include("./__milestoneGridItem", {project, milestone}) %>
