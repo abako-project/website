@@ -1,5 +1,5 @@
 
-<form id="newConstraintForm" action="/projects/<%= project.id %>/constraints" method="POST">
+<form id="newConstraintForm" class="newConstraintForm" action="/projects/<%= project.id %>/constraints" method="POST">
 
     <div class="form-group">
         <input type="text" id="description" name="description"
@@ -7,7 +7,7 @@
                placeholder="Description" autocomplete="off">
     </div>
 
-    <button class="right btn__link" onclick="submitFormById('newConstraintForm'); return false;" >Add Technical/Functional Constraint</button>
+    <button class="btn__link" onclick="submitFormById('newConstraintForm'); return false;" >Add Technical/Functional Constraint</button>
 
     <div class="clear"></div>
 

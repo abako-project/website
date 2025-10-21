@@ -1,5 +1,5 @@
 <% for (let action of actions) { %>
-    <a class="projectFlow btn btn_primary btn_href"
+    <a class="btn <%= action.classes %>"
             href="<%= action.callback %>">
         <%= action.title %>
     </a>

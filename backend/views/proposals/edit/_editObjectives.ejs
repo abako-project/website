@@ -1,36 +1,42 @@
-<div class="card-title">Objectives</div>
+<h5>Key objectives</h5>
+<p>Write these in terms of user value or outcomes. For example: “Build a simple front-end to interact with my contract”</p>
 
 <ul>
     <% for (const i in project.objectives) { %>
         <% const objective = project.objectives[i]; %>
-        <li>
+        <li class="editObjective">
+            <span class="description">
+                <%= objective.description %>
+            </span>
 
-            <%= objective.description %>
 
-            <% if (locals.loginUser.clientId === project.clientId) { %>
-                        <a class="right btn btn_primary btn_href"
-                           href="/projects/<%= project.id %>/objectives/<%= objective.id %>?_method=DELETE">
-                                🗑️
-                        </a>
-            <% } %>
 
             <% if (+i > 0) { %>
-                <a class="right btn btn_primary btn_href"
+                <a class="right btn"
                         href="/projects/<%= project.id %>/objectives/swaporder/<%= objective.id %>/<%= project.objectives[+i - 1].id %>?_method=PUT">
                     ▲
                 </a>
             <% } else { %>
-                <a class="right btn btn_primary btn_href">▲</a>
+                <a class="right btn">▲</a>
             <% } %>
 
             <% if (+i < project.objectives.length - 1) { %>
-                <a class="right btn btn_primary btn_href"
+                <a class="right btn"
                    href="/projects/<%= project.id %>/objectives/swaporder/<%= objective.id %>/<%= project.objectives[+i + 1].id %>?_method=PUT">
                     ▼
                 </a>
             <% } else { %>
-                <a class="right btn btn_primary btn_href">▼</a>
+                <a class="right btn">▼</a>
             <% } %>
+
+            <!-- Delete btn -->
+            <% if (locals.loginUser.clientId === project.clientId) { %>
+                        <a class="right btn"
+                           href="/projects/<%= project.id %>/objectives/<%= objective.id %>?_method=DELETE">
+                                <i class="ri-delete-bin-7-line"></i>
+                        </a>
+            <% } %>
+
 
             <div class="clear"></div>
         </li>

@@ -1,20 +1,28 @@
+// LAURA, to do -> refactor input styles
+
+  
 label
   font-weight: 400
-input, select, textarea
+input, textarea, select
   @extend .bubble
   min-height: 36px
+  padding: 0 $sp-8 0 $sp-7
   display: flex
   flex-direction: column
+  justify-content: center
   gap: $sp-5
   border-radius: $radi-6
   font-weight: 500
-  justify-content: center
-
   &:focus
     outline: 1px solid $brand
     box-shadow: $shadow-2
   &::placeholder, &:disabled, &:invalid
     color: $text-dark-3
+
+select, .select
+  padding-top: $sp-4
+  // LAURA, to do -> select & options styles
+  // LAURA, to do -> radio styles
 
 .input
   min-height: 36px
@@ -33,32 +41,36 @@ input, select, textarea
     color: $text-dark-2
 
 .form-group
+  @include flex-start
+  flex-direction: column
+  justify-content: center
+  gap: $sp-6
   i
     color: $fill-4
+    font-size: 24px
   small
     color: $text-dark-2
     font-size: $text-xs
     line-height: $lh-xs
     font-weight: 400
 
-.date-picker
+// form-groups con iconos en el input
+.form-group
   position: relative
-  input
-    &::-webkit-calendar-picker-indicator
+  &  + .icon-right
+    i
       position: absolute
-      top: 0
-      right: $sp-4
-      width: 50%
-      height: 40%
-      transform: translateY(70%)
-      opacity: 0
-      cursor: pointer
-      border: 1px solid pink
-  i
-    position: absolute
-    right: $sp-8
-    top: 45%
-    color: $fill-5
+      right: $sp-8
+      top: 50%
+      transform: translateY(20%)
+      color: $fill-5
+  &  + .icon-left
+    i
+      position: absolute
+      left: $sp-8
+      top: 50%
+      transform: translateY(20%)
+      color: $fill-5
 
 /**--------------------------------------------------------------------------------------
  TEXT

@@ -16,7 +16,6 @@
 
             <div class="card">
                 <%- include("./edit/_editObjectives", {project}) %>
-                <p>Write these in terms of user value or outcomes. For example: “Build a simple front-end to interact with my contract”</p>
 
                 <% if ((locals.loginUser.clientId === project.clientId &&
                                 !project.state) ||
@@ -43,9 +42,9 @@
                 <% } %>
             </div>
 
-            <div class="buttonContainer">
+            <div class="proposalForm__btnContainer">
 
-                <a class="btn btn_primary btn_href"
+                <a class="btn"
                    href="/projects/<%= project.id %>/edit">
                     Back
                 </a>

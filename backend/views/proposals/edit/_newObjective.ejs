@@ -1,5 +1,5 @@
 
-<form  id="newObjectiveForm" action="/projects/<%= project.id %>/objectives" method="POST">
+<form  id="newObjectiveForm" class="newObjectiveForm" action="/projects/<%= project.id %>/objectives" method="POST">
 
     <div class="form-group">
         <input type="text" id="description" name="description"
@@ -7,7 +7,7 @@
                placeholder="Description" autocomplete="off">
     </div>
 
-    <button class="right btn__link" onclick="submitFormById('newObjectiveForm'); return false;" >Add Objective</button>
+    <button class="btn__link" onclick="submitFormById('newObjectiveForm'); return false;" >Add Objective</button>
 
     <div class="clear"></div>
 
