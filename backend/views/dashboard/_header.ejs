@@ -24,12 +24,12 @@
 
   <% if (locals.loginUser.developerId) { %>
         <div class="appHeader__tabs">
-            <a class="tab"
+            <a class="tab <%= activeTab === 'projects' ? 'tab--active' : '' %>"
                href="/developers/<%= locals.loginUser.developerId %>/projects">
                 Projects
             </a>
 
-            <a class="tab"
+            <a class="tab <%= activeTab === 'milestones' ? 'tab--active' : '' %>"
                href="/developers/<%= locals.loginUser.developerId %>/milestones">
                 Milestones
             </a>

@@ -10,15 +10,15 @@
         <%- include('../components/_progressSidebar', {step: 3}) %>
     </div>
 
-    <div class="col2">
+    <div class="col2 mainContentContainer">
         <%- include('../components/headers/_basic', {
                title: "Ready to share this with our team?",
                subtitle: "Once submitted, your project will be reviewed and voted on by DAO members within 48–72 hours."}) %>
 
         <%- include('./info/_header', {project}) %>
 
-        <div class="projectContainer1col">
-            <div class="projectProposal projectProposal__summary">
+        <div class="projectProposal">
+            <div class="projectProposal__summary">
 
                 <%- include('./info/_body', {project}) %>
 

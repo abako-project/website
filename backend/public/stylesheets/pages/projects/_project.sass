@@ -56,18 +56,20 @@
     max-height: 100dvh
     display: grid
     grid-template-columns: 1fr 1fr
-
+    gap: 24px
     &__col1
         width: 100%
+        h4
+            margin-bottom: 8px
     &__col2
         width: 100%
+    .projectInfo__body
+        @extend .bubble
 
-.projectContainer1col
+.mainContentContainer // esto moverlo al main.sass -> hacer un lib/_containers/layoutClasses/mixins?
     padding: $sp-12 $sp-17
     min-height: 80%
     height: fit-content
-
-
 
 // Revisar
 
