@@ -11,7 +11,7 @@
             
             <% if (+i > 0) { %>
                 <a class="right btn"
-                href="/projects/<%= project.id %>/edit/swaporder/<%= constraint.id %>/<%= project.constraints[+i - 1].id %>?_method=PUT">
+                href="/projects/<%= project.id %>/constraints/swaporder/<%= constraint.id %>/<%= project.constraints[+i - 1].id %>?_method=PUT">
                 ▲
             </a>
             <% } else { %>
@@ -20,7 +20,7 @@
                 
                 <% if (+i < project.constraints.length - 1) { %>
                     <a class="right btn"
-                    href="/projects/<%= project.id %>/edit/swaporder/<%= constraint.id %>/<%= project.constraints[+i + 1].id %>?_method=PUT">
+                    href="/projects/<%= project.id %>/constraints/swaporder/<%= constraint.id %>/<%= project.constraints[+i + 1].id %>?_method=PUT">
                     ▼
                 </a>
                 <% } else { %>
@@ -30,7 +30,7 @@
                     <!-- delete btn -->
                     <% if (locals.loginUser.clientId === project.clientId) { %>
                                 <a class="right btn"
-                                   href="/projects/<%= project.id %>/edit/<%= constraint.id %>?_method=DELETE">
+                                   href="/projects/<%= project.id %>/constraints/<%= constraint.id %>?_method=DELETE">
                                         <i class="ri-delete-bin-7-line"></i>
                                 </a>
                     <% } %>

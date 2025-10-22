@@ -12,9 +12,9 @@ module.exports = exports = {
     // pero la DAO no la ha asignado un consultor.
     ProposalPending: "ProposalPending",
 
-    // Una vez que la DAO asigna un consultor, se pasa al estado
-    // ProposalAccepted. En este estado se espera a que el consultor acepte o rechace la propuesta.
-    ProposalAccepted: "ProposalAccepted",
+    // Una vez que la DAO asigna un consultor a una propuesta pendiente, se pasa al estado WaitingForProposalApproval
+      // En este estado se espera a que el consultor acepte o rechace la propuesta.
+    WaitingForProposalApproval: "WaitingForProposalApproval",
 
     // El consultor rechaza la propuesta del cliente.
     ProposalRejected: "ProposalRejected", // rechazado por el consultor

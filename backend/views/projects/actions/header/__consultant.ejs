@@ -4,7 +4,7 @@ const actions = [];
 if (locals.loginUser.developerId === project.consultantId) {
 
 
-    if (project.state && ["ProposalAccepted"].includes(project.state)) {
+    if (project.state && ["WaitingForProposalApproval"].includes(project.state)) {
         actions.push({
             title: "Reject",
             callback: "/projects/" + project.id + "/proposal_reject?_method=PUT",

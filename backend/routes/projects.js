@@ -62,13 +62,13 @@ router.put('/:projectId(\\d+)/proposal_submit',
   permissionController.userTypesRequired({client: true}),
   projectController.proposalSubmit);
 
-// Rechazar el proyecto: estado = ProposalAccepted
+// Rechazar el proyecto: estado inicial = WaitingForProposalApproval
 router.put('/:projectId(\\d+)/proposal_reject',
   permissionController.isAuthenticated,
   permissionController.userTypesRequired({projectConsultant: true}),
   projectController.rejectProposal);
 
-// Aprobar el proyecto: estado = ProposalAccepted
+// Aprobar el proyecto: estado inicial = WaitingForProposalApproval
 router.put('/:projectId(\\d+)/proposal_approve',
   permissionController.isAuthenticated,
   permissionController.userTypesRequired({projectConsultant: true}),

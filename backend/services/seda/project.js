@@ -208,7 +208,7 @@ exports.projectSetState = async (projectId, state) => {
 
 /**
  * Si la propuesta no se ha publicado ya, entonces publica la propuesta y cambia su estado a `ProposalPending`.
- * Si la propuesta fue publicada y rechazada, entonces la republica y pasa al estado ProposalAccepted.
+ * Si la propuesta fue publicada y rechazada, entonces la republica y pasa al estado WaitingForProposalApproval.
  *
  * @async
  * @function proposalSubmit
@@ -230,7 +230,7 @@ exports.proposalSubmit = async (projectId) => {
         }, {where: {id: projectId}});
     } else if (project?.state === states.ProjectState.ProposalRejected) {
         await Project.update({
-            state: states.ProjectState.ProposalAccepted
+            state: states.ProjectState.WaitingForProposalApproval
         }, {where: {id: projectId}});
     } else {
         throw new Error('Internal Error. Invalid project state.');
@@ -276,7 +276,7 @@ exports.rejectProposal = async (projectId) => {
 //-----------------------------------------------------------
 
 /**
- * Asigna un consultor a un proyecto y cambia el estado a `ProposalAccepted`.
+ * Asigna un consultor a un proyecto y cambia el estado a `WaitingForProposalApproval`.
  *
  * @async
  * @function projectSetConsultant
@@ -289,7 +289,7 @@ exports.projectSetConsultant = async (projectId, consultantId) => {
 
     await Project.update({
         consultantId,
-        state: states.ProjectState.ProposalAccepted
+        state: states.ProjectState.WaitingForProposalApproval
     }, {where: {id: projectId}});
 };
 
