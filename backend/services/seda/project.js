@@ -264,12 +264,14 @@ exports.approveProposal = async (projectId) => {
  * @async
  * @function rejectProposal
  * @param {number} projectId - ID del proyecto.
+ * @param {string} proposalRejectionReason - Consultant proposal rejection reason.
  * @returns {Promise<void>}
  * @throws {Error} Si falla la actualización del estado.
  */
-exports.rejectProposal = async (projectId) => {
+exports.rejectProposal = async (projectId, proposalRejectionReason) => {
     await Project.update({
-        state: states.ProjectState.ProposalRejected
+        state: states.ProjectState.ProposalRejected,
+        proposalRejectionReason
     }, {where: {id: projectId}});
 };
 

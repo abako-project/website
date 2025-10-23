@@ -1,0 +1,64 @@
+<% if (locals.loginUser && locals.loginUser.developerId === project.consultantId) { %>
+
+    <% if (project.state && ["WaitingForProposalApproval"].includes(project.state)) { %>
+
+        <div style="display: flex;  flex-flow: column; justify-content: flex-end;">
+            <div style="padding: 5px; margin: 10px; width: 50%;">
+                <a class="right projectFlow btn btn_primary btn_href"
+                   href="/projects/<%= project.id %>/proposal_approve?_method=PUT">
+                    Approve Proposal
+                </a>
+            </div>
+
+            <div class="clear"></div>
+
+            <div style="padding: 5px; margin: 10px; width: 50%;  border: 5px dotted seagreen;">
+
+                <p>
+                    <img class="attachment"
+                         src="/developers/<%= project.consultantId %>/attachment" />
+                    <%= project.consultant.name %> rejected your project
+                </p>
+                <p>
+                    Your Review:
+                </p>
+                <p>
+                    Provide an explaination of your rejection.
+                </p>
+                <form id="proposalRejectForm" action="/projects/<%= project.id %>/proposal_reject?_method=PUT"
+                      method="POST">
+
+                    <div class="form-group">
+                        <input type="text" name="proposalRejectionReason"
+                               value=""
+                               placeholder="Type here your commentary (required)"
+                               autocomplete="off">
+                    </div>
+
+                    <button class="right projectFlow btn_primary"
+                            onclick="submitFormById('proposalRejectForm'); return false;">
+                        Reject Proposal
+                    </button>
+            </div>
+
+            <div style="padding: 5px; margin: 10px; width: 50%;">
+
+                <p>
+                    Have some doubts about the project brief?
+                </p>
+                <p>
+                    Contact the client to further investigate.
+                </p>
+                <p>
+                    <%= project.client.user.email %>
+                </p>
+
+                <div class="clear"></div>
+
+                </form>
+
+            </div>
+        </div>
+
+    <% } %>
+<% } %>

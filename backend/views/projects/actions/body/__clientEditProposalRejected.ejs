@@ -1,0 +1,37 @@
+<% if (locals.loginUser && locals.loginUser.clientId === project.clientId) { %>
+
+    <% if (project.state && ["ProposalRejected"].includes(project.state)) { %>
+
+        <div style="display: flex;  flex-flow: column; justify-content: flex-end;">
+
+            <div style="padding: 5px; margin: 10px; width: 50%;  border: 5px dotted seagreen;">
+                <p>
+                    <img class="attachment"
+                         src="/developers/<%= project.consultantId %>/attachment" />
+                    <%= project.consultant.name %> rejected your project
+                </p>
+                <p>
+                    <%= project.proposalRejectionReason %>.
+                </p>
+            </div>
+
+            <div style="padding: 5px; margin: 10px; width: 50%;">
+                <p>
+                    Have some doubts about the project rejection?
+                </p>
+                <p>
+                    Contact the consultant at
+                    <%= project.consultant.user.email %>
+                </p>
+            </div>
+
+            <div style="padding: 5px; margin: 10px; width: 50%;">
+                <a class="right projectFlow btn btn_primary btn_href"
+                   href="/projects/<%= project.id %>/edit">
+                    Change proposals and re-submit
+                </a>
+            </div>
+        </div>
+
+    <% } %>
+<% } %>

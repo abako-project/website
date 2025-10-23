@@ -334,8 +334,10 @@ exports.rejectProposal = async (req, res, next) => {
 
   const projectId = req.params.projectId;
 
-  try {
-    await seda.rejectProposal(projectId);
+    const proposalRejectionReason = req.body.proposalRejectionReason || ""
+
+    try {
+    await seda.rejectProposal(projectId, proposalRejectionReason);
 
     console.log('Success: Project rejected successfully.');
     res.redirect('/projects/' + projectId);

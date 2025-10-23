@@ -65,6 +65,7 @@ const projectJson = project => {
         budgetId: project.budgetId,
         deliveryTimeId: project.deliveryTimeId,
         deliveryDate: project.deliveryDate.valueOf(),
+        proposalRejectionReason: project.proposalRejectionReason,
         clientId: project.clientId,
         consultantId: project.consultantId,
         createdAt: project.createdAt.valueOf(),

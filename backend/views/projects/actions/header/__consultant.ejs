@@ -4,17 +4,6 @@ const actions = [];
 if (locals.loginUser.developerId === project.consultantId) {
 
 
-    if (project.state && ["WaitingForProposalApproval"].includes(project.state)) {
-        actions.push({
-            title: "Reject",
-            callback: "/projects/" + project.id + "/proposal_reject?_method=PUT",
-        });
-        actions.push({
-            title: "Approve",
-            callback: "/projects/" + project.id + "/proposal_approve?_method=PUT",
-        });
-    }
-
     if (project.state && ["ScopingInProgress"].includes(project.state)) {
         actions.push({
             title: "Review Project",

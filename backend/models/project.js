@@ -25,6 +25,9 @@ module.exports = (sequelize) => {
         },
         deliveryDate: {
             type: DataTypes.DATE
+        },
+        proposalRejectionReason: {
+            type: DataTypes.TEXT
         }
     }, {
         sequelize,

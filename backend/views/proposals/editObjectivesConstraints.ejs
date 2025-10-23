@@ -15,30 +15,21 @@
         <div class="proposalForm">
 
             <div class="card">
-                <%- include("./edit/_editObjectives", {project}) %>
-
-                <% if ((locals.loginUser.clientId === project.clientId &&
-                                !project.state) ||
-                        (locals.loginUser.developerId === project.consultantId &&
-                                project.state &&
-                                ["ScopingInProgress"].includes(project.state))) { %>
-
-                    <%- include("./edit/_newObjective", {project}) %>
-
+                <% if (locals.loginUser.clientId === project.clientId) { %>
+                    <% if (!project.state || ["ProposalRejected"].includes(project.state)) { %>
+                        <%- include("./edit/_editObjectives", {project}) %>
+                        <%- include("./edit/_newObjective", {project}) %>
+                    <% } %>
                 <% } %>
             </div>
 
 
             <div class="card">
-                <%- include("./edit/_editConstraints", {project}) %>
-
-                <% if ((locals.loginUser.clientId === project.clientId &&
-                                !project.state) ||
-                        (locals.loginUser.developerId === project.consultantId &&
-                                project.state &&
-                                ["ScopingInProgress"].includes(project.state))) { %>
-                    <%- include("./edit/_newConstraint", {project}) %>
-
+                <% if (locals.loginUser.clientId === project.clientId) { %>
+                    <% if (!project.state || ["ProposalRejected"].includes(project.state)) { %>
+                        <%- include("./edit/_editConstraints", {project}) %>
+                        <%- include("./edit/_newConstraint", {project}) %>
+                    <% } %>
                 <% } %>
             </div>
 
@@ -49,15 +40,13 @@
                     Back
                 </a>
 
-                <% if (locals.loginUser.clientId === project.clientId &&
-                        (!project.state ||
-                         ["ProposalRejected"].includes(project.state))) { %>
-
-                    <a class="btn btn_primary btn_href"
-                       href="/projects/<%= project.id %>/submit">
-                        Next: Review & Submit
-                    </a>
-
+                <% if (locals.loginUser.clientId === project.clientId) { %>
+                    <% if (!project.state || ["ProposalRejected"].includes(project.state)) { %>
+                        <a class="btn btn_primary btn_href"
+                           href="/projects/<%= project.id %>/submit">
+                            Next: Review & Submit
+                        </a>
+                    <% } %>
                 <% } %>
             </div>
 
