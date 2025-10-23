@@ -1,5 +1,13 @@
 
 
+<%
+const members = [
+  { name: "CodeCrafter", role: "Frontend Developer", rating: 0 },
+  { name: "John Doe", role: "Project Manager", rating: 5 },
+  { name: "TuringAI", role: "Backend Engineer", rating: 3 },
+  { name: "PixelWiz", role: "UX Designer", rating: 3 }
+];
+%>
 <style>
   .contenedor {
     display: grid;
@@ -27,18 +35,18 @@
 </div>
 
 <section class="votations">
-  <% voteData.members.forEach((member,index) => { %>
-    <div class="votationCard" data-member="<%= member.userId %>">
+  <% members.forEach((member,index) => { %>
+    <div class="votationCard" data-member="<%= member.name %>">
       <div class="votationCard__left">
-        <img class="attachment" src="<%= member.imageUrl %>" alt="<%= member.name %>"/>
+        <img class="attachment" src="/images/elbicho.png"/>
         <div> 
           <div class="votationCard__title"><%= member.name %></div>
-          <div class="votationCard__subtitle"><%= member.role + ' ' +  member.proficiency%></div>
+          <div class="votationCard__subtitle"><%= member.role %></div>
         </div>
       </div>
 
       <div class="votationCard__right">
-        <span class="votationCard__score">0</span>
+        <!--TO DO AÑADIR NUMERO DE ESTRELLA SELECCIONADAS--->
         <span class="votationCard__stars">
           <% for (let i = 1; i <= 5; i++) { %>
             <i class="star" data-value="<%= i %>">☆</i>

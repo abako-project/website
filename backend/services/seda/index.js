@@ -95,7 +95,6 @@ exports.clientAttachment = sedaClient.clientAttachment;
 
 exports.developerIndex = sedaDeveloper.developerIndex;
 exports.developer = sedaDeveloper.developer;
-exports.developers = sedaDeveloper.developers;
 exports.developerCreate = sedaDeveloper.developerCreate;
 exports.developerUpdate = sedaDeveloper.developerUpdate;
 exports.developerFindByEmail = sedaDeveloper.developerFindByEmail;
