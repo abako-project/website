@@ -47,6 +47,8 @@
   <%- include('../layouts/onboarding/_appLeft') %>
 
   <section id="appRight" class="onboarding__right">
+    <%- include('../layouts/onboarding/_onboardingBackButton', {message: "Already have an account?", buttonText: "Log in", href: "/auth/login/"}) %>
+
     <form action="/auth/register/client" method="POST">
       <h1 class="content__title">Create Account</h1>
       <p class="content__subtitle">
