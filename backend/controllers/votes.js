@@ -22,7 +22,7 @@ exports.viewVotes = async (req, res, next) => {
             members = await seda.developers(projectId); 
         } else {
             // Si es un developer normal → muestra solo al consultor
-            const consultant = await seda.developer(consultantId); //si exist
+            const consultant = await seda.developer(consultantId); 
             members = [consultant];
         }
 
