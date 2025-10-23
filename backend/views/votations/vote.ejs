@@ -1,19 +1,16 @@
 
 
-<%
-const members = [
-  { name: "CodeCrafter", role: "Frontend Developer", rating: 0 },
-  { name: "John Doe", role: "Project Manager", rating: 5 },
-  { name: "TuringAI", role: "Backend Engineer", rating: 3 },
-  { name: "PixelWiz", role: "UX Designer", rating: 3 }
-];
-%>
 <style>
   .contenedor {
     display: grid;
     grid-template-columns: auto auto;
   }
 </style>
+
+<script>
+  console.log("=== datos ===");
+  console.log(<%- JSON.stringify(voteData, null, 2) %>);
+</script>
 
 <%- include('../components/_cancelTopbar', {step: 1}) %>
 
@@ -35,13 +32,13 @@ const members = [
 </div>
 
 <section class="votations">
-  <% members.forEach((member,index) => { %>
-    <div class="votationCard" data-member="<%= member.name %>">
+  <% voteData.members.forEach((member,index) => { %>
+    <div class="votationCard" data-member="<%= member.userId %>">
       <div class="votationCard__left">
-        <img class="attachment" src="/images/elbicho.png"/>
+        <img class="attachment" src="<%= member.imageUrl %>" alt="<%= member.name %>"/>
         <div> 
           <div class="votationCard__title"><%= member.name %></div>
-          <div class="votationCard__subtitle"><%= member.role %></div>
+          <div class="votationCard__subtitle"><%= member.role + ' ' +  member.proficiency%></div>
         </div>
       </div>
 
