@@ -1,6 +1,6 @@
 <div class="milestones">
 
-    <h4 class="milestones__title">Milestones</h4>
+    <h4 class="title">Milestones</h4>
 
     <ul class="milestones__content">
         <% for (const milestone of project.milestones) { %>
@@ -14,9 +14,6 @@
 
                     <%- include("./_showMilestone", {project, milestone}) %>
 
-
-
-                    <hr style="clear: both;" />
                 </span>
             </li>
 
