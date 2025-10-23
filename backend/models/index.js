@@ -24,6 +24,7 @@ const Objective = require('./objective')(sequelize);
 const Constraint = require('./constraint')(sequelize);
 const Milestone = require('./milestone')(sequelize);
 const MilestoneLog = require('./milestoneLog')(sequelize);
+const Vote = require('./vote')(sequelize);
 
 const Comment = require('./comment')(sequelize);
 
@@ -129,6 +130,18 @@ Milestone.belongsTo(Developer, {as: 'developer', foreignKey: 'developerId'});
 // Relations between MilestoneLog and Milestone
 Milestone.hasMany(MilestoneLog, {as: 'milestoneLogs', foreignKey: 'milestoneId'});
 MilestoneLog.belongsTo(Milestone, {as: 'milestone', foreignKey: 'milestoneId'});
+
+// Relation N-to-1 between Vote and Project
+Project.hasMany(Vote, { as: 'votes', foreignKey: 'projectId' });
+Vote.belongsTo(Project, { as: 'project', foreignKey: 'projectId' });
+
+// Relation N-to-1 between Vote and User (fromUserId → quién vota)
+User.hasMany(Vote, { as: 'votesSent', foreignKey: 'fromUserId' });
+Vote.belongsTo(User, { as: 'fromUser', foreignKey: 'fromUserId' });
+
+// Relation N-to-1 between Vote and User (toUserId → quién recibe la votación)
+User.hasMany(Vote, { as: 'votesReceived', foreignKey: 'toUserId' });
+Vote.belongsTo(User, { as: 'toUser', foreignKey: 'toUserId' });
 
 
 module.exports = sequelize;
