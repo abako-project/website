@@ -27,26 +27,30 @@
 </div>
 
 <section class="votations">
-  <% voteData.members.forEach((member,index) => { %>
-    <div class="votationCard" data-member="<%= member.userId %>">
-      <div class="votationCard__left">
-        <img class="attachment" src="<%= member.imageUrl %>" alt="<%= member.name %>"/>
-        <div> 
-          <div class="votationCard__title"><%= member.name %></div>
-          <div class="votationCard__subtitle"><%= member.role + ' ' +  member.proficiency%></div>
+  <form id="voteForm" action="/votes/<%= voteData.project.id %>/submit" method="POST">
+    <% voteData.members.forEach((member, index) => { %>
+      <div class="votationCard" data-member-id="<%= member.userId %>">
+        <div class="votationCard__left">
+          <img class="attachment" src="<%= member.imageUrl %>" alt="<%= member.name %>"/>
+          <div> 
+            <div class="votationCard__title"><%= member.name %></div>
+            <div class="votationCard__subtitle"><%= member.role + ' ' +  member.proficiency%></div>
+          </div>
         </div>
-      </div>
 
-      <div class="votationCard__right">
-        <span class="votationCard__score">0</span>
-        <span class="votationCard__stars">
-          <% for (let i = 1; i <= 5; i++) { %>
-            <i class="star" data-value="<%= i %>">☆</i>
-          <% } %>
-        </span>
+        <div class="votationCard__right">
+          <span class="votationCard__score">0</span>
+          <span class="votationCard__stars">
+            <% for (let i = 1; i <= 5; i++) { %>
+              <i class="star" data-value="<%= i %>">☆</i>
+            <% } %>
+          </span>
+        </div>
+        <input type="hidden" name="userIds[]" value="<%= member.userId %>"/>
+        <input type="hidden" name="scores[]" value="0"/>
       </div>
-    </div>
-  <% }) %>
+    <% }) %>
+  </form>
 </section>
 
 <script src="/javascripts/votations.js"></script>

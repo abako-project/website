@@ -59,3 +59,41 @@ exports.viewVotes = async (req, res, next) => {
     }
   
 }
+
+// POST procesar las votaciones enviadas por el usuario
+exports.submitVotes = async (req, res, next) => {
+  try {
+    const projectId = req.params.projectId;
+    const fromUserId = req.session.loginUser?.id; 
+
+    const userIds = req.body.userIds || [];
+    const scores = req.body.scores || [];
+   
+    if (!Array.isArray(userIds) || !Array.isArray(scores) || userIds.length !== scores.length) {
+      throw new Error("Invalid vote data: mismatched arrays.");
+    } 
+
+    const votes = [];
+
+    for (let i = 0; i < userIds.length; i++) {
+        const toUserId = parseInt(userIds[i]);
+        const score = parseFloat(scores[i]);
+        const existingVote = await seda.voteFindOne({ projectId, fromUserId, toUserId });
+
+        if (existingVote) continue; 
+        votes.push({ projectId, fromUserId, toUserId, score });
+    }
+    
+    if (votes.length === 0) {
+      console.warn("No valid votes to process.");
+      return res.redirect("/backdoor");
+    }
+    await seda.votesCreate(votes);
+    console.log("Votes saved successfully.");
+    res.redirect('/backdoor'); 
+
+  } catch (error) {
+    console.error("Error submitting votes:", error);
+    next(error);
+  }
+};
