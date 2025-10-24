@@ -28,6 +28,7 @@ const sedaBudget = require("./budget");
 const sedaDeliveryTime = require("./deliveryTime");
 const sedaProjectType = require("./projectType");
 const sedaSkill = require("./skill");
+const votations = require("./votations");
 
 
 
@@ -123,3 +124,6 @@ exports.projectTypeIndex = sedaProjectType.projectTypeIndex;
 exports.skillIndex = sedaSkill.skillIndex;
 
 exports.ValidationError = sedaError.ValidationError;
+
+exports.votesCreate = votations.votesCreate;
+exports.voteFindOne = votations.voteFindOne;

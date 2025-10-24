@@ -1,6 +1,7 @@
 
 const cards = document.querySelectorAll(".votationCard");
 const submitButton = document.querySelector(".submitVotations");
+const form = document.getElementById("voteForm");
 
 // incialización de las votaciones
 function initializeVotations() {
@@ -13,6 +14,10 @@ function initializeVotations() {
 function setupCard(card) {
   const stars = card.querySelectorAll(".star");
   const scoreElement = card.querySelector(".votationCard__score");
+  const memberId = card.dataset.memberId;
+  const hiddenIdInput = form.querySelector(`input[name="userIds[]"][value="${memberId}"]`);
+  const hiddenScoreInput = hiddenIdInput.nextElementSibling;
+
 
   stars.forEach(star => {
     star.addEventListener("click", () => {
@@ -20,6 +25,7 @@ function setupCard(card) {
       updateStars(stars, rating);
       scoreElement.textContent = rating;
       card.dataset.rating = rating;
+      hiddenScoreInput.value = rating;
     });
   });
 }
@@ -33,23 +39,12 @@ function updateStars(stars, rating) {
 
 //  gestionar el envío de votaciones
 function handleSubmit() {
-  const results = [];
-  let allRated = true;
-
-  cards.forEach(card => {
-    const name = card.dataset.member;
-    const rating = parseInt(card.dataset.rating || "0");
-    if (rating === 0) allRated = false;
-    results.push({ name, rating });
-  });
-
+  const allRated = Array.from(cards).every(card => parseInt(card.dataset.rating || "0") > 0);
   if (!allRated) {
     alert("Please rate all team members before submitting!");
-    console.warn("Incomplete ratings:", results);
     return;
   }
-
-  console.log("Submitted ratings:", results);
+  submitFormById("voteForm");
 }
 
 // === Start ===

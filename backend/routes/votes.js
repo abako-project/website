@@ -9,4 +9,9 @@ router.get('/:projectId(\\d+)/votations',
   permissionController.isAuthenticated, 
     votesController.viewVotes);
 
+//Procesar votaciones
+router.post('/:projectId(\\d+)/submit',
+  permissionController.isAuthenticated, 
+    votesController.submitVotes);
+
 module.exports = router;
