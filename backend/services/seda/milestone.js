@@ -245,7 +245,7 @@ exports.milestoneDeveloperAccept = async (milestoneId) => {
     try {
         const milestone = await Milestone.findByPk(milestoneId);
 
-        await milestone?.update({state: states.MilestoneState.InProgress});
+        await milestone?.update({state: states.MilestoneState.MilestoneInProgress});
 
 
         const milestoneLog = await MilestoneLog.create({

@@ -37,12 +37,14 @@
     </span> -->
 </div>
 
+<% if (locals.showDeveloper ?? true) { %>
+    <div class="milestone__dev">
+        <%- include("./__showDeveloper", {milestone}) %>
+    </div>
+<% } %>
 
-<div class="milestone__dev">
-    <%- include("./__showDeveloper", {milestone}) %>
-</div>
-
-
-<div class="milestone__actions">
-    <%- include("../actions/info/_all", {project, milestone}) %>
-</div>
+<% if (locals.showActions ?? true) { %>
+    <div class="milestone__actions">
+        <%- include("../actions/info/_all", {project, milestone}) %>
+    </div>
+<% } %>

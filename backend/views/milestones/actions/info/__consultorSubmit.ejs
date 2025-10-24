@@ -6,7 +6,7 @@
 
 <% if (locals.loginUser && locals.loginUser.developerId === project.consultantId) { %>
 
-    <% if (milestone.state === "InProgress") { %>
+    <% if (milestone.state === "MilestoneInProgress") { %>
 
         <a class="btn btn_primary"
            href="/projects/<%= project.id %>/milestones/<%= milestone.id %>/submitMilestone">

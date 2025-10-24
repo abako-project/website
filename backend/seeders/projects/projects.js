@@ -43,7 +43,7 @@ module.exports = exports = [
                 proficiencyId: 3,
                 deliveryTimeId: 4,
                 deliveryDate: new Date(new Date().getTime() + (2 * 60 * 60 * 1000)),
-                state: states.MilestoneState.InProgress,
+                state: states.MilestoneState.MilestoneInProgress,
                 developerId: 2
             },
         ]

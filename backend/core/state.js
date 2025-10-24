@@ -53,7 +53,7 @@ module.exports = exports = {
         WaitingDeveloperAcceptAssignation: "WaitingDeveloperAcceptAssignation",
 
         // El desarrollador ha aceptado el milestone y empieza el trabajo.
-        InProgress: "InProgress",
+        MilestoneInProgress: "MilestoneInProgress",
 
         // El consultor ha enviado el milestone para que lo valide el cliente, y estamos esperando a su valoracion
         WaitingClientAcceptSubmission: "WaitingClientAcceptSubmission",

@@ -6,7 +6,7 @@
   <h1>Proyecto <%= project.title %></h1>
 
   <% let milestonesWaitingForDeveloperAssignation =
-  project.milestones.filter(milestone => (milestone.state === "InProgress")); %>
+  project.milestones.filter(milestone => (milestone.state === "MilestoneInProgress")); %>
   <% let milestonesWaitingForClientAcceptSubmission =
   project.milestones.filter(milestone => (milestone.state ===
   "WaitingClientAcceptSubmission")); %> <% let
