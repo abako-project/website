@@ -2,7 +2,7 @@
   <%- include('../layouts/onboarding/_appLeft') %>
   
   <section class="onboarding__right">
-    <%- include('../layouts/onboarding/_signupBtn') %>
+    <%- include('../layouts/onboarding/_onboardingBackButton', {message: "Don't have an account yet?", buttonText: "Sign up", href: "/auth/register/"}) %>
     
     <div class="content">
       <div class="card">

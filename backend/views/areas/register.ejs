@@ -2,6 +2,8 @@
   <%- include('../layouts/onboarding/_appLeft') %>
 
   <section class="onboarding__right">
+    <%- include('../layouts/onboarding/_onboardingBackButton', {message: "Already have an account?", buttonText: "Log in", href: "/auth/login/"}) %>
+
     <div class="content">
       <h1 class="content__title">What kind of account do you want to create?</h1>
 

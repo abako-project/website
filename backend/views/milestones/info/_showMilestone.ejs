@@ -3,7 +3,7 @@
 </div>
 
 <div class="milestone__description">
-  <small><%= milestone.description %></small>
+  <%= milestone.description %>
 </div>
 
 
@@ -13,10 +13,28 @@
     <%= milestone.proficiency?.description %>
 
     <%= milestone.skills.map(s => s.name).join(", ") %>
+    <!-- <span class="bubble"> -->
+        <%= milestone.neededFullTimeDeveloper ? "[Full Time]" : "" %>
+    <!-- </span> -->
+    <!-- <span class="bubble"> -->
+        <%= milestone.neededPartTimeDeveloper ? "[Part Time]" : "" %>
+    <!-- </span> -->
+    <!-- <span class="bubble"> -->
+        <%= milestone.neededHourlyDeveloper ? "[Hours per Week]" : ""%>
+    <!-- </span> -->
 
-    <%= milestone.neededFullTimeDeveloper ? "[Full Time]" : "" %>
-    <%= milestone.neededPartTimeDeveloper ? "[Part Time]" : "" %>
-    <%= milestone.neededHourlyDeveloper ? "[Hours per Week]" : ""%>
+    <!-- Para poner bubble ponerlo así???? -->
+    <!-- <span class="bubble">
+        <% if (milestone.neededFullTimeDeveloper) { %>
+            "[Full Time]"
+        <% } else if (milestone.neededPartTimeDeveloper) { %>
+            "[Part Time]"
+        <% } else if (milestone.neededHourlyDeveloper) { %>
+            "[Hours per Week]"
+        <% } else { %>
+            ""
+        <% } %>
+    </span> -->
 </div>
 
 

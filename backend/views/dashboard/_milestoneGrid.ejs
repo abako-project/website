@@ -1,47 +1,61 @@
 <% const client = c; %>
 
-<section class="milestones mainContentContainer">
+<section class="mainContentContainer dashboard">
+  <% for (let project of projects) { %>
 
-    <% for (let project of projects) { %>
+  <h1>Proyecto <%= project.title %></h1>
 
-        <h1> Proyecto <%= project.title %> </h1>
+  <% let milestonesWaitingForDeveloperAssignation =
+  project.milestones.filter(milestone => (milestone.state === "InProgress")); %>
+  <% let milestonesWaitingForClientAcceptSubmission =
+  project.milestones.filter(milestone => (milestone.state ===
+  "WaitingClientAcceptSubmission")); %> <% let
+  submissionRejectedByClientMilestones = project.milestones.filter(milestone =>
+  (milestone.state === "RejectedByClient")); %> <% let completedMilestones =
+  project.milestones.filter(milestone => (milestone.state === "Completed")); %>
 
-        <% let milestonesWaitingForDeveloperAssignation = project.milestones.filter(milestone => (milestone.state === "InProgress")); %>
-        <% let milestonesWaitingForClientAcceptSubmission = project.milestones.filter(milestone => (milestone.state === "WaitingClientAcceptSubmission")); %>
-        <% let submissionRejectedByClientMilestones = project.milestones.filter(milestone => (milestone.state === "RejectedByClient")); %>
-        <% let completedMilestones = project.milestones.filter(milestone => (milestone.state === "Completed")); %>
+  <section class="milestoneGrid">
+    <div class="milestoneGrid__col">
+      <h3 class="colHeader">
+        <span class="counter">
+          <%= milestonesWaitingForDeveloperAssignation.length %>
+        </span>
+        <span> Scheduled Milestones </span>
+      </h3>
+      <% for (let milestone of milestonesWaitingForDeveloperAssignation) { %>
+      <%- include("./__milestoneGridItem", {project, milestone}) %> <% } %>
+    </div>
 
-        <section class="dashboardMilestones">
+    <div class="milestoneGrid__col">
+      <h3 class="colHeader colHeader--active">
+        <span class="counter">
+          <%= milestonesWaitingForClientAcceptSubmission.length %>
+        </span>
+        <span> In Client Review </span>
+      </h3>
+      <% for (let milestone of milestonesWaitingForClientAcceptSubmission) { %>
+      <%- include("./__milestoneGridItem", {project, milestone}) %> <% } %>
+    </div>
+    
+        <div class="milestoneGrid__col">
+          <h3 class="colHeader colHeader--completed">
+            <span class="counter"> <%= completedMilestones.length %> </span>
+            <span> Completed </span>
+          </h3>
+          <% for (let milestone of completedMilestones) { %> <%-
+          include("./__milestoneGridItem", {project, milestone}) %> <% } %>
+        </div>
 
-            <div class="dashboardMilestones__milestoneCol">
-                <h3> Scheduled Milestones (<%= milestonesWaitingForDeveloperAssignation.length %>) </h3>
-                <% for (let milestone of milestonesWaitingForDeveloperAssignation) { %>
-                    <%- include("./__milestoneGridItem", {project, milestone}) %>
-                <% } %>
-            </div>
-
-            <div class="dashboardMilestones__milestoneCol">
-                <h3> In Client Review (<%= milestonesWaitingForClientAcceptSubmission.length %>) </h3>
-                <% for (let milestone of milestonesWaitingForClientAcceptSubmission) { %>
-                    <%- include("./__milestoneGridItem", {project, milestone}) %>
-                <% } %>
-            </div>
-
-            <div  class="dashboardMilestones__milestoneCol">
-                <h3> Rejected (<%= submissionRejectedByClientMilestones.length %>) </h3>
-                <% for (let milestone of submissionRejectedByClientMilestones) { %>
-                    <%- include("./__milestoneGridItem", {project, milestone}) %>
-                <% } %>
-            </div>
-
-            <div  class="dashboardMilestones__milestoneCol">
-                <h3> Completed (<%= completedMilestones.length %>) </h3>
-                <% for (let milestone of completedMilestones) { %>
-                    <%- include("./__milestoneGridItem", {project, milestone}) %>
-                <% } %>
-            </div>
-
-        </section>
-    <% } %>
+    <div class="milestoneGrid__col">
+      <h3 class="colHeader colHeader--rejected">
+        <span class="counter">
+          <%= submissionRejectedByClientMilestones.length %>
+        </span>
+        <span> Rejected </span>
+      </h3>
+      <% for (let milestone of submissionRejectedByClientMilestones) { %> <%-
+      include("./__milestoneGridItem", {project, milestone}) %> <% } %>
+    </div>
+  </section>
+  <% } %>
 </section>
-

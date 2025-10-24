@@ -7,17 +7,17 @@
   <div class="">
     <%- include('./headers/_project', { project }) %>
     <div class="mainContentContainer">
-        <div class="projectContainer">
-            <div class="projectContainer__col1">
-                <h4>Project Scope</h4>
+        <section class="projectContainer">
+            <article class="projectContainer__col">
+                <h4 class="title">Project Scope</h4>
                 <%- include("../proposals/info/_body", {project}) %>
-            </div>
+            </article>
 
-            <div class="projectContainer__col2">
+            <article class="projectContainer__col">
                 <% if (project.milestones?.length) { %> <%-
                 include("../milestones/info/_showMilestones", {project}) %> <% } %>
-            </div>
-        </div>
+            </article>
+        </section>
 
       <%- include("./actions/body/_all", {project}) %>
     </div>
