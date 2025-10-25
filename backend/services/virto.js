@@ -71,7 +71,7 @@ exports.checkRegistered = async (req, res) => {
      {
         message: 'Failed to send extrinsic to server',
         stack: 'Error: Failed to send extrinsic to server\n' +
-               '    at /app/poc/dist/index.js:138:15\n' +
+               '    at /app/poc/dist/index.ejs:138:15\n' +
                '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)',
         error: true
      }

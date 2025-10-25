@@ -18,8 +18,10 @@
                 Waiting for Client to Accept Submission
             <% } else if (milestone.state === "SubmissionRejectedByClient") { %>
                 Submission Rejected By Client
-            <% } else if (milestone.state === "Completed") { %>
-                Submission Completed
+            <% } else if (milestone.state === "AwaitingPayment") { %>
+                Submission Completed - Awaiting Payment
+            <% } else if (milestone.state === "Paid") { %>
+                Completed and Paid
             <% } else { %>
                 Unknown state
             <% } %>

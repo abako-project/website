@@ -40,7 +40,7 @@ module.exports = (sequelize) => {
         state: {
             type: DataTypes.ENUM,
             values: ['WaitingDeveloperAssignation', 'WaitingDeveloperAcceptAssignation',
-                'MilestoneInProgress', 'WaitingClientAcceptSubmission', "SubmissionRejectedByClient", "Completed"],
+                'MilestoneInProgress', 'WaitingClientAcceptSubmission', "SubmissionRejectedByClient", "AwaitingPayment", "Paid"],
             defaultValue: 'WaitingDeveloperAssignation'
         },
         documentation: {

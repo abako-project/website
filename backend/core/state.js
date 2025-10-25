@@ -62,7 +62,11 @@ module.exports = exports = {
         SubmissionRejectedByClient: "SubmissionRejectedByClient",
 
         // El trabajo del milestone se ha completado (y ha sido aceptado por el cliente)
-        Completed: "Completed",
+        // Ahora hay que pagar al desarrollador.
+        AwaitingPayment: "AwaitingPayment",
+
+        // El milestone ya se ha pagado al desarrollador.
+        Paid: "Paid",
     }
 }
 

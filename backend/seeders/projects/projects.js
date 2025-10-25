@@ -98,7 +98,7 @@ module.exports = exports = [
                 proficiencyId: 3,
                 deliveryTimeId: 4,
                 deliveryDate: new Date(new Date().getTime() + (4 * 60 * 60 * 1000)),
-                state: states.MilestoneState.Completed,
+                state: states.MilestoneState.AwaitingPayment,
                 developerId: 2
             }
         ]
@@ -130,7 +130,7 @@ module.exports = exports = [
                 proficiencyId: 2,
                 deliveryTimeId: 4,
                 deliveryDate: new Date(new Date().getTime() + (5 * 60 * 60 * 1000)),
-                state: states.MilestoneState.Completed,
+                state: states.MilestoneState.AwaitingPayment,
                 developerId: 2
             }
         ]

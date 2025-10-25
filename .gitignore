@@ -1,3 +1,5 @@
-	.DS_Store
-	.env
-	.idea/
+.DS_Store
+.env
+.idea/
+sessions
+node_modules/

@@ -439,7 +439,7 @@ exports.clientAcceptOrRejectSubmittedMilestonePage = async (req, res, next) => {
 };
 
 
-// Actualiza el estado del milestone a SubmissionRejectedByClient o Completed
+// Actualiza el estado del milestone a SubmissionRejectedByClient o AwaitingPayment
 exports.clientAcceptOrRejectSubmittedMilestoneUpdate = async (req, res, next) => {
 
     try {

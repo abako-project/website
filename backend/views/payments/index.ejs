@@ -1,0 +1,18 @@
+
+<div id="appTwoColumns">
+
+    <div class="col1">
+        <!-- Sidebar -->
+        <%- include('../components/_mainSidebar') %>
+    </div>
+
+    <div class="col2">
+        <!-- Header -->
+        <%- include('../components/headers/_basic', { title: 'Payments' }) %>
+
+        <%- include('./_paymentGrid', {projects}) %>
+
+    </div>
+</div>
+
+

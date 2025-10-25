@@ -312,7 +312,7 @@ exports.milestoneClientAcceptSubmission = async (milestoneId, comment) => {
     try {
         const milestone = await Milestone.findByPk(milestoneId);
 
-        await milestone?.update({state: states.MilestoneState.Completed});
+        await milestone?.update({state: states.MilestoneState.AwaitingPayment});
 
     } catch (error) {
         throw error;

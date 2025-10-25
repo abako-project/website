@@ -112,7 +112,7 @@ exports.milestoneDeveloperRequired = async (req, res, next) => {
 //   client - logged user is a client
 //   projectClient - The logged user is the project client
 //   developer - logged user is a developer
-//   projectDeveloper - The logged user is one of the project tasks developer
+//   projectDeveloper - The logged user is one of the project milestone developer
 //   projectConsultant - The logged user is the project consultant
 //   milestoneDeveloper - The logged user is the developer assigned to the milestone
 exports.userTypesRequired = ({
