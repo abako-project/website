@@ -12,13 +12,11 @@
 
         <%- include('../components/headers/_basic', {title: "Let´s start with your project description"}) %>
 
-        <div class="proposalForm">
+        <div class="projectProposal proposalForm">
 
             <form class="proposalForm__form" id="editProposalForm" action="/projects/<%= project.id %>?_method=PUT"
                   method="POST">
-                <!-- <div class="projectProposal projectProposal__form"> -->
                 <%- include("./edit/_formProposal", {project, allBudgets, allDeliveryTimes, allProjectTypes}) %>
-                <!-- </div> -->
             </form>
 
             <div class="proposalForm__btnContainer">

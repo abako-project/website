@@ -72,7 +72,7 @@
         display: flex
         justify-content: end
 
-// form proposal
+// form proposal // step 1
 .proposalForm
     padding: $sp-15
     @extend .bubble
@@ -81,9 +81,13 @@
     &__btnContainer
         margin-top: $sp-12
         @include flex-end
-        justify-content: space-between  
+        justify-content: space-between 
+
+.projectProposal.proposalForm > .proposalForm__form
+    margin-top: 0
 
 .projectProposal
+    margin-top: 40px
     &__form
         display: grid
         grid-template-columns: repeat(2, 1fr)
@@ -113,7 +117,9 @@
 
     &__summary
         @extend .bubble
-        .projectInfo
-            padding: $sp-10 $sp-10 $sp-10 $sp-12
-            background-color: $base-2
+        background-color: $base-2
+        .projectInfo__body
+            padding: 0
+            border: none
+            box-shadow: none
 

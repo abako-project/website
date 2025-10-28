@@ -6,15 +6,16 @@
     }
 </style>
 
-<div class="contenedor projectHeader">
+<div class="contenedor basicHeader">
 
-    <div>
-        <h1> <%= locals.title ?? "" %> </h1>
-        <br />
-        <%= locals.subtitle ?? ""%>
+    <div class="basicHeader__titles">
+        <h1 class="title"> <%= locals.title ?? "" %> </h1>
+        <p class="subtitle">
+            <%= locals.subtitle ?? ""%>
+        </p>
     </div>
 
-    <div>
+    <div class="basicHeader__actions">
         <% for (let action of locals.actions ?? []) { %>
             <button class="<%= action.class %>"
                     onclick="<%= action.callback %>; return false;">

@@ -11,28 +11,32 @@
     </div>
 
     <div class="col2 mainContentContainer">
-        <%- include('../components/headers/_basic', {
+
+            <%- include('../components/headers/_basic', {
                title: "Ready to share this with our team?",
-               subtitle: "Once submitted, your project will be reviewed and voted on by DAO members within 48–72 hours."}) %>
-
-        <%- include('./info/_header', {project}) %>
-
-        <div class="projectProposal">
-            <div class="projectProposal__summary">
-
+               subtitle: "Once submitted, your project will be reviewed and voted on by DAO members within 48–72 hours."}) 
+            %>
+            
+            <div class="projectProposal">
+                <div class="proposalForm projectProposal__summary">
+                       
+                <%- include('./info/_header', {project}) %>
                 <%- include('./info/_body', {project}) %>
 
             </div>
 
-            <a class="projectFlow btn"
-               href="/projects/<%= project.id %>/edit">
-                Review All
-            </a>
+            <div class="proposalForm__btnContainer">
 
-            <a class="projectFlow btn btn_primary"
-               href="/projects/<%= project.id %>/proposal_submit?_method=PUT">
-                Submit Project
-            </a>
+                <a class="btn"
+                    href="/projects/<%= project.id %>/edit">
+                    Review All
+                </a>
+                
+                <a class="btn btn_primary"
+                    href="/projects/<%= project.id %>/proposal_submit?_method=PUT">
+                    Submit Project
+                </a>
+            </div>
         </div>
     </div>
 </div>
