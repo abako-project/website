@@ -60,6 +60,7 @@
 
 /* -------------------------
  Project Proposal
+    to-do -> Refactor 
  */
 .buttonContainer
 
@@ -71,6 +72,11 @@
         margin-top: $sp-14
         display: flex
         justify-content: end
+
+/**
+ *_______________________________________________________________
+ *_______________________________________________________________
+ *
 
 // form proposal // step 1
 .proposalForm
@@ -84,11 +90,11 @@
         justify-content: space-between 
 
 .projectProposal.proposalForm > .proposalForm__form
-    margin-top: 0
+    margin-top: 0 // fixer!
 
 .projectProposal
     margin-top: 40px
-    &__form
+    &__form // project/#id/new; // project/#id/edit
         display: grid
         grid-template-columns: repeat(2, 1fr)
         grid-template-rows: repeat(3, auto)
@@ -111,15 +117,72 @@
             input, select, textarea
                 width: 100%
                 background-color: $base-1
+
             p
                 input
                     margin: 0
 
-    &__summary
+    &__summary // project/#id/submit
         @extend .bubble
+        padding: $sp-10
+        padding-bottom: $sp-12
+        gap: $sp-10
         background-color: $base-2
-        .projectInfo__body
+        .infoHeader //proposals/info/_header
+            &__title
+            &__subtitle
+                color: $text-dark-2
+            &__client
+                margin-top: 32px
+                @include flex-start
+                align-items: center
+                gap: $sp-8
+                img
+                    height: 44px
+                    width: 44px
+                p
+                    @include flex-start
+                    flex-direction: column
+                    color: $text-dark-2
+                    & > :first-child
+                        color: $text-dark
+            &__url
+                margin-top: 32px
+                @include flex-start
+                align-items: center
+                gap: 16px
+                font-weight: 500
+                i
+                    font-size: $icon-lg
+                    color: $fill-5
+        .projectInfo__body //proposals/info/_body
             padding: 0
             border: none
             box-shadow: none
+            @include flex-start
+            flex-direction: column
+            gap: $sp-10
+            .bodyProposals
+                @include flex-start
+                flex-direction: column
+                gap: $sp-10
+                &__item
+                    h6
+                        font-size: $text-base
+                        line-height: $lh-base
+                        font-weight: 400
+                        color: $text-dark-2
+                    p
+                        padding-top: $sp-5
+                        font-size: $text-lg
+                        line-height: $lh-lg
+            .bodyObjectives, .bodyConstraints
+                &__title
+                    font-size: $text-base
+                    line-height: $lh-base
+                    font-weight: 400
+                    color: $text-dark-2
+                &__list
+                    padding-left: $sp-10
+                    list-style: decimal
 
