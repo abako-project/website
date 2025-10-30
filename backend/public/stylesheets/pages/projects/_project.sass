@@ -11,6 +11,42 @@
         width: 100%
         .title
             margin-bottom: 8px
+        // .projectInfo__body >>>
+        .projectInfo__body
+            padding: 16px 24px
+            @include flex-start
+            flex-direction: column
+            gap: 32px
+            // padding: 0
+            // border: none
+            // box-shadow: none
+            // @include flex-start
+            // flex-direction: column
+            // gap: $sp-10
+            .bodyProposals
+                @include flex-start
+                flex-direction: column
+                gap: $sp-10
+                &__item
+                    h6
+                        font-size: $text-base
+                        line-height: $lh-base
+                        font-weight: 400
+                        color: $text-dark-2
+                    p
+                        padding-top: $sp-5
+                        font-size: $text-lg
+                        line-height: $lh-lg
+            .bodyObjectives, .bodyConstraints
+                &__title
+                    font-size: $text-base
+                    line-height: $lh-base
+                    font-weight: 400
+                    color: $text-dark-2
+                &__list
+                    padding-left: $sp-10
+                    list-style: decimal
+
 
 // Project Scope    
 .projectInfo__body
@@ -19,7 +55,7 @@
 
 
 /* ------------------------- 
- Project List (index)
+ Project List (index) - cards on projectGrid
 
 .projects
     padding: $sp-12 $sp-17
