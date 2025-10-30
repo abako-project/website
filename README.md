@@ -6,9 +6,10 @@ Projecto Work3Spaces
 
 Probado en los siguientes sistemas operativos:
 * macOS Sequoia 15.5:
+* macOS Tahoe 16.0.1:
 
 Instalaciones requeridas:
-* node 22
+* node 22, 24
 
 Para lanzar el backend, ejecutar los siguientres comandos:
 ```
