@@ -1,24 +1,26 @@
 
 
-<div>
-    <h1 style="font-size: xx-large; "> <%= project.title %> </h1>
+<div class="infoHeader">
+    <h1 class="infoHeader__title"> <%= project.title %> </h1>
 
-    <p style="font-size: small; "> <%= project.summary %> </p>
+    <p class="infoHeader__subtitle"> <%= project.summary %> </p>
 
-    <div>
+    <!-- client -->
+    <div class="infoHeader__client">
         <img class="attachment" src="/clients/<%= project.clientId %>/attachment">
+        <p>
+            <span>
+                <%= project.client.name %>
+            </span>
+            <span>
+                <%= new Date(project.createdAt - browserTimezoneOffset + serverTimezoneOffset).toLocaleString() %>
+            </span>
+        </p>
     </div>
 
-    <div>
-        <%= project.client.name %>
-    </div>
-
-    <div>
-        <%= new Date(project.createdAt - browserTimezoneOffset + serverTimezoneOffset).toLocaleString() %>
-    </div>
-
-    <div>
+    <p class="infoHeader__url">
+        <i class="ri-global-fill"></i>
         <%= project.client.website %>
-    </div>
+    </p>
 
 </div>
