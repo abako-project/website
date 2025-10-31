@@ -26,8 +26,19 @@ exports.index = async (req, res, next) => {
     }
 };
 
+// GET /clients/:clientId/profile
+exports.show = async (req, res, next) => {
+  try {
+    const {client} = req.load;
+    const avatarUrl = `/clients/${client.id}/attachment`;
 
-// GET /clients/:clientId/edit
+    res.render('clients/profile/show', { c: client, avatarUrl });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// GET /clients/:clientId/profile/edit
 exports.edit = async (req, res, next) => {
 
   const {client} = req.load;
@@ -36,7 +47,7 @@ exports.edit = async (req, res, next) => {
 
   // No se puede usar el valor client en las opciones cuando
   // hay llamadas anidadas a la fumcion include de EJS.
-  res.render('clients/edit', {c: client, allLanguages});
+  res.render('clients/profile/edit', {c: client, allLanguages});
 };
 
 
@@ -69,7 +80,7 @@ exports.update = async (req, res, next) => {
         if (error instanceof seda.ValidationError) {
             console.log('There are errors in the form:');
             error.errors.forEach(({message}) => console.log(message));
-            res.render('clients/edit', {client});
+            res.render('clients/profile/edit', {client});
         } else {
             next(error);
         }

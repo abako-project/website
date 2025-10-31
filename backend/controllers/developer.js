@@ -23,8 +23,53 @@ exports.index = async (req, res, next) => {
   res.render('developers/index', {developers});
 };
 
+// GET /developers/:developerId/profile
+exports.show = async (req, res, next) => {
+  try {
+    const {developer} = req.load;
+    const avatarUrl = `/developers/${developer.id}/attachment`;
+    const votes = await seda.votesFindByUser(developer.user.id);
+    const numberOfVotes = votes.length; 
+    const avgRating = votes.length ? Math.ceil((votes.reduce((sum, v) => sum + v.score, 0)/ votes.length)): null;
 
-// GET /developers/:developerId/edit
+    const lastTwo = votes.slice(0, 4);
+    const lastVotes = []; // Últimos 2 votos
+    
+    for (const v of lastTwo) {
+      const user = await seda.userFindById(v.fromUserId); 
+      if (!user) continue;
+
+      const isDev = !!user.developer;
+      const isCli = !!user.client;
+
+      const profile = user.developer || user.client;
+      const name = profile?.name || user.email;
+      const role = isDev ? (profile.role?.name || "Developer") : (isCli ? "Client" : "Unknown");
+      const prof = isDev ? (profile.proficiency?.description || "") : "";
+      const avatar =
+        isDev
+          ? `/developers/${profile.id}/attachment`
+          : isCli
+          ? `/clients/${profile.id}/attachment`
+          : "/images/none.png";
+
+      lastVotes.push({
+        score: v.score,
+        fromUserId: v.fromUserId,
+        fromUserName: name,
+        fromUserRole: role,
+        fromUserProf: prof,
+        fromUserAvatarUrl: avatar
+        });
+    }
+
+    res.render('developers/profile/show', {developer, avatarUrl, avgRating, lastVotes, numberOfVotes});
+  } catch (error) {
+    next(error);
+  }
+};
+
+// GET /developers/:developerId/profile/edit
 exports.edit = async (req, res, next) => {
 
   const {developer} = req.load;
@@ -34,7 +79,7 @@ exports.edit = async (req, res, next) => {
   const allProficiencies = await seda.proficiencyIndex();
   const allSkills = await seda.skillIndex();
 
-  res.render('developers/edit', {developer, allLanguages, allRoles, allProficiencies, allSkills});
+  res.render('developers/profile/edit', {developer, allLanguages, allRoles, allProficiencies, allSkills});
 };
 
 
@@ -82,7 +127,7 @@ exports.update = async (req, res, next) => {
       const allProficiencies = await seda.proficiencyIndex();
       const allSkills = await seda.skillIndex();
 
-      res.render('developers/edit', {developer, allLanguages, allRoles, allProficiencies, allSkills});
+      res.render('developers/profile/edit', {developer, allLanguages, allRoles, allProficiencies, allSkills});
 
     } else {
       next(error);

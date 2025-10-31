@@ -6,12 +6,13 @@ const form = document.getElementById("voteForm");
 // incialización de las votaciones
 function initializeVotations() {
   cards.forEach(setupCard);
-  submitButton.addEventListener("click", handleSubmit);
+  submitButton?.addEventListener("click", handleSubmit);
   console.log("Votation system initialized successfully");
 }
 
 // incialización de cada tarjeta de votación
 function setupCard(card) {
+  if (card.dataset.readonly === "true") return;
   const stars = card.querySelectorAll(".star");
   const scoreElement = card.querySelector(".votationCard__score");
   const memberId = card.dataset.memberId;

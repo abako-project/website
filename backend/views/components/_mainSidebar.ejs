@@ -37,19 +37,19 @@
 
         <!-- Profile -->
         <li class="todo">
-            <% if (locals.loginUser.developerId) { %>
-                <a href="/developers/<%= loginUser.developerId %>/edit">
-                    <i class="ri-user-line"></i>
-                    Profile
-                </a>
-            <% } %>
+                <% if (locals.loginUser.developerId) { %>
+                    <a href="/developers/<%= loginUser.developerId %>/profile">
+                        <i class="ri-user-line"></i>
+                        Profile
+                    </a>
+                <% } %>
 
-            <% if (locals.loginUser.clientId) { %>
-                <a href="/clients/<%= loginUser.clientId %>/edit">
-                    <i class="ri-user-line"></i>
-                    Profile
-                </a>
-            <% } %>
+                <% if (locals.loginUser.clientId) { %>
+                    <a href="/clients/<%= loginUser.clientId %>/profile">
+                        <i class="ri-user-line"></i>
+                        Profile
+                    </a>
+                <% } %>
         </li>
 
 

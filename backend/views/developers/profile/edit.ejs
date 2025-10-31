@@ -1,28 +1,72 @@
-<h1>Edit Developer Profile</h1>
+<!-- Choices.js CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css">
 
-<form method="post" action="/developers/<%= developer.id %>?_method=PUT" enctype="multipart/form-data">
+<!-- Choices.js JS -->
+<script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
 
-    <div class="card">
+<!--ESTO LO HE METIDO SOLO PARA PROVAR, ESTA EN DESARROLLO-->
+<script>
+    
+document.addEventListener('DOMContentLoaded', function () {
+  new Choices('#languages', {
+    removeItemButton: true,
+    searchEnabled: true,
+    placeholderValue: 'Selecciona idiomas...',
+    searchPlaceholderValue: 'Buscar idioma...',
+    noResultsText: 'Sin resultados',
+    noChoicesText: 'No hay idiomas disponibles',
+    itemSelectText: '',
+    shouldSort: false
+  });
+});
+</script>
 
-        <div class="card-title">Developer data</div>
 
-        <div class="form-group">
-            <p>Email: <%= developer.user.email %></p>
-            <p>Blockchain Address: <%= developer.address %></p>
+
+
+
+
+
+
+
+<!--ESTOY TABAJANDO JUSTO EN ESTA VISTA-->
+
+<div id="appTwoColumns">
+    <div class="col1">
+        <!-- Sidebar -->
+        <%- include('../../components/_mainSidebar') %>
+    </div>
+    <div class="col2">
+        <section class="profile">
+            <div class="profileCard">
+                <div class="profileCard__header">
+                    <h2 class="profileCard__title">Edit Developer Profile</h2>
+                    <span class="profileCard__subtitle">Developer data</span>
+                </div>
+                
+                    
+                <form method="post" action="/developers/<%= developer.id %>?_method=PUT" enctype="multipart/form-data" class="profileForm">
+
+                    <div class="profileCard__staticInfo">
+                        <p><strong>Email:</strong> <%= developer.user.email %></p>
+                        <p><strong>Blockchain Address:</strong> <%= developer.address %></p>
+                    </div>
+
+
+
+
+        <div class="profileCard__smallSection">
+            <h3>Name:</h3>
+            <input type="text" id="name" name="name" value="<%= developer.name %>" placeholder="name" autocomplete="off" class="smallInput"/>
         </div>
 
-        <div class="form-group">
-            <label for="name">Name:</label>
-            <input type="text" id="name" name="name" value="<%= developer.name %>" placeholder="name" autocomplete="off"/>
-        </div>
-
-        <div class="form-group">
-            <label for="bio">Bio:</label>
+        <div class="profileCard__section">
+            <h3>Bio:</h3>
             <textarea id="bio" name="bio"><%= developer.bio %></textarea>
         </div>
 
-        <div class="form-group">
-            <label for="background">Background:</label>
+        <div class="profileCard__section">
+            <h3>Background:</h3>
             <textarea id="background" name="background"><%= developer.background %></textarea>
         </div>
 
@@ -52,44 +96,27 @@
             </select>
         </div>
 
-        <div class="form-group">
-            <label for="githubUsername">Github Username:</label>
+        <div class="profileCard__smallSection">
+            <h3>Github Username:</h3>
             <input type="text" id="githubUsername" name="githubUsername" value="<%= developer.githubUsername %>"
                    placeholder="Github Username" autocomplete="off"/>
         </div>
 
-        <div class="form-group">
-            <label for="portfolioUrl">Portfolio Url:</label>
+        <div class="profileCard__smallSection">
+            <h3>Portfolio Url:</h3>
             <input type="text" id="portfolioUrl" name="portfolioUrl" value="<%= developer.portfolioUrl %>"
                    placeholder="Portfolio Url" autocomplete="off"/>
         </div>
 
-        <div class="form-group">
-            <label for="location">Location:</label>
+        <div class="profileCard__smallSection">
+            <h3>Location:</h3>
             <input type="text" id="location" name="location" value="<%= developer.location %>" placeholder="Location"
                    autocomplete="off"/>
         </div>
 
-        <div class="form-group">
-            <label for="availability">Availability:</label>
-            <input type="text" id="availability" name="availability" value="<%= developer.availability %>"
-                   placeholder="Availability" autocomplete="off"/>
-        </div>
-    </div>
+    
 
-    <div class="card">
-        <div class="card-title">Languages</div>
 
-        <% for (let language of allLanguages) { %>
-                <input type="checkbox"
-                       name="<%= `languages[]` %>"
-                       value="<%= language.id %>"
-                        <%= developer.languages.map(i => i.id).includes(language.id) && "checked" %>
-                />
-            <b><%= language.code %> - <%= language.name %></b>
-          <br />
-        <% } %>
-    </div>
 
     <div class="card">
         <div class="card-title">Skills</div>
@@ -104,6 +131,28 @@
             <br />
         <% } %>
     </div>
+    <div class="card">
+  <div class="card">
+  <div class="card-title">Languages</div>
+
+  <script>
+    console.log("allLanguages length:", <%- (allLanguages && allLanguages.length) || 0 %>);
+  </script>
+
+  <select id="languages" name="languages[]" multiple size="6">
+    <% (allLanguages || []).forEach(lang => { 
+         const selected = (developer.languages || []).some(i => i.id === lang.id); %>
+      <option value="<%= lang.id %>" <%= selected ? "selected" : "" %>>
+        <%= lang.code %> - <%= lang.name %>
+      </option>
+    <% }) %>
+  </select>
+
+  <% if (!allLanguages || allLanguages.length === 0) { %>
+    <p style="color:#b00">No hay idiomas disponibles (allLanguages vacío).</p>
+  <% } %>
+</div>
+
 
     <div class="card">
         <div class="card-title">Availability</div>
@@ -180,6 +229,9 @@
     </div>
 
 </form>
-
+</section>
+    </div>
+</div> 
+</div>
 
 

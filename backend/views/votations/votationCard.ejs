@@ -1,0 +1,25 @@
+<div class="votationCard"
+     data-member-id="<%= member.userId %>"
+     data-readonly="<%= !!readonly %>">
+  <div class="votationCard__left">
+    <img class="attachment" src="<%= member.imageUrl %>" alt="<%= member.name %>"/>
+    <div>
+      <div class="votationCard__title"><%= member.name %></div>
+      <div class="votationCard__subtitle"><%= (member.role || '') %> <%= (member.proficiency || '') %></div>
+    </div>
+  </div>
+
+  <div class="votationCard__right">
+    <span class="votationCard__score"><%= score %></span>
+    <span class="votationCard__stars <%= readonly ? 'is-readonly' : '' %>">
+  <% for (let i = 1; i <= 5; i++) { %>
+    <i class="star" data-value="<%= i %>"><%= (score >= i) ? '★' : '☆' %></i>
+  <% } %>
+</span>
+  </div>
+
+  <% if (!readonly) { %>
+    <input type="hidden" name="userIds[]" value="<%= member.userId %>"/>
+    <input type="hidden" name="scores[]"  value="<%= score %>"/>
+  <% } %>
+</div>

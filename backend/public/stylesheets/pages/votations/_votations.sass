@@ -45,3 +45,28 @@
             transition: color 0.2s
             &:hover
                 color: darken($brand, 10%)
+        &.is-readonly
+            pointer-events: none
+            opacity: 0.7
+.showVotations
+    &__header
+        display: flex
+        align-items: center
+        justify-content: space-between
+        margin-bottom: 12px
+        margin-top: 30px
+    &__rating
+        display: flex
+        align-items: center
+        gap: 4px
+        .stars
+            color: #555
+        .filled
+            .stars
+                color: #555
+                .filled
+                    color: $brand
+    &__summary
+        display: flex
+        flex-direction: column
+        gap: 8px
