@@ -4,8 +4,8 @@
 
         <% if (project.milestones.length > 0) { %>
 
-            <div style="display: flex;   justify-content: flex-end;">
-                <div style="padding: 5px; margin: 10px; width: 50%;  border: 5px dotted seagreen;">
+            <div class="actionsBody">
+                <div class="comment">
 
                     <form id="submitScopeForm" action="/projects/<%= project.id %>/scopeSubmit?_method=PUT"
                           method="POST">

@@ -3,9 +3,11 @@
  Project Detail (showProject)
 
 .projectContainer
-    max-height: 100dvh
-    display: grid
-    grid-template-columns: 1fr 1fr
+    height: 100%
+    // max-height: 100dvh
+    // display: grid
+    // grid-template-columns: 1fr 1fr
+    display: flex
     gap: 24px
     &__col
         width: 100%
@@ -17,12 +19,6 @@
             @include flex-start
             flex-direction: column
             gap: 32px
-            // padding: 0
-            // border: none
-            // box-shadow: none
-            // @include flex-start
-            // flex-direction: column
-            // gap: $sp-10
             .bodyProposals
                 @include flex-start
                 flex-direction: column
@@ -34,6 +30,7 @@
                         font-weight: 400
                         color: $text-dark-2
                     p
+                        max-width: 60ch
                         padding-top: $sp-5
                         font-size: $text-lg
                         line-height: $lh-lg
@@ -47,6 +44,20 @@
                     padding-left: $sp-10
                     list-style: decimal
 
+/* to do -> esto hay que arreglarlo
+    cuando aparecen las acciones, si siempre es vista de formulario,
+    podemos aprovechar el showProject1 y 2 para hacerlo así
+.projectContainer__col
+    &.projectScope
+        width: 100%
+        flex-grow: 1
+    &.milestones
+        width: 100%
+        max-width: 1/2
+        flex-grow: 1
+    &.actions
+        width: fit-content
+        max-width: 406px
 
 // Project Scope    
 .projectInfo__body

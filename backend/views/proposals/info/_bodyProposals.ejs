@@ -1,34 +1,29 @@
 
 <div class="bodyProposals">
 
+    <span class="bodyProposals__item proposalDescription">
+        <h6>Project Description</h6> 
+        <p><%= project.description %></p>
+    </span>
 
-    <!-- <div class="form-group"> -->
+    <span class="bodyProposals__item proposalBudget">
+        <h6>Total available budget</h6> 
+        <p><%= project.budget?.description %></p>
+    </span>
 
-        <span class="bodyProposals__item proposalDescription">
-            <h6>Description</h6> 
-            <p><%= project.description %></p>
-        </span>
+    <span class="bodyProposals__item proposalProjectType">
+        <h6>Project type</h6> 
+        <p><%= project.projectType?.description %></p>
+    </span>
 
-        <span class="bodyProposals__item proposalBudget">
-            <h6>Budget</h6> 
-            <p><%= project.budget?.description %></p>
-        </span>
+    <span class="bodyProposals__item proposalDeliveryTime">
+        <h6>Delivery Time</h6> 
+        <p><%= project.deliveryTime?.description %></p>
+    </span>
 
-        <span class="bodyProposals__item proposalProjectType">
-            <h6>Project type</h6> 
-            <p><%= project.projectType?.description %></p>
-        </span>
-
-        <span class="bodyProposals__item proposalDeliveryTime">
-            <h6>Delivery Time</h6> 
-            <p><%= project.deliveryTime?.description %></p>
-        </span>
-
-        <span class="bodyProposals__item proposalDeliveryDate">
-            <h6>Delivery Date</h6> 
-            <p><%= new Date(project.deliveryDate - browserTimezoneOffset + serverTimezoneOffset).toLocaleString() %></p>
-        </span>
-
-    <!-- </div> -->
+    <span class="bodyProposals__item proposalDeliveryDate">
+        <h6>Delivery Date</h6> 
+        <p><%= new Date(project.deliveryDate - browserTimezoneOffset + serverTimezoneOffset).toLocaleString() %></p>
+    </span>
 
 </div>

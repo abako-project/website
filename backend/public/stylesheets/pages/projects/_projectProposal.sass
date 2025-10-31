@@ -130,7 +130,7 @@
         background-color: $base-2
         .infoHeader //proposals/info/_header
             &__title
-            &__subtitle
+            &__summary
                 color: $text-dark-2
             &__client
                 margin-top: 32px
@@ -143,9 +143,10 @@
                 p
                     @include flex-start
                     flex-direction: column
-                    color: $text-dark-2
+                    color: $text-dark-3
                     & > :first-child
                         color: $text-dark
+                        font-weight: 500
             &__url
                 margin-top: 32px
                 @include flex-start

@@ -2,8 +2,8 @@
 
     <% if (project.state && ["WaitingForProposalApproval"].includes(project.state)) { %>
 
-        <div style="display: flex;  flex-flow: column; justify-content: flex-end;">
-            <div style="padding: 5px; margin: 10px; width: 50%;">
+        <div class="actionsBody">
+            <div style="padding: 5px; margin: 10px;">
                 <a class="right projectFlow btn btn_primary btn_href"
                    href="/projects/<%= project.id %>/proposal_approve?_method=PUT">
                     Approve Proposal
@@ -12,7 +12,7 @@
 
             <div class="clear"></div>
 
-            <div style="padding: 5px; margin: 10px; width: 50%;  border: 5px dotted seagreen;">
+            <div class="actionsBody__comment">
 
                 <p>
                     <img class="attachment"
@@ -35,23 +35,27 @@
                                autocomplete="off">
                     </div>
 
-                    <button class="right projectFlow btn_primary"
+                    <button class="right projectFlow btn_primary btn_primary--danger"
                             onclick="submitFormById('proposalRejectForm'); return false;">
                         Reject Proposal
                     </button>
             </div>
 
-            <div style="padding: 5px; margin: 10px; width: 50%;">
-
-                <p>
-                    Have some doubts about the project brief?
-                </p>
-                <p>
-                    Contact the client to further investigate.
-                </p>
-                <p>
-                    <%= project.client.user.email %>
-                </p>
+            <div class="actionsBody__help">
+                <span class="icon">
+                    <i class="ri-question-line"></i>
+                </span>
+                <span class="info">
+                    <p>
+                        Have some doubts about the project brief?
+                    </p>
+                    <small>
+                        Contact the client to further investigate
+                    </small>
+                    <p class="contactMail">
+                        <%= project.client.user.email %>
+                    </p>
+                </span>
 
                 <div class="clear"></div>
 

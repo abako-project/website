@@ -2,9 +2,8 @@
 
     <% if (project.state && ["ProposalRejected"].includes(project.state)) { %>
 
-        <div style="display: flex;  flex-flow: column; justify-content: flex-end;">
-
-            <div style="padding: 5px; margin: 10px; width: 50%;  border: 5px dotted seagreen;">
+        <div class="actionsBody">
+            <div class="actionsBody__comment">
                 <p>
                     <img class="attachment"
                          src="/developers/<%= project.consultantId %>/attachment" />
@@ -15,14 +14,21 @@
                 </p>
             </div>
 
-            <div style="padding: 5px; margin: 10px; width: 50%;">
-                <p>
-                    Have some doubts about the project rejection?
-                </p>
-                <p>
-                    Contact the consultant at
-                    <%= project.consultant.user.email %>
-                </p>
+            <div class="actionsBody__help">
+                <span class="icon">
+                    <i class="ri-question-line"></i>
+                </span>
+                <span class="info">
+                    <p>
+                        Not sure if to accept or reject?
+                    </p>
+                    <small>
+                        Contact the Project Leader to further investigate
+                    </small>
+                    <p class="contactMail">
+                        <%= project.consultant.user.email %>
+                    </p>
+                </span>
             </div>
 
             <div style="padding: 5px; margin: 10px; width: 50%;">

@@ -1,0 +1,44 @@
+
+.actionsBodyContainer
+    width: 100%
+    
+.actionsBody
+    @include flex-end
+    flex-flow: column
+    // gap: 40px
+    &__comment
+        padding: 24px
+        @include flex-start
+        flex-flow: column
+        gap: 40px
+        border-radius: $radi-5
+        border: 1px solid $brand
+        background-color: $base-2
+        input
+            background-color: $base-1
+    &__help
+        margin-top: 40px
+        @include flex-start
+        align-items: center
+        gap: 16px
+        font-weight: 500
+        color: $text-dark-2
+        .icon
+            align-self: start
+            @include flex-center
+            padding: 8px
+            min-width: 40px               
+            max-width: 40px
+            min-height: 40px                
+            max-height: 40px
+            font-size: 20px
+            border-radius: $rounded-full
+            background-color: $emerald-200
+            color: $text-dark
+        .info
+            small
+                font-weight: 400
+            .contactMail
+                color: $text-dark
+
+
