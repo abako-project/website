@@ -1,0 +1,89 @@
+
+
+<script>
+  const client = <%- JSON.stringify(c) %>;
+  console.log("client recibido:", client);
+</script>
+
+<div id="appTwoColumns">
+
+    <div class="col1">
+            <!-- Sidebar -->
+            <%- include('../../components/_mainSidebar') %>
+    </div>
+
+    <div class="col2">
+        <div class="profileHeader">
+            <div class="profileHeader__left">
+                <img class="attachment" src="<%= avatarUrl %>" alt="<%= c.name %>"/>
+                <div class="profileHeader__info">
+                    <h3><%= c.name %></h3>
+                </div>
+            </div>
+        </div>
+
+
+        <section class="profile">
+            <div class="profileCard">
+                <div class="profileCard__header">
+                    <div class="profileCard__titles">
+                        <h2 class="profileCard__title"> Client </h2>
+                        <span class="profileCard__subtitle"><%= c.company || '—' %> <%= c.department || '—' %></span>
+                    </div>
+                    <a href="/clients/<%= loginUser.clientId %>/profile/edit" class="btn btn__link">
+                        <i class="ri-user-line"></i>Edit Profile
+                    </a>
+                </div>
+            
+
+                <div class="profileCard__section">
+                    <h3>Description</h3>
+                    <p><%= c.description || 'No description available.' %></p>
+                </div>
+
+                <div class="profileCard__section">
+                    <ul class="infoList">
+
+                        <% if (c.languages && c.languages.length) { %>
+                        <li><i class="ri-translate-2"></i> 
+                        <%= c.languages.map(l => l.name).join(', ') %>
+                        </li>
+                        <% } %>
+
+                        <% if (c.location) { %>
+                        <li><i class="ri-map-pin-line"></i> <%= c.location %></li>
+                        <% } %>
+
+                        <% if (c.website) { %>
+                        <li><i class="ri-earth-line"></i> <%= c.website %></li>
+                        <% } %>
+
+                        <% if (c.user?.email) { %>
+                        <li><i class="ri-mail-line"></i> <%= c.user.email %></li>
+                        <% } %>
+
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>

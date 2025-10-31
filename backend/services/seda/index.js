@@ -29,6 +29,7 @@ const sedaDeliveryTime = require("./deliveryTime");
 const sedaProjectType = require("./projectType");
 const sedaSkill = require("./skill");
 const votations = require("./votations");
+const user = require("./user");
 
 
 
@@ -127,3 +128,6 @@ exports.ValidationError = sedaError.ValidationError;
 
 exports.votesCreate = votations.votesCreate;
 exports.voteFindOne = votations.voteFindOne;
+exports.votesFindByUser = votations.votesFindByUser;
+
+exports.userFindById = user.userFindById; 

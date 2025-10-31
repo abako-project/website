@@ -18,9 +18,10 @@ router.param('developerId', developerController.load);  // autoload :developerId
 
 router.get('/',
     developerController.index);
-
-router.get('/:developerId(\\d+)/edit',
+router.get('/:developerId(\\d+)/profile/edit',
     developerController.edit);
+router.get('/:developerId(\\d+)/profile',
+    developerController.show);
 router.put('/:developerId(\\d+)',
     upload.single('image'),
     developerController.update);

@@ -31,3 +31,20 @@ exports.votesCreate = async (votes) => {
 exports.voteFindOne = async (filter) => {
   return await Vote.findOne({ where: filter });
 };
+
+/**
+ * Obtiene todas las votaciones recibidas por un usuario concreto.
+ * @param {number} userId - ID del user que recibe los votos.
+ * @returns {Promise<Array>} Array de objetos Vote.
+ */
+exports.votesFindByUser = async (userId) => {
+  try {
+    return await Vote.findAll({
+      where: { toUserId: userId },
+      order: [['createdAt', 'DESC']]
+    });
+  } catch (error) {
+    console.error("Error fetching votes for user via SEDA:", error);
+    throw error;
+  }
+};

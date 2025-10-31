@@ -39,14 +39,14 @@
         <li class="todo">
             <a href="#">
                 <% if (locals.loginUser.developerId) { %>
-                    <a href="/developers/<%= loginUser.developerId %>/edit">
+                    <a href="/developers/<%= loginUser.developerId %>/profile">
                         <i class="ri-user-line"></i>
                         Profile
                     </a>
                 <% } %>
 
                 <% if (locals.loginUser.clientId) { %>
-                    <a href="/clients/<%= loginUser.clientId %>/edit">
+                    <a href="/clients/<%= loginUser.clientId %>/profile">
                         <i class="ri-user-line"></i>
                         Profile
                     </a>

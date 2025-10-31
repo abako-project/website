@@ -1,0 +1,132 @@
+<div id="appTwoColumns">
+    <div class="col1">
+        <!-- Sidebar -->
+        <%- include('../../components/_mainSidebar') %>
+    </div>
+    <div class="col2">
+        <div class="profileHeader">
+            <div class="profileHeader__left">
+                <img class="attachment" src="<%= avatarUrl %>" alt="<%= developer.name %>"/>
+                <div class="profileHeader__info">
+                    <h3><%= developer.name %></h3>
+                </div>
+            </div>
+            <%
+                const availability = [
+                    developer.isAvailableForHire && "Available for Hire",
+                    developer.isAvailableFullTime && "Full-time",
+                    developer.isAvailablePartTime && "Part-time",
+                    developer.isAvailableHourly && "Hourly"
+                ].filter(Boolean); 
+            %>
+
+            <div class="profileHeader__status <%= availability.length ? 'active' : '' %>">
+                <div class="toggle"></div>
+                <span>Available for Work</span>
+            </div>
+        </div>
+
+
+        <section class="profile">
+            <div class="profileCard">
+                <div class="profileCard__header">
+                    <div class="profileCard__titles">
+                        <h2 class="profileCard__title"><%= developer.role?.name ?? ''%> Developer</h2>
+                        <span class="profileCard__subtitle"><%= developer.proficiency?.description || '—' %></span>
+                    </div>
+                    <a href="/developers/<%= loginUser.developerId %>/profile/edit" class="btn btn__link">
+                        <i class="ri-user-line"></i>Edit Profile
+                    </a>
+                </div>
+                
+                <div class="profileCard__section">
+                    <h3>Bio</h3>
+                    <p><%= developer.bio || 'No bio available.' %></p>
+                </div>
+
+                <div class="profileCard__section">
+                    <h3>Background</h3>
+                    <p><%= developer.background || 'No background information.' %></p>
+                </div>
+
+                <% if (developer.skills && developer.skills.length > 0) { %>
+                <div class="profileCard__skills">
+                    <% developer.skills.forEach(skill => { %>
+                        <span class="skill"><%= skill.name %></span>
+                    <% }) %>
+                </div>
+                <% } %>
+
+                <div class="profileCard__section">
+                    <ul class="infoList">
+
+                        <% if (developer.languages && developer.languages.length) { %>
+                        <li><i class="ri-translate-2"></i> 
+                            <%= developer.languages.map(l => l.name).join(', ') %>
+                        </li>
+                        <% } %>
+
+                        <% if (developer.location) { %>
+                        <li><i class="ri-map-pin-line"></i> <%= developer.location %></li>
+                        <% } %>
+
+                        <% if (developer.portfolioUrl) { %>
+                        <li><i class="ri-earth-line"></i> <%= developer.portfolioUrl %></li>
+                        <% } %>
+
+                        <% if (developer.githubUsername) { %>
+                        <li><i class="ri-github-line"></i> <%= developer.githubUsername %></li>
+                        <% } %>
+
+                        <% if (developer.user?.email) { %>
+                        <li><i class="ri-mail-line"></i> <%= developer.user.email %></li>
+                        <% } %>
+
+                        <% if (availability.length) { %>
+                            <li><i class="ri-time-line"></i> <%= availability.join(', ') %></li>
+                        <% } %>
+
+                    </ul>
+                </div>
+            </div>
+
+            <% if (lastVotes && lastVotes.length) { %>
+            <div class="showVotations">
+                <div class="showVotations__header">
+                    <h3>Reviews</h3>
+                    <div class="showVotations__rating">
+                        <span><%= avgRating %></span>
+                        <span class="votationCard__stars is-readonly">
+                        <% for (let i = 1; i <= 5; i++) { %>
+                            <i class="star"><%= (Math.round(avgRating) >= i) ? '★' : '☆' %></i>
+                        <% } %>
+                        </span>
+                        <span>(<%= numberOfVotes %>)</span>
+                    </div>
+                </div>
+
+                <div class="showVotations__summary" >
+                    <% lastVotes.forEach(v => { 
+                    const member = { 
+                        userId: v.fromUserId,
+                        name: v.fromUserName,
+                        role: v.fromUserRole,
+                        proficiency: v.fromUserProf,
+                        imageUrl: v.fromUserAvatarUrl
+                    };
+                    %>
+                    <%- include('../../votations/votationCard', { member, score: v.score, readonly: true }) %>
+                    <% }) %>
+                </div>
+                <% } %>
+            </div>
+        </section>
+    </div>
+</div>
+
+
+
+
+
+
+
