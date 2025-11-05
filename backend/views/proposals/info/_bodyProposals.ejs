@@ -1,29 +1,37 @@
 
 <div class="bodyProposals">
 
+    <span class="bodyProposals__item">
+        <div class="proposalDeliveryTime">
+            <h6>Delivery Time</h6> 
+            <p class="proposalDeliveryTime__content">
+                <span>
+                    <%= project.deliveryTime?.description %>:
+                </span>
+                <span>
+                    <%= new Date(project.deliveryDate - browserTimezoneOffset + serverTimezoneOffset).toLocaleString() %>
+                </span>
+            </p>
+        </div>
+
+        <div class="proposalBudget">
+            <h6>Total available budget</h6> 
+            <p><%= project.budget?.description %></p>
+        </div>
+    </span>
+
     <span class="bodyProposals__item proposalDescription">
-        <h6>Project Description</h6> 
-        <p><%= project.description %></p>
+        <div class="proposalDescription">
+            <h6>Project Description</h6> 
+            <p><%= project.description %></p>
+        </div>
     </span>
 
-    <span class="bodyProposals__item proposalBudget">
-        <h6>Total available budget</h6> 
-        <p><%= project.budget?.description %></p>
-    </span>
-
-    <span class="bodyProposals__item proposalProjectType">
-        <h6>Project type</h6> 
-        <p><%= project.projectType?.description %></p>
-    </span>
-
-    <span class="bodyProposals__item proposalDeliveryTime">
-        <h6>Delivery Time</h6> 
-        <p><%= project.deliveryTime?.description %></p>
-    </span>
-
-    <span class="bodyProposals__item proposalDeliveryDate">
-        <h6>Delivery Date</h6> 
-        <p><%= new Date(project.deliveryDate - browserTimezoneOffset + serverTimezoneOffset).toLocaleString() %></p>
+    <span class="bodyProposals__item ">
+        <div class="proposalProjectType">
+            <h6>Project type</h6> 
+            <p><%= project.projectType?.description %></p>
+        </div>
     </span>
 
 </div>
