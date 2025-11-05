@@ -101,16 +101,18 @@
 
 
 /** ---------------------------------------------------------------------
- DASHBOARD -> Milestones on dashboard
+ DASHBOARD & PAYMENTS -> Milestones on dashboard & payments
  - Container
  - Component
 
-.dashboard
+.dashboard, .payments
     .milestoneGrid
         margin-bottom: $sp-12
         display: flex
         gap: $sp-10
         align-items: strech
+        article
+            width: 100%
         &__col
             padding: $sp-8 $sp-7
             border-radius: $radi-6
@@ -152,7 +154,7 @@
                     background-color: $red-300
                     .counter
 
-.dashboard
+.dashboard, .payments
     .milestone
         padding: $sp-7
         border-radius: $radi-6

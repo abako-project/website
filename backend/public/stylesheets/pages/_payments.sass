@@ -1,0 +1,35 @@
+// .payments
+
+.payments
+    &__projectTitle
+        margin-top: 24px
+        @include flex-center
+        justify-content: space-between
+        align-items: center
+    &__paymentInfo
+        margin-bottom: 24px
+        @include flex-start
+        justify-content: space-between
+        // gap: $sp-18
+
+.paymentInfoItem
+    margin-bottom: 8px
+    @include flex-start
+    gap: $sp-12
+    justify-content: space-between
+    align-items: baseline
+    font-size: $text-lg
+    line-height: $lh-lg
+    font-weight: 500
+    &__title
+        font-weight: 400
+    &__ammount
+
+/* ----------------------------------------------------------------------------------
+     Ajustes de Milestones en pantalla de payments; componente/s en _milestones.sass    
+.milestoneGrid.payments
+    margin-bottom: 64px
+
+article:has(.paymentInfoItem)
+    .paymentInfoItem
+        padding: 0 $radi-6 // el mismo que el border-radius de .milestone
