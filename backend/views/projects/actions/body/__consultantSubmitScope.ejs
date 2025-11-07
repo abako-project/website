@@ -5,7 +5,7 @@
         <% if (project.milestones.length > 0) { %>
 
             <div class="actionsBody">
-                <div class="comment">
+                <div class="actionsBody__comment">
 
                     <form id="submitScopeForm" action="/projects/<%= project.id %>/scopeSubmit?_method=PUT"
                           method="POST">
@@ -17,14 +17,13 @@
                                    placeholder="Comment" autocomplete="off">
                         </div>
 
-                        <button class="right projectFlow" onclick="submitFormById('submitScopeForm'); return false;">
+                        <button class="btn btn_primary" onclick="submitFormById('submitScopeForm'); return false;">
                             Scope Submit
                         </button>
 
                         <div class="clear"></div>
 
-                    </form>
-
+                    </form>    
                 </div>
             </div>
 

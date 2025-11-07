@@ -3,20 +3,20 @@
     <% if (project.state && ["WaitingForProposalApproval"].includes(project.state)) { %>
 
         <div class="actionsBody">
-            <div style="padding: 5px; margin: 10px;">
-                <a class="right projectFlow btn btn_primary btn_href"
-                   href="/projects/<%= project.id %>/proposal_approve?_method=PUT">
+            <div class="buttonContainer">
+                <a class="btn btn_primary"
+                href="/projects/<%= project.id %>/proposal_approve?_method=PUT">
                     Approve Proposal
                 </a>
             </div>
 
             <div class="clear"></div>
 
-            <div class="actionsBody__comment">
+            <div class="actionsBody__comment actionsBody__comment--reject">
 
                 <p>
                     <img class="attachment"
-                         src="/developers/<%= project.consultantId %>/attachment" />
+                        src="/developers/<%= project.consultantId %>/attachment" />
                     <%= project.consultant.name %> rejected your project
                 </p>
                 <p>
@@ -26,13 +26,13 @@
                     Provide an explaination of your rejection.
                 </p>
                 <form id="proposalRejectForm" action="/projects/<%= project.id %>/proposal_reject?_method=PUT"
-                      method="POST">
+                    method="POST">
 
                     <div class="form-group">
                         <input type="text" name="proposalRejectionReason"
-                               value=""
-                               placeholder="Type here your commentary (required)"
-                               autocomplete="off">
+                            value=""
+                            placeholder="Type here your commentary (required)"
+                            autocomplete="off">
                     </div>
 
                     <button class="btn_primary btn_primary--danger"

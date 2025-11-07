@@ -8,22 +8,27 @@
     <%- include('./headers/_project', { project }) %>
     <div class="mainContentContainer">
       <section class="projectContainer">
-        <article class="projectContainer__col projectScope">
-          <h4 class="title">Project Scope</h4>
-          <%- include("../proposals/info/_body", {project}) %>
+        <article class="projectContainer__col proposal">
+
+          <div class="projectScope">
+            <h4 class="title">Project Scope</h4>
+            <%- include("../proposals/info/_body", {project}) %>
+          </div>
+          
+          <!-- show milestones -->
+          <% if (project.milestones?.length ? ' hidden' : '') { %>
+            <div class="milestones">
+              <%- include("../milestones/info/_showMilestones", {project}) %>
+            </div>
+            <% } %>
         </article>
-
-        <!-- show milestones -->
-        <% if (project.milestones?.length ? ' hidden' : '') { %>
-          <article class="projectContainer__col milestones">
-            <%- include("../milestones/info/_showMilestones", {project}) %>
-          </article>
-        <% } %>
-
+            
         <!-- show actions -->
-        <% if (project.actions?.length ? '' : ' ') { %>
+        <% if (project.actions?.length ? ' ' : ' ') { %>
           <article class="projectContainer__col actions">
-            <%- include("./actions/body/_all", {project}) %>
+            <!-- <div class="actionsBodyContainer"> -->
+              <%- include("./actions/body/_all", {project}) %>
+            <!-- </div> -->
           </article>
         <% } %>
       </section>

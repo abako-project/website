@@ -3,10 +3,7 @@
  Project Detail (showProject)
 
 .projectContainer
-    height: 100%
-    // max-height: 100dvh
-    // display: grid
-    // grid-template-columns: 1fr 1fr
+    // height: 100%
     display: flex
     gap: 24px
     &__col
@@ -44,20 +41,22 @@
                     padding-left: $sp-10
                     list-style: decimal
 
-/* to do -> esto hay que arreglarlo
-    cuando aparecen las acciones, si siempre es vista de formulario,
-    podemos aprovechar el showProject1 y 2 para hacerlo así
 .projectContainer__col
-    &.projectScope
-        width: 100%
-        flex-grow: 1
-    &.milestones
-        width: 100%
-        max-width: 1/2
-        flex-grow: 1
+    // margin-top: $sp-7
+    &.proposal
+        display: flex
+        flex-wrap: wrap
+        gap: $sp-12
+        flex: 1 1 auto
+        .projectScope, .milestones
+            flex: 1 1 400px
+            min-width: 400px
     &.actions
+        height: fit-content
         width: fit-content
         max-width: 406px
+        position: sticky
+        top: 150px // header height
 
 // Project Scope    
 .projectInfo__body

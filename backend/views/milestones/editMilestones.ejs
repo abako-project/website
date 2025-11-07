@@ -1,10 +1,12 @@
 
 
 <div id="appOneColumn">
-    <%- include('../components/_cancelTopbar', {step: 1}) %>
-    <%- include('../projects/headers/_project', { project, showActions: false }) %>
+    <header class="stickyHeader">
+        <%- include('../components/_cancelTopbar', {step: 1}) %>
+        <%- include('../projects/headers/_project', { project, showActions: false }) %>
+    </header>
     
-    <div class="mainContentContainer editMilestones">
+    <section class="mainContentContainer editMilestones">
         <%- include('../components/headers/_basic', {title: "Review the Project Scope and Milestones"}) %>
 
         <% if (project.milestones.length === 0) { %>
@@ -82,7 +84,7 @@
                 Next: Submit Scope
             </a>
         <% } %>
-    </div>
+    </section>
 </div>
 
 

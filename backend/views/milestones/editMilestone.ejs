@@ -1,12 +1,12 @@
 <div class="appOneColumn">
-    <div class="stickyHeader">
+    <header class="stickyHeader">
 
         <%- include('../components/_cancelTopbar', {step: 1}) %>
         
         <%- include('../projects/headers/_project', { project, showActions: false }) %>
-    </div>
+    </header>
 
-    <div class="mainContentContainer" style="max-width: 1240px; margin: 0 auto;"> 
+    <section class="mainContentContainer" style="max-width: 1240px; margin: 0 auto;"> 
 
         <%- include('../components/headers/_basic', {title: "Edit Milestone"}) %>
 
@@ -32,5 +32,5 @@
             </button>
         </div>
 
-    </div>
+    </section>
 </div>
