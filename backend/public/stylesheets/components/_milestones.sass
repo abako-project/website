@@ -2,9 +2,10 @@
  - componente primitivo .milestone
  - componente desde las distintas vistas
  * showProject
- * developer/dashboard/milestones
+ * developer/dashboard/milestones & payments
  * _formMilestone.ejs // create milestone form
- *    
+ * _newMilestone.ejs & _editMilestone.ejs
+ * _submitMIlestone.ejs
 
 /**
  MILESTONE -> Default Milestone component
@@ -68,22 +69,31 @@
                     height: 100%
                     background-color: $fill-3
             &__milestone
-                padding-bottom: $sp-8 // estilar dinámico junto a ocultar .line en el último milestone del array
+                padding-bottom: $sp-12 // estilar dinámico junto a ocultar .line en el último milestone del array
 
 
 .projectContainer
     .milestone
+        width: 100% 
         &__header // descomponer bloque en el ejs a ser posible
             @include flex-start
             gap: $sp-2
+            flex-flow: row
+            flex-wrap: wrap
+            justify-content: space-between
+            align-items: baseline
+            & > *
+                min-width: fit-content
             .title
+                flex-grow: .5
                 font-size: $text-base
                 line-height: $lh-base
                 font-weight: 700
             .subtitle
-                flex: 1
+                flex-grow: .1
+                width: fit-content
                 text-align: end
-                display: inline-flex
+                display: flex
                 gap: $sp-5
                 color: $text-dark-2
                 small
@@ -162,7 +172,30 @@
         border: 1px solid $stroke
         background-color: $base-1
         box-shadow: $elevation-xs
+        display: grid
+        grid-template-columns: 1fr
+        gap: $sp-7
         &__header
+            @include flex-start
+            gap: $sp-2
+            flex-flow: row
+            flex-wrap: wrap
+            justify-content: space-between
+            align-items: baseline
+            & > *
+                min-width: fit-content
+            .title
+                flex-grow: .5
+                font-size: $text-base
+                line-height: $lh-base
+                font-weight: 700
+            .subtitle
+                flex-grow: .1
+                width: fit-content
+                text-align: end
+                display: flex
+                gap: $sp-5
+                color: $text-dark-2
         &__description
             gap: $sp-5
             color: $text-dark-2
@@ -298,7 +331,7 @@
             margin: 0
 
 .submitMilestone__milestone.milestone
-    .milestoneHeader
+    &__header
         width: 100%
         @include flex-start
         justify-content: space-between
@@ -313,7 +346,7 @@
             font-size:  $text-base
             line-height: $lh-base
             font-weight: 700
-    .description
+    &__description
         padding-bottom: $sp-8
         color: $text-dark-2
         font-size:  $text-base

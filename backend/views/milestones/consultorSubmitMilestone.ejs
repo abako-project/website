@@ -14,17 +14,16 @@
             Your Submission
         </h1>
         
-        
         <section class="submitMilestone__milestone milestone">
-            <span class="milestoneHeader">
+            <span class="milestone__header">
                 <%- include('../milestones/info/_headerMilestone', { milestone }) %>
             </span>
             
-            <div class="description">
+            <div class="milestone__description">
                 <small><%= milestone.description %></small>
             </div>
             
-            <div class="dev">
+            <div class="milestone__dev">
                 <%- include("../milestones/info/__showDeveloper", {milestone}) %>
             </div>
             
