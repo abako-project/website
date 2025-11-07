@@ -1,85 +1,89 @@
 
 
-<%- include('../components/_cancelTopbar', {step: 1}) %>
+<div id="appOneColumn">
+    <%- include('../components/_cancelTopbar', {step: 1}) %>
+    <%- include('../projects/headers/_project', { project, showActions: false }) %>
+    
+    <div class="mainContentContainer editMilestones">
+        <%- include('../components/headers/_basic', {title: "Review the Project Scope and Milestones"}) %>
 
-<%- include('../projects/headers/_project', { project, showActions: false }) %>
-
-<%- include('../components/headers/_basic', {title: "Review the Project Scope and Milestones"}) %>
-
-
-<% if (project.milestones.length === 0) { %>
-    <div class="card">
-        No se ha creado ningún milestone todavía.
-    </div>
-<% } %>
-
-<% for (const i in project.milestones) { %>
-
-    <% const milestone = project.milestones[i]; %>
-
-    <div class="card">
-
-        <%- include("./info/_showMilestone", {milestone}) %>
-
-        <br/>
-
-        <% if (locals.loginUser && locals.loginUser.developerId === project.consultantId) { %>
-
-            <a class="right btn btn_primary btn_href"
-               href="/projects/<%= project.id %>/milestones/<%= milestone.id %>/edit">
-                Edit
-            </a>
-
-            <a class="right btn btn_primary btn_href"
-               href="/projects/<%= project.id %>/milestones/<%= milestone.id %>?_method=DELETE">
-                🗑️
-            </a>
-
-            <% if (+i > 0) { %>
-                <a class="right btn btn_primary btn_href"
-                   href="/projects/<%= project.id %>/milestones/swaporder/<%= milestone.id %>/<%= project.milestones[+i - 1].id %>?_method=PUT">
-                    ▲
-                </a>
-            <% } else { %>
-                <a class="right btn btn_primary btn_href">
-                   ▲
-                </a>
-            <% } %>
-
-            <% if (+i < project.milestones.length - 1) { %>
-                <a class="right btn btn_primary btn_href"
-                   href="/projects/<%= project.id %>/milestones/swaporder/<%= milestone.id %>/<%= project.milestones[+i + 1].id %>?_method=PUT">
-                    ▼
-                </a>
-            <% } else { %>
-                <a class="right btn btn_primary btn_href">
-                   ▼
-                </a>
-            <% } %>
-
-            <div class="clear"></div>
-
+        <% if (project.milestones.length === 0) { %>
+                <p>
+                    No se ha creado ningún milestone todavía.
+                </p>
         <% } %>
 
+        <% for (const i in project.milestones) { %>
+
+            <% const milestone = project.milestones[i]; %>
+
+            <div class="editMilestones__item">
+                <div class="milestone">
+                    <%- include("./info/_showMilestone", {milestone}) %>
+                </div>
+
+                <div class="buttons">
+
+                    <% if (locals.loginUser && locals.loginUser.developerId === project.consultantId) { %>
+                        
+                        <a class="right btn btn_primary btn_href"
+                        href="/projects/<%= project.id %>/milestones/<%= milestone.id %>/edit">
+                        Edit
+                    </a>
+                    
+                    <a class="right btn"
+                    href="/projects/<%= project.id %>/milestones/<%= milestone.id %>?_method=DELETE">
+                    <i class="ri-delete-bin-7-line"></i>
+                </a>
+                
+                <% if (+i > 0) { %>
+                    <a class="right btn"
+                    href="/projects/<%= project.id %>/milestones/swaporder/<%= milestone.id %>/<%= project.milestones[+i - 1].id %>?_method=PUT">
+                    ▲
+                </a>
+                <% } else { %>
+                    <a class="right btn">
+                        ▲
+                    </a>
+                    <% } %>
+                    
+                    <% if (+i < project.milestones.length - 1) { %>
+                        <a class="right btn"
+                        href="/projects/<%= project.id %>/milestones/swaporder/<%= milestone.id %>/<%= project.milestones[+i + 1].id %>?_method=PUT">
+                        ▼
+                    </a>
+                    <% } else { %>
+                        <a class="right btn">
+                            ▼
+                        </a>
+                        <% } %>
+                        
+                        <div class="clear"></div>
+                        
+                        <% } %>
+                        
+                    </div>
+            </div>
+        <% } %>
+
+        <% if (locals.loginUser && locals.loginUser.developerId === project.consultantId) { %>
+            <a class=" btn btn_outline"
+            href="/projects/<%= project.id %>/milestones/new">
+                Add New Milestone
+            </a>
+        <% } %>
+
+        <div style="height:20px; clear: both;"></div>
+
+        <% if (locals.loginUser.developerId === project.consultantId &&
+                project.state &&
+                ["ScopingInProgress"].includes(project.state)) { %>
+            <a class="right btn btn_primary btn_href"
+            href="/projects/<%= project.id %>">
+                Next: Submit Scope
+            </a>
+        <% } %>
     </div>
-<% } %>
-
-<% if (locals.loginUser && locals.loginUser.developerId === project.consultantId) { %>
-    <a class="right btn btn_primary btn_href"
-       href="/projects/<%= project.id %>/milestones/new">
-        Add New Milestone
-    </a>
-<% } %>
-
-<div style="height:20px; clear: both;"></div>
-
-<% if (locals.loginUser.developerId === project.consultantId &&
-        project.state &&
-        ["ScopingInProgress"].includes(project.state)) { %>
-    <a class="right btn btn_primary btn_href"
-       href="/projects/<%= project.id %>">
-        Next: Submit Scope
-    </a>
-<% } %>
+</div>
 
 

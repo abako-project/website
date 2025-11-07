@@ -1,0 +1,28 @@
+/* Componente primitivo para los formularios
+    los formularios van a partir de este componente para los estilos básicos compartidos
+    to do -> implementar esto en los forms de crear proposal
+    
+.formContainer
+    gap: $sp-14
+    @extend .bubble
+    background-color: $base-2
+    input, textarea, select
+        background-color: $base-1
+
+    .formGroup
+        &--radio, &--check
+            p
+                @include flex-start
+                align-items: center
+                gap: 12px
+                padding: 0
+                position: relative
+                font-weight: 500
+
+/* -------------------------
+    No se incluye en el componente del formulario, pero son los botones que aparecen abajo
+ */
+.buttonContainer
+    margin-top: $sp-14
+    @include flex-center
+    justify-content: space-between
