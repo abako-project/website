@@ -22,47 +22,46 @@
                     <%- include("./info/_showMilestone", {milestone}) %>
                 </div>
 
-                <div class="buttons">
+                <div class="buttonContainer">
 
                     <% if (locals.loginUser && locals.loginUser.developerId === project.consultantId) { %>
                         
-                        <a class="right btn btn_primary btn_href"
-                        href="/projects/<%= project.id %>/milestones/<%= milestone.id %>/edit">
-                        Edit
-                    </a>
+                        <a class="right btn btn_primary"
+                            href="/projects/<%= project.id %>/milestones/<%= milestone.id %>/edit">
+                            Edit
+                        </a>
                     
-                    <a class="right btn"
-                    href="/projects/<%= project.id %>/milestones/<%= milestone.id %>?_method=DELETE">
-                    <i class="ri-delete-bin-7-line"></i>
-                </a>
-                
-                <% if (+i > 0) { %>
-                    <a class="right btn"
-                    href="/projects/<%= project.id %>/milestones/swaporder/<%= milestone.id %>/<%= project.milestones[+i - 1].id %>?_method=PUT">
-                    ▲
-                </a>
-                <% } else { %>
-                    <a class="right btn">
-                        ▲
-                    </a>
-                    <% } %>
-                    
-                    <% if (+i < project.milestones.length - 1) { %>
                         <a class="right btn"
-                        href="/projects/<%= project.id %>/milestones/swaporder/<%= milestone.id %>/<%= project.milestones[+i + 1].id %>?_method=PUT">
-                        ▼
+                            href="/projects/<%= project.id %>/milestones/<%= milestone.id %>?_method=DELETE">
+                            <i class="ri-delete-bin-7-line"></i>
+                        </a>
+                    
+                    <% if (+i > 0) { %>
+                        <a class="right btn"
+                        href="/projects/<%= project.id %>/milestones/swaporder/<%= milestone.id %>/<%= project.milestones[+i - 1].id %>?_method=PUT">
+                        <i class="ri-arrow-up-s-line"></i>
                     </a>
                     <% } else { %>
                         <a class="right btn">
-                            ▼
+                            <i class="ri-arrow-up-s-line"></i>
                         </a>
                         <% } %>
                         
+                        <% if (+i < project.milestones.length - 1) { %>
+                            <a class="right btn"
+                            href="/projects/<%= project.id %>/milestones/swaporder/<%= milestone.id %>/<%= project.milestones[+i + 1].id %>?_method=PUT">
+                            <i class="ri-arrow-down-s-line"></i>
+                        </a>
+                        <% } else { %>
+                            <a class="right btn">
+                                <i class="ri-arrow-down-s-line"></i>
+                            </a>
+                        <% } %>
+                            
                         <div class="clear"></div>
                         
-                        <% } %>
-                        
-                    </div>
+                    <% } %>
+                </div>
             </div>
         <% } %>
 

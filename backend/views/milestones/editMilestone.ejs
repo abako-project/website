@@ -1,25 +1,36 @@
-<%- include('../components/_cancelTopbar', {step: 1}) %>
+<div class="appOneColumn">
+    <div class="stickyHeader">
 
-<%- include('../projects/headers/_project', { project, showActions: false }) %>
-
-<%- include('../components/headers/_basic', {title: "Edit Milestone"}) %>
-
-<form id="editMilestoneForm" action="/projects/<%= project.id %>/milestones/<%= milestone.id %>?_method=PUT" method="POST">
-
-    <div class="card">
-        <%- include("./edit/_formMilestone", {project, milestone}) %>
+        <%- include('../components/_cancelTopbar', {step: 1}) %>
+        
+        <%- include('../projects/headers/_project', { project, showActions: false }) %>
     </div>
 
+    <div class="mainContentContainer" style="max-width: 1240px; margin: 0 auto;"> 
 
-    <a class="btn btn_primary btn_href"
-       href="/projects/<%= project.id %>/milestones/edit">
-        Cancel
-    </a>
+        <%- include('../components/headers/_basic', {title: "Edit Milestone"}) %>
 
-    <div style="height:20px; clear: both;"></div>
+        <form id="editMilestoneForm" action="/projects/<%= project.id %>/milestones/<%= milestone.id %>?_method=PUT" method="POST">
 
-    <button class="btn btn_primary" onclick="submitFormById('editMilestoneForm'); return false;">
-        Save
-    </button>
+            <div class="formContainer formMilestone">
+                <%- include("./edit/_formMilestone", {project, milestone}) %>
+            </div>
 
-</form>
+
+        </form>
+        <div class="buttonContainer">
+
+            <a class="btn"
+            href="/projects/<%= project.id %>/milestones/edit">
+                Cancel
+            </a>
+
+            <div style="clear: both;"></div>
+
+            <button class="btn btn_primary" onclick="submitFormById('editMilestoneForm'); return false;">
+                Save
+            </button>
+        </div>
+
+    </div>
+</div>

@@ -12,19 +12,19 @@
             <% if (+i > 0) { %>
                 <a class="right btn"
                 href="/projects/<%= project.id %>/constraints/swaporder/<%= constraint.id %>/<%= project.constraints[+i - 1].id %>?_method=PUT">
-                ▲
+                <i class="ri-arrow-up-s-line"></i>
             </a>
             <% } else { %>
-                <button class="right btn">▲</button>
+                <button class="right btn"><i class="ri-arrow-up-s-line"></i></button>
                 <% } %>
                 
                 <% if (+i < project.constraints.length - 1) { %>
                     <a class="right btn"
                     href="/projects/<%= project.id %>/constraints/swaporder/<%= constraint.id %>/<%= project.constraints[+i + 1].id %>?_method=PUT">
-                    ▼
+                    <i class="ri-arrow-down-s-line"></i>
                 </a>
                 <% } else { %>
-                    <a class="right btn">▼</a>
+                    <a class="right btn"><i class="ri-arrow-down-s-line"></i></a>
                     <% } %>
                     
                     <!-- delete btn -->

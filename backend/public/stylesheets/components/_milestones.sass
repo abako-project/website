@@ -197,12 +197,22 @@
     - Component (in view)
 
 .editMilestones
+    margin: 0 auto
+    width: 100%
+    max-width: 1240px
     &__item
+        margin-bottom: $sp-12
         @extend .bubble
         padding: $sp-5 $sp-7
         @include flex-start
         justify-content: space-between
-    .milestone
+        .milestone
+        .buttonContainer
+            margin-top: 2px
+            @include flex-end
+            gap: $sp-7
+            justify-content: end
+            flex-direction: row-reverse
 
 /** ---------------------------------------------------------------------
  CREATE MILESTONE FORM
