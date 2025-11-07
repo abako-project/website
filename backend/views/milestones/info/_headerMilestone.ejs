@@ -1,9 +1,9 @@
 <h5 class="title"><%= milestone.title %></h5>
 
-<span class="subtitle">
+<span class="subtitle budget">
     <small>(<%= milestone.budget %> USD)</small>
 </span>
-<span class="subtitle">
+<span class="subtitle delivery">
     <small>Delivery: </small> <%= milestone.deliveryTime?.description %> 
     <small> (<%= new Date(milestone.deliveryDate - browserTimezoneOffset + serverTimezoneOffset).toLocaleString() %>) </small>
 </span>
