@@ -80,13 +80,6 @@ exports.scopeSubmit = sedaScope.scopeSubmit;
 exports.scopeAccept = sedaScope.scopeAccept;
 exports.scopeReject = sedaScope.scopeReject;
 
-// exports.task = sedaTask.task;
-// exports.taskCreate = sedaTask.taskCreate;
-// exports.taskUpdate = sedaTask.taskUpdate;
-// exports.tasksSwapOrder = sedaTask.tasksSwapOrder;
-// exports.taskDestroy = sedaTask.taskDestroy;
-// exports.tasksSubmit = sedaTask.tasksSubmit;
-
 exports.clientIndex = sedaClient.clientIndex;
 exports.client = sedaClient.client;
 exports.clientCreate = sedaClient.clientCreate;
