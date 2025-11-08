@@ -2,8 +2,10 @@
  - componente primitivo .milestone
  - componente desde las distintas vistas
  * showProject
- * developer/dashboard/milestones
- *    
+ * developer/dashboard/milestones & payments
+ * _formMilestone.ejs // create milestone form
+ * _newMilestone.ejs & _editMilestone.ejs
+ * _submitMIlestone.ejs
 
 /**
  MILESTONE -> Default Milestone component
@@ -67,22 +69,31 @@
                     height: 100%
                     background-color: $fill-3
             &__milestone
-                padding-bottom: $sp-8 // estilar dinámico junto a ocultar .line en el último milestone del array
+                padding-bottom: $sp-12 // estilar dinámico junto a ocultar .line en el último milestone del array
 
 
 .projectContainer
     .milestone
+        width: 100% 
         &__header // descomponer bloque en el ejs a ser posible
             @include flex-start
             gap: $sp-2
+            flex-flow: row
+            flex-wrap: wrap
+            justify-content: space-between
+            align-items: baseline
+            & > *
+                min-width: fit-content
             .title
+                flex-grow: .5
                 font-size: $text-base
                 line-height: $lh-base
                 font-weight: 700
             .subtitle
-                flex: 1
+                flex-grow: .1
+                width: fit-content
                 text-align: end
-                display: inline-flex
+                display: flex
                 gap: $sp-5
                 color: $text-dark-2
                 small
@@ -101,16 +112,18 @@
 
 
 /** ---------------------------------------------------------------------
- DASHBOARD -> Milestones on dashboard
+ DASHBOARD & PAYMENTS -> Milestones on dashboard & payments
  - Container
  - Component
 
-.dashboard
+.dashboard, .payments
     .milestoneGrid
         margin-bottom: $sp-12
         display: flex
         gap: $sp-10
         align-items: strech
+        article
+            width: 100%
         &__col
             padding: $sp-8 $sp-7
             border-radius: $radi-6
@@ -152,14 +165,37 @@
                     background-color: $red-300
                     .counter
 
-.dashboard
+.dashboard, .payments
     .milestone
         padding: $sp-7
         border-radius: $radi-6
         border: 1px solid $stroke
         background-color: $base-1
         box-shadow: $elevation-xs
+        display: grid
+        grid-template-columns: 1fr
+        gap: $sp-7
         &__header
+            @include flex-start
+            gap: $sp-2
+            flex-flow: row
+            flex-wrap: wrap
+            justify-content: space-between
+            align-items: baseline
+            & > *
+                min-width: fit-content
+            .title
+                flex-grow: .5
+                font-size: $text-base
+                line-height: $lh-base
+                font-weight: 700
+            .subtitle
+                flex-grow: .1
+                width: fit-content
+                text-align: end
+                display: flex
+                gap: $sp-5
+                color: $text-dark-2
         &__description
             gap: $sp-5
             color: $text-dark-2
@@ -187,3 +223,132 @@
         .bubble
             width: fit-content // no funciona
             background-color: $base-2
+
+/** ---------------------------------------------------------------------
+ EDIT MILESTONES
+ - Container
+    - Component (in view)
+
+.editMilestones
+    margin: 0 auto
+    width: 100%
+    max-width: 1240px
+    &__item
+        margin-bottom: $sp-12
+        @extend .bubble
+        padding: $sp-5 $sp-7
+        @include flex-start
+        justify-content: space-between
+        .milestone
+        .buttonContainer
+            margin-top: 2px
+            @include flex-end
+            gap: $sp-7
+            justify-content: end
+            flex-direction: row-reverse
+
+/** ---------------------------------------------------------------------
+ CREATE MILESTONE FORM & EDIT MILESTONE FORM
+ - Container
+ - Form groups
+.formMilestone
+    padding: $sp-15
+    .form-group
+        margin-top: $sp-12
+    &__milestone
+        display: grid
+        grid-template-columns: repeat(4, 1fr)
+        grid-template-rows: repeat(4, auto)
+        gap: $sp-7
+        .title
+            grid-column: 1 / 3
+            grid-row: 1 / 2
+        .description
+            grid-column: 1 / 3
+            grid-row: 2 / 3
+            align-self: start
+        .budget
+            grid-column: 3 / 4
+            grid-row: 1 / 2
+        .time
+            grid-column: 4 / 5
+            grid-row: 2 / 3
+        .date
+            grid-column: 4 / 5
+            grid-row: 1 / 2
+    &__dev
+        display: grid
+        grid-template-columns: repeat(4, 1fr)
+        grid-template-rows: repeat(3, auto)
+        gap: $sp-7
+        .skills
+            grid-column: 1 / 3
+            grid-row: 2 / 3
+        .availability
+            grid-column: 3 / -1
+            grid-row: 2 / 3
+        .form-group
+            width: 100%
+            select
+                width: 100%
+
+/** ---------------------------------------------------------------------
+ SUBMIT MILESTONE
+ - Container
+ - Form groups
+.submitMilestone
+    @extend .formContainer
+    margin: $sp-12 auto
+    width: 100%
+    max-width: 1000px
+    padding: 24px !important
+    display: grid
+    grid-template-columns: 1fr
+    gap: 32px
+    border: 1px solid $brand
+    &__title
+        margin: 0 !important
+        @include flex-start
+        align-items: center
+        gap: 12px
+        font-size: $text-xl
+        line-height: $lh-xl
+        font-weight: 400
+    &__milestone
+        @extend .bubble
+        box-shadow: none
+        padding: 16px 24px
+        border: 2px solid $stroke
+        @include flex-start
+        flex-flow: column
+    &__form
+        @include flex-start
+        flex-direction: column
+        gap: 32px
+        & > *
+            width: 100%
+        .buttonContainer
+            margin: 0
+
+.submitMilestone__milestone.milestone
+    &__header
+        width: 100%
+        @include flex-start
+        justify-content: space-between
+        align-content: center
+        gap: $sp-7
+        
+        font-size:  $text-sm
+        line-height: $lh-sm
+        font-weight: 400
+        .title
+            flex-grow: 1
+            font-size:  $text-base
+            line-height: $lh-base
+            font-weight: 700
+    &__description
+        padding-bottom: $sp-8
+        color: $text-dark-2
+        font-size:  $text-base
+        line-height: $lh-base
+        font-weight: 500

@@ -3,14 +3,60 @@
  Project Detail (showProject)
 
 .projectContainer
-    max-height: 100dvh
-    display: grid
-    grid-template-columns: 1fr 1fr
+    // height: 100%
+    display: flex
     gap: 24px
     &__col
         width: 100%
         .title
             margin-bottom: 8px
+        // .projectInfo__body >>>
+        .projectInfo__body
+            padding: 16px 24px
+            @include flex-start
+            flex-direction: column
+            gap: 32px
+            .bodyProposals
+                // @include flex-start
+                // flex-direction: column
+                // gap: $sp-10
+                &__item
+                    h6
+                        font-size: $text-base
+                        line-height: $lh-base
+                        font-weight: 400
+                        color: $text-dark-2
+                    p
+                        max-width: 60ch
+                        padding-top: $sp-5
+                        font-size: $text-lg
+                        line-height: $lh-lg
+            .bodyObjectives, .bodyConstraints
+                &__title
+                    font-size: $text-base
+                    line-height: $lh-base
+                    font-weight: 400
+                    color: $text-dark-2
+                &__list
+                    padding-left: $sp-10
+                    list-style: decimal
+
+.projectContainer__col
+    // margin-top: $sp-7
+    &.proposal
+        display: flex
+        flex-wrap: wrap
+        gap: $sp-12
+        flex: 1 1 auto
+        .projectScope, .milestones
+            flex: 1 1 400px
+            min-width: 400px
+    &.actions
+        height: fit-content
+        width: fit-content
+        max-width: 406px
+        position: sticky
+        top: 150px // header height
 
 // Project Scope    
 .projectInfo__body
@@ -19,7 +65,7 @@
 
 
 /* ------------------------- 
- Project List (index)
+ Project List (index) - cards on projectGrid
 
 .projects
     padding: $sp-12 $sp-17

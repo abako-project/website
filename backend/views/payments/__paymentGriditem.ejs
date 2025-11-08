@@ -1,7 +1,8 @@
-<p>
+<p class="milestone__dev">
     <img class="attachment"
          src="/developers/<%= milestone.developerId %>/attachment" />
     <%= milestone.developer.name %>
 </p>
-
-<%- include('../milestones/info/_headerMilestone', { milestone }) %>
+<div class="milestone__header">
+    <%- include('../milestones/info/_headerMilestone', { milestone }) %>
+</div>

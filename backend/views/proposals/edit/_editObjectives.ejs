@@ -14,19 +14,19 @@
             <% if (+i > 0) { %>
                 <a class="right btn"
                         href="/projects/<%= project.id %>/objectives/swaporder/<%= objective.id %>/<%= project.objectives[+i - 1].id %>?_method=PUT">
-                    ▲
+                    <i class="ri-arrow-up-s-line"></i>
                 </a>
             <% } else { %>
-                <a class="right btn">▲</a>
+                <a class="right btn"><i class="ri-arrow-up-s-line"></i></a>
             <% } %>
 
             <% if (+i < project.objectives.length - 1) { %>
                 <a class="right btn"
                    href="/projects/<%= project.id %>/objectives/swaporder/<%= objective.id %>/<%= project.objectives[+i + 1].id %>?_method=PUT">
-                    ▼
+                    <i class="ri-arrow-down-s-line"></i>
                 </a>
             <% } else { %>
-                <a class="right btn">▼</a>
+                <a class="right btn"><i class="ri-arrow-down-s-line"></i></a>
             <% } %>
 
             <!-- Delete btn -->

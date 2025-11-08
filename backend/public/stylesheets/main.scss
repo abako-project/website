@@ -8,9 +8,11 @@
 @import "./lib/_componentslayout.sass";
 
 /* ui */
+@import "./ui/_layout.sass";
 @import "./ui/_buttons.sass";
 @import "./ui/_inputs.sass";
 @import "./ui/_labels.sass";
+@import './ui/form';
 // @import "./ui/_icons.sass";
 // @import "./ui/_divider.sass";
 
@@ -20,6 +22,7 @@
 @import './components/_progressSidebar.sass';
 @import './components/_headers.sass';
 @import './components/_milestones.sass';
+@import './components/_actionsBody.sass';
 
 
 // Pages
@@ -29,17 +32,14 @@
 @import './pages/projects/_objectivesConstraints.sass';
 @import './pages/votations/_votations.sass';
 @import './pages/profiles/_profiles.sass';
-
+@import './pages/_payments.sass';
+@import './pages/_escrow.sass';
 * {
     // border: 1px solid tomato;
     transition: ease-in-out, background-color .3s ease-in-out, height .4s ease-in-out;
 }
 
 html, body {
-  // --primary: #2a4f03;
-  // --secondary: #dfd88d;
-  // font: 16px "Lucida Grande", Helvetica, Arial, sans-serif;
-
   // margin: 0px;
   // padding: 0px;
 
@@ -61,39 +61,6 @@ i {
   width: 100dvw;
   max-width: 100dvw;
   overflow: hidden;
-}
-
-#appOneColumn {
-  margin: 0px;
-  height: 100vh;
-  padding: 20px;
-  display: grid;
-  grid-template-rows: auto auto 1fr;
-}
-
-// Para las vistas con sidebar
-#appTwoColumns {
-  margin: 0px;
-  padding: 0px;
-  max-height: 100dvh;
-  display: grid;
-  grid-template-columns: auto 1fr;
-}
-
-#appMain {
-  height: 100dvh;
-  width: 100%;
-  // overflow-y: scroll;
-  @extend .hideScrollbar
-}
-
-.mainContentContainer {
-  padding: $sp-14 $sp-17;
-  min-height: 80%;
-  height: fit-content;
-  h1 {
-    margin-bottom: $sp-5;
-  }
 }
 
 /* ------------------------- */

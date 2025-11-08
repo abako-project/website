@@ -9,7 +9,7 @@
 
         <%= milestone.developer?.name ?? "Anonymous" %>
 
-        <span class="bubble">
+        <small class="state state_secondary">
             <% if (milestone.state === "WaitingDeveloperAcceptAssignation") { %>
                 Waiting for Developer Accept Assignation
             <% } else if (milestone.state === "MilestoneInProgress") { %>
@@ -25,7 +25,7 @@
             <% } else { %>
                 Unknown state
             <% } %>
-        </span>
+            </small>
     <% } %>
 
 </div>

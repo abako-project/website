@@ -1,18 +1,27 @@
-<h1>Crear Nuevo Milestone</h1>
+<div class="appOneColumn">
+    <%- include('../components/_cancelTopbar') %>
 
-<form id="newMilestoneForm" action="/projects/<%= project.id %>/milestones" method="POST">
-
-    <div class="card">
-        <%- include("./edit/_formMilestone", {project, milestone}) %>
+    <div class="mainContentContainer" style="max-width: 1240px; margin: 0 auto;"> 
+        <h1>Crear Nuevo Milestone</h1>
+        
+        <form id="newMilestoneForm" action="/projects/<%= project.id %>/milestones" method="POST">
+            
+            <div class="formContainer formMilestone">
+                <%- include("./edit/_formMilestone", {project, milestone}) %>
+            </div>
+            
+        </form>
+        
+        <div class="buttonContainer">
+            <a class="btn"
+                href="/projects/<%= project.id %>/milestones/edit" >
+                Cancel
+            </a>
+            
+            <button class="btn btn_primary" onclick="submitFormById('newMilestoneForm'); return false;">
+                Save and Next
+            </button>
+        </div>
     </div>
 
-</form>
-
-<a class="btn btn_primary btn_href"
-   href="/projects/<%= project.id %>/milestones/edit" >
-    Cancel
-</a>
-
-<button class="button" onclick="submitFormById('newMilestoneForm'); return false;">
-    Save and Next
-</button>
+</div>

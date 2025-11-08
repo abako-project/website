@@ -1,0 +1,68 @@
+
+// .actionsBodyContainer
+//     width: 100%
+    
+.actionsBody
+    min-width: 20dvw
+    margin-top: 40px
+    position: sticky
+    top: calc(150px + 40px) // header + padding top + title+margin height
+    // right: 0
+    @include flex-end
+    flex-flow: column
+    // gap: 40px
+    .buttonContainer
+        width: 100%
+        margin: 0
+        margin-bottom: $sp-7
+        text-wrap:  pretty
+        .btn
+            width: 100%
+    &__comment
+        width: 100%
+        padding: 24px
+        @include flex-start
+        flex-flow: column
+        gap: 40px
+        border-radius: $radi-5
+        border: 1px solid $brand
+        background-color: $base-2
+        &--reject
+            border-color: $red-300
+        input
+            background-color: $base-1
+        button
+            width: 100%
+            margin-top: $sp-7
+        .responseScopeForm
+            @include flex-start
+            flex-flow: column
+            gap: $sp-12 
+            .buttonContainer
+                margin-top: 0 // anula margen del primitivo en _form.sass
+    &__help
+        margin-top: 40px
+        @include flex-start
+        align-items: center
+        gap: 16px
+        font-weight: 500
+        color: $text-dark-2
+        .icon
+            align-self: start
+            @include flex-center
+            padding: 8px
+            min-width: 40px               
+            max-width: 40px
+            min-height: 40px                
+            max-height: 40px
+            font-size: 20px
+            border-radius: $rounded-full
+            background-color: $emerald-200
+            color: $text-dark
+        .info
+            small
+                font-weight: 400
+            .contactMail
+                color: $text-dark
+
+

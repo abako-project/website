@@ -58,12 +58,6 @@
     text-align: left
     border-right: 0px
 
-/* -------------------------
- Project Proposal
-    to-do -> Refactor 
- */
-.buttonContainer
-
 .formContainer
     @extend .bubble
     background-color: $base-2
@@ -130,7 +124,7 @@
         background-color: $base-2
         .infoHeader //proposals/info/_header
             &__title
-            &__subtitle
+            &__summary
                 color: $text-dark-2
             &__client
                 margin-top: 32px
@@ -143,9 +137,10 @@
                 p
                     @include flex-start
                     flex-direction: column
-                    color: $text-dark-2
+                    color: $text-dark-3
                     & > :first-child
                         color: $text-dark
+                        font-weight: 500
             &__url
                 margin-top: 32px
                 @include flex-start
@@ -162,27 +157,46 @@
             @include flex-start
             flex-direction: column
             gap: $sp-10
-            .bodyProposals
+
+
+/* --------------------------------------------------------------------------
+    _bodyProposals.ejs primitive
+    also used in projectShow inside .projectContainer
+
+.bodyProposals
+    width: 100%
+    @include flex-start
+    flex-direction: column
+    gap: $sp-10
+    &__item
+        width: 100%
+        max-width: 75ch
+        @include flex-start
+        justify-content: space-between
+        gap: 5%
+        h6
+            font-size: $text-base
+            line-height: $lh-base
+            font-weight: 400
+            color: $text-dark-2
+        p
+            padding-top: $sp-5
+            font-size: $text-lg
+            line-height: $lh-lg
+            &.proposalDeliveryTime__content
                 @include flex-start
-                flex-direction: column
-                gap: $sp-10
-                &__item
-                    h6
-                        font-size: $text-base
-                        line-height: $lh-base
-                        font-weight: 400
-                        color: $text-dark-2
-                    p
-                        padding-top: $sp-5
-                        font-size: $text-lg
-                        line-height: $lh-lg
-            .bodyObjectives, .bodyConstraints
-                &__title
-                    font-size: $text-base
-                    line-height: $lh-base
-                    font-weight: 400
-                    color: $text-dark-2
-                &__list
-                    padding-left: $sp-10
-                    list-style: decimal
+                // flex-direction: column
+                gap: $sp-5
+                
+                flex-wrap: wrap
+
+.bodyObjectives, .bodyConstraints
+    &__title
+        font-size: $text-base
+        line-height: $lh-base
+        font-weight: 400
+        color: $text-dark-2
+    &__list
+        padding-left: $sp-10
+        list-style: decimal
 

@@ -3,10 +3,10 @@
 
     <% if (project.state && ["ScopeValidationNeeded"].includes(project.state)) { %>
 
-        <div style="display: flex;   justify-content: flex-end;">
-            <div style="padding: 5px; margin: 10px; width: 50%;  border: 5px dotted seagreen;">
+        <div class="actionsBody">
+            <div class="actionsBody__comment">
 
-                <form id="responseScopeForm" method="POST">
+                <form id="responseScopeForm" method="POST" class="responseScopeForm">
 
                     <div class="form-group">
                         <div class="card-subtitle">Consultant&apos; proposal</div>
@@ -22,17 +22,20 @@
                                placeholder="Response" autocomplete="off">
                     </div>
 
-                    <button class="right projectFlow"
+                    <div class="responseScopeForm__item buttonContainer">
+
+                        <button class="btn btn_outline"
                             onclick="document.getElementById('responseScopeForm').action = '/projects/<%= project.id %>/scopeAccept?_method=PUT'; submitFormById('responseScopeForm'); return false;">
-                        Accept Scope
-                    </button>
-
-                    <button class="right projectFlow"
+                            Accept Scope
+                        </button>
+                        
+                        <button class="btn btn_outline btn_outline--danger"
                             onclick="document.getElementById('responseScopeForm').action = '/projects/<%= project.id %>/scopeReject?_method=PUT'; submitFormById('responseScopeForm'); return false;">
-                        Reject Scope
-                    </button>
+                            Reject Scope
+                        </button>
+                    </div>
 
-                    <div class="clear"></div>
+                    <div class="clear hidden"></div>
 
                 </form>
 
