@@ -207,58 +207,6 @@ exports.projectSetState = async (projectId, state) => {
 //-----------------------------------------------------------
 
 /**
- * Si la propuesta no se ha publicado ya, entonces publica la propuesta y cambia su estado a `ProposalPending`.
- * Si la propuesta fue publicada y rechazada, entonces la republica y pasa al estado WaitingForProposalApproval.
- *
- * @async
- * @function proposalSubmit
- * @param {number} projectId - ID del proyecto.
- * @returns {Promise<void>}
- * @throws {Error} Si falla la actualización del estado.
- */
-exports.proposalSubmit = async (projectId) => {
-
-    const project = await Project.findByPk(projectId);
-
-    if (!project) {
-        throw new Error('There is no project with id=' + projectId);
-    }
-
-    if (!project.state) {
-        await Project.update({
-            state: states.ProjectState.ProposalPending
-        }, {where: {id: projectId}});
-    } else if (project?.state === states.ProjectState.ProposalRejected) {
-        await Project.update({
-            state: states.ProjectState.WaitingForProposalApproval
-        }, {where: {id: projectId}});
-    } else {
-        throw new Error('Internal Error. Invalid project state.');
-    }
-};
-
-
-//-----------------------------------------------------------
-
-/**
- * Aprueba un proyecto (rol DAO/Admin) cambiando su estado a `ScopingInProgress`.
- *
- * @async
- * @function approveProposal
- * @param {number} projectId - ID del proyecto.
- * @returns {Promise<void>}
- * @throws {Error} Si falla la actualización del estado.
- */
-exports.approveProposal = async (projectId) => {
-    await Project.update({
-        state: states.ProjectState.ScopingInProgress
-    }, {where: {id: projectId}});
-};
-
-
-//-----------------------------------------------------------
-
-/**
  * Rechaza un proyecto (rol DAO/Admin) cambiando su estado a `ProposalRejected`.
  *
  * @async
