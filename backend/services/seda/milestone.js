@@ -353,6 +353,28 @@ exports.milestoneClientRollbackRejectedSubmission = async (milestoneId, comment)
     }
 };
 
+//-----------------------------------------------------------
+
+/**
+ *  El sistema (la DAO) para automaticmante cuando el milestone se ha completado satistactoriamente.
+ *
+ * @param milestoneId
+ * @returns {Promise<void>}
+ */
+exports.milestoneDaoPay = async (milestoneId) => {
+
+    try {
+        let milestone = await Milestone.findByPk(milestoneId);
+
+        // Marcar como pagado:
+        milestone = await milestone.update({
+            state: states.MilestoneState.Paid
+        });
+
+    } catch (error) {
+        throw error;
+    }
+};
 
 //-----------------------------------------------------------
 

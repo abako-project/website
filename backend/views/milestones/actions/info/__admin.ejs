@@ -9,5 +9,14 @@
 
     <% } %>
 
+    <% if (milestone.state === "AwaitingPayment") { %>
+
+        <a class="right projectFlow btn btn_primary"
+           href="/projects/<%= project.id %>/milestones/<%= milestone.id %>/pay?_method=POST">
+            DAO: Pay this milestone
+        </a>
+
+    <% } %>
+
 <% } %>
 

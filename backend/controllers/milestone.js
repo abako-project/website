@@ -508,6 +508,22 @@ exports.clientRollbackRejectedSubmission = async (req, res, next) => {
 };
 
 
+// El sistema (la DAO) para automaticmante cuando el milestone se ha completado satistactoriamente.
+exports.daoPay = async (req, res, next) => {
+    try {
+
+        const projectId = req.params.projectId;
+        const milestoneId = req.params.milestoneId;
+
+        await seda.milestoneDaoPay(milestoneId);
+
+        res.redirect('/projects/' + projectId);
+
+    } catch (error) {
+        next(error);
+    }
+};
+
 // El cliente añade un comentario a la historia de un milestone
 exports.createClientHistoryComments = async (req, res, next) => {
 
@@ -527,7 +543,6 @@ exports.createClientHistoryComments = async (req, res, next) => {
 };
 
 // El consultor añade un comentario a la historia de un milestone
-
 exports.createConsultantHistoryComments = async (req, res, next) => {
 
     try {
@@ -544,6 +559,7 @@ exports.createConsultantHistoryComments = async (req, res, next) => {
         next(error);
     }
 };
+
 
 
 

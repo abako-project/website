@@ -300,7 +300,11 @@ router.post('/:projectId(\\d+)/milestones/:milestoneId(\\d+)/history/consultantC
     permissionController.userTypesRequired({projectConsultant: true}),
     milestoneController.createConsultantHistoryComments);
 
+// === Pagar
 
-
+router.post('/:projectId(\\d+)/milestones/:milestoneId(\\d+)/pay',
+    permissionController.isAuthenticated,
+    permissionController.adminRequired,
+    milestoneController.daoPay);
 
 module.exports = router;
