@@ -267,6 +267,25 @@ exports.projectStart = async (projectId) => {
 //-----------------------------------------------------------
 
 /**
+ * Ya se han valorado a los desarrolladores.
+ * El proyecto se ha completado.
+ *
+ * @async
+ * @function projectCompleted
+ * @param {number} projectId - ID del proyecto.
+ * @returns {Promise<void>}
+ * @throws {Error} Si falla la actualización del proyecto.
+ */
+exports.projectCompleted = async (projectId) => {
+
+    await Project.update({
+        state: states.ProjectState.Completed
+    }, {where: {id: projectId}});
+
+};
+//-----------------------------------------------------------
+
+/**
  * Elimina un proyecto por su ID.
  *
  * @async

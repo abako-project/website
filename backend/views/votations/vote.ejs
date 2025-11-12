@@ -14,7 +14,7 @@
   <div class="appHeader__left">
     <small class="link">
       <i class="ri-arrow-left-line"></i>
-      <span> Polkadot Treasury Dashboard</span>
+      <span> <%= voteData.project.title %> </span>
     </small>
     <h1 class="appHeader__title">Evaluate team members</h1>
     <p class="appHeader__subtitle">Choose the evaluation for each team member</p>
@@ -27,7 +27,7 @@
 </div>
 
 <section class="votations">
-  <form id="voteForm" action="/votes/<%= voteData.project.id %>/submit" method="POST">
+  <form id="voteForm" action="/projects/<%= voteData.project.id %>/votations" method="POST">
     <% voteData.members.forEach((member, index) => { %>
       <%- include('votationCard', { member, score: 0, readonly: false }) %>
     <% }) %>

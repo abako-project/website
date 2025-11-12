@@ -44,7 +44,14 @@
 <% } %>
 
 <% if (locals.showActions ?? true) { %>
-    <div class="milestone__actions">
+    <div class="SPGmilestone__actions">
         <%- include("../actions/info/_all", {project, milestone}) %>
     </div>
 <% } %>
+
+<!-- Necesito ver el estado - Hablar con Laura para dediseñar -->
+<div style="clear: both; padding-top: 10px;">
+    <div style="border: dotted red 2px;">
+        <%= milestone.state %>
+    </div>
+</div>

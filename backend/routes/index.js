@@ -24,6 +24,6 @@ router.use('/roles', rolesRouter);
 router.use('/virto', virtoRouter);
 router.use('/backdoor', backdoorRouter);
 router.use('/payments', paymentsRouter);
-router.use('/votes', votesRouter);
+router.use('/projects', votesRouter);
 
 module.exports = router;

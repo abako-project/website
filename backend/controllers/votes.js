@@ -9,7 +9,7 @@ exports.viewVotes = async (req, res, next) => {
 
         const project = await seda.project(projectId);
         if (!project) throw new Error('Project not found.');
-        
+
 
         let members = [];
 
@@ -17,25 +17,23 @@ exports.viewVotes = async (req, res, next) => {
             const devId = loginUser.developerId;
             const consultantId = await seda.projectConsultantId(projectId);
 
-        if (devId === consultantId) {
-            // Si el usuario logueado es el consultor → muestra a los developers del proyecto
-            members = await seda.developers(projectId); 
-        } else {
-            // Si es un developer normal → muestra solo al consultor
-            const consultant = await seda.developer(consultantId); 
-            members = [consultant];
-        }
+            if (devId === consultantId) {
+                // Si el usuario logueado es el consultor → muestra a los developers del proyecto
+                members = await seda.developers(projectId);
+            } else { // CREO QUE AL FINAL ESTO NO EXISTE: SOLO VOTA EL CONSULTOR
+                // Si es un developer normal → muestra solo al consultor
+                const consultant = await seda.developer(consultantId);
+                members = [consultant];
+            }
 
-        } else if (loginUser?.clientId) {
+        } else if (loginUser?.clientId) {   // CREO QUE AL FINAL ESTO NO EXISTE: SOLO VOTA EL CONSULTOR
             // Si es cliente → muestra solo al consultor
             const consultantId = await seda.projectConsultantId(projectId);
             const consultant = await seda.developer(consultantId);
             members = [consultant];
         }
         const voteData = {
-            project: {
-                    id: project.id
-            },
+            project,
             members: await Promise.all(members.map(async member => {
                 const attachment = await seda.developerAttachment(member.id);
 
@@ -51,49 +49,53 @@ exports.viewVotes = async (req, res, next) => {
             }))
         };
 
-        res.render('votations/vote', { voteData });
+        res.render('votations/vote', {voteData});
 
     } catch (error) {
-    console.error('Error in viewVotes:', error);
-    next(error);
+        console.error('Error in viewVotes:', error);
+        next(error);
     }
-  
+
 }
 
 // POST procesar las votaciones enviadas por el usuario
 exports.submitVotes = async (req, res, next) => {
-  try {
-    const projectId = req.params.projectId;
-    const fromUserId = req.session.loginUser?.id; 
+    try {
+        const projectId = req.params.projectId;
+        const fromUserId = req.session.loginUser?.id;
 
-    const userIds = req.body.userIds || [];
-    const scores = req.body.scores || [];
-   
-    if (!Array.isArray(userIds) || !Array.isArray(scores) || userIds.length !== scores.length) {
-      throw new Error("Invalid vote data: mismatched arrays.");
-    } 
+        const userIds = req.body.userIds || [];
+        const scores = req.body.scores || [];
 
-    const votes = [];
+        if (!Array.isArray(userIds) || !Array.isArray(scores) || userIds.length !== scores.length) {
+            throw new Error("Invalid vote data: mismatched arrays.");
+        }
 
-    for (let i = 0; i < userIds.length; i++) {
-        const toUserId = parseInt(userIds[i]);
-        const score = parseFloat(scores[i]);
-        const existingVote = await seda.voteFindOne({ projectId, fromUserId, toUserId });
+        const votes = [];
 
-        if (existingVote) continue; 
-        votes.push({ projectId, fromUserId, toUserId, score });
+        for (let i = 0; i < userIds.length; i++) {
+            const toUserId = parseInt(userIds[i]);
+            const score = parseFloat(scores[i]);
+            const existingVote = await seda.voteFindOne({projectId, fromUserId, toUserId});
+
+            if (existingVote) continue;
+            votes.push({projectId, fromUserId, toUserId, score});
+        }
+
+        // El proyecto se ha completado
+        await seda.projectCompleted(projectId);
+
+        if (votes.length === 0) {
+            console.warn("No valid votes to process.");
+        } else {
+            await seda.votesCreate(votes);
+            console.log("Votes saved successfully.");
+        }
+
+        res.redirect("/projects/" + projectId);
+
+    } catch (error) {
+        console.error("Error submitting votes:", error);
+        next(error);
     }
-    
-    if (votes.length === 0) {
-      console.warn("No valid votes to process.");
-      return res.redirect("/backdoor");
-    }
-    await seda.votesCreate(votes);
-    console.log("Votes saved successfully.");
-    res.redirect('/backdoor'); 
-
-  } catch (error) {
-    console.error("Error submitting votes:", error);
-    next(error);
-  }
 };
