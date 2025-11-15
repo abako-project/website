@@ -132,14 +132,20 @@ exports.clientUpdate = async (clientId, {
     });
   }
 
-  const client = await Client.findByPk(clientId);
+  let client = await Client.findByPk(clientId, {
+    include: [{ model: Attachment, as: "attachment" }]
+  });
 
   await client.setLanguages(languageIds);
 
   // Hay un attachment nuevo
   if (mime && image) {
-    // Delete old attachment.
-    await Attachment.destroy({where: {clientId}});
+
+    if (client.attachment) {
+      await client.update({ attachmentId: null });
+      await Attachment.destroy({ where: { id: client.attachment.id } });
+    }
+
 
     // Create the new client attachment
     const attachment = await Attachment.create({mime, image});

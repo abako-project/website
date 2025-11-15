@@ -185,7 +185,6 @@ exports.developerUpdate = async (developerId, {
 }) => {
 
   await Developer.update({
-      developerId,
       name, bio, background, roleId, proficiencyId, githubUsername, portfolioUrl, location,
       isAvailableForHire, isAvailableFullTime, isAvailablePartTime, isAvailableHourly, availableHoursPerWeek
     }, {
@@ -195,7 +194,10 @@ exports.developerUpdate = async (developerId, {
     }
   );
 
-  let developer = await Developer.findByPk(developerId);
+  let developer = await Developer.findByPk(developerId, {
+    include: [{ model: Attachment, as: "attachment" }]
+  });
+
 
   await developer.setLanguages(languageIds);
   await developer.setSkills(skillIds);
@@ -203,7 +205,10 @@ exports.developerUpdate = async (developerId, {
   // Hay un attachment nuevo
   if (mime && image) {
     // Delete old attachment.
-    await Attachment.destroy({where: {developerId}});
+    if (developer.attachment) {
+      await developer.update({ attachmentId: null });
+    await Attachment.destroy({ where: { id: developer.attachment.id } });
+    }
 
     // Create the new developer attachment
     const attachment = await Attachment.create({mime, image});

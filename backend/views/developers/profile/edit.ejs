@@ -1,35 +1,7 @@
 <!-- Choices.js CSS -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css">
-
 <!-- Choices.js JS -->
 <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
-
-<!--ESTO LO HE METIDO SOLO PARA PROVAR, ESTA EN DESARROLLO-->
-<script>
-    
-document.addEventListener('DOMContentLoaded', function () {
-  new Choices('#languages', {
-    removeItemButton: true,
-    searchEnabled: true,
-    placeholderValue: 'Selecciona idiomas...',
-    searchPlaceholderValue: 'Buscar idioma...',
-    noResultsText: 'Sin resultados',
-    noChoicesText: 'No hay idiomas disponibles',
-    itemSelectText: '',
-    shouldSort: false
-  });
-});
-</script>
-
-
-
-
-
-
-
-
-
-<!--ESTOY TABAJANDO JUSTO EN ESTA VISTA-->
 
 <div id="appTwoColumns">
     <div class="col1">
@@ -52,186 +24,143 @@ document.addEventListener('DOMContentLoaded', function () {
                         <p><strong>Blockchain Address:</strong> <%= developer.address %></p>
                     </div>
 
+                    <div class="profileCard__section">
+                        <h3>Name:</h3>
+                        <input type="text" id="name" name="name" value="<%= developer.name %>" placeholder="name" autocomplete="off" class="smallInput"/>
+                    </div>
 
+                    <div class="profileCard__section">
+                        <h3>Bio:</h3>
+                        <textarea id="bio" name="bio"><%= developer.bio %></textarea>
+                    </div>
 
+                    <div class="profileCard__section">
+                        <h3>Background:</h3>
+                        <textarea id="background" name="background"><%= developer.background %></textarea>
+                    </div>
 
-        <div class="profileCard__smallSection">
-            <h3>Name:</h3>
-            <input type="text" id="name" name="name" value="<%= developer.name %>" placeholder="name" autocomplete="off" class="smallInput"/>
-        </div>
+                    <div class="profileCard__section">
+                        <h3>Role:</h3>
+                        <select id="role" name="roleId">
+                            <option value="">None</option>
+                            <% for (const role of allRoles) { %>
+                                <option value="<%= role.id %>"
+                                        <%= developer.roleId === role.id && "selected" %> >
+                                    <%= role.name %> 
+                                </option>
+                            <% } %>
+                        </select>
+                    </div>
 
-        <div class="profileCard__section">
-            <h3>Bio:</h3>
-            <textarea id="bio" name="bio"><%= developer.bio %></textarea>
-        </div>
+                    <div class="profileCard__section">
+                        <h3>Proficiency:</h3>
+                        <select id="proficiency" name="proficiencyId" >
+                            <option value="">None</option>
+                            <% for (const proficiency of allProficiencies) { %>
+                                <option value="<%= proficiency.id %>"
+                                        <%= developer.proficiencyId === proficiency.id && "selected" %> >
+                                    <%= proficiency.description %> 
+                                </option>
+                            <% } %>
+                        </select>
+                    </div>
 
-        <div class="profileCard__section">
-            <h3>Background:</h3>
-            <textarea id="background" name="background"><%= developer.background %></textarea>
-        </div>
+                    <div class="profileCard__section">
+                        <h3>Github Username:</h3>
+                        <input type="text" id="githubUsername" name="githubUsername" value="<%= developer.githubUsername %>"
+                            placeholder="Github Username" autocomplete="off"/>
+                    </div>
 
-        <div class="form-group">
-            <label for="role">Role:</label>
-            <select id="role" name="roleId">
-                <option value="">None</option>
-                <% for (const role of allRoles) { %>
-                    <option value="<%= role.id %>"
-                            <%= developer.roleId === role.id && "selected" %> >
-                        <%= role.name %> %>
-                    </option>
-                <% } %>
-            </select>
-        </div>
+                    <div class="profileCard__section">
+                        <h3>Portfolio Url:</h3>
+                        <input type="text" id="portfolioUrl" name="portfolioUrl" value="<%= developer.portfolioUrl %>"
+                            placeholder="Portfolio Url" autocomplete="off"/>
+                    </div>
 
-        <div class="form-group">
-            <label for="proficiency">Proficiency:</label>
-            <select id="proficiency" name="proficiencyId">
-                <option value="">None</option>
-                <% for (const proficiency of allProficiencies) { %>
-                    <option value="<%= proficiency.id %>"
-                            <%= developer.proficiencyId === proficiency.id && "selected" %> >
-                        <%= proficiency.description %> %>
-                    </option>
-                <% } %>
-            </select>
-        </div>
+                    <div class="profileCard__section">
+                        <h3>Location:</h3>
+                        <input type="text" id="location" name="location" value="<%= developer.location %>" placeholder="Location"
+                            autocomplete="off"/>
+                    </div>
 
-        <div class="profileCard__smallSection">
-            <h3>Github Username:</h3>
-            <input type="text" id="githubUsername" name="githubUsername" value="<%= developer.githubUsername %>"
-                   placeholder="Github Username" autocomplete="off"/>
-        </div>
-
-        <div class="profileCard__smallSection">
-            <h3>Portfolio Url:</h3>
-            <input type="text" id="portfolioUrl" name="portfolioUrl" value="<%= developer.portfolioUrl %>"
-                   placeholder="Portfolio Url" autocomplete="off"/>
-        </div>
-
-        <div class="profileCard__smallSection">
-            <h3>Location:</h3>
-            <input type="text" id="location" name="location" value="<%= developer.location %>" placeholder="Location"
-                   autocomplete="off"/>
-        </div>
-
+                    <div class="profileCard__section">
+                        <h3>Skills: </h3>
+                        <select id="skills" name="skills[]" multiple>
+                            <% allSkills.forEach(skill => { 
+                                const selected = (developer.skills || []).some(s => s.id === skill.id); %>
+                            <option value="<%= skill.id %>" <%= selected ? "selected" : "" %>>
+                                <%= skill.name %>
+                            </option>
+                            <% }) %>
+                        </select>
+                    </div>
     
+                    <div class="profileCard__section">
+                        <h3>Languages:</h3>
+                        <select id="languages" name="languages[]" multiple size="6">
+                            <% (allLanguages || []).forEach(lang => { 
+                                const selected = (developer.languages || []).some(i => i.id === lang.id); %>
+                            <option value="<%= lang.id %>" <%= selected ? "selected" : "" %>>
+                                <%= lang.code %> - <%= lang.name %>
+                            </option>
+                            <% }) %>
+                        </select>
+                    </div>
 
+                    <div class="profileCard__section">
+                        <h3>Availability:</h3>
+                        <div class="availabilityRow">
+                                <input id="availableToggle"
+                                    type="checkbox"
+                                    name="isAvailableForHire"
+                                    value="1"
+                                    <%= developer.isAvailableForHire && "checked" %> />
+                                <p>Show “Available for Work” on profile</p>
+                        </div>
+                    
+                        <div id="availabilityOptions"  style="display:none">
+                            <h3>Work Mode:</h3>
+                            <select id="availabilityType" name="availabilityType" multiple>
+                                <option value="full" <%= developer.isAvailableFullTime ? "selected" : "" %>>Full-time</option>
+                                <option value="part" <%= developer.isAvailablePartTime ? "selected" : "" %>>Part-time</option>
+                                <option value="hourly" <%= developer.isAvailableHourly ? "selected" : "" %>>Hourly</option>
+                            </select>
+                            <input type="hidden" name="isAvailableFullTime" id="isFullHidden">
+                            <input type="hidden" name="isAvailablePartTime" id="isPartHidden">
+                            <input type="hidden" name="isAvailableHourly" id="isHourlyHidden">
+                        </div>
 
+                        <div  id="hourlyInput"  style="display:none">
+                        <h3>Hours per week:</h3>
+                        <input type="number"
+                            name="availableHoursPerWeek"
+                            value="<%= parseInt(developer.availableHoursPerWeek) || '' %>"
+                            min="0" />
+                        </div>
+                    </div>
 
-    <div class="card">
-        <div class="card-title">Skills</div>
+                    <div class="profileCard__section">
+                            <h3> New Photo (Max size 2MB):</h3>
+                            <label class="fileInput">
+                                <span>Select file…</span>
+                                <input type="file" id="img" name="image"/>
+                            </label>
+                            <img id="photoPreview">
+                    </div>
 
-        <% for (let skill of allSkills) { %>
-            <input type="checkbox"
-                   name="<%= `skills[]` %>"
-                   value="<%= skill.id %>"
-                    <%= developer.skills.map(s => s.id).includes(skill.id) && "checked" %>
-            />
-            <b><%= skill.name %></b>
-            <br />
-        <% } %>
-    </div>
-    <div class="card">
-  <div class="card">
-  <div class="card-title">Languages</div>
+                    <div class="profileCard__section">
+                        <div class="actionRow" >
+                            <a href="/"> Cancel </a>
+                            <input type="submit" value="Save"/> 
+                        </div>
+                    </div>
 
-  <script>
-    console.log("allLanguages length:", <%- (allLanguages && allLanguages.length) || 0 %>);
-  </script>
-
-  <select id="languages" name="languages[]" multiple size="6">
-    <% (allLanguages || []).forEach(lang => { 
-         const selected = (developer.languages || []).some(i => i.id === lang.id); %>
-      <option value="<%= lang.id %>" <%= selected ? "selected" : "" %>>
-        <%= lang.code %> - <%= lang.name %>
-      </option>
-    <% }) %>
-  </select>
-
-  <% if (!allLanguages || allLanguages.length === 0) { %>
-    <p style="color:#b00">No hay idiomas disponibles (allLanguages vacío).</p>
-  <% } %>
-</div>
-
-
-    <div class="card">
-        <div class="card-title">Availability</div>
-
-        <input type="checkbox"
-               name="isAvailableForHire"
-               value="1"
-               <%= developer.isAvailableForHire && "checked" %> />
-        <b>Availability for Hire</b>
-        <br />
-
-
-        <input type="checkbox"
-               name="isAvailableFullTime"
-               value="1"
-                <%= developer.isAvailableFullTime && "checked" %> />
-        <b>Full Time</b>
-        <br />
-
-
-        <input type="checkbox"
-               name="isAvailablePartTime"
-               value="1"
-                <%= developer.isAvailablePartTime && "checked" %>  />
-        <b>Part Time</b>
-        <br />
-
-
-        <input type="checkbox"
-               name="isAvailableHourly"
-               value="1"
-                <%= developer.isAvailableHourly && "checked" %> />
-        <b>Hours per Week</b>
-        <br />
-
-
-        <input type="number"
-               name="availableHoursPerWeek"
-               value="<%= developer.availableHoursPerWeek %>"
-        />
-        <b>Hours/Week</b>
-        <br />
-
-
-
-
-    </div>
-
-
-    <div class="card">
-
-        <div class="card-title">Photo</div>
-
-        <div class="form-group">
-            <label for="img">Attach file (Max size 2MB):</label>
-            <input type="file" id="img" name="image"/>
-        </div>
-
-
-    </div>
-
-    <div class="card">
-
-        <div class="card-title">actions</div>
-
-        <div class="form-group">
-            <input type="submit" value="Save"/>
-        </div>
-
-        <div class="form-group">
-            <a href="/"> Cancel </a>
-        </div>
-
-    </div>
-
-</form>
-</section>
+                </form>
+            </div>
+        </section>
     </div>
 </div> 
-</div>
 
 
+
+<script src="/javascripts/perfil.js"></script>
