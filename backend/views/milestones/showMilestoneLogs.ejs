@@ -1,89 +1,62 @@
-<%- include('../components/_cancelTopbar', {step: 1}) %>
+<header class="stickyHeader">    
+    <%- include('../components/_cancelTopbar', {step: 1}) %>
+    
+    <%- include('../projects/headers/_project', { project }) %>
+</header>
 
-<%- include('../projects/headers/_project', { project }) %>
+<div id="appOneColumn" class="mainContentContainer">    
+    <h1>Historia del Milestone</h1>
+    
+    <section>
 
-<h1>Historia del Milestone</h1>
+        <% for (let milestoneLog of milestoneLogs) { %>
 
-<section>
+            <article style="border: solid white 1px; margin: 5px; padding: 5px;   background-color: darkslateblue;">
 
-    <% for (let milestoneLog of milestoneLogs) { %>
+                <h1><%= milestoneLog.title %></h1>
 
-        <article style="border: solid white 1px; margin: 5px; padding: 5px;   background-color: darkslateblue;">
+                <% if (milestoneLog.fromClient) { %>
+                    <img class="attachment"
+                        src="/clients/<%= project.clientId %>/attachment">
+                    <%= project.clientId?.name ?? "Anonymous" %>
+                <% } %>
 
-            <h1><%= milestoneLog.title %></h1>
+                <% if (milestoneLog.fromConsultant) { %>
+                    <img class="attachment"
+                        src="/developers/<%= project.consultantId %>/attachment">
+                    <%= project.consultantId?.name ?? "Anonymous" %>
+                <% } %>
 
-            <% if (milestoneLog.fromClient) { %>
-                <img class="attachment"
-                     src="/clients/<%= project.clientId %>/attachment">
-                <%= project.clientId?.name ?? "Anonymous" %>
-            <% } %>
+                <p>
+                    <%- milestoneLog.msg %>
+                </p>
 
-            <% if (milestoneLog.fromConsultant) { %>
-                <img class="attachment"
-                     src="/developers/<%= project.consultantId %>/attachment">
-                <%= project.consultantId?.name ?? "Anonymous" %>
-            <% } %>
+                <p>
+                    <small>
+                        (<%= new Date(milestoneLog.createdAt - browserTimezoneOffset + serverTimezoneOffset).toLocaleString() %>)
+                    </small>
+                </p>
 
-            <p>
-                <%- milestoneLog.msg %>
-            </p>
+                <% if (milestoneLog.showDeveloper) { %>
+                    <img class="attachment"
+                        src="/developers/<%= milestone.developerId %>/attachment">
+                    <%= milestone.developerId?.name ?? "Anonymous" %>
+                <% } %>
+            </article>
 
-            <p>
-                <small>
-                    (<%= new Date(milestoneLog.createdAt - browserTimezoneOffset + serverTimezoneOffset).toLocaleString() %>)
-                </small>
-            </p>
+        <% } %>
+    </section>
 
-            <% if (milestoneLog.showDeveloper) { %>
-                <img class="attachment"
-                     src="/developers/<%= milestone.developerId %>/attachment">
-                <%= milestone.developerId?.name ?? "Anonymous" %>
-            <% } %>
-        </article>
-
-    <% } %>
-</section>
-
-<% if (locals.loginUser && locals.loginUser.clientId === project.clientId) { %>
-    <p>
-    <form action="/projects/<%= project.id %>/milestones/<%= milestone.id %>/history/clientComments"
-          method="POST">
-
-        <div class="form-group">
-            <label for="comment">Add Comment:</label>
-            <input type="text" id="comment" name="comment"
-                   value=""
-                   placeholder="Add a comment"
-                   autocomplete="off">
-        </div>
-
-        <div class="form-group">
-            <button type="submit">Post Comment</button>
-        </div>
-
-    </form>    </p>
-
-    <p>
-        <a class="right projectFlow btn btn_primary btn_href"
-           href="/projects/<%= project.id %>/milestones/<%= milestone.id %>/rollbackSubmission?_method=PUT">
-            Rollback Submission
-        </a>
-
-    </p>
-
-<% } %>
-
-<% if (locals.loginUser && locals.loginUser.developerId === project.consultantId) { %>
-    <div>
-        <form action="/projects/<%= project.id %>/milestones/<%= milestone.id %>/history/consultantComments"
-              method="POST">
+    <% if (locals.loginUser && locals.loginUser.clientId === project.clientId) { %>
+        <form action="/projects/<%= project.id %>/milestones/<%= milestone.id %>/history/clientComments"
+            method="POST">
 
             <div class="form-group">
                 <label for="comment">Add Comment:</label>
                 <input type="text" id="comment" name="comment"
-                       value=""
-                       placeholder="Add a comment"
-                       autocomplete="off">
+                    value=""
+                    placeholder="Add a comment"
+                    autocomplete="off">
             </div>
 
             <div class="form-group">
@@ -91,23 +64,50 @@
             </div>
 
         </form>
-    </div>
 
+        <p>
+            <a class="right projectFlow btn btn_primary btn_href"
+            href="/projects/<%= project.id %>/milestones/<%= milestone.id %>/rollbackSubmission?_method=PUT">
+                Rollback Submission
+            </a>
 
-    <p>
-        <a class="right projectFlow btn btn_primary btn_href"
-           href="/projects/<%= project.id %>/milestones/<%= milestone.id %>/submitMilestone">
-            Re-Submit Milestone
-        </a>
-    </p>
+        </p>
 
+    <% } %>
 
+    <% if (locals.loginUser && locals.loginUser.developerId === project.consultantId) { %>
+        <div>
+            <form action="/projects/<%= project.id %>/milestones/<%= milestone.id %>/history/consultantComments"
+                method="POST">
 
-    <p>
-        Boton para abrir una disputa
-    </p>
+                <div class="form-group">
+                    <label for="comment">Add Comment:</label>
+                    <input type="text" id="comment" name="comment"
+                        value=""
+                        placeholder="Add a comment"
+                        autocomplete="off">
+                </div>
 
-<% } %>
+                <div class="form-group">
+                    <button type="submit">Post Comment</button>
+                </div>
+
+            </form>
+        </div>
+
+        <p>
+            <a class="right projectFlow btn btn_primary btn_href"
+            href="/projects/<%= project.id %>/milestones/<%= milestone.id %>/submitMilestone">
+                Re-Submit Milestone
+            </a>
+        </p>
+
+        <p>
+            Boton para abrir una disputa
+        </p>
+
+    <% } %>
+</div>
 
 
 

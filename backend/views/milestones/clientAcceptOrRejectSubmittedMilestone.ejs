@@ -1,116 +1,129 @@
-<%- include('../components/_cancelTopbar', {step: 1}) %>
+<header class="stickyHeader">    
+    <%- include('../components/_cancelTopbar', {step: 1}) %>
+    
+    <%- include('../projects/headers/_project', { project }) %>
+</header>
 
-<%- include('../projects/headers/_project', { project }) %>
 
-<h1>
-    <img class="attachment"
-         src="/developers/<%= project.consultantId %>/attachment"
-    />
-    Project consultant (<%= project.consultant.name %>) submitted a Milestone
-</h1>
+<div class="mainContentContainer">
+    <h1>Review Milestone</h1>
+    
+    <div id="" class="reviewMilestone">
+        <div class="reviewMilestone__col milestoneReviewInfo">
 
-<div id="appTwoColumns">
+            <h2 class="milestoneReviewInfo__title">
+                <img class="attachment"
+                src="/developers/<%= project.consultantId %>/attachment"
+                />
+                Project consultant <%= project.consultant.name %> submitted a Milestone
+            </h2>
+            
+            <section class="milestoneReviewInfo__content">
+                
+                <arcticle class="milestone">
+                    <header class="milestone__header">
+                        <%- include('../milestones/info/_headerMilestone', { milestone }) %>
+                    </header>
+                    
+                    <div class="milestone__description">
+                        <small><%= milestone.description %></small>
+                    </div>
+                    
+                    <div class="milestone__dev">
+                        <%- include("../milestones/info/__showDeveloper", {milestone}) %>
+                    </div>
+                </arcticle>
+                
+                <article class="contentBlock">
+                    <h6>
+                        Documentation
+                    </h6>
+                    <p><%= milestone.documentation %></p>
+                </article>
+                
+                <article class="contentBlock">
+                    <h6>
+                        Other Links
+                    </h6>
+                    <p><%= milestone.links %></p>
+                </article>
+                
+            </section>
+        </div>
+        <div class="reviewMilestoneContainer__col milestoneReviewActions">
 
-    <div class="col1">
-
-        <section style="border: solid white 2px; margin: 15px 5px; padding: 2px;">
-
-            <%- include('../milestones/info/_headerMilestone', { milestone }) %>
-
-            <div class="milestone__description">
-                <small><%= milestone.description %></small>
-            </div>
-
-            <div class="milestone__dev">
-                <%- include("../milestones/info/__showDeveloper", {milestone}) %>
-            </div>
-
-            <p>
-                Documentation:
-                <br/>
-                <small><%= milestone.documentation %></small>
-            </p>
-
-            <p>
-                Other Links:
-                <br/>
-                <small><%= milestone.links %></small>
-            </p>
-
-        </section>
-    </div>
-
-    <div class="col2">
-
-        <section style="border: solid white 2px; margin: 15px 5px; padding: 2px;">
-
-            <h1>Accept Submission</h1>
-
-            <form action="/projects/<%= project.id %>/milestones/<%= milestone.id %>/acceptOrRejectSubmission?_method=PUT"
-                  method="POST">
-
-                <div class="form-group">
-                    <label for="comment">Add Comment:</label>
-                    <input type="text" id="comment" name="comment"
-                           value=""
-                           placeholder="Add a Comment (optional)" autocomplete="off">
-
-                    <input type="hidden" id="accept" name="accept" value="accept">
+            <section class="milestoneReviewActions__action milestoneReviewAction milestoneReviewAction--accept">
+                <h3>Accept Submission</h3>
+                
+                <form action="/projects/<%= project.id %>/milestones/<%= milestone.id %>/acceptOrRejectSubmission?_method=PUT"
+                    method="POST">
+                    
+                    <div class="formContainer commentForm">
+                        <label for="comment">Add Comment:</label>
+                        <input type="text" id="comment" name="comment"
+                        value=""
+                        placeholder="Add a Comment (optional)" autocomplete="off">
+                        
+                        <input type="hidden" id="accept" name="accept" value="accept">
+                    </div>
+                    
+                    <button class="projectFlow btn btn_primary" type="submit">
+                        Submit Response
+                    </button>
+                </form>
+            </section>
+            
+            <section class="milestoneReviewActions__action milestoneReviewAction milestoneReviewAction--reject">
+                
+                <h3>Reject Submission</h3>
+                
+                <div class="message">
+                    <div class="message__header">
+                        <h6>
+                            You’re about to reject a milestone submission
+                        </h6>
+                        
+                        <p>
+                            Rejecting this milestone submission initiates a formal dispute.
+                        </p>
+                    </div>
+                    <div class="message__info">
+                        <p>
+                            Here’s how it works:
+                        </p>
+                        
+                        <ol>
+                            <li>
+                                1. You, as the client, will state your reasons, which are added to the dispute record.
+                            </li>
+                            <li>
+                                2. The Project Coordinator can then add their arguments and change their submission.
+                            </li>
+                            <li>
+                                3. Until you don’t accept the milestone, the payment will be held.
+                            </li>
+                        </ol>
+                    </div>
                 </div>
-
-                <button class="projectFlow btn btn_primary" type="submit">
-                    Submit Response
-                </button>
-            </form>
-        </section>
-
-        <section style="border: solid white 2px; margin: 15px 5px; padding: 2px;">
-
-            <h1>Reject Submission</h1>
-
-            <div style="background-color: brown; padding: 12px;">
-                <p style="color: pink">
-                    You’re about to reject a milestone submission.
-                </p>
-
-                <p>
-                    Rejecting this milestone submission initiates a formal dispute.
-                </p>
-
-                <p>
-                    Here’s how it works:
-                </p>
-
-                <ol>
-                    <li>
-                        1. You, as the client, will state your reasons, which are added to the dispute record.
-                    </li>
-                    <li>
-                        2. The Project Coordinator can then add their arguments and change their submission.
-                    </li>
-                    <li>
-                        3. Until you don’t accept the milestone, the payment will be held.
-                    </li>
-                </ol>
-            </div>
-            <form action="/projects/<%= project.id %>/milestones/<%= milestone.id %>/acceptOrRejectSubmission?_method=PUT"
-                  method="POST">
-
-                <div class="form-group">
-                    <label for="comment">State your reasons for rejection:</label>
-                    <input type="text" id="comment" name="comment"
-                           value=""
-                           placeholder="Add a Comment (optional)" autocomplete="off">
-
-                    <input type="hidden" id="accept" name="accept" value="reject">
-                </div>
-
-                <button class="projectFlow btn btn_primary" type="submit">
-                    Submit Response
-                </button>
-            </form>
-
-        </section>
+                <form action="/projects/<%= project.id %>/milestones/<%= milestone.id %>/acceptOrRejectSubmission?_method=PUT"
+                    method="POST">
+                    
+                    <div class="formContainer commentForm">
+                        <label for="comment">State your reasons for rejection:</label>
+                        <input type="text" id="comment" name="comment"
+                        value=""
+                        placeholder="Add a Comment (optional)" autocomplete="off">
+                        
+                        <input type="hidden" id="accept" name="accept" value="reject">
+                    </div>
+                    
+                    <button class="projectFlow btn btn_primary" type="submit">
+                        Submit Response
+                    </button>
+                </form>
+                
+            </section>
+        </div>
 
 
     </div>

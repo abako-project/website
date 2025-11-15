@@ -5,21 +5,25 @@
  * developer/dashboard/milestones & payments
  * _formMilestone.ejs // create milestone form
  * _newMilestone.ejs & _editMilestone.ejs
- * _submitMIlestone.ejs
+ * _submitMilestone.ejs
 
 /**
  MILESTONE -> Default Milestone component
 
 .milestone
-    &__header // descomponer bloque en el ejs a ser posible
-        display: flex
-        flex-direction: column
-        gap: $sp-2
+    overflow: hidden
+    &__header
+        @include flex-start
+        justify-content: space-between
+        align-items: baseline
+        gap: $sp-5
+        flex-wrap: wrap
         .title
+            flex-grow: 1
             font-weight: 600
         .subtitle
             display: inline-flex
-            gap: $sp-5
+            gap: $sp-2
             color: $text-dark-2
             small
                 width: fit-content
@@ -32,6 +36,15 @@
         gap: $sp-5
     &__actions
         margin-top: $sp-8
+        @extend .btn // ir a _button.sass para ver estados
+        @extend .btn_primary
+        @extend .btn_sm
+        width: fit-content
+    &__state
+        @extend .state
+        margin-top: $sp-8
+        font-size: $text-sm
+        line-height: $lh-sm
 
 /** ---------------------------------------------------------------------
  PROJECTS -> Milestones on projects
@@ -76,12 +89,6 @@
     .milestone
         width: 100% 
         &__header // descomponer bloque en el ejs a ser posible
-            @include flex-start
-            gap: $sp-2
-            flex-flow: row
-            flex-wrap: wrap
-            justify-content: space-between
-            align-items: baseline
             & > *
                 min-width: fit-content
             .title
@@ -104,11 +111,10 @@
             line-height: $lh-base
             font-weight: 500
         &__role
-            @extend .hidden
+            // @extend .hidden
         &__dev
-            @extend .hidden
+            // @extend .hidden
         &__actions
-            @extend .hidden
 
 
 /** ---------------------------------------------------------------------
@@ -176,12 +182,6 @@
         grid-template-columns: 1fr
         gap: $sp-7
         &__header
-            @include flex-start
-            gap: $sp-2
-            flex-flow: row
-            flex-wrap: wrap
-            justify-content: space-between
-            align-items: baseline
             & > *
                 min-width: fit-content
             .title
@@ -226,7 +226,7 @@
 
 /** ---------------------------------------------------------------------
  EDIT MILESTONES
- - Container
+    - Container
     - Component (in view)
 
 .editMilestones
@@ -333,10 +333,6 @@
 .submitMilestone__milestone.milestone
     &__header
         width: 100%
-        @include flex-start
-        justify-content: space-between
-        align-content: center
-        gap: $sp-7
         
         font-size:  $text-sm
         line-height: $lh-sm
@@ -352,3 +348,84 @@
         font-size:  $text-base
         line-height: $lh-base
         font-weight: 500
+
+/** ---------------------------------------------------------------------
+ REVIEW MILESTONE
+ - Container
+
+.reviewMilestone
+    // height: 100%
+    display: flex
+    gap: 24px
+    &__col
+        width: 100%
+
+.milestoneReviewInfo
+    flex-grow: 2
+    height: fit-content
+    @extend .bubble
+    padding: $sp-10 $sp-10 $sp-12 $sp-10
+    display: flex
+    flex-flow: column
+    gap: $sp-10
+    &__title
+        @include flex-start
+        align-items: center
+        gap: 12px
+        font-size: $text-xl
+        line-height: $lh-xl
+        font-weight: 400
+    &__content
+        display: grid
+        grid-template-columns: 1fr
+        gap: 24px
+        .milestone
+            @extend .bubble
+            width: 100%
+            padding: 16px 24px
+        .contentBlock
+            font-size: $text-base
+            line-height: $text-base
+            font-weight: 400
+            h6
+                color: $text-dark-2
+                font-weight: 400
+
+
+.milestoneReviewActions
+    flex-grow: 1
+    width: 406px
+    @include flex-start
+    flex-flow: column
+    gap: 24px
+    &__action
+        width: 100%
+
+.milestoneReviewAction
+    @include flex-start
+    flex-flow: column
+    gap: 32px
+    .commentForm
+        margin-bottom: 32px
+        padding: 24px
+        // background-color: $base-2
+        border-radius: $radi-5
+        border: 1px solid $danger-active
+    &--accept
+        .commentForm
+            border-color: $brand
+    &--reject
+        .message
+            padding: 24px
+            border-radius: $radi-6
+            background-color: $red-50
+            font-weight: 500
+            // text-wrap: pretty
+            &__header
+                h6
+                    color: $danger-active
+                    font-size: $text-lg
+                    line-height: $lh-lg
+                    font-weight: 700 
+            &__info
+                margin-top: 12px

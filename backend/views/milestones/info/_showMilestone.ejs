@@ -23,7 +23,7 @@
         <%= milestone.neededHourlyDeveloper ? "[Hours per Week]" : ""%>
     <!-- </span> -->
 
-    <!-- Para poner bubble ponerlo así???? -->
+    <!-- Pregunta: Esto habría que quitarlo ????? -->
     <!-- <span class="bubble">
         <% if (milestone.neededFullTimeDeveloper) { %>
             "[Full Time]"
@@ -43,15 +43,21 @@
     </div>
 <% } %>
 
+<!-- Pregunta: esto hay que evitar que salga un botón vacío o si acaso que cuando no haya nada salga desactivado y ponga que no hay acciones -->
 <% if (locals.showActions ?? true) { %>
-    <div class="SPGmilestone__actions">
+    <div class="milestone__actions">
         <%- include("../actions/info/_all", {project, milestone}) %>
     </div>
 <% } %>
 
 <!-- Necesito ver el estado - Hablar con Laura para dediseñar -->
-<div style="clear: both; padding-top: 10px;">
-    <div style="border: dotted red 2px;">
+<!-- Para Santi: así arreglado? confirmar. Igualmente, el estado no sale ya al lado del dev??? -->
+<!-- <div style="clear: both; padding-top: 10px;"> -->
+    <div class="milestone__state">
+        <!-- style="border: dotted red 2px;" -->
+        <% if (milestone.state.toLowerCase().includes("waiting")) { %>
+            <i class="ri-timer-2-line"></i>
+        <% } %>
         <%= milestone.state %>
     </div>
-</div>
+<!-- </div> -->
