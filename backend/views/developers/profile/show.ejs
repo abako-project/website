@@ -13,14 +13,13 @@
             </div>
             <%
                 const availability = [
-                    developer.isAvailableForHire && "Available for Hire",
                     developer.isAvailableFullTime && "Full-time",
                     developer.isAvailablePartTime && "Part-time",
                     developer.isAvailableHourly && "Hourly"
                 ].filter(Boolean); 
             %>
 
-            <div class="profileHeader__status <%= availability.length ? 'active' : '' %>">
+            <div class="profileHeader__status <%= developer.isAvailableForHire ? 'active' : '' %>">
                 <div class="toggle"></div>
                 <span>Available for Work</span>
             </div>

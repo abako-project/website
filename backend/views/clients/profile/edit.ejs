@@ -1,121 +1,113 @@
+<!-- Choices.js CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css">
+<!-- Choices.js JS -->
+<script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+
 <% const client = c; %>
-<h1>Edit Client Profile</h1>
 
-<form method="post" action="/clients/<%= client.id %>?_method=PUT" enctype="multipart/form-data">
-
-    <div class="card">
-
-        <div class="card-title">Client data</div>
-
-        <div class="form-group">
-            <p>Email: <%= client.user.email %></p>
-        </div>
-
-        <div class="form-group">
-            <label for="name">Name:</label>
-            <input type="text" id="name" name="name" value="<%= client.name %>" placeholder="name" autocomplete="off"/>
-        </div>
-
-
-        <div class="form-group">
-            <label for="company" class="itemNarrow">Company:</label>
-            <input type="text" class="itemWide" id="company" name="company" value="<%= client.company %>"
-                   placeholder="Company" autocomplete="off"/>
-        </div>
-
-        <div class="form-group">
-            <label for="department" class="itemNarrow">Department:</label>
-            <input type="text" class="itemWide" id="department" name="department" value="<%= client.department %>"
-                   placeholder="Department" autocomplete="off"/>
-        </div>
-
-        <div class="form-group">
-            <label for="website" class="itemNarrow">Web site:</label>
-            <input type="text" class="itemWide" id="website" name="website" value="<%= client.website %>"
-                   placeholder="Web Site" autocomplete="off"/>
-        </div>
-
-        <div class="form-group">
-            <label for="description" class="itemNarrow">Description:</label>
-            <textarea id="description" name="description" class="itemWide"><%= client.description %></textarea>
-        </div>
-
-        <div class="form-group">
-            <label for="location" class="itemNarrow">Location:</label>
-            <input type="text" class="itemWide" id="location" name="location" value="<%= client.location %>" placeholder="Location"
-                   autocomplete="off"/>
-        </div>
-
-        <div class="card">
-            <div class="card-title">Languages</div>
-
-            <% for (let language of allLanguages) { %>
-                <input type="checkbox"
-                       name="<%= `languages[]` %>"
-                       value="<%= language.id %>"
-                        <%= client.languages.map(i => i.id).includes(language.id) && "checked" %>
-                />
-                <b><%= language.code %> - <%= language.name %></b>
-                <br />
-            <% } %>
-        </div>
-
-
+<div id="appTwoColumns">
+    <div class="col1">
+        <!-- Sidebar -->
+        <%- include('../../components/_mainSidebar') %>
     </div>
+    <div class="col2">
+        <section class="profile">
+            <div class="profileCard">
+                <div class="profileCard__header">
+                    <h2 class="profileCard__title">Edit Client Profile</h2>
+                    <span class="profileCard__subtitle">Client data</span>
+                </div>
 
-    <div class="card">
-
-        <div class="card-title">Password</div>
-
-        <div class="form-group">
-            <p>
-                <span class="text-danger">Leave blank to not change the current password</span>
-            </p>
-
-            <ul>
-                <li>
-                    <label for="password" class="rem">Password:</label>
-                    <input type="password" id="password" name="password" autocomplete="off"/>
-                </li>
-
-                <li>
-                    <label for="confirm_password" class="rem">Confirm Password:</label>
-                    <input type="password" id="confirm_password" autocomplete="off"/>
-                </li>
-            </ul>
-        </div>
+                <form method="post" action="/clients/<%= client.id %>?_method=PUT" enctype="multipart/form-data">
 
 
+                    <div class="profileCard__staticInfo">
+                        <p><strong>Email:</strong> <%= client.user.email  %></p>
+                    </div>
+
+                    <div class="profileCard__section">
+                        <h3>Name:</h3>
+                        <input type="text" id="name" name="name" value="<%= client.name %>" placeholder="name" autocomplete="off" class="smallInput"/>
+                    </div>
+
+                    <div class="profileCard__section">
+                        <h3>Description:</h3>
+                        <textarea id="description" name="description"><%= client.description %></textarea>
+                    </div>
+
+                    <div class="profileCard__section">
+                        <h3>Company:</h3>
+                        <input type="text" id="company" name="company" value="<%= client.company %>" placeholder="Company" autocomplete="off" class="smallInput"/>
+                    </div>
+                    
+                    <div class="profileCard__section">
+                        <h3>Department:</h3>
+                        <input type="text" id="department" name="department" value="<%= client.department %>" placeholder="Department" autocomplete="off" class="smallInput"/>
+                    </div>
+
+                    <div class="profileCard__section">
+                        <h3>Web site:</h3>
+                        <input type="text" id="website" name="website" value="<%= client.website %>"
+                            placeholder="Web Site" autocomplete="off"/>
+                    </div>
+
+                     <div class="profileCard__section">
+                        <h3>Location:</h3>
+                        <input type="text" id="location" name="location" value="<%= client.location %>" placeholder="Location"
+                            autocomplete="off"/>
+                    </div>
+
+                    <div class="profileCard__section">
+                        <h3>Languages:</h3>
+                        <select id="clientLanguages" name="languages[]" multiple size="6">
+                            <% (allLanguages || []).forEach(lang => { 
+                                const selected = (client.languages || []).some(i => i.id === lang.id); %>
+                            <option value="<%= lang.id %>" <%= selected ? "selected" : "" %>>
+                                <%= lang.code %> - <%= lang.name %>
+                            </option>
+                            <% }) %>
+                        </select>
+                    </div>
+
+                    <div class="profileCard__section">
+                                <ul>
+                                    <li>
+                                        <h3>Password (Leave blank to not change the current password):</h3>
+                                        <input type="password" id="password" name="password" autocomplete="off"/>
+                                    </li>
+
+                                    <li>
+                                        <h3>Confirm Password:</h3>
+                                        <input type="password" id="confirm_password" autocomplete="off"/>
+                                    </li>
+                                </ul>
+                        </div>
+
+
+                        <div class="profileCard__section">
+                            <h3> New Photo (Max size 2MB):</h3>
+                            <label class="fileInput">
+                                <span>Select file…</span>
+                                <input type="file" id="img" name="image"/>
+                            </label>
+                            <img id="photoPreview">
+                        </div>
+
+                        <div class="profileCard__section">
+                        <div class="actionRow" >
+                            <a href="/"> Cancel </a>
+                            <input type="submit" value="Save"/> 
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </section>
     </div>
+</div>
 
-    <div class="card">
-
-        <div class="card-title">Photo</div>
-
-        <div class="attachment">
-            <%- include("../_attachment", {client}) %>
-        </div>
-
-        <div class="form-group">
-            <label for="img">Attach file (Max size 2MB):</label>
-            <input type="file" id="img" name="image"/>
-        </div>
+<script src="/javascripts/perfil.js"></script>
 
 
-    </div>
 
-    <div class="card">
+    
 
-        <div class="card-title">actions</div>
-
-        <div class="form-group">
-            <input type="submit" value="Save"/>
-        </div>
-
-        <div class="form-group">
-            <a href="/"> Cancel </a>
-        </div>
-
-    </div>
-
-</form>
