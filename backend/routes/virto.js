@@ -2,7 +2,8 @@
 const express = require("express");
 const router = express.Router();
 
-const virtoController = require('../services/virto');
+// Usar virtoFake que conecta con el backend API desplegado
+const virtoController = require('../services/virtoFake');
 
 router.get('/',
     virtoController.index);

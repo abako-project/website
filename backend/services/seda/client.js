@@ -1,7 +1,9 @@
 
 
 const json = require("./json");
+const { adapterAPI } = require('../api-client');
 
+// Keep Sequelize models for backward compatibility and non-API operations
 const {
   models: {
     Client, User, Language, Attachment
@@ -20,16 +22,13 @@ const {
  * @returns {Promise<Object[]>} Lista de clientes en formato JSON.
  */
 exports.clientIndex = async () => {
-
-  const clients = await Client.findAll({
-    include: [
-      {model: User, as: "user"},
-      {model: Attachment, as: "attachment"},
-      {model: Language, as: "languages"},
-    ]
-  });
-
-  return clients.map(client => json.clientJson(client));
+  try {
+    const clients = await adapterAPI.getClients();
+    return clients;
+  } catch (error) {
+    console.error('[SEDA Client] Error fetching clients:', error);
+    throw error;
+  }
 }
 
 //-----------------------------------------------------------
@@ -45,17 +44,11 @@ exports.clientIndex = async () => {
  * @throws {Error} Si no se encuentra el cliente.
  */
 exports.client = async clientId => {
-
-  const client = await Client.findByPk(clientId, {
-    include: [
-      {model: User, as: "user"},
-      {model: Attachment, as: "attachment"},
-      {model: Language, as: "languages"},
-    ]
-  });
-  if (client) {
-    return json.clientJson(client);
-  } else {
+  try {
+    const client = await adapterAPI.getClient(clientId);
+    return client;
+  } catch (error) {
+    console.error(`[SEDA Client] Error fetching client ${clientId}:`, error);
     throw new Error('There is no client with id=' + clientId);
   }
 };
@@ -73,7 +66,6 @@ exports.client = async clientId => {
  * @throws {Error} Si el email o el password no están definidos.
  */
 exports.clientCreate = async (email, password) => {
-
   if (!email) {
     throw new Error('El campo email es obligatorio para crear un cliente.');
   }
@@ -82,12 +74,14 @@ exports.clientCreate = async (email, password) => {
     throw new Error('El campo password es obligatorio para crear un cliente.');
   }
 
-  const user = await User.create({email});
-  const client = await Client.create({password});
-  await user.setClient(client);
-
-  return json.clientJson(client);
-}
+  try {
+    const client = await adapterAPI.createClient({ email, password });
+    return client;
+  } catch (error) {
+    console.error('[SEDA Client] Error creating client:', error);
+    throw error;
+  }
+};
 
 //-----------------------------------------------------------
 
@@ -160,17 +154,13 @@ exports.clientUpdate = async (clientId, {
  * @returns {Promise<Object|null>} Objeto JSON con los datos del cliente, o `null` si no existe.
  */
 exports.clientFindByEmail = async (email) => {
-
-  const client = await Client.findOne({
-    include: [
-      {
-        model: User, as: "user",
-        where: {email}
-      }
-    ]
-  });
-
-  return client ? json.clientJson(client) : null;
+  try {
+    const client = await adapterAPI.findClientByEmail(email);
+    return client;
+  } catch (error) {
+    console.error(`[SEDA Client] Error finding client by email ${email}:`, error);
+    return null;
+  }
 }
 
 
@@ -186,28 +176,14 @@ exports.clientFindByEmail = async (email) => {
  * @returns {Promise<Object|null>} Objeto JSON del cliente si las credenciales son correctas, o `null`.
  */
 exports.clientFindByEmailPassword = async (email, password) => {
-
-  const client = await Client.findOne({
-    include: [
-      {
-        model: User, as: "user",
-        where: {email}
-      }
-    ]
-  });
-
-  if (!client) {
+  try {
+    const client = await adapterAPI.findClientByEmailPassword(email, password);
+    return client;
+  } catch (error) {
+    console.error(`[SEDA Client] Error authenticating client ${email}:`, error);
     return null;
   }
-
-  const valid = await client.verifyPassword(password);
-
-  if (!valid) {
-    return null;
-  }
-
-  return json.clientJson(client);
-}
+};
 
 //-----------------------------------------------------------
 

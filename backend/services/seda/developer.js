@@ -1,6 +1,8 @@
 
 const json = require("./json");
+const { adapterAPI } = require('../api-client');
 
+// Keep Sequelize models for backward compatibility
 const {
   models: {
     Developer, User, Attachment, Language, Skill, Role, Proficiency, Project, Milestone
@@ -18,19 +20,13 @@ const {
  * @returns {Promise<Object[]>} Lista de desarrolladores en formato JSON.
  */
 exports.developerIndex = async () => {
-
-  const developers = await Developer.findAll({
-    include: [
-      {model: User, as: "user"},
-      {model: Attachment, as: "attachment"},
-      {model: Language, as: "languages"},
-      {model: Role, as: "role"},
-      {model: Proficiency, as: "proficiency"},
-      {model: Skill, as: "skills"},
-    ]
-  });
-
-  return developers.map(developer => json.developerJson(developer));
+  try {
+    const developers = await adapterAPI.getDevelopers();
+    return developers;
+  } catch (error) {
+    console.error('[SEDA Developer] Error fetching developers:', error);
+    throw error;
+  }
 }
 
 //-----------------------------------------------------------
@@ -46,20 +42,11 @@ exports.developerIndex = async () => {
  * @throws {Error} Si no se encuentra el desarrollador.
  */
 exports.developer = async developerId => {
-
-  const developer = await Developer.findByPk(developerId, {
-    include: [
-      {model: User, as: "user"},
-      {model: Attachment, as: "attachment"},
-      {model: Language, as: "languages"},
-      {model: Role, as: "role"},
-      {model: Proficiency, as: "proficiency"},
-      {model: Skill, as: "skills"},
-    ]
-  });
-  if (developer) {
-    return json.developerJson(developer);
-  } else {
+  try {
+    const developer = await adapterAPI.getDeveloper(developerId);
+    return developer;
+  } catch (error) {
+    console.error(`[SEDA Developer] Error fetching developer ${developerId}:`, error);
     throw new Error('There is no developer with id=' + developerId);
   }
 };
@@ -129,7 +116,6 @@ exports.developers = async projectId => {
  * @throws {Error} Si falta algún parámetro obligatorio.
  */
 exports.developerCreate = async (email, name, address) => {
-
   if (!email) {
     throw new Error('El campo email es obligatorio para registrar un cliente.');
   }
@@ -142,12 +128,32 @@ exports.developerCreate = async (email, name, address) => {
     throw new Error('El campo address es obligatorio para registrar un developer.');
   }
 
-  const user = await User.create({email});
-  const developer = await Developer.create({email, name, address});
-  await user.setDeveloper(developer);
-
-  return json.developerJson(developer);
-}
+  try {
+    console.log('[SEDA Developer] Step 1: Creating account with custom-register');
+    
+    // PASO 1: Crear la cuenta base con /adapter/v1/custom-register
+    const accountData = { email, name, address };
+    const account = await adapterAPI.customRegister(accountData);
+    
+    console.log('[SEDA Developer] Account created:', { id: account.id, email: account.email });
+    console.log('[SEDA Developer] Step 2: Completing developer profile');
+    
+    // PASO 2: Completar el perfil de developer con /adapter/v1/developers
+    const developerData = { 
+      email, 
+      name, 
+      address
+    };
+    
+    const developer = await adapterAPI.createDeveloper(developerData);
+    console.log('[SEDA Developer] Developer profile completed:', { id: developer.id });
+    
+    return developer;
+  } catch (error) {
+    console.error('[SEDA Developer] Error creating developer:', error);
+    throw error;
+  }
+};
 
 //-----------------------------------------------------------
 
@@ -224,18 +230,14 @@ exports.developerUpdate = async (developerId, {
  * @returns {Promise<Object|null>} Objeto JSON con los datos del desarrollador, o `null` si no existe.
  */
 exports.developerFindByEmail = async (email) => {
-
-  const developer = await Developer.findOne({
-    include: [
-      {
-        model: User, as: "user",
-        where: {email}
-      }
-    ]
-  });
-
-  return developer ? json.developerJson(developer) : null;
-}
+  try {
+    const developer = await adapterAPI.findDeveloperByEmail(email);
+    return developer;
+  } catch (error) {
+    console.error(`[SEDA Developer] Error finding developer by email ${email}:`, error);
+    return null;
+  }
+};
 
 //-----------------------------------------------------------
 

@@ -1,4 +1,4 @@
-import {default as SDK} from 'https://cdn.jsdelivr.net/npm/@virtonetwork/sdk@0.0.4-alpha.5/dist/esm/sdk.js';
+import { SDK } from '@virtonetwork/sdk'
 
 const JWT_TOKEN_KEY = 'virto_jwt_token';
 const CONNECTED_USER_KEY = 'virto_connected_user';
@@ -44,10 +44,10 @@ const signButton = document.getElementById('signButton');
 function initializeSDK() {
     try {
         const sdk = new SDK({
-            federate_server: 'http://localhost:3000/api',
-            provider_url: 'ws://localhost:12281',
+            federate_server: 'https://dev.abako.xyz/',
+            provider_url: 'wss://dev.abako.xyz/kreivo',
             config: {
-                wallet: 'polkadot'
+                wallet: "polkadot",
             }
         });
 
@@ -90,6 +90,26 @@ async function registration() {
             return;
         }
 
+        // --- Pre-registration check ---
+        console.log('Verifying that user is not registered...');
+        try {
+            const checkResponse = await fetch(`/virto/check-registered/${userIdElement.value}`);
+            if (checkResponse.ok) {
+                const checkResult = await checkResponse.json();
+                console.log('Pre-registration check response:', checkResult);
+                if (checkResult.isRegistered) {
+                    console.log('Warning: User is ALREADY registered!', 'warning');
+                } else {
+                    console.log('User is NOT registered (as expected)', 'success');
+                }
+            } else {
+                console.log(`Failed to check registration status: ${checkResponse.status}`, 'warning');
+            }
+        } catch (e) {
+            console.log(`Error checking registration status: ${e.message}`, 'warning');
+        }
+        // -----------------------------
+
         console.log('--2--');
 
         registrationButton.disabled = true;
@@ -106,6 +126,22 @@ async function registration() {
         console.log('--5--');
 
         console.log('Registration data prepared successfully:', 'success');
+
+        // --- Prepared Data Validation ---
+        console.log('Prepared data summary:', JSON.stringify({
+            userId: preparedRegistrationData.userId,
+            hasAttestation: !!preparedRegistrationData.attestation,
+            hasHashedUserId: !!preparedRegistrationData.hashedUserId,
+            hasCredentialId: !!preparedRegistrationData.credentialId,
+            hasPassAccount: !!preparedRegistrationData.passAccountAddress,
+        }, null, 2));
+
+        if (!preparedRegistrationData.attestation) console.log('Error: Missing attestation', 'error');
+        if (!preparedRegistrationData.hashedUserId) console.log('Error: Missing hashedUserId', 'error');
+        if (!preparedRegistrationData.credentialId) console.log('Error: Missing credentialId', 'error');
+        if (!preparedRegistrationData.passAccountAddress) console.log('Error: Missing passAccountAddress', 'error');
+        // --------------------------------
+
         console.log(JSON.stringify(preparedRegistrationData, null, 2));
 
         console.log('--6--');
@@ -117,7 +153,7 @@ async function registration() {
             return;
         }
 
-        const response = await fetch(`http://localhost:3001/virto/custom-register`, {
+        const response = await fetch(`/virto/custom-register`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -134,8 +170,29 @@ async function registration() {
         console.log('Registration completed successfully on the server:', 'success');
         console.log(JSON.stringify(result, null, 2));
 
+        // --- Post-registration check ---
+        console.log('Verifying that user is NOW registered...');
+        try {
+            const checkResponse = await fetch(`/virto/check-registered/${preparedRegistrationData.userId}`);
+            if (checkResponse.ok) {
+                const checkResult = await checkResponse.json();
+                console.log('Post-registration check response:', checkResult);
+                if (checkResult.isRegistered) {
+                    console.log('User is NOW registered correctly', 'success');
+                    console.log('REGISTRATION FLOW COMPLETED SUCCESSFULLY', 'success');
+                } else {
+                    console.log('Error: User is STILL NOT registered after success response!', 'error');
+                }
+            } else {
+                console.log(`Failed to check registration status: ${checkResponse.status}`, 'warning');
+            }
+        } catch (e) {
+            console.log(`Error checking registration status: ${e.message}`, 'warning');
+        }
+        // ------------------------------
+
         // After successful registration, automatically start the connection process
-         userId = preparedRegistrationData.userId;
+        userId = preparedRegistrationData.userId;
         console.log(`Starting automatic connection process for ${userId}...`, 'info');
 
         preparedRegistrationData = null;
@@ -194,7 +251,10 @@ async function completeRegistration() {
 
         completeRegistrationButton.disabled = true;
 
-        const response = await fetch(`http://localhost:3001/virto/custom-register`, {
+        console.log('Sending data to the server to complete registration...');
+        console.log(JSON.stringify(preparedRegistrationData, null, 2));
+
+        const response = await fetch(`/virto/custom-register`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -270,7 +330,7 @@ async function completeConnection() {
 
         completeConnectionButton.disabled = true;
 
-        const response = await fetch(`http://localhost:3001/virto/custom-connect`, {
+        const response = await fetch(`/virto/custom-connect`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -324,7 +384,7 @@ async function signCommand() {
         console.log(`Signing command for user ${connectedUserId}...`);
 
         const command = {
-            url: 'http://localhost:9000/sign',
+            url: 'https://dev.abako.xyz/adapter/v1/auth/sign',
             body: commandHex.value,
             hex: commandHex.value
         };
@@ -332,7 +392,7 @@ async function signCommand() {
         try {
             console.log('Using secure endpoint with JWT token authentication', 'info');
             console.log(localStorage.getItem('virto_jwt_token'));
-            const response = await fetch('http://localhost:3001/virto/sign', {
+            const response = await fetch('https://dev.abako.xyz/adapter/v1/auth/sign', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

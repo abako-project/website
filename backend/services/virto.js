@@ -19,8 +19,8 @@ const createServerSdk = async () => {
     const ServerSDK = (await import("@virtonetwork/sdk")).default;
 
     serverSdk = new ServerSDK({
-        federate_server: 'http://localhost:3000/api',
-        provider_url: 'ws://localhost:12281',
+        federate_server: "https://dev.abako.xyz",
+        provider_url: "wss://dev.abako.xyz/kreivo",
         config: {
             wallet: "polkadot",
             jwt: {
