@@ -310,6 +310,8 @@ const milestoneJson = milestone => {
         deliveryDate: milestone.deliveryDate.valueOf(),
         roleId: milestone.roleId,
         proficiencyId: milestone.proficiencyId,
+        documentation: milestone.documentation,
+        links: milestone.links,
         displayOrder: milestone.displayOrder,
         projectId: milestone.projectId,
         neededFullTimeDeveloper: milestone.neededFullTimeDeveloper,
