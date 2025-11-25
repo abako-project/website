@@ -139,13 +139,12 @@ exports.clientUpdate = async (clientId, {
   await client.setLanguages(languageIds);
 
   // Hay un attachment nuevo
-  if (mime && image) {
+  if (mime && image && image.length > 0) {
 
     if (client.attachment) {
       await client.update({ attachmentId: null });
       await Attachment.destroy({ where: { id: client.attachment.id } });
     }
-
 
     // Create the new client attachment
     const attachment = await Attachment.create({mime, image});

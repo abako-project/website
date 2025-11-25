@@ -101,7 +101,7 @@ exports.update = async (req, res, next) => {
     location: body.location,
     availability: body.availability,
     languageIds: (body.languages || []).map(str => +str),
-    skillIds: body.skills.map(str => +str),
+    skillIds: (body.skills|| []).map(str => +str),
     isAvailableForHire: !!body.isAvailableForHire,
     isAvailableFullTime: !!body.isAvailableFullTime,
     isAvailablePartTime: !!body.isAvailablePartTime,

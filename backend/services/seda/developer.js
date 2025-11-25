@@ -203,7 +203,7 @@ exports.developerUpdate = async (developerId, {
   await developer.setSkills(skillIds);
 
   // Hay un attachment nuevo
-  if (mime && image) {
+  if (mime && image && image.length > 0) {
     // Delete old attachment.
     if (developer.attachment) {
       await developer.update({ attachmentId: null });
