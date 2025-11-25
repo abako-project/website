@@ -5,33 +5,13 @@ const seda = require("../services/seda");
 exports.viewVotes = async (req, res, next) => {
     try {
         const projectId = req.params.projectId;
-        const loginUser = req.session.loginUser;
 
         const project = await seda.project(projectId);
         if (!project) throw new Error('Project not found.');
         
-
-        let members = [];
-
-        if (loginUser?.developerId) {
-            const devId = loginUser.developerId;
-            const consultantId = await seda.projectConsultantId(projectId);
-
-        if (devId === consultantId) {
-            // Si el usuario logueado es el consultor → muestra a los developers del proyecto
-            members = await seda.developers(projectId); 
-        } else {
-            // Si es un developer normal → muestra solo al consultor
-            const consultant = await seda.developer(consultantId); 
-            members = [consultant];
-        }
-
-        } else if (loginUser?.clientId) {
-            // Si es cliente → muestra solo al consultor
-            const consultantId = await seda.projectConsultantId(projectId);
-            const consultant = await seda.developer(consultantId);
-            members = [consultant];
-        }
+        //SOLO VOTA EL CONSULTOR  
+        let members = await seda.developers(projectId); 
+       
         const voteData = {
             project: {
                     id: project.id
