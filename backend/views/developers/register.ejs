@@ -1,150 +1,151 @@
 <div class="onboarding">
-  <%- include('../layouts/onboarding/_appLeft') %>
+    <%- include('../layouts/onboarding/_appLeft') %>
 
-  <section id="appRight" class="onboarding__right">
-    <%- include('../layouts/onboarding/_onboardingBackButton', {message: "Already have an account?", buttonText: "Log in", href: "/auth/login/"}) %>
+    <section id="appRight" class="onboarding__right">
+        <%- include('../layouts/onboarding/_onboardingBackButton', {message: "Already have an account?", buttonText: "Log in", href: "/auth/login/"}) %>
 
-    <form id="registerForm" class="content" action="/auth/register/developer" method="POST">
-      <h1>Registro de un Developer</h1>
-      <!-- <h2>Datos de registro</h2> -->
-      <div class="form-group">
-        <label for="email">Email</label>
-        <input
-          type="email"
-          id="email"
-          name="email"
-          placeholder="email"
-          required
-        />
-      </div>
-      <div class="form-group">
-        <label for="name">Nombre de Usuario (opcional)</label>
-        <input type="text" id="name" name="name" placeholder="Nombre" />
-      </div>
+        <form id="registerForm" class="content" action="/auth/register/developer" method="POST">
+            <h1>Registro de un Developer</h1>
+            <!-- <h2>Datos de registro</h2> -->
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        placeholder="email"
+                        required
+                />
+            </div>
+            <div class="form-group">
+                <label for="name">Nombre de Usuario (opcional)</label>
+                <input type="text" id="name" name="name" placeholder="Nombre"/>
+            </div>
 
-      <input type="hidden" id="preparedData" name="preparedData" />
+            <input type="hidden" id="preparedData" name="preparedData"/>
 
-      <div class="form-group">
-        <button class="btn btn_primary" type="submit" id="registrationButton">
-          Registrar
-        </button>
-      </div>
+            <div class="form-group">
+                <button class="btn btn_primary" type="submit" id="registrationButton">
+                    Registrar
+                </button>
+            </div>
 
-      <div class="form-group hidden">
-        <p id="status"></p>
-      </div>
-    </form>
-  </section>
+            <div class="form-group hidden">
+                <p id="status"></p>
+            </div>
+        </form>
+    </section>
 </div>
 
-<script type="module">
-  import { default as SDK } from "https://cdn.jsdelivr.net/npm/@virtonetwork/sdk@0.0.4-alpha.5/dist/esm/sdk.js";
+<script src="https://unpkg.com/@virtonetwork/sdk@0.0.4-alpha.34/dist/umd/index.umd.js"></script>
 
-  const emailElement = document.getElementById("email");
-  const nameElement = document.getElementById("name");
-  const pdElement = document.getElementById("preparedData");
-  const registrationButton = document.getElementById("registrationButton");
-  const statusElement = document.getElementById("status");
 
-  function initializeSDK() {
-    try {
-      const sdk = new SDK({
-        federate_server: "http://localhost:3000/api",
-        provider_url: "ws://localhost:12281",
-        config: {
-          wallet: "polkadot",
-        },
-      });
+<script>
+    console.log(window.SDK);
+</script>
 
-      console.log("SDK initialized successfully", "success");
-      return sdk;
-    } catch (error) {
-      console.log(
-        `Error initializing SDK: ${
-          error instanceof Error ? error.message : "Unknown error"
-        }`,
-        "error"
-      );
-      throw error;
+
+<script type="module" >
+    // import { default as SDK } from "https://cdn.jsdelivr.net/npm/@virtonetwork/sdk@0.0.4-alpha.33/dist/esm/sdk.js";
+    // import { default as SDK } from "https://cdn.jsdelivr.net/npm/@virtonetwork/sdk@0.0.4-alpha.34/dist/esm/sdk.js";
+    // import {default as SDK} from "https://cdn.jsdelivr.net/npm/@virtonetwork/sdk@0.0.4-alpha.5/dist/umd/sdk.js";
+    // import { SDK } from "https://esm.sh/@virtonetwork/sdk";
+
+    // import * as SDK from "https://esm.sh/@virtonetwork/sdk@0.0.4-alpha.34";
+
+    // import { default as SDK } from "@virtonetwork/sdk";
+
+     // console.log("SDK =", globalThis.SDK);
+
+
+    const emailElement = document.getElementById("email");
+    const nameElement = document.getElementById("name");
+    const pdElement = document.getElementById("preparedData");
+    const registrationButton = document.getElementById("registrationButton");
+    const statusElement = document.getElementById("status");
+
+    function initializeSDK() {
+        try {
+            const sdk = new SDK({
+                federate_server: "https://dev.abako.xyz",
+                provider_url: "wss://dev.abako.xyz/kreivo",
+                config: {
+                    wallet: "polkadot",
+                },
+            });
+
+            console.log("SDK initialized successfully", "success");
+            return sdk;
+        } catch (error) {
+            console.log(
+                `Error initializing SDK: ${
+                    error instanceof Error ? error.message : "Unknown error"
+                }`,
+                "error"
+            );
+            throw error;
+        }
     }
-  }
 
-  document
-    .getElementById("registerForm")
-    .addEventListener("submit", async function (event) {
-      event.preventDefault(); // Evita el envío automático del formulario
+    document
+        .getElementById("registerForm")
+        .addEventListener("submit", async function (event) {
+            event.preventDefault(); // Evita el envío automático del formulario
 
-      try {
-        console.log("Registrar developer ...");
+            try {
+                console.log("Registrar developer ...");
 
-        registrationButton.disabled = true;
-        statusElement.innerHTML = "Empieza el registro";
+                registrationButton.disabled = true;
+                statusElement.innerHTML = "Empieza el registro";
 
-        if (!emailElement.value) {
-          throw new Error("❌ Error: Email is requerido");
-        }
+                if (!emailElement.value) {
+                    throw new Error("❌ Error: Email is requerido");
+                }
 
-        const VIRTO_REAL = false;
+                const sdk = initializeSDK();
 
-        // ===== VIRTO REAL ==========
-        const preparedDataVirtoReal = async () => {
-          const sdk = initializeSDK();
+                const userData = {
+                    profile: {
+                        id: emailElement.value,
+                        name: nameElement.value || undefined,
+                    },
+                };
 
-          const userData = {
-            profile: {
-              id: emailElement.value,
-              name: nameElement.value || undefined,
-            },
-          };
+                statusElement.innerHTML = "Generando certificado para el registro";
 
-          statusElement.innerHTML = "Generando certificado para el registro";
+                const preparedData = await sdk.auth.prepareRegistration(userData);
 
-          return await sdk.auth.prepareRegistration(userData);
-        };
 
-        // ===== VIRTO FAKE ==========
-        const preparedDataVirtoFake = () => {
-          return {
-            userId: emailElement.value,
-            attestationResponse: {},
-            blockNumber: 333,
-          };
-        };
+                if (!preparedData) {
+                    throw new Error("❌ Error: No se han generado los registration data");
+                }
 
-        const preparedData = VIRTO_REAL
-          ? await preparedDataVirtoReal()
-          : preparedDataVirtoFake();
+                const json = JSON.stringify(preparedData, null, 2);
 
-        if (!preparedData) {
-          throw new Error("❌ Error: No se han generado los registration data");
-        }
+                console.log("Registration - prepared data:");
+                console.log(json);
 
-        const json = JSON.stringify(preparedData, null, 2);
+                statusElement.innerHTML = "Esperando respuesta del servidor";
 
-        console.log("Registration - prepared data:");
-        console.log(json);
+                pdElement.value = encodeURIComponent(json);
 
-        statusElement.innerHTML = "Esperando respuesta del servidor";
-
-        pdElement.value = encodeURIComponent(json);
-
-        this.submit();
-      } catch (error) {
-        statusElement.innerHTML = "El registro ha fallado";
-        alert(
-          `❌ Registration error: ${
-            error instanceof Error ? error.message : "Unknown error"
-          }`
-        );
-        console.log(
-          `Registration error: ${
-            error instanceof Error ? error.message : "Unknown error"
-          }`,
-          "error"
-        );
-      } finally {
-        registrationButton.disabled = false;
-        statusElement.innerHTML = "";
-      }
-    });
+                this.submit();
+            } catch (error) {
+                statusElement.innerHTML = "El registro ha fallado";
+                alert(
+                    `❌ Registration error: ${
+                        error instanceof Error ? error.message : "Unknown error"
+                    }`
+                );
+                console.log(
+                    `Registration error: ${
+                        error instanceof Error ? error.message : "Unknown error"
+                    }`,
+                    "error"
+                );
+            } finally {
+                registrationButton.disabled = false;
+                statusElement.innerHTML = "";
+            }
+        });
 </script>

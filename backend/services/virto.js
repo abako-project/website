@@ -1,12 +1,4 @@
-
 console.log("!! Inicializando el modulo virto !!");
-
-if (typeof localStorage === "undefined" || localStorage === null) {
-    var LocalStorage = require('node-localstorage').LocalStorage;
-    localStorage = new LocalStorage('./scratch');
-}
-
-
 
 let serverSdk;
 
@@ -16,11 +8,12 @@ const createServerSdk = async () => {
         return;
     }
 
-    const ServerSDK = (await import("@virtonetwork/sdk")).default;
+    // const ServerSDK = (await import("@virtonetwork/sdk")).default;
+    const ServerSDK = require("@virtonetwork/sdk");
 
     serverSdk = new ServerSDK({
-        federate_server: 'http://localhost:3000/api',
-        provider_url: 'ws://localhost:12281',
+        federate_server: 'https://dev.abako.xyz',
+        provider_url: 'wss://dev.abako.xyz/kreivo',
         config: {
             wallet: "polkadot",
             jwt: {
@@ -31,11 +24,6 @@ const createServerSdk = async () => {
     });
 };
 
-
-
-exports.index = async (req, res) => {
-    res.render("virto/index");
-};
 
 
 exports.checkRegistered = async (req, res) => {

@@ -1,4 +1,4 @@
-const virtoService = require('../../services/virtoFake');
+const virtoService = require('../../services/virto');
 
 const seda = require("../../services/seda");
 

@@ -29,7 +29,8 @@
 </div>
 
 <script type="module">
-  import { default as SDK } from "https://cdn.jsdelivr.net/npm/@virtonetwork/sdk@0.0.4-alpha.5/dist/esm/sdk.js";
+  // import { default as SDK } from "https://cdn.jsdelivr.net/npm/@virtonetwork/sdk@0.0.4-alpha.5/dist/esm/sdk.js";
+  import { default as SDK } from "@virtonetwork/sdk";
 
   const JWT_TOKEN_KEY = "virto_jwt_token";
   const CONNECTED_USER_KEY = "virto_connected_user";
@@ -65,10 +66,10 @@
   function initializeSDK() {
     try {
       const sdk = new SDK({
-        federate_server: "http://localhost:3000/api",
-        provider_url: "ws://localhost:12281",
-        config: {
-          wallet: "polkadot",
+          federate_server: "https://dev.abako.xyz",
+          provider_url: "wss://dev.abako.xyz/kreivo",
+          config: {
+              wallet: "polkadot",
         },
       });
 
@@ -109,10 +110,6 @@
           throw new Error("❌ Error: Email is requerido");
         }
 
-        const VIRTO_REAL = false;
-
-        // ===== VIRTO REAL: ========
-        const preparedDataVirtoReal = async () => {
           const sdk = initializeSDK();
 
           console.log("Comprobar si es un developer registrado...");
@@ -124,21 +121,8 @@
 
           statusElement.innerHTML = "Generando certificado para loguearse";
 
-          return await sdk.auth.prepareConnection(emailElement.value);
-        };
+            preparedData = await sdk.auth.prepareConnection(emailElement.value);
 
-        // ==== VIRTO FAKE ========
-        const preparedDataVirtoFake = () => {
-          return {
-            userId: emailElement.value,
-            assertionResponse: {},
-            blockNumber: 333,
-          };
-        };
-
-        const preparedData = VIRTO_REAL
-          ? await preparedDataVirtoReal()
-          : preparedDataVirtoFake();
 
         if (!preparedData) {
           throw new Error("❌ Error: No se han generado los login data");
