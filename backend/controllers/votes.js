@@ -5,10 +5,10 @@ const seda = require("../services/seda");
 exports.viewVotes = async (req, res, next) => {
     try {
         const projectId = req.params.projectId;
-        const loginUser = req.session.loginUser;
 
         const project = await seda.project(projectId);
         if (!project) throw new Error('Project not found.');
+<<<<<<< HEAD
 
 
         let members = [];
@@ -32,6 +32,12 @@ exports.viewVotes = async (req, res, next) => {
             const consultant = await seda.developer(consultantId);
             members = [consultant];
         }
+=======
+        
+        //SOLO VOTA EL CONSULTOR  
+        let members = await seda.developers(projectId); 
+       
+>>>>>>> david-dev
         const voteData = {
             project,
             members: await Promise.all(members.map(async member => {

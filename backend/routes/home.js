@@ -8,7 +8,7 @@ router.get('/', function(req, res, next) {
         if (req.session.loginUser.clientId) {
             res.redirect('/clients/' + req.session.loginUser.clientId + '/projects/');
         } else if (req.session.loginUser.developerId) {
-            res.redirect('/clients/' + req.session.loginUser.developerId + '/projects/');
+            res.redirect('/developers/' + req.session.loginUser.developerId + '/projects/');
         } else {
             res.redirect('/projects');
         }
