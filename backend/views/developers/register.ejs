@@ -30,8 +30,8 @@
                 </button>
             </div>
 
-            <div class="form-group hidden">
-                <p id="status"></p>
+            <div class="form-group ccchidden">
+                Status: <p id="status"></p>
             </div>
         </form>
     </section>
@@ -41,18 +41,10 @@
 
 
 <script type="module" >
-    // import { default as SDK } from "https://cdn.jsdelivr.net/npm/@virtonetwork/sdk@0.0.4-alpha.33/dist/esm/sdk.js";
-    // import { default as SDK } from "https://cdn.jsdelivr.net/npm/@virtonetwork/sdk@0.0.4-alpha.34/dist/esm/sdk.js";
-    // import {default as SDK} from "https://cdn.jsdelivr.net/npm/@virtonetwork/sdk@0.0.4-alpha.5/dist/umd/sdk.js";
-    // import { SDK } from "https://esm.sh/@virtonetwork/sdk";
 
-    // import * as SDK from "https://esm.sh/@virtonetwork/sdk@0.0.4-alpha.34";
+    console.log("Registro de desarrolador: Empieza el script.");
 
-    // import { default as SDK } from "@virtonetwork/sdk";
-    import { SDK } from "@virtonetwork/sdk";
-
-     // console.log("SDK =", globalThis.SDK);
-
+    import SDK from 'https://cdn.jsdelivr.net/npm/@virtonetwork/sdk@0.0.4-alpha.36/dist/esm/index.js';
 
     const emailElement = document.getElementById("email");
     const nameElement = document.getElementById("name");
@@ -70,11 +62,11 @@
                 },
             });
 
-            console.log("SDK initialized successfully", "success");
+            console.log("Registro de desarrolador: SDK initialized successfully", "success");
             return sdk;
         } catch (error) {
             console.log(
-                `Error initializing SDK: ${
+                `Registro de desarrolador: Error initializing SDK: ${
                     error instanceof Error ? error.message : "Unknown error"
                 }`,
                 "error"
@@ -92,6 +84,7 @@
                 console.log("Registrar developer ...");
 
                 registrationButton.disabled = true;
+                registrationButton.innerHTML = ". . .";
                 statusElement.innerHTML = "Empieza el registro";
 
                 if (!emailElement.value) {
@@ -109,8 +102,7 @@
 
                 statusElement.innerHTML = "Generando certificado para el registro";
 
-                const preparedData = await sdk.auth.prepareRegistration(userData);
-
+                const preparedData = await withTimeout(sdk.auth.prepareRegistration(userData), 5000, "Timeout esperando al servidor por los datos para preparar el registro");
 
                 if (!preparedData) {
                     throw new Error("❌ Error: No se han generado los registration data");
@@ -141,6 +133,7 @@
                 );
             } finally {
                 registrationButton.disabled = false;
+                registrationButton.innerHTML = "Registrar";
                 statusElement.innerHTML = "";
             }
         });
