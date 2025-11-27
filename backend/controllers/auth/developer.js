@@ -4,43 +4,21 @@ const seda = require("../../services/seda");
 
 exports.registerCreate = async (req, res, next) => {
 
-  const {email, name, preparedData: json} = req.body;
+    const {email, name, preparedData: json} = req.body;
 
-  if (!email) {
-    return res.status(400).send('El campo email es obligatorio');
-  }
+    try {
+        preparedData = JSON.parse(decodeURIComponent(json));
+        await seda.developerCreate(email, name, preparedData);
 
-  try {
-    preparedData = JSON.parse(decodeURIComponent(json));
+        req.flash("success", '✅ Registrado correctamente');
+        console.log("[Controlador developers] Desarrollador Registrado correctamente");
 
-    if (!preparedData.userId || !preparedData.attestationResponse || !preparedData.blockNumber) {
-      return res.status(400).json({error: 'Incomplete registration data'});
+        res.redirect('/auth/login/developer/new');
+    } catch (error) {
+        req.flash("error", `Registration error: ${error instanceof Error ? error.message : 'Unknown error'}`);
+        console.log("[Controlador developers]", `Registration error: ${error instanceof Error ? error.message : 'Unknown error'}`);
+        res.redirect('/auth/register/developer/new');
     }
-
-    const result = await virtoService.customRegister(preparedData);
-
-
-    console.log("======================================================");
-    console.log("customRegister result", JSON.stringify(result, undefined, 2));
-    console.log("======================================================");
-
-    if (result.error) {
-      throw new Error(result.message);
-    }
-
-    const address = result.address;
-
-    await seda.developerCreate(email, name, address);
-
-    req.flash("success", '✅ Registrado correctamente');
-
-    res.redirect('/auth/login/developer/new');
-
-
-  } catch (error) {
-    req.flash("error", `Registration error: ${error instanceof Error ? error.message : 'Unknown error'}`);
-    res.redirect('/auth/register/developer/new');
-  }
 };
 
 

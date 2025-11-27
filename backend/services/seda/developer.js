@@ -1,6 +1,9 @@
 
 const json = require("./json");
 
+const { adapterAPI } = require('../api-client');
+
+// Keep Sequelize models for backward compatibility
 const {
   models: {
     Developer, User, Attachment, Language, Skill, Role, Proficiency, Project, Milestone
@@ -124,29 +127,60 @@ exports.developers = async projectId => {
  * @function developerCreate
  * @param {string} email - Email del desarrollador.
  * @param {string} name - Nombre del desarrollador.
- * @param {string} address - Dirección del desarrollador en la blockchain.
+ * @param {object} preparedData - Datos para registar a un usuario en Virto.
  * @returns {Promise<Object>} Objeto JSON con los datos del desarrollador creado.
  * @throws {Error} Si falta algún parámetro obligatorio.
  */
-exports.developerCreate = async (email, name, address) => {
+exports.developerCreate = async (email, name, preparedData) => {
 
   if (!email) {
-    throw new Error('El campo email es obligatorio para registrar un cliente.');
+    throw new Error('El campo email es obligatorio para registrar un developer.');
   }
 
   if (!name) {
     throw new Error('El campo name es obligatorio para registrar un developer.');
   }
 
-  if (!address) {
-    throw new Error('El campo address es obligatorio para registrar un developer.');
+  if (!preparedData) {
+    throw new Error('El campo preparedData es obligatorio para registrar un developer.');
   }
 
-  const user = await User.create({email});
-  const developer = await Developer.create({email, name, address});
-  await user.setDeveloper(developer);
+    try {
+        console.log('[SEDA Developer] Step 1: Creating account with custom-register');
 
-  return json.developerJson(developer);
+        // PASO 1: Crear la cuenta base con /adapter/v1/custom-register
+        const response = await adapterAPI.customRegister(preparedData);
+
+        if (response.success) {
+            console.log('[SEDA Developer] Account creation is successfull:', response.message);
+        } else {
+            console.log('[SEDA Developer] Account creation has failed:', response.error);
+            throw new Error(response.error);
+        }
+
+        console.log('[SEDA Developer] Step 2: Completing developer profile');
+
+        // PASO 2: Completar el perfil de developer con /adapter/v1/developers
+        const developerData = {
+            email,
+            name,
+            githubUsername: "PENDIENTE" // No lo tenemos aun
+        };
+
+        await adapterAPI.createDeveloper(developerData);
+        console.log('[SEDA Developer] Developer profile completed:');
+
+        console.log('[SEDA Developer] Step 3: Create developer in BBDD');
+
+        const user = await User.create({email});
+        const developer = await Developer.create({email, name, address: "0x1234567890"});
+        await user.setDeveloper(developer);
+
+    } catch (error) {
+        console.error('[SEDA Developer] Error creating developer:', error);
+        throw error;
+    }
+
 }
 
 //-----------------------------------------------------------
