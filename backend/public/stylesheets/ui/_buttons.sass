@@ -14,14 +14,21 @@
     text-align: center
     &:hover
         box-shadow: $shadow-2
+    &--disabled
+        opacity: .3
+    &:disabled
+        opacity: .3
     &_primary
         color: $base-1
         background-color: $brand
         i
             color: $base-1 !important
         &--danger
+            // color: white
             background-color: $red-400
-            border-color: hsba(0, 0%, 100%, .12)
+            border-color: $red-400 // hsba(0, 0%, 100%, .12)
+
+
     &_outline
         color: $brand
         border: 1px solid $brand

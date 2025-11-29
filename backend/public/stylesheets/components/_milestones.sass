@@ -36,10 +36,11 @@
         gap: $sp-5
     &__actions
         margin-top: $sp-8
-        @extend .btn // ir a _button.sass para ver estados
-        @extend .btn_primary
-        @extend .btn_sm
         width: fit-content
+        a
+            @extend .btn // ir a _button.sass para ver estados
+            @extend .btn_primary
+            @extend .btn_sm
     &__state
         @extend .state
         margin-top: $sp-8
@@ -351,7 +352,10 @@
 
 /** ---------------------------------------------------------------------
  REVIEW MILESTONE
- - Container
+ - Container: .reviewMilestone
+ - Milestone content component: .milestoneReviewInfo
+ - Milestone actions container: .milestoneReviewActions
+ - Milestone actions component: .milestoneReviewAction
 
 .reviewMilestone
     // height: 100%
@@ -429,3 +433,22 @@
                     font-weight: 700 
             &__info
                 margin-top: 12px
+
+/** ---------------------------------------------------------------------
+ REVIEW MILESTONE Developer Project Assignation
+ Se le puede poner un nombre genérico tipo review form o algo así
+ - Container en .reviewMilestone
+
+.reviewMilestone
+    .projectInfo, .milestoneInfo
+        @extend .bubble
+        margin-top: 0
+        margin-bottom: 32px
+        padding: $sp-10 $sp-10 $sp-12 $sp-10
+        gap: $sp-10
+
+.acceptOrRejectAssignation
+    &__form
+        .buttonContainer
+            justify-content: end
+            gap: 12px
