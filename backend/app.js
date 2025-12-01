@@ -16,16 +16,31 @@ const sequelize = require("./models");
 
 const app = express();
 
-// Only for development: livereloa
+// Only for development: livereload
 // to automatically refresh the browser when files change
 if (process.env.NODE_ENV === 'development') {
     const livereload = require('livereload');
     const connectLivereload = require('connect-livereload');
     const chokidar = require('chokidar');
 
-    // Crear servidor de livereload
-    const liveReloadServer = livereload.createServer();
-    chokidar.watch(['views', 'public']).on('change', (path) => {
+    // Crear servidor de livereload con configuración no bloqueante
+    const liveReloadServer = livereload.createServer({ delay: 500 });
+    console.log('[app.js] Livereload server creado');
+
+    // Configurar watcher de forma no bloqueante
+    const watcher = chokidar.watch(['views', 'public'], {
+        ignoreInitial: true,
+        awaitWriteFinish: {
+            stabilityThreshold: 500,
+            pollInterval: 100
+        }
+    });
+
+    watcher.on('ready', () => {
+        console.log('[app.js] Chokidar watcher listo');
+    });
+
+    watcher.on('change', (path) => {
       console.log("🔧 Archivo cambiado:", path);
       liveReloadServer.refresh('/');
     }); 
