@@ -8,8 +8,6 @@
         <th>Email
             <br/>
             Name
-            <br/>
-            Password
         </th>
         <th>Company
             <br/>
@@ -32,11 +30,9 @@
                     <%- include("./_attachment", {client}) %>
                 </div>
             </td>
-            <td><%= client.user.email %>
+            <td><%= client.email %>
                 <br/>
                 <%= client.name %>
-                <br/>
-                <%= client.password ? "Si" : "No" %>
             </td>
             <td><%= client.company %>
                 <br/>
@@ -46,11 +42,11 @@
             </td>
             <td><%= client.description ? "Si" : "No" %></td>
             <td><%= client.location %></td>
-            <td><%= client.languages.map(l => l.code).join(", ") %></td>
+            <td><%= client.languages?.join(", ") %></td>
 
             <td class="actions">
                 <a  class="btn btn_primary btn_href" href="/clients/<%= client.id %>/edit" class="button">Edit</a>
-                <a  class="btn btn_primary btn_href" is="a-with-tzo" href="/backdoor/client/<%= client.user.email %>/login">Login</a>
+                <a  class="btn btn_primary btn_href" is="a-with-tzo" href="/backdoor/client/<%= client.email %>/login">Login</a>
             </td>
         </tr>
     <% }) %>

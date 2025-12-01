@@ -1,56 +1,11 @@
-<script>
-  function forcePassword() {
-    var pw1 = document.getElementById("password").value;
-    var pw2 = document.getElementById("confirm_password").value;
-
-    if (!pw1 || !pw2) {
-      alert("Password and Confirmation fields must be filled in.");
-      return false;
-    }
-    return true;
-  }
-
-  function validPassword() {
-    var pw1 = document.getElementById("password").value;
-    var pw2 = document.getElementById("confirm_password").value;
-
-    if (pw1 !== pw2) {
-      alert("Passwords and Confirmation fields do not match.");
-      return false;
-    }
-
-    if (pw1 && pw1.length < 1) {
-      alert("Password must be at least 1 characters.");
-      return false;
-    }
-    /*
-        if (pw1 && pw1.length < 8) {
-            alert('Password must be at least 8 characters.');
-            return false;
-        }
-
-        if (pw1 && !/\d/.test(pw1)) {
-            alert('Password must contain at least 1 number.');
-            return false;
-        }
-
-        if (pw1 && !/[A-Z]/.test(pw1)) {
-            alert('Password must contain at least 1 uppercase letter.');
-            return false;
-        }
-*/
-    return true;
-  }
-</script>
-
 <div id="" class="onboarding">
   <%- include('../layouts/onboarding/_appLeft') %>
 
   <section id="appRight" class="onboarding__right">
     <%- include('../layouts/onboarding/_onboardingBackButton', {message: "Already have an account?", buttonText: "Log in", href: "/auth/login/"}) %>
 
-    <form action="/auth/register/client" method="POST">
-      <h1 class="content__title">Create Account</h1>
+    <form id="registerForm" class="content" action="/auth/register/client" method="POST">
+      <h1 class="content__title">Create Client Account</h1>
       <p class="content__subtitle">
         Enter your email below to create your account
       </p>
@@ -66,40 +21,104 @@
         />
       </div>
 
-      <div class="form-group">
-        <label for="password">Password</label>
-        <input
-          type="password"
-          id="password"
-          name="password"
-          placeholder="Password"
-          autocomplete="off"
-          required
-        />
-        <small>
-          <i class="ri-lock-2-fill"></i>
-          At least 8 characters
-        </small>
-      </div>
+        <div class="form-group">
+            <label for="name">Nombre de Usuario</label>
+            <input type="text" id="name" name="name" placeholder="Nombre"/>
+        </div>
 
-      <div class="form-group">
-        <label for="confirm_password">Repeat Password</label>
-        <input
-          type="password"
-          id="confirm_password"
-          placeholder="Password"
-          autocomplete="off"
-          required
-        />
-      </div>
+        <input type="hidden" id="preparedData" name="preparedData"/>
 
-      <button class="form-group btn btn_primary">
-        <input
-          type="submit"
-          value="Register"
-          onclick="return forcePassword() && validPassword()"
-        />
-      </button>
+        <div class="form-group">
+            <button class="btn btn_primary" type="submit" id="registrationButton">
+                Registrar
+            </button>
+        </div>
+
+        <div class="form-group">
+            <p id="status"></p>
+        </div>
     </form>
   </section>
 </div>
+
+
+<script type="module" >
+
+    import SDK from 'https://cdn.jsdelivr.net/npm/@virtonetwork/sdk@0.0.4-alpha.36/dist/esm/index.js';
+
+    const emailElement = document.getElementById("email");
+    const nameElement = document.getElementById("name");
+    const pdElement = document.getElementById("preparedData");
+    const registrationButton = document.getElementById("registrationButton");
+    const statusElement = document.getElementById("status");
+
+    function initializeSDK() {
+        try {
+            const sdk = new SDK({
+                federate_server: "https://dev.abako.xyz/api",
+                provider_url: "wss://dev.abako.xyz/kreivo",
+                config: {
+                    wallet: "polkadot",
+                },
+            });
+
+            console.log("Registro de un cliente: SDK initialized successfully", "success");
+            return sdk;
+        } catch (error) {
+            console.log(`Registro de un cliente: Error initializing SDK: ${error instanceof Error ? error.message : "Unknown error"}`);
+            throw error;
+        }
+    }
+
+    document
+        .getElementById("registerForm")
+        .addEventListener("submit", async function (event) {
+            event.preventDefault(); // Evita el envío automático del formulario
+
+            try {
+                console.log("Registrar un cliente ...");
+
+                registrationButton.disabled = true;
+                registrationButton.innerHTML = ". . .";
+                statusElement.innerHTML = "Empieza el registro";
+
+                if (!emailElement.value) {
+                    throw new Error("❌ Error: Email is requerido");
+                }
+
+                const sdk = initializeSDK();
+
+                console.log("Comprobar si es un usuario registrado...");
+                const registered = await sdk.auth.isRegistered(emailElement.value);
+                if (registered) {
+                    throw new Error("This email is already registered");
+                }
+                console.log("El cliente no está registrado.");
+
+                const userData = {
+                    profile: {
+                        id: emailElement.value,
+                        name: nameElement.value || undefined,
+                    },
+                };
+
+                statusElement.innerHTML = "Generando certificado para el registro";
+
+                const preparedData = await promiseWithTimeout(sdk.auth.prepareRegistration(userData), 60000, "Timeout esperando al servidor por los datos para preparar el registro");
+                if (!preparedData) {
+                    throw new Error("❌ Error: No se han generado los registration data");
+                }
+                pdElement.value = encodeURIComponent(JSON.stringify(preparedData, null, 2));
+
+                statusElement.innerHTML = "Esperando respuesta del servidor";
+
+                this.submit();
+            } catch (error) {
+                alert(`❌ Registration error: ${error instanceof Error ? error.message : "Unknown error"}`);
+                console.log(`Registration error: ${error instanceof Error ? error.message : "Unknown error"}`);
+                registrationButton.disabled = false;
+                registrationButton.innerHTML = "Registrar";
+                statusElement.innerHTML = "El registro ha fallado";
+            }
+        });
+</script>

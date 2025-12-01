@@ -16,9 +16,14 @@ exports.load = async (req, res, next, developerId) => {
   }
 };
 
+
 exports.index = async (req, res, next) => {
 
   const developers = await seda.developerIndex();
+
+    console.log("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
+    console.log(developers)
+    console.log("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
 
   res.render('developers/index', {developers});
 };
@@ -68,6 +73,31 @@ exports.show = async (req, res, next) => {
     next(error);
   }
 };
+
+
+// GET /developers/editProfile?email=email&name=name
+exports.editProfile = async (req, res, next) => {
+    try {
+
+        const {email, name} = req.query;
+
+        const developer = await seda.developerFindByEmail(email);
+
+        console.log(">>>****>>>>>", developer);
+
+
+        const allLanguages = await seda.languageIndex();
+        const allRoles = await seda.roleIndex();
+        const allProficiencies = await seda.proficiencyIndex();
+        const allSkills = await seda.skillIndex();
+
+        res.render('developers/profile/edit', {developer, allLanguages, allRoles, allProficiencies, allSkills});
+    } catch (error) {
+        next(error);
+    }
+};
+
+
 
 // GET /developers/:developerId/profile/edit
 exports.edit = async (req, res, next) => {

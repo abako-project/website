@@ -50,7 +50,10 @@ const handleError = (error, context = '') => {
  * Adapter API Client Methods
  */
 const adapterAPI = {
-    // Clients
+
+
+    // ========= Clients ==============================
+
     async getClients() {
         try {
             const response = await adapterClient.get(apiConfig.adapterAPI.endpoints.clients.list);
@@ -69,7 +72,18 @@ const adapterAPI = {
         }
     },
 
-    async createClient(data) {
+    async createClient(email, name) {
+
+        let data = {
+            email,
+            name,
+            company: "company",
+            department: "department",
+            website: "website",
+            description: "description",
+            location: "location"
+        };
+
         try {
             const response = await adapterClient.post(apiConfig.adapterAPI.endpoints.clients.create, data);
             return response.data;
@@ -80,10 +94,9 @@ const adapterAPI = {
 
     async findClientByEmail(email) {
         try {
-            const response = await adapterClient.get(apiConfig.adapterAPI.endpoints.clients.findByEmail, {
-                params: { email }
-            });
-            return response.data;
+            const response = await adapterClient.get(apiConfig.adapterAPI.endpoints.clients.list);
+            console.log(">>>>>>>>>>>>>>>>", response)
+            return response.data.clients.find(d => d.email === email);
         } catch (error) {
             if (error.response?.status === 404) {
                 return null;
@@ -92,23 +105,8 @@ const adapterAPI = {
         }
     },
 
-    async findClientByEmailPassword(email, password) {
-        try {
-            // Este endpoint debería existir en el backend o usar el de login
-            const response = await adapterClient.post('/v1/auth/client/login', {
-                email,
-                password
-            });
-            return response.data;
-        } catch (error) {
-            if (error.response?.status === 401 || error.response?.status === 404) {
-                return null;
-            }
-            handleError(error, `findClientByEmailPassword(${email})`);
-        }
-    },
+    // =============== Developers =============================
 
-    // Developers
     async getDevelopers() {
         try {
             const response = await adapterClient.get(apiConfig.adapterAPI.endpoints.developers.list);
@@ -127,9 +125,27 @@ const adapterAPI = {
         }
     },
 
-    async createDeveloper(data) {
+    async createDeveloper(email, name, githubUsername, portfolioUrl,  image) {
         try {
-            const response = await adapterClient.post(apiConfig.adapterAPI.endpoints.developers.create, data);
+            // adapterClient without content-type header
+            const adapterClient = axios.create({
+                baseURL: apiConfig.adapterAPI.baseURL,
+                timeout: apiConfig.timeout
+            });
+
+             const data = new FormData();
+             data.append("email", email);
+             data.append("name", name);
+             data.append("githubUsername", githubUsername ?? "githubUsername");
+             data.append("portfolioUrl", portfolioUrl ?? "portfolioUrl");
+         //  data.append("image", image ?? new Blob(), "filename.txt");
+
+            const response = await adapterClient.post(apiConfig.adapterAPI.endpoints.developers.create, data, {
+                headers: {
+                    'Accept': 'application/json'
+                }
+            });
+
             return response.data;
         } catch (error) {
             handleError(error, 'createDeveloper');
@@ -138,10 +154,8 @@ const adapterAPI = {
 
     async findDeveloperByEmail(email) {
         try {
-            const response = await adapterClient.get(apiConfig.adapterAPI.endpoints.developers.findByEmail, {
-                params: { email }
-            });
-            return response.data;
+            const response = await adapterClient.get(apiConfig.adapterAPI.endpoints.developers.list);
+            return response.data.developers.find(d => d.email === email);
         } catch (error) {
             if (error.response?.status === 404) {
                 return null;
@@ -150,6 +164,8 @@ const adapterAPI = {
         }
     },
 
+    // ================== Auth =========================
+
     // Custom Register - Crea la cuenta base
     async customRegister(data) {
         try {
@@ -157,6 +173,15 @@ const adapterAPI = {
             return response.data;
         } catch (error) {
             handleError(error, 'customRegister');
+        }
+    },
+
+    async customConnect(data) {
+        try {
+            const response = await adapterClient.post(apiConfig.adapterAPI.endpoints.auth.customConnect, data);
+            return response.data;
+        } catch (error) {
+            handleError(error, 'customConnect');
         }
     }
 };

@@ -16,8 +16,13 @@ router.param('developerId', developerController.load);  // autoload :developerId
 
 // Routes for the resource /developers
 
+
 router.get('/',
     developerController.index);
+
+router.get('/editProfile',
+    developerController.editProfile);
+
 router.get('/:developerId(\\d+)/profile/edit',
     developerController.edit);
 router.get('/:developerId(\\d+)/profile',

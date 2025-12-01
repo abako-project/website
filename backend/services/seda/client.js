@@ -7,7 +7,52 @@ const {
     Client, User, Language, Attachment
   }
 } = require('../../models');
+const {adapterAPI} = require("../api-client");
 
+
+//-----------------------------------------------------------
+
+exports.clientConnect = async (email) => {
+
+    try {
+        if (!email) {
+            throw new Error('El campo email es obligatorio para loguear un cliente.');
+        }
+
+        if (!preparedData) {
+            throw new Error('El campo preparedData es obligatorio para loguear un cliente.');
+        }
+
+        console.log('[SEDA Client Connect] Step 1: customConnect');
+
+        const response = await adapterAPI.customConnect({userId: email});
+
+        console.log('[SEDA Client Connect] Step 1: customConnect', response);
+
+        if (response.success) {
+            console.log('[SEDA Client] customConnect is successfull.');
+        } else {
+            console.log('[SEDA Client] customConnect has failed:', response.error);
+            throw new Error(response.error);
+        }
+
+        console.log('[SEDA Client Connect] Step 2: Obtener nombre');
+
+        const client = await adapterAPI.findClientByEmail(email);
+        //const client = (await adapterAPI.getClients()).clients.find(d => d.email === email);
+
+        console.log('[SEDA Client Connect] Step 3: Fin');
+
+        return {
+            clientId: client?.id,
+            token: response.token,
+            name: client.name
+        };
+    } catch (error) {
+        console.error('[SEDA Client] Error connecting developer:', error);
+        throw error;
+    }
+};
 
 //-----------------------------------------------------------
 
@@ -21,6 +66,11 @@ const {
  */
 exports.clientIndex = async () => {
 
+    const response = await adapterAPI.getClients();
+
+    return response.clients;
+
+    /*
   const clients = await Client.findAll({
     include: [
       {model: User, as: "user"},
@@ -30,6 +80,8 @@ exports.clientIndex = async () => {
   });
 
   return clients.map(client => json.clientJson(client));
+
+     */
 }
 
 //-----------------------------------------------------------
@@ -68,25 +120,51 @@ exports.client = async clientId => {
  * @async
  * @function clientCreate
  * @param {string} email - Email del cliente.
- * @param {string} password - Contraseña del cliente.
- * @returns {Promise<Object>} Objeto JSON con los datos del cliente creado.
+ * @param {string} name - Nombre del cliente.
+ * @param {object} preparedData - Datos para registar a un usuario en Virto.
  * @throws {Error} Si el email o el password no están definidos.
  */
-exports.clientCreate = async (email, password) => {
+exports.clientCreate = async (email, name, preparedData) => {
 
-  if (!email) {
-    throw new Error('El campo email es obligatorio para crear un cliente.');
-  }
+    if (!email) {
+        throw new Error('El campo email es obligatorio para crear un cliente.');
+    }
 
-  if (!password) {
-    throw new Error('El campo password es obligatorio para crear un cliente.');
-  }
+    if (!name) {
+        throw new Error('El campo name es obligatorio para registrar un cliente.');
+    }
 
-  const user = await User.create({email});
-  const client = await Client.create({password});
-  await user.setClient(client);
+    if (!preparedData) {
+        throw new Error('El campo preparedData es obligatorio para registrar un cliente.');
+    }
 
-  return json.clientJson(client);
+    try {
+        // ------ PASO 1: Crear la cuenta base con /adapter/v1/custom-register
+
+        console.log('[SEDA Client] Step 1: Creating account with custom-register');
+
+        const response = await adapterAPI.customRegister(preparedData);
+
+        if (response.success) {
+            console.log('[SEDA Client] Account creation is successfull:', response.message);
+        } else {
+            console.log('[SEDA Client] Account creation has failed:', response.error);
+            throw new Error(response.error);
+        }
+
+        // ------ PASO 2: Completar el perfil de cliente con /adapter/v1/clients
+
+        console.log('[SEDA Client] Step 2: Completing client profile');
+
+        const response2 = await adapterAPI.createClient(email, name);
+
+
+        console.log('[SEDA Client] Client profile completed:', response2);
+
+    } catch (error) {
+        console.error('[SEDA Client] Error creating client:', error);
+        throw error;
+    }
 }
 
 //-----------------------------------------------------------

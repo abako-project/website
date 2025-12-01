@@ -1,159 +1,111 @@
 <!-- Login Developer -->
 
 <div class="onboarding">
-  <%- include('../layouts/onboarding/_appLeft') %>
+    <%- include('../layouts/onboarding/_appLeft') %>
 
-  <section class="onboarding__right">
-  <%- include('../layouts/onboarding/_onboardingBackButton', {message: "Don't have an account yet?", buttonText: "Sign up", href: "/auth/register/"}) %>
+    <section class="onboarding__right">
+        <%- include('../layouts/onboarding/_onboardingBackButton', {message: "Don't have an account yet?", buttonText: "Sign up", href: "/auth/register/"}) %>
 
-    <form  is="form-with-tzo" id="loginForm" class="content" action="/auth/login/developer" method="POST">
-      <h1>Login de un Developer</h1>
-      <div class="form-group">
-        <label for="email">Email</label>
-        <input type="text" id="email" name="email" placeholder="email" />
-      </div>
+        <form is="form-with-tzo" id="loginForm" class="content" action="/auth/login/developer" method="POST">
+            <h1>Login de un Developer</h1>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="text" id="email" name="email" placeholder="email" required />
+            </div>
 
-      <input type="hidden" id="preparedData" name="preparedData" />
+            <input type="hidden" id="preparedData" name="preparedData"/>
 
-      <div class="form-group">
-        <button class="btn btn_primary" type="submit" id="loginButton">
-          Login
-        </button>
-      </div>
+            <div class="form-group">
+                <button class="btn btn_primary" type="submit" id="loginButton">
+                    Login
+                </button>
+            </div>
 
-      <div class="form-group hidden">
-        <p id="status"></p>
-      </div>
-    </form>
-  </section>
+            <div class="form-group">
+                <p id="status"></p>
+            </div>
+        </form>
+    </section>
 </div>
 
 <script type="module">
-  // import { default as SDK } from "https://cdn.jsdelivr.net/npm/@virtonetwork/sdk@0.0.4-alpha.5/dist/esm/sdk.js";
-  import { default as SDK } from "@virtonetwork/sdk";
 
-  const JWT_TOKEN_KEY = "virto_jwt_token";
-  const CONNECTED_USER_KEY = "virto_connected_user";
+    console.log("Login de desarrolador: Empieza el script.");
 
-  function loadFromLocalStorage() {
-    const storedToken = localStorage.getItem(JWT_TOKEN_KEY);
-    const storedUserId = localStorage.getItem(CONNECTED_USER_KEY);
+    import SDK from 'https://cdn.jsdelivr.net/npm/@virtonetwork/sdk@0.0.4-alpha.36/dist/esm/index.js';
 
-    if (storedToken) {
-      authToken = storedToken;
-      console.log("Token JWT loaded from localStorage", "info");
-    }
+    const emailElement = document.getElementById("email");
+    const pdElement = document.getElementById("preparedData");
+    const loginButton = document.getElementById("loginButton");
+    const statusElement = document.getElementById("status");
 
-    if (storedUserId) {
-      connectedUserId = storedUserId;
-      console.log(
-        `Connected user loaded from localStorage: ${storedUserId}`,
-        "info"
-      );
-    }
-  }
+    function initializeSDK() {
+        try {
+            const sdk = new SDK({
+                federate_server: "https://dev.abako.xyz/api",
+                provider_url: "wss://dev.abako.xyz/kreivo",
+                config: {
+                    wallet: "polkadot",
+                },
+            });
 
-  let connectedUserId = null; //: : string | null = null;
-  let authToken = null; //:  string | null = null;
-
-  loadFromLocalStorage();
-
-  const emailElement = document.getElementById("email");
-  const pdElement = document.getElementById("preparedData");
-  const loginButton = document.getElementById("loginButton");
-  const statusElement = document.getElementById("status");
-
-  function initializeSDK() {
-    try {
-      const sdk = new SDK({
-          federate_server: "https://dev.abako.xyz",
-          provider_url: "wss://dev.abako.xyz/kreivo",
-          config: {
-              wallet: "polkadot",
-        },
-      });
-
-      console.log("SDK initialized successfully");
-      return sdk;
-    } catch (error) {
-      console.log(
-        `Error initializing SDK: ${
-          error instanceof Error ? error.message : "Unknown error"
-        }`,
-        "error"
-      );
-      throw error;
-    }
-  }
-
-  function saveToLocalStorage() {
-    if (authToken) {
-      localStorage.setItem(JWT_TOKEN_KEY, authToken);
-    }
-    if (connectedUserId) {
-      localStorage.setItem(CONNECTED_USER_KEY, connectedUserId);
-    }
-  }
-
-  document
-    .getElementById("loginForm")
-    .addEventListener("submit", async function (event) {
-      event.preventDefault(); // Evita el envío automático del formulario
-
-      try {
-        console.log("Loguear developer...");
-
-        loginButton.disabled = true;
-        statusElement.innerHTML = "Empieza el logueo";
-
-        if (!emailElement.value) {
-          throw new Error("❌ Error: Email is requerido");
+            console.log("Login de desarrollador: SDK initialized successfully");
+            return sdk;
+        } catch (error) {
+            console.log(
+                `Login de desarrollador: Error initializing SDK: ${
+                    error instanceof Error ? error.message : "Unknown error"
+                }`,
+                "error"
+            );
+            throw error;
         }
-
-          const sdk = initializeSDK();
-
-          console.log("Comprobar si es un developer registrado...");
-          const registered = await sdk.auth.isRegistered(emailElement.value);
-          if (!registered) {
-            throw new Error("Developer needs to register first");
-          }
-          console.log("El developer está registrado.");
-
-          statusElement.innerHTML = "Generando certificado para loguearse";
-
-            preparedData = await sdk.auth.prepareConnection(emailElement.value);
+    }
 
 
-        if (!preparedData) {
-          throw new Error("❌ Error: No se han generado los login data");
-        }
+    document
+        .getElementById("loginForm")
+        .addEventListener("submit", async function (event) {
+            event.preventDefault(); // Evita el envío automático del formulario
 
-        const json = JSON.stringify(preparedData, null, 2);
+            try {
+                console.log("Loguear developer...");
 
-        console.log("Login - prepared data:");
-        console.log(json);
+                loginButton.disabled = true;
+                loginButton.innerHTML = ". . .";
+                statusElement.innerHTML = "Empieza el logueo";
 
-        statusElement.innerHTML = "Esperando respuesta del servidor";
+                if (!emailElement.value) {
+                    throw new Error("❌ Error: Email is requerido");
+                }
 
-        pdElement.value = encodeURIComponent(json);
+                const sdk = initializeSDK();
 
-        this.submit();
-      } catch (error) {
-        statusElement.innerHTML = "El login ha fallado";
-        alert(
-          `❌ Login error: ${
-            error instanceof Error ? error.message : "Unknown error"
-          }`
-        );
-        console.log(
-          `Login error: ${
-            error instanceof Error ? error.message : "Unknown error"
-          }`,
-          "error"
-        );
-      } finally {
-        loginButton.disabled = false;
-        statusElement.innerHTML = "";
-      }
-    });
+                console.log("Comprobar si es un usuario registrado...");
+                const registered = await sdk.auth.isRegistered(emailElement.value);
+                if (!registered) {
+                    throw new Error("Developer needs to register first");
+                }
+                console.log("El developer está registrado.");
+
+                statusElement.innerHTML = "Generando certificado para loguearse";
+
+                const preparedData = await promiseWithTimeout(sdk.auth.prepareConnection(emailElement.value), 60000, "Timeout esperando al servidor por los datos para preparar el login");
+                if (!preparedData) {
+                    throw new Error("❌ Error: No se han generado los login data");
+                }
+                pdElement.value = encodeURIComponent(JSON.stringify(preparedData, null, 2));
+
+                statusElement.innerHTML = "Esperando respuesta del servidor";
+
+                this.submit();
+            } catch (error) {
+                statusElement.innerHTML = "El login ha fallado";
+                alert(`❌ Login error: ${error instanceof Error ? error.message : "Unknown error"}`);
+                console.log(`Login error: ${error instanceof Error ? error.message : "Unknown error"}`);
+                loginButton.disabled = false;
+                loginButton.innerHTML = "Login";
+                statusElement.innerHTML = "El login ha fallado";
+            }
+        });
 </script>

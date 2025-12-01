@@ -1,14 +1,57 @@
-
 const json = require("./json");
 
-const { adapterAPI } = require('../api-client');
+const {adapterAPI} = require('../api-client');
 
 // Keep Sequelize models for backward compatibility
 const {
-  models: {
-    Developer, User, Attachment, Language, Skill, Role, Proficiency, Project, Milestone
-  }
+    models: {
+        Developer, User, Attachment, Language, Skill, Role, Proficiency, Project, Milestone
+    }
 } = require('../../models');
+
+//-----------------------------------------------------------
+
+exports.developerConnect = async (email) => {
+
+    try {
+        if (!email) {
+            throw new Error('El campo email es obligatorio para loguear un developer.');
+        }
+
+        if (!preparedData) {
+            throw new Error('El campo preparedData es obligatorio para loguear un developer.');
+        }
+
+        console.log('[SEDA Developer Connect] Step 1: customConnect');
+
+        const response = await adapterAPI.customConnect({userId: email});
+
+        console.log('[SEDA Developer Connect] Step 1: customConnect', response);
+
+        if (response.success) {
+            console.log('[SEDA Developer] customConnect is successfull.');
+        } else {
+            console.log('[SEDA Developer] customConnect has failed:', response.error);
+            throw new Error(response.error);
+        }
+
+        console.log('[SEDA Developer Connect] Step 2: Obtener nombre');
+
+        const developer = await adapterAPI.findDeveloperByEmail(email);
+        // const developer = (await adapterAPI.getDevelopers()).developers.find(d => d.email === email);
+
+        console.log('[SEDA Developer Connect] Step 3: Fin');
+
+        return {
+            developerId: developer?.id,
+            token: response.token,
+            name: developer.name
+        };
+    } catch (error) {
+        console.error('[SEDA Developer] Error connecting developer:', error);
+        throw error;
+    }
+};
 
 //-----------------------------------------------------------
 
@@ -22,18 +65,25 @@ const {
  */
 exports.developerIndex = async () => {
 
-  const developers = await Developer.findAll({
-    include: [
-      {model: User, as: "user"},
-      {model: Attachment, as: "attachment"},
-      {model: Language, as: "languages"},
-      {model: Role, as: "role"},
-      {model: Proficiency, as: "proficiency"},
-      {model: Skill, as: "skills"},
-    ]
-  });
+    const response = await adapterAPI.getDevelopers();
 
-  return developers.map(developer => json.developerJson(developer));
+    return response.developers;
+
+    /*
+    const developers = await Developer.findAll({
+        include: [
+            {model: User, as: "user"},
+            {model: Attachment, as: "attachment"},
+            {model: Language, as: "languages"},
+            {model: Role, as: "role"},
+            {model: Proficiency, as: "proficiency"},
+            {model: Skill, as: "skills"},
+        ]
+    });
+
+    return developers.map(developer => json.developerJson(developer));
+
+     */
 }
 
 //-----------------------------------------------------------
@@ -50,21 +100,21 @@ exports.developerIndex = async () => {
  */
 exports.developer = async developerId => {
 
-  const developer = await Developer.findByPk(developerId, {
-    include: [
-      {model: User, as: "user"},
-      {model: Attachment, as: "attachment"},
-      {model: Language, as: "languages"},
-      {model: Role, as: "role"},
-      {model: Proficiency, as: "proficiency"},
-      {model: Skill, as: "skills"},
-    ]
-  });
-  if (developer) {
-    return json.developerJson(developer);
-  } else {
-    throw new Error('There is no developer with id=' + developerId);
-  }
+    const developer = await Developer.findByPk(developerId, {
+        include: [
+            {model: User, as: "user"},
+            {model: Attachment, as: "attachment"},
+            {model: Language, as: "languages"},
+            {model: Role, as: "role"},
+            {model: Proficiency, as: "proficiency"},
+            {model: Skill, as: "skills"},
+        ]
+    });
+    if (developer) {
+        return json.developerJson(developer);
+    } else {
+        throw new Error('There is no developer with id=' + developerId);
+    }
 };
 //-----------------------------------------------------------
 
@@ -80,42 +130,41 @@ exports.developer = async developerId => {
  */
 
 exports.developers = async projectId => {
-  const project = await Project.findByPk(projectId, {
-    include: [
-      {
-        model: Milestone,
-        as: 'milestones',
+    const project = await Project.findByPk(projectId, {
         include: [
-          {
-            model: Developer,
-            as: 'developer',
-            include: [
-              { model: User, as: "user" },
-              {model: Language, as: "languages"},
-              { model: Attachment, as: "attachment"},
-              { model: Role, as: "role" },
-              { model: Proficiency, as: "proficiency" },
-              {model: Skill, as: "skills"},
-            ]
-          }
+            {
+                model: Milestone,
+                as: 'milestones',
+                include: [
+                    {
+                        model: Developer,
+                        as: 'developer',
+                        include: [
+                            {model: User, as: "user"},
+                            {model: Language, as: "languages"},
+                            {model: Attachment, as: "attachment"},
+                            {model: Role, as: "role"},
+                            {model: Proficiency, as: "proficiency"},
+                            {model: Skill, as: "skills"},
+                        ]
+                    }
+                ]
+            }
         ]
-      }
-    ]
-  });
+    });
 
-  if (!project) throw new Error('There is no project with id=' + projectId);
+    if (!project) throw new Error('There is no project with id=' + projectId);
 
-  const developers = project.milestones
-    .map(m => m.developer)
-    .filter(Boolean)
-    .reduce((acc, dev) => {
-      if (!acc.find(d => d.id === dev.id)) acc.push(dev);
-      return acc;
-    }, []);
+    const developers = project.milestones
+        .map(m => m.developer)
+        .filter(Boolean)
+        .reduce((acc, dev) => {
+            if (!acc.find(d => d.id === dev.id)) acc.push(dev);
+            return acc;
+        }, []);
 
-  return developers.map(d => json.developerJson(d));
+    return developers.map(d => json.developerJson(d));
 };
-
 
 
 //-----------------------------------------------------------
@@ -128,27 +177,27 @@ exports.developers = async projectId => {
  * @param {string} email - Email del desarrollador.
  * @param {string} name - Nombre del desarrollador.
  * @param {object} preparedData - Datos para registar a un usuario en Virto.
- * @returns {Promise<Object>} Objeto JSON con los datos del desarrollador creado.
  * @throws {Error} Si falta algún parámetro obligatorio.
  */
 exports.developerCreate = async (email, name, preparedData) => {
 
-  if (!email) {
-    throw new Error('El campo email es obligatorio para registrar un developer.');
-  }
+    if (!email) {
+        throw new Error('El campo email es obligatorio para registrar un developer.');
+    }
 
-  if (!name) {
-    throw new Error('El campo name es obligatorio para registrar un developer.');
-  }
+    if (!name) {
+        throw new Error('El campo name es obligatorio para registrar un developer.');
+    }
 
-  if (!preparedData) {
-    throw new Error('El campo preparedData es obligatorio para registrar un developer.');
-  }
+    if (!preparedData) {
+        throw new Error('El campo preparedData es obligatorio para registrar un developer.');
+    }
 
     try {
+        // ------ PASO 1: Crear la cuenta base con /adapter/v1/custom-register
+
         console.log('[SEDA Developer] Step 1: Creating account with custom-register');
 
-        // PASO 1: Crear la cuenta base con /adapter/v1/custom-register
         const response = await adapterAPI.customRegister(preparedData);
 
         if (response.success) {
@@ -158,23 +207,12 @@ exports.developerCreate = async (email, name, preparedData) => {
             throw new Error(response.error);
         }
 
+        // ------ PASO 2: Completar el perfil de developer con /adapter/v1/developers
+
         console.log('[SEDA Developer] Step 2: Completing developer profile');
 
-        // PASO 2: Completar el perfil de developer con /adapter/v1/developers
-        const developerData = {
-            email,
-            name,
-            githubUsername: "PENDIENTE" // No lo tenemos aun
-        };
-
-        await adapterAPI.createDeveloper(developerData);
-        console.log('[SEDA Developer] Developer profile completed:');
-
-        console.log('[SEDA Developer] Step 3: Create developer in BBDD');
-
-        const user = await User.create({email});
-        const developer = await Developer.create({email, name, address: "0x1234567890"});
-        await user.setDeveloper(developer);
+        const response2 = await adapterAPI.createDeveloper(email, name);
+        console.log('[SEDA Developer] Developer profile completed:', response2);
 
     } catch (error) {
         console.error('[SEDA Developer] Error creating developer:', error);
@@ -212,44 +250,44 @@ exports.developerCreate = async (email, name, preparedData) => {
  * @returns {Promise<Object>} Objeto JSON con los datos actualizados del desarrollador.
  */
 exports.developerUpdate = async (developerId, {
-  name, bio, background, roleId, proficiencyId, githubUsername, portfolioUrl, location,
-  languageIds, skillIds,
-  isAvailableForHire, isAvailableFullTime, isAvailablePartTime, isAvailableHourly, availableHoursPerWeek,
-  mime, image
+    name, bio, background, roleId, proficiencyId, githubUsername, portfolioUrl, location,
+    languageIds, skillIds,
+    isAvailableForHire, isAvailableFullTime, isAvailablePartTime, isAvailableHourly, availableHoursPerWeek,
+    mime, image
 }) => {
 
-  await Developer.update({
-      name, bio, background, roleId, proficiencyId, githubUsername, portfolioUrl, location,
-      isAvailableForHire, isAvailableFullTime, isAvailablePartTime, isAvailableHourly, availableHoursPerWeek
-    }, {
-      where: {
-        id: developerId
-      }
+    await Developer.update({
+            name, bio, background, roleId, proficiencyId, githubUsername, portfolioUrl, location,
+            isAvailableForHire, isAvailableFullTime, isAvailablePartTime, isAvailableHourly, availableHoursPerWeek
+        }, {
+            where: {
+                id: developerId
+            }
+        }
+    );
+
+    let developer = await Developer.findByPk(developerId, {
+        include: [{model: Attachment, as: "attachment"}]
+    });
+
+
+    await developer.setLanguages(languageIds);
+    await developer.setSkills(skillIds);
+
+    // Hay un attachment nuevo
+    if (mime && image && image.length > 0) {
+        // Delete old attachment.
+        if (developer.attachment) {
+            await developer.update({attachmentId: null});
+            await Attachment.destroy({where: {id: developer.attachment.id}});
+        }
+
+        // Create the new developer attachment
+        const attachment = await Attachment.create({mime, image});
+        await developer.setAttachment(attachment);
     }
-  );
 
-  let developer = await Developer.findByPk(developerId, {
-    include: [{ model: Attachment, as: "attachment" }]
-  });
-
-
-  await developer.setLanguages(languageIds);
-  await developer.setSkills(skillIds);
-
-  // Hay un attachment nuevo
-  if (mime && image && image.length > 0) {
-    // Delete old attachment.
-    if (developer.attachment) {
-      await developer.update({ attachmentId: null });
-    await Attachment.destroy({ where: { id: developer.attachment.id } });
-    }
-
-    // Create the new developer attachment
-    const attachment = await Attachment.create({mime, image});
-    await developer.setAttachment(attachment);
-  }
-
-  return json.developerJson(developer);
+    return json.developerJson(developer);
 };
 
 //-----------------------------------------------------------
@@ -264,16 +302,16 @@ exports.developerUpdate = async (developerId, {
  */
 exports.developerFindByEmail = async (email) => {
 
-  const developer = await Developer.findOne({
-    include: [
-      {
-        model: User, as: "user",
-        where: {email}
-      }
-    ]
-  });
+    const developer = await Developer.findOne({
+        include: [
+            {
+                model: User, as: "user",
+                where: {email}
+            }
+        ]
+    });
 
-  return developer ? json.developerJson(developer) : null;
+    return developer ? json.developerJson(developer) : null;
 }
 
 //-----------------------------------------------------------
@@ -288,11 +326,11 @@ exports.developerFindByEmail = async (email) => {
  */
 exports.developersWithRole = async (roleId) => {
 
-  const developers = await Developer.findAll({
-  //  where: {roleId}
-  });
+    const developers = await Developer.findAll({
+        //  where: {roleId}
+    });
 
-  return developers.map(developer => json.developerJson(developer));
+    return developers.map(developer => json.developerJson(developer));
 }
 
 //-----------------------------------------------------------
@@ -307,17 +345,17 @@ exports.developersWithRole = async (roleId) => {
  */
 exports.developerAttachment = async developerId => {
 
-  const developer = await Developer.findByPk(developerId, {
-    include: [
-      {model: Attachment, as: "attachment"},
-    ]
-  })
+    const developer = await Developer.findByPk(developerId, {
+        include: [
+            {model: Attachment, as: "attachment"},
+        ]
+    })
 
-  if (developer?.attachment) {
-    return json.attachmentJson(developer.attachment);
-  } else {
-    return null;
-  }
+    if (developer?.attachment) {
+        return json.attachmentJson(developer.attachment);
+    } else {
+        return null;
+    }
 };
 
 //-----------------------------------------------------------

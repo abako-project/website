@@ -1,64 +1,69 @@
+
 const seda = require("../../services/seda");
 
-// --------- LOGIN CON CONTRASEÑA
+// --------- REGISTRO
 
-/*
- * Client authentication: Checks that the client is registered.
- *
- * Searches a user with the given email, and checks that
- * the password is correct.
- * If the authentication is correct, then returns the user object.
- * If the authentication fails, then returns null.
- */
-const authenticate = async (email, password) => {
+exports.registerCreate = async (req, res, next) => {
 
-  return await seda.clientFindByEmailPassword(email, password);
+    const {email, name, preparedData: json} = req.body;
+
+    try {
+        preparedData = JSON.parse(decodeURIComponent(json));
+        await seda.clientCreate(email, name, preparedData);
+
+        req.flash("success", '✅ Registrado correctamente');
+        console.log("[Controlador clientes] Cliente registrado correctamente");
+
+        //res.redirect('/clients/editProfile?email=' + encodeURIComponent(email) + '&name=' + encodeURIComponent(name));
+        res.redirect('/auth/login/client/new');
+    } catch (error) {
+        req.flash("error", `Registration error: ${error instanceof Error ? error.message : 'Unknown error'}`);
+        console.log("[Controlador clientes]", `Registration error: ${error instanceof Error ? error.message : 'Unknown error'}`);
+        res.redirect('/auth/register/client/new');
+    }
 };
+
+
 
 exports.loginCreate = async (req, res, next) => {
 
-  const email = req.body.email ?? "";
-  const password = req.body.password ?? "";
+    const {email, preparedData: json} = req.body;
 
-  try {
-    const client = await authenticate(email, password);
-    if (client) {
-      console.log('Info: Client authentication successful.');
+    try {
+        preparedData = JSON.parse(decodeURIComponent(json));
 
-      // Guardar la zona horaria del navegador y del servidor en la session
-      let browserTimezoneOffset = Number(req.query.browserTimezoneOffset ?? 0);
-      req.session.browserTimezoneOffset = Number.isNaN(browserTimezoneOffset) ? 0 : browserTimezoneOffset;
-      req.session.serverTimezoneOffset = new Date().getTimezoneOffset() * 60 * 1000;
+        console.log("======================================================");
+        console.log("preparedData", JSON.stringify(preparedData, undefined, 2));
+        console.log("======================================================");
 
-      // Create req.session.loginUser.
-      // The existence of req.session.loginUser indicates that the session exists.
-      // I also save the moment when the session will expire due to inactivity.
-      req.session.loginUser = {
-        id: client.user.id,
-        email: client.user.email,
-        name: client.name,
-        clientId: client.id,
-        developerId: undefined
-      };
+        let {clientId, token, name} = await seda.clientConnect(email);
 
-      res.redirect(`/clients/${client.id}/projects`);
-    } else {
-      req.flash("error", 'Authentication has failed. Retry it again.');
-      res.redirect('/auth/login/client/new');
+        // Guardar la zona horaria del navegador y del servidor en la session
+        let browserTimezoneOffset = Number(req.query.browserTimezoneOffset ?? 0);
+        req.session.browserTimezoneOffset = Number.isNaN(browserTimezoneOffset) ? 0 : browserTimezoneOffset;
+        req.session.serverTimezoneOffset = new Date().getTimezoneOffset() * 60 * 1000;
+
+        // Create req.session.loginUser.
+        // The existence of req.session.loginUser indicates that the session exists.
+        // I also save the moment when the session will expire due to inactivity.
+        req.session.loginUser = {
+            id: clientId,
+            email: email,
+            name: name,
+            clientId: clientId,
+            developerId: undefined,
+            token
+        };
+
+        req.flash("success", 'Client authentication completed.');
+        res.redirect(`/backdoor/clients`);
+        //res.redirect(`/clients/${client.id}/projects`);
+
+    } catch (error) {
+        req.flash("error", 'Authentication has failed. Retry it again.');
+        req.flash("error", `❌ Login error: ${error instanceof Error ? error.message : 'Unknown error'}`);
+        res.redirect('/auth/login/clients/new');
     }
-  } catch (error) {
-    console.log('Error: An error has occurred: ' + error);
-    next(error);
-  }
+
 };
 
-
-// --------- REGISTRO CON CONTRASEÑA
-
-exports.registerCreate = async (req, res) => {
-  const {email, password} = req.body;
-
-  await seda.clientCreate(email, password);
-
-  res.redirect('/auth/login/client/new');
-};

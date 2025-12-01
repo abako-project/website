@@ -25,14 +25,10 @@ router.get('/developer/:email/Login',
 
 // Listar todos los clientes
 router.get('/clients',
-    permissionController.isAuthenticated,
-    permissionController.adminRequired,
     clientController.index);
 
 // Listar todos los desarrolladores
 router.get('/developers',
-    permissionController.isAuthenticated,
-    permissionController.adminRequired,
     developerController.index);
 
 

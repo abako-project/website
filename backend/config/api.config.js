@@ -17,7 +17,8 @@ module.exports = {
             auth: {
                 register: '/adapter/v1/auth/register',
                 customRegister: '/adapter/v1/auth/custom-register',
-                login: '/adapter/v1/auth/login',
+                // login: '/adapter/v1/auth/login',
+                customConnect: '/adapter/v1/auth/custom-connect',
                 logout: '/adapter/v1/auth/logout'
             },
             // Client endpoints
