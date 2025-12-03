@@ -11,38 +11,89 @@ module.exports = {
 
     // Adapter API (NestJS - Port 4000)
     adapterAPI: {
-        baseURL: `${BASE_URL}`,
+        baseURL: `${BASE_URL}/adapter/v1`,
         endpoints: {
-            // Auth endpoints
+            //
+            // ---------------- AUTH ----------------
+            //
             auth: {
-                register: '/adapter/v1/auth/register',
-                customRegister: '/adapter/v1/auth/custom-register',
-                // login: '/adapter/v1/auth/login',
-                customConnect: '/adapter/v1/auth/custom-connect',
-                logout: '/adapter/v1/auth/logout'
+                checkRegistered: (id) => `/auth/check-registered/${id}`,
+                customRegister: '/auth/custom-register',
+                customConnect: '/auth/custom-connect',
+                sign: '/auth/sign',
+                
             },
-            // Client endpoints
+            //
+            // ---------------- CLIENTS ----------------
+            //
             clients: {
-                list: '/adapter/v1/clients',
-                get: (id) => `/adapter/v1/clients/${id}`,
-                create: '/adapter/v1/clients',
-                update: (id) => `/adapter/v1/clients/${id}`,
-                findByEmail: '/adapter/v1/clients/find-by-email'
+                create: '/clients',
+                list: '/clients',
+                get: (id) => `/clients/${id}`,
+                update: (id) => `/clients/${id}`,
+                attachment: (id) => `/clients/${id}/attachment`,
+                projects: (id) => `/clients/${id}/projects`
             },
-            // Developer endpoints
+            //
+            // ---------------- DEVELOPERS ----------------
+            //
             developers: {
-                list: '/adapter/v1/developers',
-                get: (id) => `/adapter/v1/developers/${id}`,
-                create: '/adapter/v1/developers',
-                update: (id) => `/adapter/v1/developers/${id}`,
-                findByEmail: '/adapter/v1/developers/find-by-email'
+                create: '/developers',
+                list: '/developers',
+                get: (id) => `/developers/${id}`,
+                update: (id) => `/developers/${id}`,
+                attachment: (id) => `/developers/${id}/attachment`,
+                projects: (id) => `/developers/${id}/projects`,
+                milestones: (id) => `/developers/${id}/milestones`
             },
-            // Project endpoints
+            //
+            // ---------------- PROJECTS ----------------
+            //
             projects: {
-                list: '/adapter/v1/projects',
-                get: (id) => `/adapter/v1/projects/${id}`,
-                create: '/adapter/v1/projects',
-                update: (id) => `/adapter/v1/projects/${id}`
+                update: (addr) => `/projects/${addr}`,
+                deploy: (version) => `/projects/deploy/${version}`,
+                // POST Methods
+                assignCoordinator:   (addr) => `/projects/${addr}/assign_coordinator`,
+                assignTeam:          (addr) => `/projects/${addr}/assign_team`,
+                markCompleted:       (addr) => `/projects/${addr}/mark_completed`,
+                setCalendarContract: (addr) => `/projects/${addr}/set_calendar_contract`,
+                proposeScope:        (addr) => `/projects/${addr}/propose_scope`,
+                approveScope:        (addr) => `/projects/${addr}/approve_scope`,
+                rejectScope:         (addr) => `/projects/${addr}/reject_scope`,
+                completeTask:        (addr) => `/projects/${addr}/complete_task`,
+                //GET Methods
+                getProjectInfo:      (addr) => `/projects/${addr}/get_project_info`,
+                getTeam:             (addr) => `/projects/${addr}/get_team`,
+                getScopeInfo:        (addr) => `/projects/${addr}/get_scope_info`,
+                getTask:             (addr) => `/projects/${addr}/get_task`,
+                getTaskCompletion:   (addr) => `/projects/${addr}/get_task_completion_status`,
+                getAllTasks:         (addr) => `/projects/${addr}/get_all_tasks`,
+
+                // Milestones
+                milestones: {
+                    list:      (projectId) => `/projects/${projectId}/milestones`,
+                    create:    (projectId) => `/projects/${projectId}/milestones`,
+                    get:       (projectId, milestoneId) => `/projects/${projectId}/milestones/${milestoneId}`,
+                    update:    (proyectId, milestoneId) => `/projects/${proyectId}/milestones/${milestoneId}`,
+                    remove:    (proyectId, milestoneId) => `/projects/${proyectId}/milestones/${milestoneId}`
+                }
+            },
+            //
+            // ---------------- CALENDAR ----------------
+            //
+            calendar: {
+                deploy: (version) => `/calendar/deploy/${version}`,
+                // POST Methods
+                registerWorker:        (addr) => `/calendar/${addr}/register_worker`,
+                registerWorkers:       (addr) => `/calendar/${addr}/register_workers`,
+                setAvailability:       (addr) => `/calendar/${addr}/set_availability`,
+                adminSetAvailability:  (addr) => `/calendar/${addr}/admin_set_worker_availability`,
+                // GET Methods
+                getAvailabilityHours:  (addr) => `/calendar/${addr}/get_availability_hours`,
+                isAvailable:           (addr) => `/calendar/${addr}/is_available`,
+                getAvailableWorkers:   (addr) => `/calendar/${addr}/get_available_workers`,
+                getRegisteredWorkers:  (addr) => `/calendar/${addr}/get_registered_workers`,
+                getAllWorkersAvailability: (addr) => `/calendar/${addr}/get_all_workers_availability`
             }
         }
     },
@@ -92,4 +143,5 @@ module.exports = {
         'Content-Type': 'application/json',
         'Accept': 'application/json'
     }
+
 };
