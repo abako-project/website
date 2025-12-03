@@ -50,48 +50,35 @@
                 
             </section>
         </div>
+
+
         <div class="reviewMilestoneContainer__col milestoneReviewActions">
 
-            <section class="milestoneReviewActions__action milestoneReviewAction milestoneReviewAction--accept">
-                <h3>Accept Submission</h3>
-                
-                <form action="/projects/<%= project.id %>/milestones/<%= milestone.id %>/acceptOrRejectSubmission?_method=PUT"
-                    method="POST">
-                    
-                    <div class="formContainer commentForm">
-                        <label for="comment">Add Comment:</label>
-                        <input type="text" id="comment" name="comment"
-                        value=""
-                        placeholder="Add a Comment (optional)" autocomplete="off">
-                        
-                        <input type="hidden" id="accept" name="accept" value="accept">
-                    </div>
-                    
-                    <button class="projectFlow btn btn_primary" type="submit">
-                        Submit Response
-                    </button>
-                </form>
-            </section>
             
-            <section class="milestoneReviewActions__action milestoneReviewAction milestoneReviewAction--reject">
-                
-                <h3>Reject Submission</h3>
-                
-                <div class="message">
+            <section id=decisionUI class="milestoneReviewActions__action milestoneReviewAction milestoneReviewAction--accept">
+
+
+                <h3>Review Submission</h3>
+
+                <div class="decisionSelector input--radio">
+                    <span>
+                        <input type="radio" name="decision" value="accept" checked>
+                        Accept Submission
+                    </span>
+
+                    <span>
+                        <input type="radio" name="decision" value="reject">
+                        Reject Submission
+                    </span>
+                </div>
+
+                <div id="rejectMessage" class="message" style="display:none">
                     <div class="message__header">
-                        <h6>
-                            You’re about to reject a milestone submission
-                        </h6>
-                        
-                        <p>
-                            Rejecting this milestone submission initiates a formal dispute.
-                        </p>
+                        <h6>You’re about to reject a milestone submission</h6>
+                        <p>Rejecting this milestone submission initiates a formal dispute.</p>
                     </div>
                     <div class="message__info">
-                        <p>
-                            Here’s how it works:
-                        </p>
-                        
+                        <p>Here’s how it works:</p>
                         <ol>
                             <li>
                                 1. You, as the client, will state your reasons, which are added to the dispute record.
@@ -105,26 +92,61 @@
                         </ol>
                     </div>
                 </div>
-                <form action="/projects/<%= project.id %>/milestones/<%= milestone.id %>/acceptOrRejectSubmission?_method=PUT"
+
+                <form  id="decisionForm" action="/projects/<%= project.id %>/milestones/<%= milestone.id %>/acceptOrRejectSubmission?_method=PUT"
                     method="POST">
-                    
+
+                    <input type="hidden" id="acceptField" name="accept" value="accept">
+
                     <div class="formContainer commentForm">
-                        <label for="comment">State your reasons for rejection:</label>
+                        <label for="comment">Comment:</label>
                         <input type="text" id="comment" name="comment"
-                        value=""
                         placeholder="Add a Comment (optional)" autocomplete="off">
                         
-                        <input type="hidden" id="accept" name="accept" value="reject">
+                        
                     </div>
                     
                     <button class="projectFlow btn btn_primary" type="submit">
                         Submit Response
                     </button>
                 </form>
+
+                
                 
             </section>
         </div>
-
-
     </div>
 </div>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+    const radios = document.querySelectorAll("input[name='decision']");
+    const rejectMessage = document.getElementById("rejectMessage");
+    const acceptField = document.getElementById("acceptField");
+    const commentInput = document.getElementById("comment");
+    const decisionUI = document.getElementById("decisionUI");
+
+    radios.forEach(radio => {
+        radio.addEventListener("change", () => {
+            const decision = radio.value;
+
+            acceptField.value = decision;   // "accept" o "reject"
+
+            if (decision === "reject") {
+                rejectMessage.style.display = "block";
+                decisionUI.classList.remove("milestoneReviewAction--accept");
+                decisionUI.classList.add("milestoneReviewAction--reject");
+            } else {
+                rejectMessage.style.display = "none";
+                decisionUI.classList.remove("milestoneReviewAction--reject");
+                decisionUI.classList.add("milestoneReviewAction--accept");
+            }
+        });
+    });
+
+
+
+
+});
+</script>
