@@ -29,9 +29,9 @@ exports.loginCreate = async (req, res, next) => {
     try {
         preparedData = JSON.parse(decodeURIComponent(json));
 
-        console.log("======================================================");
-        console.log("preparedData", JSON.stringify(preparedData, undefined, 2));
-        console.log("======================================================");
+        // console.log("======================================================");
+        // console.log("preparedData", JSON.stringify(preparedData, undefined, 2));
+        // console.log("======================================================");
 
         let {developerId, token, name} = await seda.developerConnect(email);
 
@@ -44,7 +44,6 @@ exports.loginCreate = async (req, res, next) => {
         // The existence of req.session.loginUser indicates that the session exists.
         // I also save the moment when the session will expire due to inactivity.
         req.session.loginUser = {
-            id: developerId,
             email: email,
             name: name,
             clientId: undefined,
@@ -53,8 +52,8 @@ exports.loginCreate = async (req, res, next) => {
         };
 
         req.flash("success", 'Developer authentication completed.');
-        res.redirect(`/backdoor/developers`);
-        //res.redirect(`/developers/${developer.id}/projects`);
+       // res.redirect(`/backdoor/developers`);
+        res.redirect(`/developers/${developerId}/projects`);
 
     } catch (error) {
         req.flash("error", 'Authentication has failed. Retry it again.');

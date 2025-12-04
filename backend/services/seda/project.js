@@ -1,3 +1,6 @@
+
+const {adapterAPI} = require('../api-client');
+
 const {Op} = require("sequelize");
 
 const json = require("./json");
@@ -143,6 +146,23 @@ exports.projectConsultantId = async projectId => {
  * @throws {Error} Si ocurre un error en la consulta.
  */
 exports.projectsIndex = async (clientId, consultantId, developerId) => {
+
+    if (clientId) {
+        const response = await adapterAPI.getClientProjects(clientId);
+        return response;
+    }
+
+    if (consultantId) {
+        return null;
+    }
+
+    if (developerId) {
+        return null;
+    }
+
+}
+
+exports.projectsIndex_BBDD = async (clientId, consultantId, developerId) => {
 
     let options = {
         include: [

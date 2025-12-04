@@ -95,7 +95,6 @@ const adapterAPI = {
     async findClientByEmail(email) {
         try {
             const response = await adapterClient.get(apiConfig.adapterAPI.endpoints.clients.list);
-            console.log(">>>>>>>>>>>>>>>>", response)
             return response.data.clients.find(d => d.email === email);
         } catch (error) {
             if (error.response?.status === 404) {
@@ -127,25 +126,17 @@ const adapterAPI = {
 
     async createDeveloper(email, name, githubUsername, portfolioUrl,  image) {
         try {
-            // adapterClient without content-type header
-            const adapterClient = axios.create({
-                baseURL: apiConfig.adapterAPI.baseURL,
-                timeout: apiConfig.timeout
-            });
-
-             const data = new FormData();
-             data.append("email", email);
-             data.append("name", name);
-             data.append("githubUsername", githubUsername ?? "githubUsername");
-             data.append("portfolioUrl", portfolioUrl ?? "portfolioUrl");
-         //  data.append("image", image ?? new Blob(), "filename.txt");
-
-            const response = await adapterClient.post(apiConfig.adapterAPI.endpoints.developers.create, data, {
+            const response = await adapterClient.post(apiConfig.adapterAPI.endpoints.developers.create, {
+                email,
+                name,
+                githubUsername: githubUsername ?? "githubUsername",
+                portfolioUrl: portfolioUrl ?? "portfolioUrl",
+                //  image: image ?? new Blob()
+            }, {
                 headers: {
-                    'Accept': 'application/json'
+                    'Content-Type': 'multipart/form-data'
                 }
             });
-
             return response.data;
         } catch (error) {
             handleError(error, 'createDeveloper');
@@ -183,7 +174,54 @@ const adapterAPI = {
         } catch (error) {
             handleError(error, 'customConnect');
         }
-    }
+    },
+
+    // ================== Projects =========================
+
+    // Proyectos de un cliente
+    async getClientProjects(clientId) {
+        const url = `/adapter/v1/clients/${clientId}/projects`;
+        try {
+            const {data: {projects}} = await adapterClient.get(url);
+            dump("Proyectos de un cliente", projects);
+            return projects;
+        } catch (error) {
+            handleError(error, url);
+        }
+    },
+
+
+    // Proyectos de un developer
+    async getdeveloperProjects(developerId) {
+        const url = `/adapter/v1/developers/${developerId}/projects`;
+        try {
+            const {data: {projects}} = await adapterClient.get(url);
+            dump("Proyectos de un developer", projects);
+            return projects;
+        } catch (error) {
+            handleError(error, url);
+            //   dump("Error - Proyectos de un cliente", error);
+        }
+    },
+
+    // crear una propuesta
+    // proposal es {title, summary, description, url, projectTypeId, budgetId, deliveryTimeId, deliveryDate}
+    async proposalCreate(clientId, proposal, token) {
+
+        proposal = {...proposal, clientId};
+
+        const apiurl = `/adapter/v1/projects/deploy/v1.0.0`;
+        //const apiurl = `/adapter/v1/projects`;
+        try {
+            const res = await adapterClient.post(apiurl, proposal, {
+                headers: {"Authorization": `Bearer ${token}`}
+            });
+            dump("Crear porpuesta", res);
+            return res;
+        } catch (error) {
+            handleError(error, apiurl);
+        }
+    },
 };
 
 /**
@@ -293,6 +331,14 @@ const contractsAPI = {
         }
     }
 };
+
+
+const dump = (title, v) => {
+    console.log("===========", title, "===============");
+    //console.log(v);
+    console.log(JSON.stringify(v, undefined, 2));
+    console.log("=======================================");
+}
 
 module.exports = {
     adapterAPI,

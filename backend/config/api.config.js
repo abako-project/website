@@ -85,7 +85,7 @@ module.exports = {
     },
 
     // Request timeout
-    timeout: 60000,
+    timeout: 180000,
 
     // Request headers
     headers: {
