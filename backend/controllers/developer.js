@@ -83,9 +83,6 @@ exports.editProfile = async (req, res, next) => {
 
         const developer = await seda.developerFindByEmail(email);
 
-        console.log(">>>****>>>>>", developer);
-
-
         const allLanguages = await seda.languageIndex();
         const allRoles = await seda.roleIndex();
         const allProficiencies = await seda.proficiencyIndex();
@@ -146,7 +143,7 @@ exports.update = async (req, res, next) => {
 
     console.log('Developer edited successfully.');
 
-    res.redirect('/');
+    res.redirect('/developers/' + developerId + '/profile');
   } catch (error) {
     if (error instanceof seda.ValidationError) {
       console.log('There are errors in the form:');

@@ -66,7 +66,6 @@ exports.update = async (req, res, next) => {
         description: body.description,
         location: body.location,
         languageIds: (body.languages || []).map(str => +str),
-        password: body.password,
         mime: req.file?.mimetype,
         image: req.file?.buffer
     };
@@ -75,7 +74,7 @@ exports.update = async (req, res, next) => {
     try {
         await seda.clientUpdate(clientId, client);
         console.log('Client edited successfully.');
-        res.redirect('/');
+        res.redirect('/clients/' + clientId + '/profile');
     } catch (error) {
         if (error instanceof seda.ValidationError) {
             console.log('There are errors in the form:');

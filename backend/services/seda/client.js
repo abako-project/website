@@ -184,31 +184,20 @@ exports.clientCreate = async (email, name, preparedData) => {
  * @param {string} [data.description]
  * @param {string} [data.location]
  * @param {number[]} [data.languageIds]
- * @param {string} [data.password] - Nuevo password (opcional).
  * @param {string} [data.mime] - Tipo MIME de la nueva imagen (opcional).
  * @param {string} [data.image] - Imagen codificada en base64 (opcional).
  * @returns {Promise<Object>} Objeto JSON con los datos actualizados del cliente.
  * @throws {Error} Si ocurre un error en la actualización.
  */
 exports.clientUpdate = async (clientId, {
-  name, company, department, website, description, location, password, languageIds,
-  mime, image
+  name, company, department, website, description, location, languageIds, mime, image
 }) => {
 
-  // ¿Cambio el password?
-  if (password) {
     await Client.update({
-      name, company, department, website, description, location, password
+        name, company, department, website, description, location
     }, {
-      where: {id: clientId}
+        where: {id: clientId}
     });
-  } else {
-    await Client.update({
-      name, company, department, website, description, location
-    }, {
-      where: {id: clientId}
-    });
-  }
 
   let client = await Client.findByPk(clientId, {
     include: [{ model: Attachment, as: "attachment" }]

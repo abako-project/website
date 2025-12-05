@@ -32,10 +32,6 @@ exports.loginCreate = async (req, res, next) => {
     try {
         preparedData = JSON.parse(decodeURIComponent(json));
 
-        // console.log("======================================================");
-        // console.log("preparedData", JSON.stringify(preparedData, undefined, 2));
-        // console.log("======================================================");
-
         let {clientId, token, name} = await seda.clientConnect(email);
 
         // Guardar la zona horaria del navegador y del servidor en la session
@@ -45,7 +41,6 @@ exports.loginCreate = async (req, res, next) => {
 
         // Create req.session.loginUser.
         // The existence of req.session.loginUser indicates that the session exists.
-        // I also save the moment when the session will expire due to inactivity.
         req.session.loginUser = {
             email: email,
             name: name,
