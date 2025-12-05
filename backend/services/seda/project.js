@@ -153,11 +153,13 @@ exports.projectsIndex = async (clientId, consultantId, developerId) => {
     }
 
     if (consultantId) {
-        return null;
+        const response = await adapterAPI.getDeveloperProjects(consultantId);
+        return response;
     }
 
     if (developerId) {
-        return null;
+        const response = await adapterAPI.getDeveloperProjects(developerId);
+        return response;
     }
 
 }

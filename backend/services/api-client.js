@@ -192,7 +192,7 @@ const adapterAPI = {
 
 
     // Proyectos de un developer
-    async getdeveloperProjects(developerId) {
+    async getDeveloperProjects(developerId) {
         const url = `/adapter/v1/developers/${developerId}/projects`;
         try {
             const {data: {projects}} = await adapterClient.get(url);
