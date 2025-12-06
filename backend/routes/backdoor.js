@@ -18,9 +18,9 @@ router.get('/',
 // Login de admin/clientes/developers
 router.get('/admin',
   backdoorController.adminLogin);
-router.get('/client/:email/Login',
+router.get('/client/:id/Login',
     backdoorController.clientLogin);
-router.get('/developer/:email/Login',
+router.get('/developer/:id/Login',
     backdoorController.developerLogin);
 
 // Listar todos los clientes

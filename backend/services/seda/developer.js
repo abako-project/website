@@ -8,6 +8,7 @@ const {
         Developer, User, Attachment, Language, Skill, Role, Proficiency, Project, Milestone
     }
 } = require('../../models');
+const seda = require("./index");
 
 //-----------------------------------------------------------
 
@@ -100,21 +101,9 @@ exports.developerIndex = async () => {
  */
 exports.developer = async developerId => {
 
-    const developer = await Developer.findByPk(developerId, {
-        include: [
-            {model: User, as: "user"},
-            {model: Attachment, as: "attachment"},
-            {model: Language, as: "languages"},
-            {model: Role, as: "role"},
-            {model: Proficiency, as: "proficiency"},
-            {model: Skill, as: "skills"},
-        ]
-    });
-    if (developer) {
-        return json.developerJson(developer);
-    } else {
-        throw new Error('There is no developer with id=' + developerId);
-    }
+    const response = await adapterAPI.getDeveloper(developerId);
+
+    return response.developer;
 };
 //-----------------------------------------------------------
 
@@ -337,16 +326,16 @@ exports.developersWithRole = async (roleId) => {
  */
 exports.developerAttachment = async developerId => {
 
-    const developer = await Developer.findByPk(developerId, {
-        include: [
-            {model: Attachment, as: "attachment"},
-        ]
-    })
+    return null;
 
-    if (developer?.attachment) {
-        return json.attachmentJson(developer.attachment);
-    } else {
-        return null;
+    try {
+        const response = await adapterAPI.developerAttachment(developerId);
+
+        return response;
+
+    } catch (error) {
+        console.error('[SEDA DeveloperId] Error getting attachment:', error);
+        throw error;
     }
 };
 

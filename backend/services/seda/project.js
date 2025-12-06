@@ -13,6 +13,7 @@ const {
 } = require('../../models');
 
 const states = require("../../core/state");
+const apiConfig = require("../../config/api.config");
 
 
 //-----------------------------------------------------------
@@ -162,6 +163,20 @@ exports.projectsIndex = async (clientId, consultantId, developerId) => {
         return response;
     }
 
+    // All Projects
+    const clients = (await adapterAPI.getClients()).clients;
+    const developers = (await adapterAPI.getClients()).developers;
+
+    let projects = [];
+    clients && clients.forEach(async client => {
+        const clientProjects = await adapterAPI.getClientProjects(client.id);
+        projects = projects.concat(clientProjects);
+    });
+    developers && developers.forEach(async developer => {
+        const developerProjects = await adapterAPI.getDeveloperProjects(developer.id);
+        projects = projects.concat(developerProjects);
+    })
+    return projects;
 }
 
 exports.projectsIndex_BBDD = async (clientId, consultantId, developerId) => {

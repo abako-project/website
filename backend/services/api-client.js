@@ -55,7 +55,7 @@ const adapterAPI = {
 
     async checkRegistered(userId) {
         try {
-            const response = await adapterClient.get(`/adapter/v1/auth/check-registered/${userId}`);
+            const response = await adapterClient.get(apiConfig.adapterAPI.endpoints.auth.checkRegistered(userId));
             return response.data;
         } catch (error) {
             handleError(error, `checkRegistered(${userId})`);
@@ -82,7 +82,7 @@ const adapterAPI = {
 
     async sign(extrinsicData, token) {
         try {
-            const response = await adapterClient.post('/adapter/v1/auth/sign', extrinsicData, {
+            const response = await adapterClient.post(apiConfig.adapterAPI.endpoints.auth.sign, extrinsicData, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -173,7 +173,7 @@ const adapterAPI = {
 
     async getClientAttachment(clientId) {
         try {
-            const response = await adapterClient.get(`/adapter/v1/clients/${clientId}/attachment`, {
+            const response = await adapterClient.get(apiConfig.adapterAPI.endpoints.clients.attachment(clientId), {
                 responseType: 'blob'
             });
             return response.data;
@@ -184,8 +184,8 @@ const adapterAPI = {
 
     async getClientProjects(clientId) {
         try {
-            const response = await adapterClient.get(`/adapter/v1/clients/${clientId}/projects`);
-            return response.data;
+            const response = await adapterClient.get(apiConfig.adapterAPI.endpoints.clients.projects(clientId));
+            return response.data.projects;
         } catch (error) {
             handleError(error, `getClientProjects(${clientId})`);
         }
@@ -282,7 +282,7 @@ const adapterAPI = {
 
     async getDeveloperAttachment(developerId) {
         try {
-            const response = await adapterClient.get(`/adapter/v1/developers/${developerId}/attachment`, {
+            const response = await adapterClient.get(apiConfig.adapterAPI.endpoints.developers.attachmen(developerId), {
                 responseType: 'blob'
             });
             return response.data;
@@ -293,8 +293,8 @@ const adapterAPI = {
 
     async getDeveloperProjects(developerId) {
         try {
-            const response = await adapterClient.get(`/adapter/v1/developers/${developerId}/projects`);
-            return response.data;
+            const response = await adapterClient.get(apiConfig.adapterAPI.endpoints.developers.projects(developerId));
+            return response.data.projects;
         } catch (error) {
             handleError(error, `getDeveloperProjects(${developerId})`);
         }
@@ -302,7 +302,7 @@ const adapterAPI = {
 
     async getDeveloperMilestones(developerId) {
         try {
-            const response = await adapterClient.get(`/adapter/v1/developers/${developerId}/milestones`);
+            const response = await adapterClient.get(apiConfig.adapterAPI.endpoints.developers.milestones(developerId));
             return response.data;
         } catch (error) {
             handleError(error, `getDeveloperMilestones(${developerId})`);
@@ -312,7 +312,9 @@ const adapterAPI = {
     async findDeveloperByEmail(email) {
         try {
             const response = await adapterClient.get(apiConfig.adapterAPI.endpoints.developers.list);
-            return response.data.developers.find(d => d.email === email);
+            const developer = response.data.developers.find(d => d.email === email);
+            console.log(">>>>>>>>>>>>>>> ", developer);
+            return developer;
         } catch (error) {
             if (error.response?.status === 404) {
                 return null;
@@ -324,39 +326,12 @@ const adapterAPI = {
 
     // ================== Projects =========================
 
-
-    // Proyectos de un cliente
-    async getClientProjects(clientId) {
-        const url = `/adapter/v1/clients/${clientId}/projects`;
-        try {
-            const {data: {projects}} = await adapterClient.get(url);
-            dump("Proyectos de un cliente", projects);
-            return projects;
-        } catch (error) {
-            handleError(error, url);
-        }
-    },
-
-
-    // Proyectos de un developer
-    async getDeveloperProjects(developerId) {
-        const url = `/adapter/v1/developers/${developerId}/projects`;
-        try {
-            const {data: {projects}} = await adapterClient.get(url);
-            dump("Proyectos de un developer", projects);
-            return projects;
-        } catch (error) {
-            handleError(error, url);
-            //   dump("Error - Proyectos de un cliente", error);
-        }
-    },
-
     // Crear una propuesta.
     // projectData es {title, summary, description, url, projectTypeId, budgetId, deliveryTimeId, deliveryDate}
     async deployProject(version, projectData, clientId, token) {
         try {
             const response = await adapterClient.post(
-                `/adapter/v1/projects/deploy/${version}`,
+                apiConfig.adapterAPI.endpoints.projects.deploy(version),
                 { ...projectData, clientId },
                 {
                     headers: {
@@ -373,7 +348,7 @@ const adapterAPI = {
    async assignCoordinator(contractAddress, token) {
         try {
             const response = await adapterClient.post(
-                `/adapter/v1/projects/${contractAddress}/assign_coordinator`,
+                apiConfig.adapterAPI.endpoints.projects.assignCoordinator(contractAddress),
                 {},
                 {
                     headers: {
@@ -390,7 +365,7 @@ const adapterAPI = {
     async assignTeam(contractAddress, teamSize, token) {
         try {
             const response = await adapterClient.post(
-                `/adapter/v1/projects/${contractAddress}/assign_team`,
+                apiConfig.adapterAPI.endpoints.projects.assignTeam(contractAddress),
                 { _team_size: teamSize },
                 {
                     headers: {
@@ -407,7 +382,7 @@ const adapterAPI = {
     async markCompleted(contractAddress, ratings, token) {
         try {
             const response = await adapterClient.post(
-                `/adapter/v1/projects/${contractAddress}/mark_completed`,
+                apiConfig.adapterAPI.endpoints.projects.markCompleted(contractAddress),
                 { ratings },
                 {
                     headers: {
@@ -424,7 +399,7 @@ const adapterAPI = {
     async setCalendarContract(contractAddress, calendarContractAddress, token) {
         try {
             const response = await adapterClient.post(
-                `/adapter/v1/projects/${contractAddress}/set_calendar_contract`,
+                apiConfig.adapterAPI.endpoints.projects.setCalendarContract(contractAddress),
                 { calendar_contract: calendarContractAddress },
                 {
                     headers: {
@@ -441,7 +416,7 @@ const adapterAPI = {
     async proposeScope(contractAddress, tasks, advancePaymentPercentage, documentHash, token) {
         try {
             const response = await adapterClient.post(
-                `/adapter/v1/projects/${contractAddress}/propose_scope`,
+                apiConfig.adapterAPI.endpoints.projects.proposeScope(contractAddress),
                 {
                     tasks,
                     advance_payment_percentage: advancePaymentPercentage,
@@ -462,7 +437,7 @@ const adapterAPI = {
     async approveScope(contractAddress, approvedTaskIds, token) {
         try {
             const response = await adapterClient.post(
-                `/adapter/v1/projects/${contractAddress}/approve_scope`,
+                apiConfig.adapterAPI.endpoints.projects.approveScope(contractAddress),
                 { approved_task_ids: approvedTaskIds },
                 {
                     headers: {
@@ -479,7 +454,7 @@ const adapterAPI = {
     async rejectScope(contractAddress, clientResponse, token) {
         try {
             const response = await adapterClient.post(
-                `/adapter/v1/projects/${contractAddress}/reject_scope`,
+                apiConfig.adapterAPI.endpoints.projects.rejectScope(contractAddress),
                 { clientResponse },
                 {
                     headers: {
@@ -496,7 +471,7 @@ const adapterAPI = {
     async completeTask(contractAddress, taskId, token) {
         try {
             const response = await adapterClient.post(
-                `/adapter/v1/projects/${contractAddress}/complete_task`,
+                apiConfig.adapterAPI.endpoints.projects.completeTask(contractAddress),
                 { task_id: taskId },
                 {
                     headers: {
@@ -512,7 +487,7 @@ const adapterAPI = {
 
     async getProjectInfo(contractAddress) {
         try {
-            const response = await adapterClient.get(`/adapter/v1/projects/${contractAddress}/get_project_info`);
+            const response = await adapterClient.get(apiConfig.adapterAPI.endpoints.projects.getProjectInfo(contractAddress));
             return response.data;
         } catch (error) {
             handleError(error, `getProjectInfo(${contractAddress})`);
@@ -521,7 +496,7 @@ const adapterAPI = {
 
     async getTeam(contractAddress) {
         try {
-            const response = await adapterClient.get(`/adapter/v1/projects/${contractAddress}/get_team`);
+            const response = await adapterClient.get(apiConfig.adapterAPI.endpoints.projects.getTeam(contractAddress));
             return response.data;
         } catch (error) {
             handleError(error, `getTeam(${contractAddress})`);
@@ -530,7 +505,7 @@ const adapterAPI = {
 
     async getScopeInfo(contractAddress) {
         try {
-            const response = await adapterClient.get(`/adapter/v1/projects/${contractAddress}/get_scope_info`);
+            const response = await adapterClient.get(apiConfig.adapterAPI.endpoints.projects.getScopeInfo(contractAddress));
             return response.data;
         } catch (error) {
             handleError(error, `getScopeInfo(${contractAddress})`);
@@ -539,7 +514,7 @@ const adapterAPI = {
 
     async getTask(contractAddress, taskId) {
         try {
-            const response = await adapterClient.get(`/adapter/v1/projects/${contractAddress}/get_task`, {
+            const response = await adapterClient.get(apiConfig.adapterAPI.endpoints.projects.getTask(contractAddress), {
                 params: { task_id: taskId }
             });
             return response.data;
@@ -550,7 +525,7 @@ const adapterAPI = {
 
     async getTaskCompletionStatus(contractAddress, taskId) {
         try {
-            const response = await adapterClient.get(`/adapter/v1/projects/${contractAddress}/get_task_completion_status`, {
+            const response = await adapterClient.get(apiConfig.adapterAPI.endpoints.projects.getTaskCompletion(contractAddress), {
                 params: { task_id: taskId }
             });
             return response.data;
@@ -561,7 +536,7 @@ const adapterAPI = {
 
     async getAllTasks(contractAddress) {
         try {
-            const response = await adapterClient.get(`/adapter/v1/projects/${contractAddress}/get_all_tasks`);
+            const response = await adapterClient.get(apiConfig.adapterAPI.endpoints.projects.getAllTasks(contractAddress));
             return response.data;
         } catch (error) {
             handleError(error, `getAllTasks(${contractAddress})`);
@@ -572,7 +547,7 @@ const adapterAPI = {
     async updateProject(contractAddress, data, token) {
         try {
             const response = await adapterClient.put(
-                `/adapter/v1/projects/${contractAddress}`,
+                apiConfig.adapterAPI.endpoints.projects.update(contractAddress),
                 data,
                 {
                     headers: {
@@ -589,7 +564,7 @@ const adapterAPI = {
     async createMilestone(projectId, milestoneData, token) {
         try {
             const response = await adapterClient.post(
-                `/adapter/v1/projects/${projectId}/milestones`,
+                apiConfig.adapterAPI.endpoints.projects.milestones.create(projectId),
                 milestoneData,
                 {
                     headers: {
@@ -605,7 +580,7 @@ const adapterAPI = {
 
     async getMilestones(projectId, token) {
         try {
-            const response = await adapterClient.get(`/adapter/v1/projects/${projectId}/milestones`, {
+            const response = await adapterClient.get(apiConfig.adapterAPI.endpoints.projects.milestones.list(projectId), {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -618,7 +593,7 @@ const adapterAPI = {
 
     async getMilestone(projectId, milestoneId, token) {
         try {
-            const response = await adapterClient.get(`/adapter/v1/projects/${projectId}/milestones/${milestoneId}`, {
+            const response = await adapterClient.get(apiConfig.adapterAPI.endpoints.projects.milestones.get(projectId,milestoneId), {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -632,7 +607,7 @@ const adapterAPI = {
     async updateMilestone(projectId, milestoneId, data, token) {
         try {
             const response = await adapterClient.put(
-                `/adapter/v1/projects/${projectId}/milestones/${milestoneId}`,
+                apiConfig.adapterAPI.endpoints.projects.milestones.update(projectId,milestoneId),
                 data,
                 {
                     headers: {
@@ -648,7 +623,7 @@ const adapterAPI = {
 
     async deleteMilestone(projectId, milestoneId, token) {
         try {
-            const response = await adapterClient.delete(`/adapter/v1/projects/${projectId}/milestones/${milestoneId}`, {
+            const response = await adapterClient.delete(apiConfig.adapterAPI.endpoints.projects.milestones.remove(projectId,milestoneId), {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -664,7 +639,7 @@ const adapterAPI = {
     async registerWorker(contractAddress, worker, token) {
         try {
             const response = await adapterClient.post(
-                `/adapter/v1/calendar/${contractAddress}/register_worker`,
+                apiConfig.adapterAPI.endpoints.calendar.registerWorker(contractAddress),
                 { worker },
                 {
                     headers: {
@@ -681,7 +656,7 @@ const adapterAPI = {
     async setAvailability(contractAddress, availability, token) {
         try {
             const response = await adapterClient.post(
-                `/adapter/v1/calendar/${contractAddress}/set_availability`,
+                apiConfig.adapterAPI.endpoints.calendar.setAvailability(contractAddress),
                 { availability },
                 {
                     headers: {
@@ -698,7 +673,7 @@ const adapterAPI = {
     async registerWorkers(contractAddress, workers, token) {
         try {
             const response = await adapterClient.post(
-                `/adapter/v1/calendar/${contractAddress}/register_workers`,
+                apiConfig.adapterAPI.endpoints.calendar.registerWorkers(contractAddress),
                 { workers },
                 {
                     headers: {
@@ -715,7 +690,7 @@ const adapterAPI = {
     async adminSetWorkerAvailability(contractAddress, worker, availability, token) {
         try {
             const response = await adapterClient.post(
-                `/adapter/v1/calendar/${contractAddress}/admin_set_worker_availability`,
+                apiConfig.adapterAPI.endpoints.calendar.adminSetWorkerAvailability(contractAddress),
                 { worker, availability },
                 {
                     headers: {
@@ -732,7 +707,7 @@ const adapterAPI = {
     async getAvailabilityHours(contractAddress, worker) {
         try {
             const response = await adapterClient.get(
-                `/adapter/v1/calendar/${contractAddress}/get_availability_hours`,
+                apiConfig.adapterAPI.endpoints.calendar.getAvailabilityHours(contractAddress),
                 { params: { worker } }
             );
             return response.data;
@@ -747,7 +722,7 @@ const adapterAPI = {
             if (minHours !== undefined) params.min_hours = minHours;
 
             const response = await adapterClient.get(
-                `/adapter/v1/calendar/${contractAddress}/is_available`,
+                apiConfig.adapterAPI.endpoints.calendar.isAvailable(contractAddress),
                 { params }
             );
             return response.data;
@@ -762,7 +737,7 @@ const adapterAPI = {
             if (minHours !== undefined) params.min_hours = minHours;
 
             const response = await adapterClient.get(
-                `/adapter/v1/calendar/${contractAddress}/get_available_workers`,
+                apiConfig.adapterAPI.endpoints.calendar.getAvailableWorkers(contractAddress),
                 { params }
             );
             return response.data;
@@ -773,7 +748,7 @@ const adapterAPI = {
 
     async getRegisteredWorkers(contractAddress) {
         try {
-            const response = await adapterClient.get(`/adapter/v1/calendar/${contractAddress}/get_registered_workers`);
+            const response = await adapterClient.get(apiConfig.adapterAPI.endpoints.calendar.getRegisteredWorkers(contractAddress));
             return response.data;
         } catch (error) {
             handleError(error, `getRegisteredWorkers(${contractAddress})`);
@@ -782,7 +757,7 @@ const adapterAPI = {
 
     async getAllWorkersAvailability(contractAddress) {
         try {
-            const response = await adapterClient.get(`/adapter/v1/calendar/${contractAddress}/get_all_workers_availability`);
+            const response = await adapterClient.get(apiConfig.adapterAPI.endpoints.calendar.getAllWorkersAvailability(contractAddress));
             return response.data;
         } catch (error) {
             handleError(error, `getAllWorkersAvailability(${contractAddress})`);
@@ -792,7 +767,7 @@ const adapterAPI = {
     async deployCalendar(version, token) {
         try {
             const response = await adapterClient.post(
-                `/adapter/v1/calendar/deploy/${version}`,
+                apiConfig.adapterAPI.endpoints.calendar.deploy(version),
                 {},
                 {
                     headers: {

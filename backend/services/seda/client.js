@@ -70,18 +70,6 @@ exports.clientIndex = async () => {
 
     return response.clients;
 
-    /*
-  const clients = await Client.findAll({
-    include: [
-      {model: User, as: "user"},
-      {model: Attachment, as: "attachment"},
-      {model: Language, as: "languages"},
-    ]
-  });
-
-  return clients.map(client => json.clientJson(client));
-
-     */
 }
 
 //-----------------------------------------------------------
@@ -227,26 +215,8 @@ exports.clientFindByEmail = async (email) => {
  */
 exports.clientFindByEmailPassword = async (email, password) => {
 
-  const client = await Client.findOne({
-    include: [
-      {
-        model: User, as: "user",
-        where: {email}
-      }
-    ]
-  });
+    return await adapterAPI.findClientByEmail(email);
 
-  if (!client) {
-    return null;
-  }
-
-  const valid = await client.verifyPassword(password);
-
-  if (!valid) {
-    return null;
-  }
-
-  return json.clientJson(client);
 }
 
 //-----------------------------------------------------------

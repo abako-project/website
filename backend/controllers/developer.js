@@ -21,10 +21,6 @@ exports.index = async (req, res, next) => {
 
   const developers = await seda.developerIndex();
 
-    console.log("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
-    console.log(developers)
-    console.log("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
-
   res.render('developers/index', {developers});
 };
 

@@ -36,6 +36,16 @@ exports.loginCreate = async (req, res, next) => {
         req.session.browserTimezoneOffset = Number.isNaN(browserTimezoneOffset) ? 0 : browserTimezoneOffset;
         req.session.serverTimezoneOffset = new Date().getTimezoneOffset() * 60 * 1000;
 
+        console.log("************ loginCreate");
+        console.log({
+            email: email,
+            name: name,
+            clientId: undefined,
+            developerId: developerId,
+            token
+        });
+
+
         // Create req.session.loginUser.
         // The existence of req.session.loginUser indicates that the session exists.
         req.session.loginUser = {
