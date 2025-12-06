@@ -66,10 +66,10 @@ exports.update = async (req, res, next) => {
         description: body.description,
         location: body.location,
         languageIds: (body.languages || []).map(str => +str),
-        mime: req.file?.mimetype,
     };
 
     if (req.file) {
+        data.mime = req.file?.mimetype;
         data.image = req.file?.buffer;
     }
 

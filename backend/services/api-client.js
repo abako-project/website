@@ -136,7 +136,7 @@ const adapterAPI = {
         }
     },
 
-    async updateClient(clientId, data, image) {
+    async updateClient(clientId, data) {
         try {
             const formData = new FormData();
             Object.keys(data).forEach(key => {
@@ -144,7 +144,6 @@ const adapterAPI = {
                     formData.append(key, data[key]);
                 }
             });
-            if (image) formData.append("image", image);
 
             const response = await adapterClient.put(apiConfig.adapterAPI.endpoints.clients.update(clientId), formData, {
                 headers: {
