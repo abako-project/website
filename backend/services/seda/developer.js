@@ -302,17 +302,9 @@ exports.developerUpdate = async (developerId, {
  */
 exports.developerFindByEmail = async (email) => {
 
-    const developer = await Developer.findOne({
-        include: [
-            {
-                model: User, as: "user",
-                where: {email}
-            }
-        ]
-    });
+    return await adapterAPI.findDeveloperByEmail(email);
 
-    return developer ? json.developerJson(developer) : null;
-}
+};
 
 //-----------------------------------------------------------
 

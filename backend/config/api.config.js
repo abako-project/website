@@ -27,7 +27,7 @@ module.exports = {
                 get: (id) => `/adapter/v1/clients/${id}`,
                 create: '/adapter/v1/clients',
                 update: (id) => `/adapter/v1/clients/${id}`,
-                findByEmail: '/adapter/v1/clients/find-by-email'
+                attachment: (id) =>`/adapter/v1/clients/${id}/attachment`
             },
             // Developer endpoints
             developers: {

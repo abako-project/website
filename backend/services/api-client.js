@@ -66,6 +66,7 @@ const adapterAPI = {
     async getClient(clientId) {
         try {
             const response = await adapterClient.get(apiConfig.adapterAPI.endpoints.clients.get(clientId));
+
             return response.data;
         } catch (error) {
             handleError(error, `getClient(${clientId})`);
@@ -104,6 +105,31 @@ const adapterAPI = {
         }
     },
 
+
+    async updateClient(clientId, data) {
+        try {
+            const response = await adapterClient.put(apiConfig.adapterAPI.endpoints.clients.update(clientId), data, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+            return response.data;
+        } catch (error) {
+            handleError(error, 'updateClient');
+        }
+    },
+
+
+    async clientAttachment(clientId) {
+        try {
+            const response = await adapterClient.get(apiConfig.adapterAPI.endpoints.clients.attachment(+clientId));
+            return response.data;
+        } catch (error) {
+            handleError(error, 'clientAttachment');
+        }
+    },
+
+
     // =============== Developers =============================
 
     async getDevelopers() {
@@ -124,14 +150,12 @@ const adapterAPI = {
         }
     },
 
-    async createDeveloper(email, name, githubUsername, portfolioUrl,  image) {
+    async createDeveloper(email, name) {
         try {
             const response = await adapterClient.post(apiConfig.adapterAPI.endpoints.developers.create, {
                 email,
                 name,
-                githubUsername: githubUsername ?? "githubUsername",
-                portfolioUrl: portfolioUrl ?? "portfolioUrl",
-                //  image: image ?? new Blob()
+                githubUsername: "githubUsername",
             }, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
