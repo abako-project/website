@@ -16,7 +16,6 @@ exports.adminLogin = async (req, res) => {
   req.session.serverTimezoneOffset = new Date().getTimezoneOffset() * 60 * 1000;
 
   req.session.loginUser = {
-    id: 0,
     email: "admin@sitio.es",
     name: "admin",
     isAdmin: true,
@@ -47,7 +46,6 @@ exports.clientLogin = async (req, res, next) => {
     }
 
     req.session.loginUser = {
-      id: client.user.id,
       email: client.user.email,
       name: client.name,
       clientId: client.id,
@@ -81,7 +79,6 @@ exports.developerLogin = async (req, res, next) => {
         }
 
         req.session.loginUser = {
-            id: developer.user.id,
             email: developer.user.email,
             name: developer.name,
             clientId: undefined,

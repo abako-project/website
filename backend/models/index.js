@@ -2,7 +2,7 @@
 
 const Sequelize = require('sequelize');
 
-const config = require(__dirname + '/../config/config.json').development;
+const config = require(__dirname + '/../config/bbdd.config.json').development;
 const sequelize = new Sequelize(config);
 
 const Session = require('./session')(sequelize);

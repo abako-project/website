@@ -32,10 +32,6 @@ exports.loginCreate = async (req, res, next) => {
     try {
         preparedData = JSON.parse(decodeURIComponent(json));
 
-        console.log("======================================================");
-        console.log("preparedData", JSON.stringify(preparedData, undefined, 2));
-        console.log("======================================================");
-
         let {clientId, token, name} = await seda.clientConnect(email);
 
         // Guardar la zona horaria del navegador y del servidor en la session
@@ -45,9 +41,7 @@ exports.loginCreate = async (req, res, next) => {
 
         // Create req.session.loginUser.
         // The existence of req.session.loginUser indicates that the session exists.
-        // I also save the moment when the session will expire due to inactivity.
         req.session.loginUser = {
-            id: clientId,
             email: email,
             name: name,
             clientId: clientId,
@@ -56,8 +50,8 @@ exports.loginCreate = async (req, res, next) => {
         };
 
         req.flash("success", 'Client authentication completed.');
-        res.redirect(`/backdoor/clients`);
-        //res.redirect(`/clients/${client.id}/projects`);
+        //res.redirect(`/backdoor/clients`);
+        res.redirect(`/clients/${clientId}/projects`);
 
     } catch (error) {
         req.flash("error", 'Authentication has failed. Retry it again.');

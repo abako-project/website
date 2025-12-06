@@ -101,7 +101,6 @@ app.use(function (req, res, next) {
 
   // To use req.user in the views
   res.locals.loginUser = req.session.loginUser && {
-    id: req.session.loginUser.id,
     email: req.session.loginUser.email,
     name: req.session.loginUser.name,
     isAdmin: !!req.session.loginUser.isAdmin,

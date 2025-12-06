@@ -98,18 +98,10 @@ exports.clientIndex = async () => {
  */
 exports.client = async clientId => {
 
-  const client = await Client.findByPk(clientId, {
-    include: [
-      {model: User, as: "user"},
-      {model: Attachment, as: "attachment"},
-      {model: Language, as: "languages"},
-    ]
-  });
-  if (client) {
-    return json.clientJson(client);
-  } else {
-    throw new Error('There is no client with id=' + clientId);
-  }
+    const response = await adapterAPI.getClient(clientId);
+
+    return response.client;
+
 };
 
 //-----------------------------------------------------------
@@ -184,52 +176,17 @@ exports.clientCreate = async (email, name, preparedData) => {
  * @param {string} [data.description]
  * @param {string} [data.location]
  * @param {number[]} [data.languageIds]
- * @param {string} [data.password] - Nuevo password (opcional).
  * @param {string} [data.mime] - Tipo MIME de la nueva imagen (opcional).
  * @param {string} [data.image] - Imagen codificada en base64 (opcional).
- * @returns {Promise<Object>} Objeto JSON con los datos actualizados del cliente.
  * @throws {Error} Si ocurre un error en la actualización.
  */
-exports.clientUpdate = async (clientId, {
-  name, company, department, website, description, location, password, languageIds,
-  mime, image
-}) => {
-
-  // ¿Cambio el password?
-  if (password) {
-    await Client.update({
-      name, company, department, website, description, location, password
-    }, {
-      where: {id: clientId}
-    });
-  } else {
-    await Client.update({
-      name, company, department, website, description, location
-    }, {
-      where: {id: clientId}
-    });
-  }
-
-  let client = await Client.findByPk(clientId, {
-    include: [{ model: Attachment, as: "attachment" }]
-  });
-
-  await client.setLanguages(languageIds);
-
-  // Hay un attachment nuevo
-  if (mime && image && image.length > 0) {
-
-    if (client.attachment) {
-      await client.update({ attachmentId: null });
-      await Attachment.destroy({ where: { id: client.attachment.id } });
+exports.clientUpdate = async (clientId, data) => {
+    try {
+        const response = await adapterAPI.updateClient(clientId, data);
+    } catch (error) {
+        console.error('[SEDA Client] Error creating client:', error);
+        throw error;
     }
-
-    // Create the new client attachment
-    const attachment = await Attachment.create({mime, image});
-    await client.setAttachment(attachment);
-  }
-
-  return json.clientJson(client);
 };
 
 //-----------------------------------------------------------
@@ -304,17 +261,18 @@ exports.clientFindByEmailPassword = async (email, password) => {
  */
 exports.clientAttachment = async clientId => {
 
-  const client = await Client.findByPk(clientId, {
-    include: [
-      {model: Attachment, as: "attachment"},
-    ]
-  })
-
-  if (client?.attachment) {
-    return json.attachmentJson(client.attachment);
-  } else {
     return null;
-  }
+
+    try {
+        const response = await adapterAPI.clientAttachment(clientId);
+
+        return response;
+
+    } catch (error) {
+        console.error('[SEDA Client] Error getting attachment:', error);
+        throw error;
+    }
+
 };
 
 //-----------------------------------------------------------

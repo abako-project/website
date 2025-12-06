@@ -22,7 +22,7 @@
 
 
                     <div class="profileCard__staticInfo">
-                        <p><strong>Email:</strong> <%= client.user.email  %></p>
+                        <p><strong>Email:</strong> <%= client.email  %></p>
                     </div>
 
                     <div class="profileCard__section">
@@ -69,21 +69,6 @@
                         </select>
                     </div>
 
-                    <div class="profileCard__section">
-                                <ul>
-                                    <li>
-                                        <h3>Password (Leave blank to not change the current password):</h3>
-                                        <input type="password" id="password" name="password" autocomplete="off"/>
-                                    </li>
-
-                                    <li>
-                                        <h3>Confirm Password:</h3>
-                                        <input type="password" id="confirm_password" autocomplete="off"/>
-                                    </li>
-                                </ul>
-                        </div>
-
-
                         <div class="profileCard__section">
                             <h3> New Photo (Max size 2MB):</h3>
                             <label class="fileInput">
@@ -95,7 +80,7 @@
 
                         <div class="profileCard__section">
                         <div class="actionRow" >
-                            <a href="/"> Cancel </a>
+                            <a href="/clients/<%= client.id %>/profile"> Cancel </a>
                             <input type="submit" value="Save"/> 
                         </div>
                     </div>

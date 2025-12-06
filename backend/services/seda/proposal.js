@@ -8,6 +8,7 @@ const {
   }
 } = require('../../models');
 const states = require("../../core/state");
+const {adapterAPI} = require("../api-client");
 
 
 //-----------------------------------------------------------
@@ -30,15 +31,33 @@ const states = require("../../core/state");
  * @param {string} data.deliveryDate - Fecha estimada de entrega.
  * @returns {Promise<Object>} Objeto JSON con los datos del proyecto creado.
  */
-exports.proposalCreate = async (clientId, {title, summary, projectTypeId, description, url, budgetId, deliveryTimeId, deliveryDate}) => {
+exports.proposalCreate = async (clientId, {title, summary, projectTypeId, description, url, budgetId, deliveryTimeId, deliveryDate}, token) => {
 
-  const project = await Project.create({
-    title, summary, description, projectTypeId, state: null, url, budgetId, deliveryTimeId, deliveryDate, clientId, consultantId: undefined
-  });
+    deliveryDate = "2024-12-31";
+    projectTypeId = 1;
+    budgetId = 1;
+    deliveryTimeId = 1;
 
-  return json.projectJson(project);
+    const response = await adapterAPI.deployProject(
+        "v6",
+         {
+            title, summary, description, projectTypeId, url, budgetId, deliveryTimeId, deliveryDate
+        },
+        clientId,
+        token);
+
+    return response;
 };
 
+
+exports.proposalCreate__BBDD = async (clientId, {title, summary, projectTypeId, description, url, budgetId, deliveryTimeId, deliveryDate}) => {
+
+    const project = await Project.create({
+        title, summary, description, projectTypeId, state: null, url, budgetId, deliveryTimeId, deliveryDate, clientId, consultantId: undefined
+    });
+
+    return json.projectJson(project);
+};
 //-----------------------------------------------------------
 
 /**

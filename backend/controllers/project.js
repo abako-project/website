@@ -79,9 +79,9 @@ exports.createProposal = async (req, res, next) => {
     deliveryDate
   };
 
-  try {
+    try {
     // Save into the data base
-    let project = await seda.proposalCreate(clientId, proposal);
+    let project = await seda.proposalCreate(clientId, proposal, req.session.loginUser.token);
     console.log('Success: Project created successfully.');
 
     // res.redirect('/clients/' + req.session.loginUser.clientId + '/projects');

@@ -58,7 +58,7 @@ exports.update = async (req, res, next) => {
 
     const clientId = req.params.clientId;
 
-    const client = {
+    const data = {
         name: body.name,
         company: body.company,
         department: body.department,
@@ -66,21 +66,22 @@ exports.update = async (req, res, next) => {
         description: body.description,
         location: body.location,
         languageIds: (body.languages || []).map(str => +str),
-        password: body.password,
-        mime: req.file?.mimetype,
-        image: req.file?.buffer
     };
 
+    if (req.file) {
+        data.mime = req.file?.mimetype;
+        data.image = req.file?.buffer;
+    }
 
     try {
-        await seda.clientUpdate(clientId, client);
+        await seda.clientUpdate(clientId, data);
         console.log('Client edited successfully.');
-        res.redirect('/');
+        res.redirect('/clients/' + clientId + '/profile');
     } catch (error) {
         if (error instanceof seda.ValidationError) {
             console.log('There are errors in the form:');
             error.errors.forEach(({message}) => console.log(message));
-            res.render('clients/profile/edit', {client});
+            res.render('clients/profile/edit', {data});
         } else {
             next(error);
         }
