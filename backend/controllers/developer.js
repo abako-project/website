@@ -28,8 +28,8 @@ exports.index = async (req, res, next) => {
 exports.show = async (req, res, next) => {
   try {
     const {developer} = req.load;
-    const avatarUrl = `/developers/${developer.id}/attachment`;
-    const votes = await seda.votesFindByUser(developer.user.id);
+      const avatarUrl = `/developers/${developer.id}/attachment`;
+    const votes = await seda.votesFindByUser(developer.id);
     const numberOfVotes = votes.length; 
     const avgRating = votes.length ? Math.ceil((votes.reduce((sum, v) => sum + v.score, 0)/ votes.length)): null;
 

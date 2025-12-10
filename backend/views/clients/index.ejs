@@ -18,7 +18,6 @@
         <th>Description</th>
         <th>Location</th>
         <th>Languages</th>
-        <th>Actions</th>
     </tr>
     </thead>
     <tbody>
@@ -43,10 +42,6 @@
             <td><%= client.description ? "Si" : "No" %></td>
             <td><%= client.location %></td>
             <td><%= client.languages?.join(", ") %></td>
-
-            <td class="actions">
-                <a  class="btn btn_primary btn_href" is="a-with-tzo" href="/backdoor/client/<%= client.id %>/login">Login</a>
-            </td>
         </tr>
     <% }) %>
     </tbody>

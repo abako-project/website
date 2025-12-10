@@ -260,8 +260,8 @@ exports.developerUpdate = async (developerId, {
     });
 
 
-    await developer.setLanguages(languageIds);
-    await developer.setSkills(skillIds);
+  //  await developer.setLanguages(languageIds);
+  //  await developer.setSkills(skillIds);
 
     // Hay un attachment nuevo
     if (mime && image && image.length > 0) {

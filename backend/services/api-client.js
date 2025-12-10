@@ -136,6 +136,7 @@ const adapterAPI = {
         }
     },
 
+
     async updateClient(clientId, data) {
         try {
             const formData = new FormData();
@@ -156,8 +157,9 @@ const adapterAPI = {
         }
     },
 
+
   // version mas secilla de la de arriba.
-    async updateClient(clientId, data) {
+    async xxxxxx______updateClient(clientId, data) {
         try {
             const response = await adapterClient.put(apiConfig.adapterAPI.endpoints.clients.update(clientId), data, {
                 headers: {
