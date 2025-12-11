@@ -39,7 +39,7 @@ exports.proposalCreate = async (clientId, {title, summary, projectTypeId, descri
     deliveryTimeId = 1;
 
     const response = await adapterAPI.deployProject(
-        "v6",
+        "v5",
          {
             title, summary, description, projectTypeId, url, budgetId, deliveryTimeId, deliveryDate
         },
