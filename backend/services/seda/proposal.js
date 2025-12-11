@@ -46,7 +46,7 @@ exports.proposalCreate = async (clientId, {title, summary, projectTypeId, descri
         clientId,
         token);
 
-        return response.address;
+    return response.address;
 };
 
 

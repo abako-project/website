@@ -18,10 +18,6 @@ router.get('/',
 // Login de admin/clientes/developers
 router.get('/admin',
   backdoorController.adminLogin);
-router.get('/client/:id/Login',
-    backdoorController.clientLogin);
-router.get('/developer/:id/Login',
-    backdoorController.developerLogin);
 
 // Listar todos los clientes
 router.get('/clients',
@@ -43,5 +39,10 @@ router.get('/roles',
     permissionController.isAuthenticated,
     permissionController.adminRequired,
     roleController.index);
+
+// Ver los developers registrados en el Calendar
+router.get('/registeredDevelopers',
+    backdoorController.registeredDevelopers);
+
 
 module.exports = router;

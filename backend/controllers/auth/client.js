@@ -14,7 +14,6 @@ exports.registerCreate = async (req, res, next) => {
         req.flash("success", '✅ Registrado correctamente');
         console.log("[Controlador clientes] Cliente registrado correctamente");
 
-        //res.redirect('/clients/editProfile?email=' + encodeURIComponent(email) + '&name=' + encodeURIComponent(name));
         res.redirect('/auth/login/client/new');
     } catch (error) {
         req.flash("error", `Registration error: ${error instanceof Error ? error.message : 'Unknown error'}`);

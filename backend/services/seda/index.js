@@ -29,6 +29,7 @@ const sedaProjectType = require("./projectType");
 const sedaSkill = require("./skill");
 const sedaVotations = require("./votations");
 const sedaUser = require("./user");
+const sedaCalendar = require("./calendar");
 
 module.exports = exports = {
     ...sedaError,
@@ -50,5 +51,6 @@ module.exports = exports = {
     ...sedaProjectType,
     ...sedaSkill,
     ...sedaVotations,
-    ...sedaUser
+    ...sedaUser,
+    ...sedaCalendar
 };

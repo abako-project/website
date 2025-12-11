@@ -10,24 +10,25 @@ const upload = multer({
 const developerController = require('../controllers/developer');
 const projectController = require('../controllers/project');
 const milestoneController = require('../controllers/milestone');
+const permissionController = require("../controllers/permission");
 
 /* Autoloading */
 router.param('developerId', developerController.load);  // autoload :developerId
 
 // Routes for the resource /developers
 
-
 router.get('/',
     developerController.index);
 
-router.get('/editProfile',
-    developerController.editProfile);
-
 router.get('/:developerId(\\d+)/profile/edit',
+    permissionController.isAuthenticated,
+    permissionController.userTypesRequired({developer: true}),
     developerController.edit);
 router.get('/:developerId(\\d+)/profile',
     developerController.show);
 router.put('/:developerId(\\d+)',
+    permissionController.isAuthenticated,
+    permissionController.userTypesRequired({developer: true}),
     upload.single('image'),
     developerController.update);
 

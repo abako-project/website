@@ -8,7 +8,6 @@ const {
         Developer, User, Attachment, Language, Skill, Role, Proficiency, Project, Milestone
     }
 } = require('../../models');
-const seda = require("./index");
 
 //-----------------------------------------------------------
 
@@ -218,6 +217,7 @@ exports.developerCreate = async (email, name, preparedData) => {
  * @async
  * @function developerUpdate
  * @param {number} developerId - ID del desarrollador a actualizar.
+ *
  * @param {Object} data - Datos a actualizar.
  * @param {string} [data.name]
  * @param {string} [data.bio]
@@ -236,15 +236,20 @@ exports.developerCreate = async (email, name, preparedData) => {
  * @param {number[]} [data.skillIds]
  * @param {string} [data.mime] - Tipo MIME del nuevo adjunto.
  * @param {string} [data.image] - Imagen codificada en base64.
+ *
  * @returns {Promise<Object>} Objeto JSON con los datos actualizados del desarrollador.
  */
 exports.developerUpdate = async (developerId, {
-    name, bio, background, roleId, proficiencyId, githubUsername, portfolioUrl, location,
-    languageIds, skillIds,
-    isAvailableForHire, isAvailableFullTime, isAvailablePartTime, isAvailableHourly, availableHoursPerWeek,
-    mime, image
-}) => {
+                                     name, bio, background, roleId, proficiencyId, githubUsername, portfolioUrl, location,
+                                     languageIds, skillIds,
+                                     isAvailableForHire, isAvailableFullTime, isAvailablePartTime, isAvailableHourly, availableHoursPerWeek,
+                                     mime, image
+                                 }) => {
 
+
+    return;
+
+    // Actualizar el perfil:
     await Developer.update({
             name, bio, background, roleId, proficiencyId, githubUsername, portfolioUrl, location,
             isAvailableForHire, isAvailableFullTime, isAvailablePartTime, isAvailableHourly, availableHoursPerWeek
