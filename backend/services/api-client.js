@@ -415,12 +415,12 @@ const adapterAPI = {
         }
     },
 
-    async proposeScope(contractAddress, tasks, advancePaymentPercentage, documentHash, token) {
+    async proposeScope(contractAddress, milestones, advancePaymentPercentage, documentHash, token) {
         try {
             const response = await adapterClient.post(
                 apiConfig.adapterAPI.endpoints.projects.proposeScope(contractAddress),
                 {
-                    tasks,
+                    milestones,
                     advance_payment_percentage: advancePaymentPercentage,
                     document_hash: documentHash
                 },
@@ -484,6 +484,15 @@ const adapterAPI = {
             return response.data;
         } catch (error) {
             handleError(error, `completeTask(${contractAddress})`);
+        }
+    },
+
+    async getProject(contractAddress) {
+        try {
+            const response = await adapterClient.get(`/projects/${contractAddress}`);
+            return response.data;
+        } catch (error) {
+            handleError(error, `getProject(${contractAddress})`);
         }
     },
 
@@ -563,11 +572,11 @@ const adapterAPI = {
         }
     },
 
-    async createMilestone(projectId, milestoneData, token) {
+    async coordinatorRejectProject(contractAddress, rejectionReason, token) {
         try {
             const response = await adapterClient.post(
-                apiConfig.adapterAPI.endpoints.projects.milestones.create(projectId),
-                milestoneData,
+                apiConfig.adapterAPI.endpoints.projects.coordinatorReject(contractAddress),
+                { rejectionReason },
                 {
                     headers: {
                         'Authorization': `Bearer ${token}`
@@ -576,40 +585,40 @@ const adapterAPI = {
             );
             return response.data;
         } catch (error) {
-            handleError(error, `createMilestone(${projectId})`);
+            handleError(error, `coordinatorRejectProject(${contractAddress})`);
         }
     },
 
-    async getMilestones(projectId, token) {
+    async getMilestones(contractAddress, token) {
         try {
-            const response = await adapterClient.get(apiConfig.adapterAPI.endpoints.projects.milestones.list(projectId), {
+            const response = await adapterClient.get(apiConfig.adapterAPI.endpoints.projects.milestones.list(contractAddress), {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
             });
             return response.data;
         } catch (error) {
-            handleError(error, `getMilestones(${projectId})`);
+            handleError(error, `getMilestones(${contractAddress})`);
         }
     },
 
-    async getMilestone(projectId, milestoneId, token) {
+    async getMilestone(contractAddress, milestoneId, token) {
         try {
-            const response = await adapterClient.get(apiConfig.adapterAPI.endpoints.projects.milestones.get(projectId,milestoneId), {
+            const response = await adapterClient.get(apiConfig.adapterAPI.endpoints.projects.milestones.get(contractAddress, milestoneId), {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
             });
             return response.data;
         } catch (error) {
-            handleError(error, `getMilestone(${projectId}, ${milestoneId})`);
+            handleError(error, `getMilestone(${contractAddress}, ${milestoneId})`);
         }
     },
 
-    async updateMilestone(projectId, milestoneId, data, token) {
+    async updateMilestone(contractAddress, milestoneId, data, token) {
         try {
             const response = await adapterClient.put(
-                apiConfig.adapterAPI.endpoints.projects.milestones.update(projectId,milestoneId),
+                apiConfig.adapterAPI.endpoints.projects.milestones.update(contractAddress, milestoneId),
                 data,
                 {
                     headers: {
@@ -619,20 +628,20 @@ const adapterAPI = {
             );
             return response.data;
         } catch (error) {
-            handleError(error, `updateMilestone(${projectId}, ${milestoneId})`);
+            handleError(error, `updateMilestone(${contractAddress}, ${milestoneId})`);
         }
     },
 
-    async deleteMilestone(projectId, milestoneId, token) {
+    async deleteMilestone(contractAddress, milestoneId, token) {
         try {
-            const response = await adapterClient.delete(apiConfig.adapterAPI.endpoints.projects.milestones.remove(projectId,milestoneId), {
+            const response = await adapterClient.delete(apiConfig.adapterAPI.endpoints.projects.milestones.remove(contractAddress, milestoneId), {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
             });
             return response.data;
         } catch (error) {
-            handleError(error, `deleteMilestone(${projectId}, ${milestoneId})`);
+            handleError(error, `deleteMilestone(${contractAddress}, ${milestoneId})`);
         }
     },
 
@@ -1087,7 +1096,7 @@ const contractsAPI = {
     async deployProjectV6(name, daoAddress) {
         try {
             const response = await contractsClient.post(
-                apiConfig.contractsAPI.endpoints.projects.deploy.v6,
+                apiConfig.contractsAPI.endpoints.projects.deploy.v5,
                 { name, dao_address: daoAddress }
             );
             return response.data;
