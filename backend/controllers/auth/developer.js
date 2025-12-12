@@ -12,7 +12,6 @@ exports.registerCreate = async (req, res, next) => {
         req.flash("success", '✅ Registrado correctamente');
         console.log("[Controlador developers] Desarrollador Registrado correctamente");
 
-        //res.redirect('/developers/editProfile?email=' + encodeURIComponent(email) + '&name=' + encodeURIComponent(name));
         res.redirect('/auth/login/developer/new');
     } catch (error) {
         req.flash("error", `Registration error: ${error instanceof Error ? error.message : 'Unknown error'}`);

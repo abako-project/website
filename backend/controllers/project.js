@@ -16,7 +16,12 @@ exports.index = async (req, res, next) => {
     const developerId = req.params.developerId;
     const developer = developerId ? await seda.developer(developerId) : null;
 
-    const projects = await seda.projectsIndex(clientId, developerId, developerId);
+      const projects = await seda.projectsIndex(clientId, developerId, developerId);
+
+      console.log("....... Ctrl + projec + index.......................");
+      console.log(JSON.stringify(projects, undefined, 2));
+      console.log("..............................");
+
 
     // No se puede usar el valor client en las opciones cuando
     // hay llamadas anidadas a la funcion include de EJS.
@@ -81,11 +86,11 @@ exports.createProposal = async (req, res, next) => {
 
     try {
     // Save into the data base
-    let project = await seda.proposalCreate(clientId, proposal, req.session.loginUser.token);
+    let projectId = await seda.proposalCreate(clientId, proposal, req.session.loginUser.token);
     console.log('Success: Project created successfully.');
 
     // res.redirect('/clients/' + req.session.loginUser.clientId + '/projects');
-    res.redirect('/projects/' + project.id + '/objectives_constraints/edit');
+    res.redirect('/projects/' + projectId + '/objectives_constraints/edit');
 
   } catch (error) {
     if (error instanceof seda.ValidationError) {

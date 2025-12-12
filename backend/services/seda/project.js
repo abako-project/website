@@ -1,4 +1,3 @@
-
 const {adapterAPI} = require('../api-client');
 
 const {Op} = require("sequelize");
@@ -30,6 +29,34 @@ const apiConfig = require("../../config/api.config");
  */
 exports.project = async projectId => {
 
+    let project = await adapterAPI.getProjectInfo(projectId);
+
+    project.id = project.contractAddress;
+
+    /*
+    const clientId = 1;
+    const projects = (await exports.projectsIndex(1));
+
+    const len = projects.length;
+    // project = len ? projects[len-1] : null;
+    project = projects.at(-1);
+
+    project.client = (await adapterAPI.getClient(clientId)).client;
+*/
+
+    project.objectives = [];
+    project.constraints = [];
+
+    console.log("------- Project--------------------------------");
+    console.log(JSON.stringify(project, undefined, 2));
+    console.log("---------------------------------------");
+
+
+    return project;
+
+    //---------
+
+    /*
     const project = await Project.findByPk(projectId, {
         include: [
             {
@@ -86,6 +113,8 @@ exports.project = async projectId => {
     } else {
         throw new Error('There is no project with id=' + projectId);
     }
+
+     */
 };
 
 //-----------------------------------------------------------
@@ -150,16 +179,25 @@ exports.projectsIndex = async (clientId, consultantId, developerId) => {
 
     if (clientId) {
         const response = await adapterAPI.getClientProjects(clientId);
+
+       response.forEach(project => {project.id = project.contractAddress});
+
         return response;
     }
 
     if (consultantId) {
         const response = await adapterAPI.getDeveloperProjects(consultantId);
+
+        response.forEach(project => {project.id = project.contractAddress});
+
         return response;
     }
 
     if (developerId) {
         const response = await adapterAPI.getDeveloperProjects(developerId);
+
+        response.forEach(project => {project.id = project.contractAddress});
+
         return response;
     }
 
@@ -170,10 +208,16 @@ exports.projectsIndex = async (clientId, consultantId, developerId) => {
     let projects = [];
     clients && clients.forEach(async client => {
         const clientProjects = await adapterAPI.getClientProjects(client.id);
+
+        response.forEach(project => {project.id = project.contractAddress});
+
         projects = projects.concat(clientProjects);
     });
     developers && developers.forEach(async developer => {
         const developerProjects = await adapterAPI.getDeveloperProjects(developer.id);
+
+        response.forEach(project => {project.id = project.contractAddress});
+
         projects = projects.concat(developerProjects);
     })
     return projects;

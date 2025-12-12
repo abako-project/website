@@ -29,7 +29,7 @@ const {adapterAPI} = require("../api-client");
  * @param {number} data.budgetId - Id del presupuesto estimado.
  * @param {number} data.deliveryTimeId - Id de la hora de entrega estimado.
  * @param {string} data.deliveryDate - Fecha estimada de entrega.
- * @returns {Promise<Object>} Objeto JSON con los datos del proyecto creado.
+ * @returns {Promise<string>} string con la direccion del contrato creado.
  */
 exports.proposalCreate = async (clientId, {title, summary, projectTypeId, description, url, budgetId, deliveryTimeId, deliveryDate}, token) => {
 
@@ -39,14 +39,14 @@ exports.proposalCreate = async (clientId, {title, summary, projectTypeId, descri
     deliveryTimeId = 1;
 
     const response = await adapterAPI.deployProject(
-        "v6",
+        "v5",
          {
             title, summary, description, projectTypeId, url, budgetId, deliveryTimeId, deliveryDate
         },
         clientId,
         token);
 
-    return response;
+    return response.address;
 };
 
 

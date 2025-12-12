@@ -60,6 +60,7 @@ module.exports = {
                 proposeScope:        (addr) => `/projects/${addr}/propose_scope`,
                 approveScope:        (addr) => `/projects/${addr}/approve_scope`,
                 rejectScope:         (addr) => `/projects/${addr}/reject_scope`,
+                coordinatorReject:   (addr) => `/projects/${addr}/coordinator_reject`,
                 completeTask:        (addr) => `/projects/${addr}/complete_task`,
                 //GET Methods
                 getProjectInfo:      (addr) => `/projects/${addr}/get_project_info`,
@@ -136,7 +137,7 @@ module.exports = {
     },
 
     // Request timeout
-    timeout: 60000,
+    timeout: 160000,
 
     // Request headers
     headers: {

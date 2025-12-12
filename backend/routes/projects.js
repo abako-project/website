@@ -11,6 +11,7 @@ const permissionController = require('../controllers/permission');
 
 
 // Listar todos los proyectos, los de un cliente, o los de un developer
+// Virto
 router.get('/',
   permissionController.isAuthenticated,
     projectController.index);
@@ -28,67 +29,67 @@ router.post('/',
   projectController.createProposal);
 
 // Mostrar detalles de un proyecto (o propuesta)
-router.get('/:projectId(\\d+)',
+router.get('/:projectId',
   permissionController.isAuthenticated,
     projectController.show);
 
 // Mostrar la pantalla que ofrece publicar  (submit) una propuesta nueva o rechazada
-router.get('/:projectId(\\d+)/submit',
+router.get('/:projectId/submit',
   permissionController.isAuthenticated,
   permissionController.userTypesRequired({client: true}),
   projectController.submit);
 
 // Mostrar formulario de edición de una propuesta
-router.get('/:projectId(\\d+)/edit',
+router.get('/:projectId/edit',
   permissionController.isAuthenticated,
   permissionController.userTypesRequired({client: true, projectConsultant: true}),
   projectController.editProposal);
 
 // Actualizar propuesta
-router.put('/:projectId(\\d+)',
+router.put('/:projectId',
   permissionController.isAuthenticated,
   permissionController.userTypesRequired({client: true, projectConsultant: true}),
   projectController.updateProposal);
 
 // Eliminar proyecto
-router.delete('/:projectId(\\d+)',
+router.delete('/:projectId',
   permissionController.isAuthenticated,
   permissionController.userTypesRequired({admin: true}),
     projectController.destroy);
 
 // Publicar la propuesta: estado = ProposalPending
-router.put('/:projectId(\\d+)/proposal_submit',
+router.put('/:projectId/proposal_submit',
   permissionController.isAuthenticated,
   permissionController.userTypesRequired({client: true}),
   projectController.proposalSubmit);
 
 // Rechazar el proyecto: estado inicial = WaitingForProposalApproval
-router.put('/:projectId(\\d+)/proposal_reject',
+router.put('/:projectId/proposal_reject',
   permissionController.isAuthenticated,
   permissionController.userTypesRequired({projectConsultant: true}),
   projectController.rejectProposal);
 
 // Aprobar el proyecto: estado inicial = WaitingForProposalApproval
-router.put('/:projectId(\\d+)/proposal_approve',
+router.put('/:projectId/proposal_approve',
   permissionController.isAuthenticated,
   permissionController.userTypesRequired({projectConsultant: true}),
   projectController.approveProposal);
 
 // Publicar el scope: estado = ScopeValidationNeeded
-router.put('/:projectId(\\d+)/scopeSubmit',
+router.put('/:projectId/scopeSubmit',
   permissionController.isAuthenticated,
   permissionController.userTypesRequired({projectConsultant: true}),
   projectController.scopeSubmit);
 
 // Aprobar el scope del proyecto: estado =
-router.put('/:projectId(\\d+)/scopeAccept',
+router.put('/:projectId/scopeAccept',
   permissionController.isAuthenticated,
   permissionController.projectClientRequired,
   // Falta comprobar estado
   projectController.scopeAccept);
 
 // Rechazar el scope del proyecto: estado = ScopingInProgress
-router.put('/:projectId(\\d+)/scopeReject',
+router.put('/:projectId/scopeReject',
   permissionController.isAuthenticated,
   permissionController.projectClientRequired,
   // Falta comprobar estado
@@ -97,45 +98,45 @@ router.put('/:projectId(\\d+)/scopeReject',
 // === Objetivos y Constraints
 
 // Mostrar formulario para editar Objetivos y Coonstraints
-router.get('/:projectId(\\d+)/objectives_constraints/edit',
+router.get('/:projectId/objectives_constraints/edit',
   permissionController.isAuthenticated,
   projectController.editObjectivesConstraints);
 
 
 // Crear un objetivo
-router.post('/:projectId(\\d+)/objectives',
+router.post('/:projectId/objectives',
   permissionController.isAuthenticated,
   permissionController.userTypesRequired({client: true, projectConsultant: true}),
   objectiveController.create);
 
 // Crear un constraint
-router.post('/:projectId(\\d+)/constraints',
+router.post('/:projectId/constraints',
   permissionController.isAuthenticated,
   permissionController.userTypesRequired({client: true, projectConsultant: true}),
     constraintController.create);
 
 // Borrar un objetivo
-router.delete('/:projectId(\\d+)/objectives/:objectiveId(\\d+)',
+router.delete('/:projectId/objectives/:objectiveId(\\d+)',
   permissionController.isAuthenticated,
   permissionController.userTypesRequired({client: true, projectConsultant: true}),
   // Falta comprobar estados validos
   objectiveController.destroy);
 
 // Borrar un constraint
-router.delete('/:projectId(\\d+)/constraints/:constraintId(\\d+)',
+router.delete('/:projectId/constraints/:constraintId(\\d+)',
   permissionController.isAuthenticated,
   permissionController.userTypesRequired({client: true, projectConsultant: true}),
   // Falta comprobar estados validos
     constraintController.destroy);
 
 // Intercambiar orden de mostrar dos objetivos
-router.put('/:projectId(\\d+)/objectives/swaporder/:id1(\\d+)/:id2(\\d+)',
+router.put('/:projectId/objectives/swaporder/:id1(\\d+)/:id2(\\d+)',
   permissionController.isAuthenticated,
   permissionController.userTypesRequired({client: true, projectConsultant: true}),
   objectiveController.swapOrder);
 
 // Intercambiar orden de mostrar dos edit
-router.put('/:projectId(\\d+)/constraints/swaporder/:id1(\\d+)/:id2(\\d+)',
+router.put('/:projectId/constraints/swaporder/:id1(\\d+)/:id2(\\d+)',
   permissionController.isAuthenticated,
   permissionController.userTypesRequired({client: true, projectConsultant: true}),
   constraintController.swapOrder);
@@ -143,13 +144,13 @@ router.put('/:projectId(\\d+)/constraints/swaporder/:id1(\\d+)/:id2(\\d+)',
 // === Consultant
 
 // Mostrar formulario para asignar consultor al proyecto
-router.get('/:projectId(\\d+)/consultant/select',
+router.get('/:projectId/consultant/select',
   permissionController.isAuthenticated,
   permissionController.adminRequired,
   projectController.selectConsultant);
 
 // Actualizar el consultor del proyecto
-router.post('/:projectId(\\d+)/consultant',
+router.post('/:projectId/consultant',
   permissionController.isAuthenticated,
   permissionController.adminRequired,
   projectController.setConsultant);
@@ -158,59 +159,59 @@ router.post('/:projectId(\\d+)/consultant',
 // === Milestones
 
 // Editar todos los milestones de un proyecto
-router.get('/:projectId(\\d+)/milestones/edit',
+router.get('/:projectId/milestones/edit',
   permissionController.isAuthenticated,
   milestoneController.editAll);
 
 // Mostrar formulario de creación de un milestone
-router.get('/:projectId(\\d+)/milestones/new',
+router.get('/:projectId/milestones/new',
   permissionController.isAuthenticated,
   permissionController.projectConsultantRequired,
   milestoneController.new);
 
 // Crear milestone
-router.post('/:projectId(\\d+)/milestones',
+router.post('/:projectId/milestones',
   permissionController.isAuthenticated,
   permissionController.projectConsultantRequired,
   milestoneController.create);
 
 
 // Mostrar formulario de edición de un milestone
-router.get('/:projectId(\\d+)/milestones/:milestoneId(\\d+)/edit',
+router.get('/:projectId/milestones/:milestoneId(\\d+)/edit',
   permissionController.isAuthenticated,
   permissionController.projectConsultantRequired,
   milestoneController.edit);
 
 
 // Actualizar milestone
-router.put('/:projectId(\\d+)/milestones/:milestoneId(\\d+)',
+router.put('/:projectId/milestones/:milestoneId(\\d+)',
   permissionController.isAuthenticated,
   permissionController.projectConsultantRequired,
   milestoneController.update);
 
 
 // Eliminar milestone
-router.delete('/:projectId(\\d+)/milestones/:milestoneId(\\d+)',
+router.delete('/:projectId/milestones/:milestoneId(\\d+)',
   permissionController.isAuthenticated,
   permissionController.projectConsultantRequired,
   milestoneController.destroy);
 
 
 // Intercambiar orden de mostrar dos milestones
-router.put('/:projectId(\\d+)/milestones/swaporder/:id1(\\d+)/:id2(\\d+)',
+router.put('/:projectId/milestones/swaporder/:id1(\\d+)/:id2(\\d+)',
   permissionController.isAuthenticated,
   permissionController.projectConsultantRequired,
   milestoneController.swapOrder);
 
 
 // Pagina para que el consultor suba un milestone para que lo revise el cliente
-router.get('/:projectId(\\d+)/milestones/:milestoneId(\\d+)/submitMilestone',
+router.get('/:projectId/milestones/:milestoneId(\\d+)/submitMilestone',
     permissionController.isAuthenticated,
     permissionController.projectConsultantRequired,
     milestoneController.submitMilestoneForm);
 
 // Action del formulario usado por el consultor para subir un milestone para que lo revise el cliente
-router.put('/:projectId(\\d+)/milestones/:milestoneId(\\d+)/submitMilestone',
+router.put('/:projectId/milestones/:milestoneId(\\d+)/submitMilestone',
     permissionController.isAuthenticated,
     permissionController.projectConsultantRequired,
     milestoneController.submitMilestoneAction);
@@ -220,26 +221,26 @@ router.put('/:projectId(\\d+)/milestones/:milestoneId(\\d+)/submitMilestone',
 // === Milestone Developer
 
 // Mostrar formulario para asignar developer a un milestone
-router.get('/:projectId(\\d+)/milestones/:milestoneId(\\d+)/developer/select',
+router.get('/:projectId/milestones/:milestoneId(\\d+)/developer/select',
   permissionController.isAuthenticated,
   permissionController.adminRequired,
   milestoneController.selectDeveloper);
 
 // Actualizar el developer de un milesrtone
-router.post('/:projectId(\\d+)/milestones/:milestoneId(\\d+)/developer',
+router.post('/:projectId/milestones/:milestoneId(\\d+)/developer',
   permissionController.isAuthenticated,
   permissionController.adminRequired,
   milestoneController.assignDeveloper);
 
 // Muestra la pagina para que el developer acepte o rechace un milestone.
-router.get('/:projectId(\\d+)/milestones/:milestoneId(\\d+)/acceptOrRejectAssignation',
+router.get('/:projectId/milestones/:milestoneId(\\d+)/acceptOrRejectAssignation',
     permissionController.isAuthenticated,
     permissionController.userTypesRequired({milestoneDeveloper: true}),
     milestoneController.developerAcceptOrRejectAssignedMilestonePage);
 
 
 // El developer acepta o rechaza el milestone.
-router.put('/:projectId(\\d+)/milestones/:milestoneId(\\d+)/acceptOrRejectAssignation',
+router.put('/:projectId/milestones/:milestoneId(\\d+)/acceptOrRejectAssignation',
     permissionController.isAuthenticated,
     permissionController.userTypesRequired({milestoneDeveloper: true}),
     milestoneController.developerAcceptOrRejectAssignedMilestoneUpdate);
@@ -247,26 +248,26 @@ router.put('/:projectId(\\d+)/milestones/:milestoneId(\\d+)/acceptOrRejectAssign
 
 // === Client
 
-router.get('/:projectId(\\d+)/escrow',
+router.get('/:projectId/escrow',
   permissionController.isAuthenticated,
   permissionController.userTypesRequired({client: true}),
   escrowController.escrow);
 
 
-router.get('/:projectId(\\d+)/start',
+router.get('/:projectId/start',
   permissionController.isAuthenticated,
   permissionController.userTypesRequired({client: true}),
   escrowController.startProject);
 
 // Muestra la pagina para que el cliente acepte o rechace un milestone submission.
-router.get('/:projectId(\\d+)/milestones/:milestoneId(\\d+)/acceptOrRejectSubmission',
+router.get('/:projectId/milestones/:milestoneId(\\d+)/acceptOrRejectSubmission',
     permissionController.isAuthenticated,
     permissionController.userTypesRequired({projectClient: true}),
     milestoneController.clientAcceptOrRejectSubmittedMilestonePage);
 
 
 // El cliente acepta o rechaza el milestone submission.
-router.put('/:projectId(\\d+)/milestones/:milestoneId(\\d+)/acceptOrRejectSubmission',
+router.put('/:projectId/milestones/:milestoneId(\\d+)/acceptOrRejectSubmission',
     permissionController.isAuthenticated,
     permissionController.userTypesRequired({projectClient: true}),
     milestoneController.clientAcceptOrRejectSubmittedMilestoneUpdate);
@@ -276,33 +277,33 @@ router.put('/:projectId(\\d+)/milestones/:milestoneId(\\d+)/acceptOrRejectSubmis
 
 // Muestra la pagina con la historia del milestone para que el cliente y el consultor se envien mensajes
 // y resuelvan los conflictos.
-router.get('/:projectId(\\d+)/milestones/:milestoneId(\\d+)/history',
+router.get('/:projectId/milestones/:milestoneId(\\d+)/history',
     permissionController.isAuthenticated,
     permissionController.userTypesRequired({client: true, projectConsultant: true}),
     milestoneController.historyPage);
 
 // El cliente hace un roolback del rechazo del milestone submission.
-router.put('/:projectId(\\d+)/milestones/:milestoneId(\\d+)/rollbackSubmission',
+router.put('/:projectId/milestones/:milestoneId(\\d+)/rollbackSubmission',
     permissionController.isAuthenticated,
     permissionController.userTypesRequired({projectClient: true}),
     milestoneController.clientRollbackRejectedSubmission);
 
 // El cliente añade un comentario a la historia del milestone
-router.post('/:projectId(\\d+)/milestones/:milestoneId(\\d+)/history/clientComments',
+router.post('/:projectId/milestones/:milestoneId(\\d+)/history/clientComments',
     permissionController.isAuthenticated,
     permissionController.userTypesRequired({projectClient: true}),
     milestoneController.createClientHistoryComments);
 
 
 // El consultor añade un comentario a la historia del milestone
-router.post('/:projectId(\\d+)/milestones/:milestoneId(\\d+)/history/consultantComments',
+router.post('/:projectId/milestones/:milestoneId(\\d+)/history/consultantComments',
     permissionController.isAuthenticated,
     permissionController.userTypesRequired({projectConsultant: true}),
     milestoneController.createConsultantHistoryComments);
 
 // === Pagar
 
-router.post('/:projectId(\\d+)/milestones/:milestoneId(\\d+)/pay',
+router.post('/:projectId/milestones/:milestoneId(\\d+)/pay',
     permissionController.isAuthenticated,
     permissionController.adminRequired,
     milestoneController.daoPay);

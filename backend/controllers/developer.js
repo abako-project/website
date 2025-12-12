@@ -28,8 +28,8 @@ exports.index = async (req, res, next) => {
 exports.show = async (req, res, next) => {
   try {
     const {developer} = req.load;
-    const avatarUrl = `/developers/${developer.id}/attachment`;
-    const votes = await seda.votesFindByUser(developer.user.id);
+      const avatarUrl = `/developers/${developer.id}/attachment`;
+    const votes = await seda.votesFindByUser(developer.id);
     const numberOfVotes = votes.length; 
     const avgRating = votes.length ? Math.ceil((votes.reduce((sum, v) => sum + v.score, 0)/ votes.length)): null;
 
@@ -71,27 +71,6 @@ exports.show = async (req, res, next) => {
 };
 
 
-// GET /developers/editProfile?email=email&name=name
-exports.editProfile = async (req, res, next) => {
-    try {
-
-        const {email, name} = req.query;
-
-        const developer = await seda.developerFindByEmail(email);
-
-        const allLanguages = await seda.languageIndex();
-        const allRoles = await seda.roleIndex();
-        const allProficiencies = await seda.proficiencyIndex();
-        const allSkills = await seda.skillIndex();
-
-        res.render('developers/profile/edit', {developer, allLanguages, allRoles, allProficiencies, allSkills});
-    } catch (error) {
-        next(error);
-    }
-};
-
-
-
 // GET /developers/:developerId/profile/edit
 exports.edit = async (req, res, next) => {
 
@@ -113,7 +92,10 @@ exports.update = async (req, res, next) => {
 
   const developerId = req.params.developerId;
 
-  let developer = {
+    const {developer} = req.load;
+
+
+    let data = {
     name: body.name,
     bio: body.bio,
     background: body.background,
@@ -135,7 +117,11 @@ exports.update = async (req, res, next) => {
   };
 
   try {
-    await seda.developerUpdate(developerId, developer);
+      // Registrar el worker en Calendar:
+      await seda.registerWorker(developer.email, req.session.loginUser.token);
+
+      // Actualizar perfil:
+    await seda.developerUpdate(developerId, data);
 
     console.log('Developer edited successfully.');
 
