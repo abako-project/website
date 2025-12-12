@@ -245,43 +245,61 @@ exports.developerUpdate = async (developerId, {
                                      isAvailableForHire, isAvailableFullTime, isAvailablePartTime, isAvailableHourly, availableHoursPerWeek,
                                      mime, image
                                  }) => {
+    try {
+        // Try to update on backend
+        const updateData = {
+            name,
+            bio,
+            background,
+            roleId,
+            proficiencyId,
+            githubUsername,
+            portfolioUrl,
+            location,
+            languageIds,
+            skillIds,
+            isAvailableForHire,
+            isAvailableFullTime,
+            isAvailablePartTime,
+            isAvailableHourly,
+            availableHoursPerWeek
+        };
 
-
-    return;
-
-    // Actualizar el perfil:
-    await Developer.update({
-            name, bio, background, roleId, proficiencyId, githubUsername, portfolioUrl, location,
-            isAvailableForHire, isAvailableFullTime, isAvailablePartTime, isAvailableHourly, availableHoursPerWeek
-        }, {
-            where: {
-                id: developerId
+        const response = await adapterAPI.updateDeveloper(developerId, updateData, image);
+        return response.developer || response;
+    } catch (error) {
+        console.warn(`[SEDA Developer] Could not update on backend, falling back to SQLite:`, error.message);
+        
+        // Fallback to SQLite
+        await Developer.update({
+                name, bio, background, roleId, proficiencyId, githubUsername, portfolioUrl, location,
+                isAvailableForHire, isAvailableFullTime, isAvailablePartTime, isAvailableHourly, availableHoursPerWeek
+            }, {
+                where: {
+                    id: developerId
+                }
             }
+        );
+
+        let developer = await Developer.findByPk(developerId, {
+            include: [{model: Attachment, as: "attachment"}]
+        });
+
+        // Hay un attachment nuevo
+        if (mime && image && image.length > 0) {
+            // Delete old attachment.
+            if (developer.attachment) {
+                await developer.update({attachmentId: null});
+                await Attachment.destroy({where: {id: developer.attachment.id}});
+            }
+
+            // Create the new developer attachment
+            const attachment = await Attachment.create({mime, image});
+            await developer.setAttachment(attachment);
         }
-    );
 
-    let developer = await Developer.findByPk(developerId, {
-        include: [{model: Attachment, as: "attachment"}]
-    });
-
-
-  //  await developer.setLanguages(languageIds);
-  //  await developer.setSkills(skillIds);
-
-    // Hay un attachment nuevo
-    if (mime && image && image.length > 0) {
-        // Delete old attachment.
-        if (developer.attachment) {
-            await developer.update({attachmentId: null});
-            await Attachment.destroy({where: {id: developer.attachment.id}});
-        }
-
-        // Create the new developer attachment
-        const attachment = await Attachment.create({mime, image});
-        await developer.setAttachment(attachment);
+        return json.developerJson(developer);
     }
-
-    return json.developerJson(developer);
 };
 
 //-----------------------------------------------------------

@@ -615,6 +615,23 @@ const adapterAPI = {
         }
     },
 
+    async createMilestone(contractAddress, milestoneData, token) {
+        try {
+            const response = await adapterClient.post(
+                apiConfig.adapterAPI.endpoints.projects.milestones.create(contractAddress),
+                milestoneData,
+                {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                }
+            );
+            return response.data;
+        } catch (error) {
+            handleError(error, `createMilestone(${contractAddress})`);
+        }
+    },
+
     async updateMilestone(contractAddress, milestoneId, data, token) {
         try {
             const response = await adapterClient.put(

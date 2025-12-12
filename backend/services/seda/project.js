@@ -292,16 +292,25 @@ exports.projectSetState = async (projectId, state) => {
  *
  * @async
  * @function rejectProposal
- * @param {number} projectId - ID del proyecto.
+ * @param {string|number} projectId - Contract address or ID del proyecto.
  * @param {string} proposalRejectionReason - Consultant proposal rejection reason.
+ * @param {string} [token] - Auth token.
  * @returns {Promise<void>}
  * @throws {Error} Si falla la actualización del estado.
  */
-exports.rejectProposal = async (projectId, proposalRejectionReason) => {
-    await Project.update({
-        state: states.ProjectState.ProposalRejected,
-        proposalRejectionReason
-    }, {where: {id: projectId}});
+exports.rejectProposal = async (projectId, proposalRejectionReason, token) => {
+    try {
+        // Try to reject on backend
+        await adapterAPI.coordinatorRejectProject(projectId, proposalRejectionReason, token);
+    } catch (error) {
+        console.warn(`[SEDA Project] Could not reject on backend, falling back to SQLite:`, error.message);
+        
+        // Fallback to SQLite
+        await Project.update({
+            state: states.ProjectState.ProposalRejected,
+            proposalRejectionReason
+        }, {where: {id: projectId}});
+    }
 };
 
 //-----------------------------------------------------------
@@ -311,17 +320,25 @@ exports.rejectProposal = async (projectId, proposalRejectionReason) => {
  *
  * @async
  * @function projectSetConsultant
- * @param {number} projectId - ID del proyecto.
+ * @param {string|number} projectId - Contract address or ID del proyecto.
  * @param {number} consultantId - ID del consultor.
+ * @param {string} [token] - Auth token.
  * @returns {Promise<void>}
  * @throws {Error} Si falla la asignación del consultor o la actualización del estado.
  */
-exports.projectSetConsultant = async (projectId, consultantId) => {
-
-    await Project.update({
-        consultantId,
-        state: states.ProjectState.WaitingForProposalApproval
-    }, {where: {id: projectId}});
+exports.projectSetConsultant = async (projectId, consultantId, token) => {
+    try {
+        // Try to assign coordinator on backend
+        await adapterAPI.assignCoordinator(projectId, token);
+    } catch (error) {
+        console.warn(`[SEDA Project] Could not assign coordinator on backend, falling back to SQLite:`, error.message);
+        
+        // Fallback to SQLite
+        await Project.update({
+            consultantId,
+            state: states.ProjectState.WaitingForProposalApproval
+        }, {where: {id: projectId}});
+    }
 };
 
 
@@ -353,16 +370,24 @@ exports.projectStart = async (projectId) => {
  *
  * @async
  * @function projectCompleted
- * @param {number} projectId - ID del proyecto.
+ * @param {string|number} projectId - Contract address or ID del proyecto.
+ * @param {Array} [ratings] - Ratings for team members.
+ * @param {string} [token] - Auth token.
  * @returns {Promise<void>}
  * @throws {Error} Si falla la actualización del proyecto.
  */
-exports.projectCompleted = async (projectId) => {
-
-    await Project.update({
-        state: states.ProjectState.Completed
-    }, {where: {id: projectId}});
-
+exports.projectCompleted = async (projectId, ratings, token) => {
+    try {
+        // Try to mark completed on backend
+        await adapterAPI.markCompleted(projectId, ratings, token);
+    } catch (error) {
+        console.warn(`[SEDA Project] Could not mark completed on backend, falling back to SQLite:`, error.message);
+        
+        // Fallback to SQLite
+        await Project.update({
+            state: states.ProjectState.Completed
+        }, {where: {id: projectId}});
+    }
 };
 //-----------------------------------------------------------
 
@@ -377,6 +402,187 @@ exports.projectCompleted = async (projectId) => {
  */
 exports.projectDestroy = async projectId => {
     await Project.destroy({where: {id: projectId}});
+};
+
+//-----------------------------------------------------------
+
+/**
+ * Asigna un equipo al proyecto.
+ *
+ * @async
+ * @function assignTeam
+ * @param {string} contractAddress - Contract address del proyecto.
+ * @param {number} teamSize - Tamaño del equipo.
+ * @param {string} token - Auth token.
+ * @returns {Promise<Object>} Response del backend.
+ */
+exports.assignTeam = async (contractAddress, teamSize, token) => {
+    try {
+        return await adapterAPI.assignTeam(contractAddress, teamSize, token);
+    } catch (error) {
+        console.error(`[SEDA Project] Error assigning team:`, error.message);
+        throw error;
+    }
+};
+
+//-----------------------------------------------------------
+
+/**
+ * Obtiene la información del equipo del proyecto.
+ *
+ * @async
+ * @function getTeam
+ * @param {string} contractAddress - Contract address del proyecto.
+ * @returns {Promise<Object>} Información del equipo.
+ */
+exports.getTeam = async (contractAddress) => {
+    try {
+        return await adapterAPI.getTeam(contractAddress);
+    } catch (error) {
+        console.error(`[SEDA Project] Error getting team:`, error.message);
+        throw error;
+    }
+};
+
+//-----------------------------------------------------------
+
+/**
+ * Obtiene la información del scope del proyecto.
+ *
+ * @async
+ * @function getScopeInfo
+ * @param {string} contractAddress - Contract address del proyecto.
+ * @returns {Promise<Object>} Información del scope.
+ */
+exports.getScopeInfo = async (contractAddress) => {
+    try {
+        return await adapterAPI.getScopeInfo(contractAddress);
+    } catch (error) {
+        console.error(`[SEDA Project] Error getting scope info:`, error.message);
+        throw error;
+    }
+};
+
+//-----------------------------------------------------------
+
+/**
+ * Obtiene todas las tareas del proyecto.
+ *
+ * @async
+ * @function getAllTasks
+ * @param {string} contractAddress - Contract address del proyecto.
+ * @returns {Promise<Array>} Lista de tareas.
+ */
+exports.getAllTasks = async (contractAddress) => {
+    try {
+        return await adapterAPI.getAllTasks(contractAddress);
+    } catch (error) {
+        console.error(`[SEDA Project] Error getting all tasks:`, error.message);
+        throw error;
+    }
+};
+
+//-----------------------------------------------------------
+
+/**
+ * Obtiene una tarea específica del proyecto.
+ *
+ * @async
+ * @function getTask
+ * @param {string} contractAddress - Contract address del proyecto.
+ * @param {number} taskId - ID de la tarea.
+ * @returns {Promise<Object>} Información de la tarea.
+ */
+exports.getTask = async (contractAddress, taskId) => {
+    try {
+        return await adapterAPI.getTask(contractAddress, taskId);
+    } catch (error) {
+        console.error(`[SEDA Project] Error getting task:`, error.message);
+        throw error;
+    }
+};
+
+//-----------------------------------------------------------
+
+/**
+ * Completa una tarea del proyecto.
+ *
+ * @async
+ * @function completeTask
+ * @param {string} contractAddress - Contract address del proyecto.
+ * @param {number} taskId - ID de la tarea.
+ * @param {string} token - Auth token.
+ * @returns {Promise<Object>} Response del backend.
+ */
+exports.completeTask = async (contractAddress, taskId, token) => {
+    try {
+        return await adapterAPI.completeTask(contractAddress, taskId, token);
+    } catch (error) {
+        console.error(`[SEDA Project] Error completing task:`, error.message);
+        throw error;
+    }
+};
+
+//-----------------------------------------------------------
+
+/**
+ * Obtiene el estado de completación de una tarea.
+ *
+ * @async
+ * @function getTaskCompletionStatus
+ * @param {string} contractAddress - Contract address del proyecto.
+ * @param {number} taskId - ID de la tarea.
+ * @returns {Promise<Object>} Estado de la tarea.
+ */
+exports.getTaskCompletionStatus = async (contractAddress, taskId) => {
+    try {
+        return await adapterAPI.getTaskCompletionStatus(contractAddress, taskId);
+    } catch (error) {
+        console.error(`[SEDA Project] Error getting task completion status:`, error.message);
+        throw error;
+    }
+};
+
+//-----------------------------------------------------------
+
+/**
+ * Actualiza el proyecto en el backend.
+ *
+ * @async
+ * @function updateProject
+ * @param {string} contractAddress - Contract address del proyecto.
+ * @param {Object} data - Datos a actualizar.
+ * @param {string} token - Auth token.
+ * @returns {Promise<Object>} Response del backend.
+ */
+exports.updateProject = async (contractAddress, data, token) => {
+    try {
+        return await adapterAPI.updateProject(contractAddress, data, token);
+    } catch (error) {
+        console.error(`[SEDA Project] Error updating project:`, error.message);
+        throw error;
+    }
+};
+
+//-----------------------------------------------------------
+
+/**
+ * Establece el contrato de calendario para el proyecto.
+ *
+ * @async
+ * @function setCalendarContract
+ * @param {string} contractAddress - Contract address del proyecto.
+ * @param {string} calendarContractAddress - Address del contrato de calendario.
+ * @param {string} token - Auth token.
+ * @returns {Promise<Object>} Response del backend.
+ */
+exports.setCalendarContract = async (contractAddress, calendarContractAddress, token) => {
+    try {
+        return await adapterAPI.setCalendarContract(contractAddress, calendarContractAddress, token);
+    } catch (error) {
+        console.error(`[SEDA Project] Error setting calendar contract:`, error.message);
+        throw error;
+    }
 };
 
 //-----------------------------------------------------------

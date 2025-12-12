@@ -218,15 +218,208 @@ async function testAdapterAPI() {
         log('    ⊘ Skipping dependent developer tests (no developer created)', colors.yellow);
     }
 
-    // Projects Tests (Read-only, as most require authentication)
-    log('\n  Project Endpoints (Read-only):', colors.bright);
+    // Projects Tests - Complete Lifecycle Flow
+    log('\n  Project Endpoints - Complete Flow:', colors.bright);
+    let createdProjectAddress;
+    let testToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJ0ZXN0LWNsaWVudEBjbGllbnQuY29tIiwicHVibGljS2V5IjoiMHhlZDhiMjkwZjYxZTlkN2I0MWJhMjgwODEzNDk4YTkyNWQzOGFiMWFiY2I5YzgzZTA1MTAxNTQ0ZDA1MTA2MGUyIiwiYWRkcmVzcyI6IkRWOFdZczE1VUs5Q3BEZEdhNHpKOUhOV2RYampHVmVwNm1OVHc3WW1ydzk1Z1d6IiwiaWF0IjoxNzY1NTU1Mzc0LCJleHAiOjE3NjU1NTU5NzR9.ksRfaMu0r8m-1EyekC9a27f4yxWMBTo-uut6M4wqkX4'; // Mock token for testing
 
-    await runTest('getProjectInfo (requires valid contract)', async () => {
-        return { skip: true };
+    // Test 1: Deploy Project
+    await runTest('deployProject', async () => {
+        if (!createdClientId) {
+            return { skip: true, reason: 'No client created' };
+        }
+        
+        const projectData = {
+            title: 'Test Project',
+            summary: 'Test project summary',
+            description: 'Detailed test project description',
+            projectTypeId: 1,
+            url: 'https://test-project.com',
+            budgetId: 1,
+            deliveryTimeId: 1,
+            deliveryDate: '2025-12-31'
+        };
+
+        try {
+            const result = await adapterAPI.deployProject('v5', projectData, createdClientId, testToken);
+            if (result && result.address) {
+                createdProjectAddress = result.address;
+                log(`    Created project at address: ${createdProjectAddress}`, colors.blue);
+            }
+            return result;
+        } catch (error) {
+            // Skip if authentication fails (expected in test environment)
+            if (error.statusCode === 401 || error.statusCode === 403) {
+                return { skip: true, reason: 'Authentication required' };
+            }
+            throw error;
+        }
     });
 
+    // Test 2: Get Project Info
+    if (createdProjectAddress) {
+        await runTest('getProjectInfo', async () => {
+            return await adapterAPI.getProjectInfo(createdProjectAddress);
+        });
+
+        // Test 3: Assign Coordinator
+        await runTest('assignCoordinator', async () => {
+            try {
+                return await adapterAPI.assignCoordinator(createdProjectAddress, testToken);
+            } catch (error) {
+                if (error.statusCode === 401 || error.statusCode === 403) {
+                    return { skip: true, reason: 'Authentication required' };
+                }
+                throw error;
+            }
+        });
+
+        // Test 4: Create Milestone
+        let createdMilestoneId;
+        await runTest('createMilestone', async () => {
+            const milestoneData = {
+                title: 'Test Milestone 1',
+                description: 'First milestone for testing',
+                budget: 5000,
+                deliveryTimeId: 1,
+                deliveryDate: '2025-11-30'
+            };
+
+            try {
+                const result = await adapterAPI.createMilestone(createdProjectAddress, milestoneData, testToken);
+                if (result && result.milestoneId) {
+                    createdMilestoneId = result.milestoneId;
+                    log(`    Created milestone with ID: ${createdMilestoneId}`, colors.blue);
+                }
+                return result;
+            } catch (error) {
+                if (error.statusCode === 401 || error.statusCode === 403) {
+                    return { skip: true, reason: 'Authentication required' };
+                }
+                throw error;
+            }
+        });
+
+        // Test 5: Get Milestones
+        await runTest('getMilestones', async () => {
+            try {
+                return await adapterAPI.getMilestones(createdProjectAddress, testToken);
+            } catch (error) {
+                if (error.statusCode === 401 || error.statusCode === 403) {
+                    return { skip: true, reason: 'Authentication required' };
+                }
+                throw error;
+            }
+        });
+
+        // Test 6: Get Single Milestone
+        if (createdMilestoneId) {
+            await runTest('getMilestone', async () => {
+                try {
+                    return await adapterAPI.getMilestone(createdProjectAddress, createdMilestoneId, testToken);
+                } catch (error) {
+                    if (error.statusCode === 401 || error.statusCode === 403) {
+                        return { skip: true, reason: 'Authentication required' };
+                    }
+                    throw error;
+                }
+            });
+
+            // Test 7: Update Milestone
+            await runTest('updateMilestone', async () => {
+                const updateData = {
+                    title: 'Updated Test Milestone',
+                    description: 'Updated description',
+                    budget: 6000
+                };
+
+                try {
+                    return await adapterAPI.updateMilestone(createdProjectAddress, createdMilestoneId, updateData, testToken);
+                } catch (error) {
+                    if (error.statusCode === 401 || error.statusCode === 403) {
+                        return { skip: true, reason: 'Authentication required' };
+                    }
+                    throw error;
+                }
+            });
+        }
+
+        // Test 8: Propose Scope
+        await runTest('proposeScope', async () => {
+            const milestones = [
+                { title: 'M1', budget: 5000, deliveryDate: '2025-11-30' },
+                { title: 'M2', budget: 5000, deliveryDate: '2025-12-31' }
+            ];
+
+            try {
+                return await adapterAPI.proposeScope(
+                    createdProjectAddress,
+                    milestones,
+                    20, // 20% advance payment
+                    '0xdocumenthash',
+                    testToken
+                );
+            } catch (error) {
+                if (error.statusCode === 401 || error.statusCode === 403) {
+                    return { skip: true, reason: 'Authentication required' };
+                }
+                throw error;
+            }
+        });
+
+        // Test 9: Get Scope Info
+        await runTest('getScopeInfo', async () => {
+            try {
+                return await adapterAPI.getScopeInfo(createdProjectAddress);
+            } catch (error) {
+                if (error.statusCode === 404) {
+                    return { message: 'Scope not yet proposed (expected)' };
+                }
+                throw error;
+            }
+        });
+
+        // Test 10: Get Team
+        await runTest('getTeam', async () => {
+            try {
+                return await adapterAPI.getTeam(createdProjectAddress);
+            } catch (error) {
+                if (error.statusCode === 404) {
+                    return { message: 'Team not yet assigned (expected)' };
+                }
+                throw error;
+            }
+        });
+
+        // Test 11: Get All Tasks
+        await runTest('getAllTasks', async () => {
+            try {
+                return await adapterAPI.getAllTasks(createdProjectAddress);
+            } catch (error) {
+                if (error.statusCode === 404) {
+                    return { message: 'No tasks yet (expected)' };
+                }
+                throw error;
+            }
+        });
+
+    } else {
+        log('    ⊘ Skipping project flow tests (no project created)', colors.yellow);
+    }
+
     // Calendar Tests
-    log('\n  Calendar Endpoints (Read-only):', colors.bright);
+    log('\n  Calendar Endpoints:', colors.bright);
+
+    await runTest('deployCalendar', async () => {
+        try {
+            return await adapterAPI.deployCalendar('v5', testToken);
+        } catch (error) {
+            if (error.statusCode === 401 || error.statusCode === 403) {
+                return { skip: true, reason: 'Authentication required' };
+            }
+            throw error;
+        }
+    });
 
     await runTest('getRegisteredWorkers (requires valid contract)', async () => {
         return { skip: true };

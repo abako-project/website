@@ -70,3 +70,167 @@ exports.registerWorker = async (userId, token) => {
 }
 
 //-----------------------------------------------------------
+
+/**
+ * Despliega un nuevo contrato de calendario.
+ *
+ * @async
+ * @function deployCalendar
+ * @param {string} version - Versión del contrato (ej: 'v5').
+ * @param {string} token - Auth token.
+ * @returns {Promise<Object>} Response con la dirección del contrato.
+ */
+exports.deployCalendar = async (version, token) => {
+    try {
+        return await adapterAPI.deployCalendar(version, token);
+    } catch (error) {
+        console.error(`[SEDA Calendar] Error deploying calendar:`, error.message);
+        throw error;
+    }
+};
+
+//-----------------------------------------------------------
+
+/**
+ * Registra múltiples workers en el calendario.
+ *
+ * @async
+ * @function registerWorkers
+ * @param {string} contractAddress - Dirección del contrato de calendario.
+ * @param {Array<string>} workers - Array de direcciones de workers.
+ * @param {string} token - Auth token.
+ * @returns {Promise<Object>} Response del backend.
+ */
+exports.registerWorkers = async (contractAddress, workers, token) => {
+    try {
+        return await adapterAPI.registerWorkers(contractAddress, workers, token);
+    } catch (error) {
+        console.error(`[SEDA Calendar] Error registering workers:`, error.message);
+        throw error;
+    }
+};
+
+//-----------------------------------------------------------
+
+/**
+ * Establece la disponibilidad de un worker.
+ *
+ * @async
+ * @function setAvailability
+ * @param {string} contractAddress - Dirección del contrato de calendario.
+ * @param {number} availability - Horas de disponibilidad.
+ * @param {string} token - Auth token.
+ * @returns {Promise<Object>} Response del backend.
+ */
+exports.setAvailability = async (contractAddress, availability, token) => {
+    try {
+        return await adapterAPI.setAvailability(contractAddress, availability, token);
+    } catch (error) {
+        console.error(`[SEDA Calendar] Error setting availability:`, error.message);
+        throw error;
+    }
+};
+
+//-----------------------------------------------------------
+
+/**
+ * Establece la disponibilidad de un worker (admin).
+ *
+ * @async
+ * @function adminSetWorkerAvailability
+ * @param {string} contractAddress - Dirección del contrato de calendario.
+ * @param {string} worker - Dirección del worker.
+ * @param {number} availability - Horas de disponibilidad.
+ * @param {string} token - Auth token.
+ * @returns {Promise<Object>} Response del backend.
+ */
+exports.adminSetWorkerAvailability = async (contractAddress, worker, availability, token) => {
+    try {
+        return await adapterAPI.adminSetWorkerAvailability(contractAddress, worker, availability, token);
+    } catch (error) {
+        console.error(`[SEDA Calendar] Error setting worker availability (admin):`, error.message);
+        throw error;
+    }
+};
+
+//-----------------------------------------------------------
+
+/**
+ * Obtiene las horas de disponibilidad de un worker.
+ *
+ * @async
+ * @function getAvailabilityHours
+ * @param {string} contractAddress - Dirección del contrato de calendario.
+ * @param {string} worker - Dirección del worker.
+ * @returns {Promise<Object>} Horas de disponibilidad.
+ */
+exports.getAvailabilityHours = async (contractAddress, worker) => {
+    try {
+        return await adapterAPI.getAvailabilityHours(contractAddress, worker);
+    } catch (error) {
+        console.error(`[SEDA Calendar] Error getting availability hours:`, error.message);
+        throw error;
+    }
+};
+
+//-----------------------------------------------------------
+
+/**
+ * Verifica si un worker está disponible.
+ *
+ * @async
+ * @function isAvailable
+ * @param {string} contractAddress - Dirección del contrato de calendario.
+ * @param {string} worker - Dirección del worker.
+ * @param {number} [minHours] - Horas mínimas requeridas (opcional).
+ * @returns {Promise<Object>} Estado de disponibilidad.
+ */
+exports.isAvailable = async (contractAddress, worker, minHours) => {
+    try {
+        return await adapterAPI.isAvailable(contractAddress, worker, minHours);
+    } catch (error) {
+        console.error(`[SEDA Calendar] Error checking availability:`, error.message);
+        throw error;
+    }
+};
+
+//-----------------------------------------------------------
+
+/**
+ * Obtiene los workers disponibles.
+ *
+ * @async
+ * @function getAvailableWorkers
+ * @param {string} contractAddress - Dirección del contrato de calendario.
+ * @param {number} [minHours] - Horas mínimas requeridas (opcional).
+ * @returns {Promise<Array>} Lista de workers disponibles.
+ */
+exports.getAvailableWorkers = async (contractAddress, minHours) => {
+    try {
+        return await adapterAPI.getAvailableWorkers(contractAddress, minHours);
+    } catch (error) {
+        console.error(`[SEDA Calendar] Error getting available workers:`, error.message);
+        throw error;
+    }
+};
+
+//-----------------------------------------------------------
+
+/**
+ * Obtiene la disponibilidad de todos los workers.
+ *
+ * @async
+ * @function getAllWorkersAvailability
+ * @param {string} contractAddress - Dirección del contrato de calendario.
+ * @returns {Promise<Object>} Disponibilidad de todos los workers.
+ */
+exports.getAllWorkersAvailability = async (contractAddress) => {
+    try {
+        return await adapterAPI.getAllWorkersAvailability(contractAddress);
+    } catch (error) {
+        console.error(`[SEDA Calendar] Error getting all workers availability:`, error.message);
+        throw error;
+    }
+};
+
+//-----------------------------------------------------------
