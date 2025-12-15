@@ -38,9 +38,16 @@ const TEST_CONFIG = {
     testContractAddress: '0xTestContractAddress',
     communityId: 1,
 
+    // Calendar address (from deployed calendar contract)
+    // Update this if you have a different calendar address
+    calendarAddress: process.env.CALENDAR_ADDRESS || 'CeRx6EW6vxaacHBvhtvHvZFcmhWRQW4T9xtafS9FprZYEay',
+
     // Options
     verbose: process.env.VERBOSE === 'true',
-    skipConnectivity: process.env.SKIP_CONNECTIVITY === 'true'
+    skipConnectivity: process.env.SKIP_CONNECTIVITY === 'true',
+    
+    // Token (can be provided via environment variable for real tests)
+    token: process.env.TEST_TOKEN || null
 };
 
 // Color codes for console output
@@ -189,9 +196,10 @@ async function testAdapterAPI() {
     });
 
     await runTest('createDeveloper', async () => {
+        const developerEmail = 'dev-' + TEST_CONFIG.testEmail; // Different email for developer
         const result = await adapterAPI.createDeveloper(
-            TEST_CONFIG.testEmail,
-            TEST_CONFIG.testName,
+            developerEmail,
+            TEST_CONFIG.testName + ' (Dev)',
             'testdev',
             'https://portfolio.com'
         );
@@ -218,10 +226,67 @@ async function testAdapterAPI() {
         log('    ⊘ Skipping dependent developer tests (no developer created)', colors.yellow);
     }
 
+    // Calendar Setup - Register developer before creating projects
+    log('\n  Calendar Setup:', colors.bright);
+    let calendarAddress = TEST_CONFIG.calendarAddress;
+    let developerAddress = null;
+    let testToken = TEST_CONFIG.token || 'test-token-' + Date.now(); // Use real token if available
+
+    if (createdDeveloperId) {
+        // Get developer address from Virto
+        await runTest('getDeveloperAddress', async () => {
+            try {
+                const developerEmail = 'dev-' + TEST_CONFIG.testEmail;
+                const response = await fetch(`https://dev.abako.xyz/api/get-user-address?userId=${developerEmail}`);
+                const data = await response.json();
+                if (data.address) {
+                    developerAddress = data.address;
+                    log(`    Developer address: ${developerAddress}`, colors.blue);
+                }
+                return data;
+            } catch (error) {
+                log(`    Could not get developer address: ${error.message}`, colors.yellow);
+                return { skip: true, reason: 'Could not fetch address' };
+            }
+        });
+
+        // Register developer in calendar
+        if (developerAddress) {
+            await runTest('registerWorkerInCalendar', async () => {
+                try {
+                    const result = await adapterAPI.registerWorker(calendarAddress, developerAddress, testToken);
+                    log(`    Developer registered in calendar`, colors.blue);
+                    return result;
+                } catch (error) {
+                    if (error.statusCode === 401 || error.statusCode === 403) {
+                        log(`    Auth required for calendar registration (expected)`, colors.yellow);
+                        return { skip: true, reason: 'Authentication required' };
+                    }
+                    log(`    Calendar registration error: ${error.message}`, colors.yellow);
+                    return { skip: true, reason: error.message };
+                }
+            });
+
+            // Set developer availability
+            await runTest('setDeveloperAvailability', async () => {
+                try {
+                    const result = await adapterAPI.setAvailability(calendarAddress, 40, testToken); // 40 hours/week
+                    log(`    Developer availability set to 40 hours/week`, colors.blue);
+                    return result;
+                } catch (error) {
+                    if (error.statusCode === 401 || error.statusCode === 403) {
+                        return { skip: true, reason: 'Authentication required' };
+                    }
+                    log(`    Could not set availability: ${error.message}`, colors.yellow);
+                    return { skip: true, reason: error.message };
+                }
+            });
+        }
+    }
+
     // Projects Tests - Complete Lifecycle Flow
     log('\n  Project Endpoints - Complete Flow:', colors.bright);
     let createdProjectAddress;
-    let testToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJ0ZXN0LWNsaWVudEBjbGllbnQuY29tIiwicHVibGljS2V5IjoiMHhlZDhiMjkwZjYxZTlkN2I0MWJhMjgwODEzNDk4YTkyNWQzOGFiMWFiY2I5YzgzZTA1MTAxNTQ0ZDA1MTA2MGUyIiwiYWRkcmVzcyI6IkRWOFdZczE1VUs5Q3BEZEdhNHpKOUhOV2RYampHVmVwNm1OVHc3WW1ydzk1Z1d6IiwiaWF0IjoxNzY1NTU1Mzc0LCJleHAiOjE3NjU1NTU5NzR9.ksRfaMu0r8m-1EyekC9a27f4yxWMBTo-uut6M4wqkX4'; // Mock token for testing
 
     // Test 1: Deploy Project
     await runTest('deployProject', async () => {

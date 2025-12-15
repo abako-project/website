@@ -124,12 +124,22 @@ exports.project = async projectId => {
  *
  * @async
  * @function projectClientId
- * @param {number} projectId - ID del proyecto.
+ * @param {number|string} projectId - ID o contract address del proyecto.
  * @returns {Promise<number>} ID del cliente.
  * @throws {Error} Si no se encuentra el proyecto.
  */
 exports.projectClientId = async projectId => {
+    try {
+        // Try to get project info from backend
+        const projectInfo = await adapterAPI.getProjectInfo(projectId);
+        if (projectInfo && projectInfo.clientId) {
+            return projectInfo.clientId;
+        }
+    } catch (error) {
+        console.warn(`[SEDA Project] Could not get project info from backend, falling back to SQLite:`, error.message);
+    }
 
+    // Fallback to SQLite
     const project = await Project.findByPk(projectId);
 
     if (project) {
@@ -142,16 +152,31 @@ exports.projectClientId = async projectId => {
 //-----------------------------------------------------------
 
 /**
- * Devuelve el ID del consultor asociado a un proyecto.
+ * Devuelve el ID del consultor (coordinator) asociado a un proyecto.
  *
  * @async
  * @function projectConsultantId
- * @param {number} projectId - ID del proyecto.
+ * @param {number|string} projectId - ID o contract address del proyecto.
  * @returns {Promise<number>} ID del consultor.
  * @throws {Error} Si no se encuentra el proyecto.
  */
 exports.projectConsultantId = async projectId => {
+    try {
+        // Try to get project info from backend
+        const projectInfo = await adapterAPI.getProjectInfo(projectId);
+        if (projectInfo && projectInfo.consultantId) {
+            return projectInfo.consultantId;
+        }
+        // Check for coordinator in team info
+        const teamInfo = await adapterAPI.getTeam(projectId);
+        if (teamInfo && teamInfo.coordinator) {
+            return teamInfo.coordinator;
+        }
+    } catch (error) {
+        console.warn(`[SEDA Project] Could not get project info from backend, falling back to SQLite:`, error.message);
+    }
 
+    // Fallback to SQLite
     const project = await Project.findByPk(projectId);
 
     if (project) {
@@ -273,15 +298,29 @@ exports.projectsIndex_BBDD = async (clientId, consultantId, developerId) => {
 
 /**
  * Actualiza el estado de un proyecto.
+ * Note: El estado se gestiona principalmente en el smart contract.
+ * Este método se usa para sincronización local.
  *
  * @async
  * @function projectSetState
- * @param {number} projectId - ID del proyecto.
+ * @param {number|string} projectId - ID o contract address del proyecto.
  * @param {string} state - Nuevo estado a asignar.
+ * @param {string} [token] - Auth token para operaciones en backend.
  * @returns {Promise<void>}
  * @throws {Error} Si falla la actualización del estado.
  */
-exports.projectSetState = async (projectId, state) => {
+exports.projectSetState = async (projectId, state, token) => {
+    try {
+        // Try to update on backend if token provided
+        if (token) {
+            await adapterAPI.updateProject(projectId, { state }, token);
+            return;
+        }
+    } catch (error) {
+        console.warn(`[SEDA Project] Could not update state on backend, falling back to SQLite:`, error.message);
+    }
+
+    // Fallback to SQLite for local state management
     await Project.update({state}, {where: {id: projectId}});
 };
 

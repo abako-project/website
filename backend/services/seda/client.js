@@ -189,16 +189,8 @@ exports.clientUpdate = async (clientId, data) => {
  */
 exports.clientFindByEmail = async (email) => {
 
-  const client = await Client.findOne({
-    include: [
-      {
-        model: User, as: "user",
-        where: {email}
-      }
-    ]
-  });
+    return await adapterAPI.findClientByEmail(email);
 
-  return client ? json.clientJson(client) : null;
 }
 
 

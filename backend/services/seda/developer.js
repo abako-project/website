@@ -108,16 +108,28 @@ exports.developer = async developerId => {
 
 /**
  * Devuelve todos los developers asignados a un proyecto,
- * a través de sus milestones.
+ * a través de sus milestones o del equipo del proyecto.
  *
  * @async
  * @function projectDevelopers
- * @param {number} projectId - ID del proyecto.
+ * @param {number|string} projectId - ID o contract address del proyecto.
  * @returns {Promise<Object[]>} Lista de developers únicos asociados al proyecto.
  * @throws {Error} Si no existe el proyecto.
  */
 
 exports.developers = async projectId => {
+    try {
+        // Try to get team from backend
+        const teamResponse = await adapterAPI.getTeam(projectId);
+        if (teamResponse && teamResponse.team) {
+            // Return team members as developers
+            return teamResponse.team;
+        }
+    } catch (error) {
+        console.warn(`[SEDA Developer] Could not get team from backend, falling back to SQLite:`, error.message);
+    }
+
+    // Fallback to SQLite
     const project = await Project.findByPk(projectId, {
         include: [
             {
@@ -329,9 +341,31 @@ exports.developerFindByEmail = async (email) => {
  * @returns {Promise<Object[]>} Lista de desarrolladores con el rol especificado.
  */
 exports.developersWithRole = async (roleId) => {
+    try {
+        // Get all developers from backend and filter by role
+        const response = await adapterAPI.getDevelopers();
+        if (response && response.developers) {
+            // Filter by roleId if specified
+            if (roleId) {
+                return response.developers.filter(d => d.roleId === roleId);
+            }
+            return response.developers;
+        }
+    } catch (error) {
+        console.warn(`[SEDA Developer] Could not get developers from backend, falling back to SQLite:`, error.message);
+    }
 
+    // Fallback to SQLite
     const developers = await Developer.findAll({
-        //  where: {roleId}
+        where: roleId ? { roleId } : {},
+        include: [
+            {model: User, as: "user"},
+            {model: Attachment, as: "attachment"},
+            {model: Language, as: "languages"},
+            {model: Role, as: "role"},
+            {model: Proficiency, as: "proficiency"},
+            {model: Skill, as: "skills"},
+        ]
     });
 
     return developers.map(developer => json.developerJson(developer));
