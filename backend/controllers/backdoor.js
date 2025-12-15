@@ -38,26 +38,44 @@ exports.registeredDevelopers = async (req, res, next) => {
         }
         let workers = response.response;
 
-        console.log(">>> Ctrl.backdoor > registeredworkers");
-        console.log(workers);
-        console.log("-----------------------------");
+        // console.log(">>> Ctrl.backdoor > registeredworkers");
+        // console.log(workers);
+        // console.log("-----------------------------");
 
         const developers = await seda.developerIndex();
 
-        console.log(">>> Ctrl.backdoor > developers");
-        console.log(developers);
-        console.log("-----------------------------");
+        // console.log(">>> Ctrl.backdoor > developers");
+        // console.log(developers);
+        // console.log("-----------------------------");
+
+
+        const response2 = await seda.workersAvailability();
+        if (!response2.success) {
+            throw new Error("no puedo obtener la disponibilidad de los workers..");
+        }
+        let availabilities = response2.response;
+        // console.log(">>> Ctrl.backdoor > workersAvailability");
+        // console.log(availabilities);
+        // console.log("-----------------------------");
+
+        const info = [];
 
         for (let developer of developers) {
             let address = await seda.getWorkerAddress(developer.email);
 
             let registeredInCalendar = address && workers.includes(address);
 
-            console.log("*", developer.email, " > ", address, " - ", registeredInCalendar ? "Registrado" : "No");
+            const hours = availabilities.find(item => item.worker === address)?.hour ?? 0;
 
+            info.push({
+                email: developer.email,
+                workerAddress: address,
+                registeredInCalendar,
+                hours
+            })
         }
 
-        res.redirect(`/backdoor`);
+        res.render(`backdoor/calendar`, {calendarAddress: seda.calendarAddress, info});
     } catch (error) {
         console.log('Error: An error has occurred: ' + error);
         next(error);

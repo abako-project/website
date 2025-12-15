@@ -172,7 +172,7 @@ exports.clientUpdate = async (clientId, data) => {
     try {
         const response = await adapterAPI.updateClient(clientId, data);
     } catch (error) {
-        console.error('[SEDA Client] Error creating client:', error);
+        console.error('[SEDA Client] Error updating client:', error);
         throw error;
     }
 };

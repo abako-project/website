@@ -1,6 +1,10 @@
 
 const {adapterAPI} = require('../api-client');
 
+// Esto desarparece con el siguiente api adapter
+const calendarAddress = "Cfqrpkb3Fs17DBpQR5UmBq3bDzaDTnFe89RK9EwZvPWtJpr";
+
+exports.calendarAddress = calendarAddress;
 
 //-----------------------------------------------------------
 
@@ -14,6 +18,18 @@ exports.registeredWorkers = async () => {
 
     const response = await adapterAPI.getRegisteredWorkers(calendarAddress);
 
+
+    return response;
+}
+
+//-----------------------------------------------------------
+
+/**
+ * Devuelve la disponibilidad de los workers.
+ */
+exports.workersAvailability = async () => {
+
+    const response = await adapterAPI.getAllWorkersAvailability(calendarAddress);
 
     return response;
 }
@@ -44,9 +60,6 @@ exports.getWorkerAddress = async (email) => {
  */
 exports.registerWorker = async (userId, token) => {
 
-    // Esto desarparece con el siguiente api adapter
-    const calendarAddress = "Cfqrpkb3Fs17DBpQR5UmBq3bDzaDTnFe89RK9EwZvPWtJpr";
-
     // Obtener las addresses de todos los workers registrados en el contrato Calendar:
     const response = await exports.registeredWorkers();
     if (!response.success) {
@@ -66,6 +79,33 @@ exports.registerWorker = async (userId, token) => {
         if (!response.success) {
             throw new Error("No puedo registrarme en el contrato Calendar.");
         }
+    }
+}
+
+//-----------------------------------------------------------
+
+
+/**
+ * Guardar la disponibilidad de un worker.
+ */
+exports.setWorkerAvailability = async (userId, availability, token) => {
+
+    // Obtener mi worker address:
+    let address = await exports.getWorkerAddress(userId);
+    if (!address) {
+        throw new Error("No puedo obtener mi worker address.");
+    }
+
+     // Guardar disponibilidad en el Calendar
+    // let response = await adapterAPI.adminSetWorkerAvailability(calendarAddress, address, availability, token);
+    // if (!response.success) {
+    //     throw new Error("No puedo guardar la disponibilidad de un worker en el contrato Calendar.");
+    // }
+
+    // Guardar disponibilidad en el Calendar
+    let response = await adapterAPI.setAvailability(calendarAddress, availability, token);
+    if (!response.success) {
+        throw new Error("No puedo guardar la disponibilidad de un worker en el contrato Calendar.");
     }
 }
 

@@ -1,0 +1,34 @@
+
+
+<h1> Calendar </h1>
+
+<p>
+Calendar Address: <%= calendarAddress %>
+</p>
+
+<table border>
+    <tr>
+        <th> Developer Email </th>
+        <th> Worker Address  </th>
+        <th> Registered In Calendar </th>
+        <th> Available Hours </th>
+    </tr>
+
+    <% for (const {email, workerAddress, registeredInCalendar, hours} of info) { %>
+        <tr>
+            <td>
+                <%= email %>
+            </td>
+            <td>
+                (<%= workerAddress %>)
+            </td>
+            <td>
+                <%= registeredInCalendar && "Si" %>
+            </td>
+            <td>
+                <%= hours %>
+            </td>
+        </tr>
+    <% } %>
+</table>
+

@@ -28,14 +28,14 @@ exports.index = async (req, res, next) => {
 
 // GET /clients/:clientId/profile
 exports.show = async (req, res, next) => {
-  try {
-    const {client} = req.load;
-    const avatarUrl = `/clients/${client.id}/attachment`;
+    try {
+        const {client} = req.load;
+        const avatarUrl = `/clients/${client.id}/attachment`;
 
-    res.render('clients/profile/show', { c: client, avatarUrl });
-  } catch (error) {
-    next(error);
-  }
+        res.render('clients/profile/show', {c: client, avatarUrl});
+    } catch (error) {
+        next(error);
+    }
 };
 
 // GET /clients/:clientId/profile/edit
