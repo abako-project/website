@@ -31,7 +31,7 @@
                 <div class="profileCard__header">
                     <div class="profileCard__titles">
                         <h2 class="profileCard__title"><%= developer.role?.name ?? ''%> Developer</h2>
-                        <span class="profileCard__subtitle"><%= developer.proficiency?.description || '—' %></span>
+                        <span class="profileCard__subtitle"><%= developer.proficiency?.description || 'No proficiency available.' %></span>
                     </div>
                     <a href="/developers/<%= loginUser.developerId %>/profile/edit" class="btn btn__link">
                         <i class="ri-user-line"></i>Edit Profile
@@ -48,42 +48,69 @@
                     <p><%= developer.background || 'No background information.' %></p>
                 </div>
 
-                <% if (developer.skills && developer.skills.length > 0) { %>
                 <div class="profileCard__skills">
-                    <% developer.skills.forEach(skill => { %>
-                        <span class="skill"><%= skill.name %></span>
-                    <% }) %>
+                    <% if (developer.skills && developer.skills.length > 0) { %>
+                        <% developer.skills.forEach(skill => { %>
+                            <span class="skill"><%= skill.name %></span>
+                        <% }) %>
+                    <% } else { %>
+                            <span class="skill">Without skills.</span>
+                        <% } %>
                 </div>
-                <% } %>
+
 
                 <div class="profileCard__section">
                     <ul class="infoList">
 
-                        <% if (developer.languages && developer.languages.length) { %>
-                        <li><i class="ri-translate-2"></i> 
-                            <%= developer.languages.map(l => l.name).join(', ') %>
+                        <li>
+                            <i class="ri-translate-2"></i>
+                            <% if (developer.languages && developer.languages.length) { %>
+                                <%= developer.languages.map(l => l.name).join(', ') %>
+                            <% } else { %>
+                                No languages
+                            <% } %>
                         </li>
-                        <% } %>
 
-                        <% if (developer.location) { %>
-                        <li><i class="ri-map-pin-line"></i> <%= developer.location %></li>
-                        <% } %>
+                        <li>
+                            <i class="ri-map-pin-line"></i>
+                            <% if (developer.location) { %>
+                            <%= developer.location %>
+                            <% } else { %>
+                                No location
+                            <% } %>
+                        </li>
 
                         <% if (developer.portfolioUrl) { %>
                         <li><i class="ri-earth-line"></i> <%= developer.portfolioUrl %></li>
                         <% } %>
 
-                        <% if (developer.githubUsername) { %>
-                        <li><i class="ri-github-line"></i> <%= developer.githubUsername %></li>
-                        <% } %>
+                        <li>
+                            <i class="ri-github-line"></i>
+                            <% if (developer.githubUsername) { %>
+                            <%= developer.githubUsername %>
+                            <% } else { %>
+                                No github account
+                            <% } %>
+                        </li>
 
-                        <% if (developer.email) { %>
-                        <li><i class="ri-mail-line"></i> <%= developer.email %></li>
-                        <% } %>
+                        <li>
+                            <i class="ri-mail-line"></i>
+                            <% if (developer.email) { %>
+                            <%= developer.email %>
+                            <% } else { %>
+                                No email
+                            <% } %>
 
-                        <% if (availability.length) { %>
-                            <li><i class="ri-time-line"></i> <%= availability.join(', ') %></li>
-                        <% } %>
+                        </li>
+
+                            <li>
+                                <i class="ri-time-line"></i>
+                                <% if (availability.length) { %>
+                                <%= availability.join(', ') %>
+                                <% } else { %>
+                                    No availability
+                                <% } %>
+                            </li>
 
                     </ul>
                 </div>

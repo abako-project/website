@@ -1,10 +1,5 @@
 
-const json = require("./json");
-
-const {
-  models: {Language}
-} = require('../../models');
-
+const languajesData = require('../../utils/languages.json');
 
 //-----------------------------------------------------------
 
@@ -16,10 +11,7 @@ const {
  * @returns {Promise<Object[]>} Lista de lenguajes en formato JSON.
  */
 exports.languageIndex = async () => {
-
-  const languages = await Language.findAll();
-
-  return languages.map(language => json.languageJson(language));
+    return Object.keys(languajesData).map((key, index) => ({id: index + 1, code: key, name: languajesData[key]}));
 }
 
 //-----------------------------------------------------------

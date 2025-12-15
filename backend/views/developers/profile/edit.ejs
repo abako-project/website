@@ -17,7 +17,8 @@
                 </div>
                 
                     
-                <form method="post" action="/developers/<%= developer.id %>?_method=PUT" enctype="multipart/form-data" class="profileForm">
+                <form method="post" action="/developers/<%= developer.id %>?_method=PUT" enctype="multipart/form-data" class="profileForm"
+                      onsubmit="showWaitModal()">
 
                     <div class="profileCard__staticInfo">
                         <p><strong>Email:</strong> <%= developer.email %></p>

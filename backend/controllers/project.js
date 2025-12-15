@@ -18,10 +18,10 @@ exports.index = async (req, res, next) => {
 
       const projects = await seda.projectsIndex(clientId, developerId, developerId);
 
-      console.log("....... Ctrl + projec + index.......................");
-      console.log(JSON.stringify(projects, undefined, 2));
-      console.log("..............................");
-
+      // console.log("....... Ctrl + projec + index.......................");
+      // console.log(JSON.stringify(projects, undefined, 2));
+      // console.log("..............................");
+//
 
     // No se puede usar el valor client en las opciones cuando
     // hay llamadas anidadas a la funcion include de EJS.
@@ -120,7 +120,13 @@ exports.show = async (req, res, next) => {
   const projectId = req.params.projectId;
   const project = await seda.project(projectId);
 
- // if (!project.state) {
+
+    console.log(">>> ctrl.project.show");
+    console.log(project);
+    console.log("-----------------------------");
+
+
+    // if (!project.state) {
 
   //  res.redirect("/projects/" + projectId + "/submit")
 

@@ -30,27 +30,20 @@ const apiConfig = require("../../config/api.config");
 exports.project = async projectId => {
 
     let project = await adapterAPI.getProjectInfo(projectId);
-
     project.id = project.contractAddress;
 
-    /*
-    const clientId = 1;
-    const projects = (await exports.projectsIndex(1));
+    project.deliveryDate = new Date(project.deliveryDate);
 
-    const len = projects.length;
-    // project = len ? projects[len-1] : null;
-    project = projects.at(-1);
+    const {client} = await adapterAPI.getClient(project.clientId);
+    project.client = client;
 
-    project.client = (await adapterAPI.getClient(clientId)).client;
-*/
+    project.objectives = ["Pendiente"];
+    project.constraints = ["Pendiente"];
 
-    project.objectives = [];
-    project.constraints = [];
 
-    console.log("------- Project--------------------------------");
-    console.log(JSON.stringify(project, undefined, 2));
-    console.log("---------------------------------------");
-
+    // console.log("------- Project--------------------------------");
+    // console.log(JSON.stringify(project, undefined, 2));
+    // console.log("---------------------------------------");
 
     return project;
 
@@ -180,7 +173,10 @@ exports.projectsIndex = async (clientId, consultantId, developerId) => {
     if (clientId) {
         const response = await adapterAPI.getClientProjects(clientId);
 
-       response.forEach(project => {project.id = project.contractAddress});
+       response.forEach(project => {
+           project.id = project.contractAddress;
+           project.deliveryDate = new Date(project.deliveryDate);
+       });
 
         return response;
     }
@@ -188,7 +184,10 @@ exports.projectsIndex = async (clientId, consultantId, developerId) => {
     if (consultantId) {
         const response = await adapterAPI.getDeveloperProjects(consultantId);
 
-        response.forEach(project => {project.id = project.contractAddress});
+        response.forEach(project => {
+            project.id = project.contractAddress;
+            project.deliveryDate = new Date(project.deliveryDate);
+        });
 
         return response;
     }
@@ -196,30 +195,31 @@ exports.projectsIndex = async (clientId, consultantId, developerId) => {
     if (developerId) {
         const response = await adapterAPI.getDeveloperProjects(developerId);
 
-        response.forEach(project => {project.id = project.contractAddress});
+        response.forEach(project => {
+            project.id = project.contractAddress;
+            project.deliveryDate = new Date(project.deliveryDate);
+        });
 
         return response;
     }
 
     // All Projects
     const clients = (await adapterAPI.getClients()).clients;
-    const developers = (await adapterAPI.getClients()).developers;
+    console.log(">> # clientes =", clients.length);
+    const developers = (await adapterAPI.getDevelopers()).developers;
+    console.log(">> # developers =", developers.length);
 
     let projects = [];
-    clients && clients.forEach(async client => {
+    for (let client of clients) {
         const clientProjects = await adapterAPI.getClientProjects(client.id);
-
-        response.forEach(project => {project.id = project.contractAddress});
-
+        clientProjects.forEach(project => {project.id = project.contractAddress});
         projects = projects.concat(clientProjects);
-    });
-    developers && developers.forEach(async developer => {
+    }
+    for (let developer of developers) {
         const developerProjects = await adapterAPI.getDeveloperProjects(developer.id);
-
-        response.forEach(project => {project.id = project.contractAddress});
-
+        developerProjects.forEach(project => {project.id = project.contractAddress});
         projects = projects.concat(developerProjects);
-    })
+    }
     return projects;
 }
 

@@ -33,10 +33,10 @@ const {adapterAPI} = require("../api-client");
  */
 exports.proposalCreate = async (clientId, {title, summary, projectTypeId, description, url, budgetId, deliveryTimeId, deliveryDate}, token) => {
 
-    deliveryDate = "2024-12-31";
-    projectTypeId = 1;
-    budgetId = 1;
-    deliveryTimeId = 1;
+   // deliveryDate = "2024-12-31";
+   // projectTypeId = 1;
+   // budgetId = 1;
+   // deliveryTimeId = 1;
 
     const response = await adapterAPI.deployProject(
         "v5",

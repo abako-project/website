@@ -239,49 +239,14 @@ exports.developerCreate = async (email, name, preparedData) => {
  *
  * @returns {Promise<Object>} Objeto JSON con los datos actualizados del desarrollador.
  */
-exports.developerUpdate = async (developerId, {
-                                     name, bio, background, roleId, proficiencyId, githubUsername, portfolioUrl, location,
-                                     languageIds, skillIds,
-                                     isAvailableForHire, isAvailableFullTime, isAvailablePartTime, isAvailableHourly, availableHoursPerWeek,
-                                     mime, image
-                                 }) => {
+exports.developerUpdate = async (developerId, data) => {
 
-
-    return;
-
-    // Actualizar el perfil:
-    await Developer.update({
-            name, bio, background, roleId, proficiencyId, githubUsername, portfolioUrl, location,
-            isAvailableForHire, isAvailableFullTime, isAvailablePartTime, isAvailableHourly, availableHoursPerWeek
-        }, {
-            where: {
-                id: developerId
-            }
-        }
-    );
-
-    let developer = await Developer.findByPk(developerId, {
-        include: [{model: Attachment, as: "attachment"}]
-    });
-
-
-  //  await developer.setLanguages(languageIds);
-  //  await developer.setSkills(skillIds);
-
-    // Hay un attachment nuevo
-    if (mime && image && image.length > 0) {
-        // Delete old attachment.
-        if (developer.attachment) {
-            await developer.update({attachmentId: null});
-            await Attachment.destroy({where: {id: developer.attachment.id}});
-        }
-
-        // Create the new developer attachment
-        const attachment = await Attachment.create({mime, image});
-        await developer.setAttachment(attachment);
+    try {
+        const response = await adapterAPI.updateDeveloper(developerId, data);
+    } catch (error) {
+        console.error('[SEDA Developer] Error updating developer:', error);
+        throw error;
     }
-
-    return json.developerJson(developer);
 };
 
 //-----------------------------------------------------------

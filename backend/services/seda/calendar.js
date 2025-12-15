@@ -93,14 +93,12 @@ exports.setWorkerAvailability = async (userId, availability, token) => {
     // Obtener mi worker address:
     let address = await exports.getWorkerAddress(userId);
     if (!address) {
-        throw new Error("No puedo obtener mi worker address.");
+        throw new Error("No puedo obtener la worker address.");
     }
 
-     // Guardar disponibilidad en el Calendar
-    // let response = await adapterAPI.adminSetWorkerAvailability(calendarAddress, address, availability, token);
-    // if (!response.success) {
-    //     throw new Error("No puedo guardar la disponibilidad de un worker en el contrato Calendar.");
-    // }
+    console.log(">>>>>>>>>> calendarAddress", calendarAddress);
+    console.log(">>>>>>>>>> availability", availability);
+    console.log(">>>>>>>>>> token", token);
 
     // Guardar disponibilidad en el Calendar
     let response = await adapterAPI.setAvailability(calendarAddress, availability, token);

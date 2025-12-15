@@ -26,48 +26,50 @@ exports.index = async (req, res, next) => {
 
 // GET /developers/:developerId/profile
 exports.show = async (req, res, next) => {
-  try {
-    const {developer} = req.load;
-      const avatarUrl = `/developers/${developer.id}/attachment`;
-    const votes = await seda.votesFindByUser(developer.id);
-    const numberOfVotes = votes.length; 
-    const avgRating = votes.length ? Math.ceil((votes.reduce((sum, v) => sum + v.score, 0)/ votes.length)): null;
+    try {
+        const {developer} = req.load;
 
-    const lastTwo = votes.slice(0, 4);
-    const lastVotes = []; // Últimos 2 votos
-    
-    for (const v of lastTwo) {
-      const user = await seda.userFindById(v.fromUserId); 
-      if (!user) continue;
+        const avatarUrl = `/developers/${developer.id}/attachment`;
 
-      const isDev = !!user.developer;
-      const isCli = !!user.client;
+        const votes = await seda.votesFindByUser(developer.id);
+        const numberOfVotes = votes.length;
+        const avgRating = votes.length ? Math.ceil((votes.reduce((sum, v) => sum + v.score, 0) / votes.length)) : null;
 
-      const profile = user.developer || user.client;
-      const name = profile?.name || user.email;
-      const role = isDev ? (profile.role?.name || "Developer") : (isCli ? "Client" : "Unknown");
-      const prof = isDev ? (profile.proficiency?.description || "") : "";
-      const avatar =
-        isDev
-          ? `/developers/${profile.id}/attachment`
-          : isCli
-          ? `/clients/${profile.id}/attachment`
-          : "/images/none.png";
+        const lastTwo = votes.slice(0, 4);
+        const lastVotes = []; // Últimos 2 votos
 
-      lastVotes.push({
-        score: v.score,
-        fromUserId: v.fromUserId,
-        fromUserName: name,
-        fromUserRole: role,
-        fromUserProf: prof,
-        fromUserAvatarUrl: avatar
-        });
+        for (const v of lastTwo) {
+            const user = await seda.userFindById(v.fromUserId);
+            if (!user) continue;
+
+            const isDev = !!user.developer;
+            const isCli = !!user.client;
+
+            const profile = user.developer || user.client;
+            const name = profile?.name || user.email;
+            const role = isDev ? (profile.role?.name || "Developer") : (isCli ? "Client" : "Unknown");
+            const prof = isDev ? (profile.proficiency?.description || "") : "";
+            const avatar =
+                isDev
+                    ? `/developers/${profile.id}/attachment`
+                    : isCli
+                        ? `/clients/${profile.id}/attachment`
+                        : "/images/none.png";
+
+            lastVotes.push({
+                score: v.score,
+                fromUserId: v.fromUserId,
+                fromUserName: name,
+                fromUserRole: role,
+                fromUserProf: prof,
+                fromUserAvatarUrl: avatar
+            });
+        }
+
+        res.render('developers/profile/show', {developer, avatarUrl, avgRating, lastVotes, numberOfVotes});
+    } catch (error) {
+        next(error);
     }
-
-    res.render('developers/profile/show', {developer, avatarUrl, avgRating, lastVotes, numberOfVotes});
-  } catch (error) {
-    next(error);
-  }
 };
 
 
@@ -88,60 +90,69 @@ exports.edit = async (req, res, next) => {
 // PUT /developers/:developerId
 exports.update = async (req, res, next) => {
 
-  const {body} = req;
+    const {body} = req;
 
-  const developerId = req.params.developerId;
+    const developerId = req.params.developerId;
 
     const {developer} = req.load;
 
-
+    // FALTA POR REFINAR CON LO QUE SOPORTE EL BACK
     let data = {
-    name: body.name,
-    bio: body.bio,
-    background: body.background,
-    roleId: body.roleId || null,
-    proficiencyId: body.proficiencyId || null,
-    githubUsername: body.githubUsername,
-    portfolioUrl: body.portfolioUrl,
-    location: body.location,
-    availability: body.availability,
-    languageIds: (body.languages || []).map(str => +str),
-    skillIds: (body.skills|| []).map(str => +str),
-    isAvailableForHire: !!body.isAvailableForHire,
-    isAvailableFullTime: !!body.isAvailableFullTime,
-    isAvailablePartTime: !!body.isAvailablePartTime,
-    isAvailableHourly: !!body.isAvailableHourly,
-    availableHoursPerWeek: body.availableHoursPerWeek,
-    mime: req.file?.mimetype,
-    image: req.file?.buffer
-  };
+        name: body.name,
+        githubUsername: body.githubUsername,
+        portfolioUrl: body.portfolioUrl,
+        bio: body.bio  || "",
+        background: body.background  || "",
+        proficiency: body.proficiency  || "junior",
+        role: body.role || "junior",
+        location: body.location  || "",
+        availability: body.availability || "NotAvailable",
+        languages: (body.languages || ["ESP"]),
+        skills: (body.skills || ["Node"]),
+        availableHoursPerWeek: body.availableHoursPerWeek || 0,
+    };
 
-  try {
-      // Registrar el worker en Calendar:
-      await seda.registerWorker(developer.email, req.session.loginUser.token);
-
-      // Actualizar perfil:
-    await seda.developerUpdate(developerId, data);
-
-    console.log('Developer edited successfully.');
-
-    res.redirect('/developers/' + developerId + '/profile');
-  } catch (error) {
-    if (error instanceof seda.ValidationError) {
-      console.log('There are errors in the form:');
-      error.errors.forEach(({message}) => console.log(message));
-
-      const allLanguages = await seda.languageIndex();
-      const allRoles = await seda.roleIndex();
-      const allProficiencies = await seda.proficiencyIndex();
-      const allSkills = await seda.skillIndex();
-
-      res.render('developers/profile/edit', {developer, allLanguages, allRoles, allProficiencies, allSkills});
-
-    } else {
-      next(error);
+    if (req.file) {
+        data.mime = req.file?.mimetype;
+        data.image = req.file?.buffer;
     }
-  }
+
+    let data_ignorados = {
+        isAvailableForHire: !!body.isAvailableForHire,
+        isAvailableFullTime: !!body.isAvailableFullTime,
+        isAvailablePartTime: !!body.isAvailablePartTime,
+        isAvailableHourly: !!body.isAvailableHourly,
+    };
+
+        try {
+        // Registrar el worker en Calendar:
+        await seda.registerWorker(developer.email, req.session.loginUser.token);
+
+        // Configurar disponibilidad:
+        await seda.setWorkerAvailability(developer.email, "FullTime", req.session.loginUser.token);
+
+        // Actualizar perfil:
+        await seda.developerUpdate(developerId, data);
+
+        console.log('Developer edited successfully.');
+
+        res.redirect('/developers/' + developerId + '/profile');
+    } catch (error) {
+        if (error instanceof seda.ValidationError) {
+            console.log('There are errors in the form:');
+            error.errors.forEach(({message}) => console.log(message));
+
+            const allLanguages = await seda.languageIndex();
+            const allRoles = await seda.roleIndex();
+            const allProficiencies = await seda.proficiencyIndex();
+            const allSkills = await seda.skillIndex();
+
+            res.render('developers/profile/edit', {developer, allLanguages, allRoles, allProficiencies, allSkills});
+
+        } else {
+            next(error);
+        }
+    }
 };
 
 
