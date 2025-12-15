@@ -112,6 +112,8 @@
 
                 statusElement.innerHTML = "Esperando respuesta del servidor";
 
+                showWaitModal();
+
                 this.submit();
             } catch (error) {
                 alert(`❌ Registration error: ${error instanceof Error ? error.message : "Unknown error"}`);

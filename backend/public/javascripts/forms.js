@@ -1,5 +1,5 @@
-
 function submitFormById(formId) {
-  document.getElementById(formId)?.requestSubmit();
+    showWaitModal();
+    document.getElementById(formId)?.requestSubmit();
 }
 

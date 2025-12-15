@@ -98,6 +98,8 @@
 
                 statusElement.innerHTML = "Esperando respuesta del servidor";
 
+                showWaitModal();
+
                 this.submit();
             } catch (error) {
                 statusElement.innerHTML = "El login ha fallado";
