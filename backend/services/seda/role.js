@@ -7,21 +7,7 @@ const {
 } = require('../../models');
 
 
-//-----------------------------------------------------------
 
-/**
- * Devuelve un listado de todos los roles registrados.
- *
- * @async
- * @function roleIndex
- * @returns {Promise<Object[]>} Lista de roles en formato JSON.
- */
-exports.roleIndex = async () => {
-
-  const roles = await Role.findAll();
-
-  return roles.map(role => json.roleJson(role));
-}
 
 //-----------------------------------------------------------
 

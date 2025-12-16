@@ -100,9 +100,9 @@ exports.developerIndex = async () => {
  */
 exports.developer = async developerId => {
 
-    const response = await adapterAPI.getDeveloper(developerId);
+    const developer = await adapterAPI.getDeveloper(developerId);
 
-    return response.developer;
+    return developer.developer;
 };
 //-----------------------------------------------------------
 
@@ -239,12 +239,14 @@ exports.developerCreate = async (email, name, preparedData) => {
  *
  * @returns {Promise<Object>} Objeto JSON con los datos actualizados del desarrollador.
  */
-exports.developerUpdate = async (developerId, data) => {
-
+exports.developerUpdate = async  (developerId, data, image) => {
     try {
-        const response = await adapterAPI.updateDeveloper(developerId, data);
+
+        const updatedDeveloper = await adapterAPI.updateDeveloper(developerId, data, image);
+        return updatedDeveloper;
+
     } catch (error) {
-        console.error('[SEDA Developer] Error updating developer:', error);
+        console.error("[SEDA developerUpdate] Error updating developer:", error);
         throw error;
     }
 };
@@ -296,16 +298,11 @@ exports.developersWithRole = async (roleId) => {
  */
 exports.developerAttachment = async developerId => {
 
-    return null;
-
     try {
-        const response = await adapterAPI.developerAttachment(developerId);
-
-        return response;
-
+        return await adapterAPI.getDeveloperAttachment(developerId);
     } catch (error) {
-        console.error('[SEDA DeveloperId] Error getting attachment:', error);
-        throw error;
+        console.error('[SEDA Developer Attachment] Error:', error);
+        return null;
     }
 };
 

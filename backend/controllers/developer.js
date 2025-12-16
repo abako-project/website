@@ -3,6 +3,13 @@
 const seda = require("../services/seda");
 const {DataTypes} = require("sequelize");
 
+const languagesMap = require('../utils/languages.json');
+const allSkills = require('../utils/skills.json');
+const allRoles = require('../utils/roles.json');
+const availabilityOptions = require('../utils/availability.json');
+const allProficiencies = require('../utils/proficiency.json');
+
+
 // Autoload the developer with id equals to :developerId
 exports.load = async (req, res, next, developerId) => {
 
@@ -26,105 +33,105 @@ exports.index = async (req, res, next) => {
 
 // GET /developers/:developerId/profile
 exports.show = async (req, res, next) => {
-    try {
+  try {
         const {developer} = req.load;
 
-        const avatarUrl = `/developers/${developer.id}/attachment`;
+    const avatarUrl = `/developers/${developer.id}/attachment`;
+    const languageNames = developer.languages?.map(code => languagesMap[code]) || [];
 
-        const votes = await seda.votesFindByUser(developer.id);
-        const numberOfVotes = votes.length;
-        const avgRating = votes.length ? Math.ceil((votes.reduce((sum, v) => sum + v.score, 0) / votes.length)) : null;
+    //LAS VOTACIONES NO ESTAN IMPLEMENTADAS POR VIRTO
+    // const votes = await seda.votesFindByUser(developer.id);
+    // const numberOfVotes = votes.length;
+    // const avgRating = votes.length ? Math.ceil((votes.reduce((sum, v) => sum + v.score, 0)/ votes.length)): null;
 
-        const lastTwo = votes.slice(0, 4);
-        const lastVotes = []; // Últimos 2 votos
+    // const lastTwo = votes.slice(0, 4);
+    // const lastVotes = []; // Últimos 2 votos
+    
+    // for (const v of lastTwo) {
+    //   const user = await seda.userFindById(v.fromUserId);
+    //   if (!user) continue;
 
-        for (const v of lastTwo) {
-            const user = await seda.userFindById(v.fromUserId);
-            if (!user) continue;
+    //   const isDev = !!user.developer;
+    //   const isCli = !!user.client;
 
-            const isDev = !!user.developer;
-            const isCli = !!user.client;
+    //   const profile = user.developer || user.client;
+    //   const name = profile?.name || user.email;
+    //   const role = isDev ? (profile.role?.name || "Developer") : (isCli ? "Client" : "Unknown");
+    //   const prof = isDev ? (profile.proficiency?.description || "") : "";
+    //   const avatar =
+    //     isDev
+    //       ? `/developers/${profile.id}/attachment`
+    //       : isCli
+    //       ? `/clients/${profile.id}/attachment`
+    //       : "/images/none.png";
 
-            const profile = user.developer || user.client;
-            const name = profile?.name || user.email;
-            const role = isDev ? (profile.role?.name || "Developer") : (isCli ? "Client" : "Unknown");
-            const prof = isDev ? (profile.proficiency?.description || "") : "";
-            const avatar =
-                isDev
-                    ? `/developers/${profile.id}/attachment`
-                    : isCli
-                        ? `/clients/${profile.id}/attachment`
-                        : "/images/none.png";
+    //   lastVotes.push({
+    //     score: v.score,
+    //     fromUserId: v.fromUserId,
+    //     fromUserName: name,
+    //     fromUserRole: role,
+    //     fromUserProf: prof,
+    //     fromUserAvatarUrl: avatar
+    //     });
+    // }
+    //res.render('developers/profile/show', {developer, avatarUrl, avgRating, lastVotes, numberOfVotes});
 
-            lastVotes.push({
-                score: v.score,
-                fromUserId: v.fromUserId,
-                fromUserName: name,
-                fromUserRole: role,
-                fromUserProf: prof,
-                fromUserAvatarUrl: avatar
-            });
-        }
+    res.render('developers/profile/show', {developer, avatarUrl, languageNames});
 
-        res.render('developers/profile/show', {developer, avatarUrl, avgRating, lastVotes, numberOfVotes});
-    } catch (error) {
-        next(error);
-    }
+  } catch (error) {
+    next(error);
+  }
 };
 
 
 // GET /developers/:developerId/profile/edit
 exports.edit = async (req, res, next) => {
+  try {
+    const {developer} = req.load;
 
-  const {developer} = req.load;
+    const allLanguages = Object.entries(languagesMap).map(([code, name]) => ({code,name}));
 
-  const allLanguages = await seda.languageIndex();
-  const allRoles = await seda.roleIndex();
-  const allProficiencies = await seda.proficiencyIndex();
-  const allSkills = await seda.skillIndex();
-
-  res.render('developers/profile/edit', {developer, allLanguages, allRoles, allProficiencies, allSkills});
+    res.render('developers/profile/edit', {developer, allLanguages, allRoles, availabilityOptions, allSkills, allProficiencies});
+  } catch (err) {
+    next(err);
+  }
 };
 
 
 // PUT /developers/:developerId
 exports.update = async (req, res, next) => {
-
-    const {body} = req;
-
-    const developerId = req.params.developerId;
-
-    const {developer} = req.load;
+  const developerId = req.params.developerId;
+  const {developer} = req.load;
+  const body = req.body;
 
     // FALTA POR REFINAR CON LO QUE SOPORTE EL BACK
     let data = {
         name: body.name,
         githubUsername: body.githubUsername,
         portfolioUrl: body.portfolioUrl,
-        bio: body.bio  || "",
-        background: body.background  || "",
-        proficiency: body.proficiency  || "junior",
-        role: body.role || "junior",
-        location: body.location  || "",
-        availability: body.availability || "NotAvailable",
-        languages: (body.languages || ["ESP"]),
-        skills: (body.skills || ["Node"]),
-        availableHoursPerWeek: body.availableHoursPerWeek || 0,
-    };
+        bio: body.bio,
+        background: body.background,
+        role: body.role || null,
+        location: body.location,
+        proficiency: body.proficiency || null,
+  };
 
-    if (req.file) {
-        data.mime = req.file?.mimetype;
-        data.image = req.file?.buffer;
+  data.skills = Array.isArray(body.skills) ? body.skills : body.skills ? [body.skills] : [];
+  data.languages = Array.isArray(body.languages) ? body.languages : body.languages ? [body.languages] : [];
+
+  if (!body.isAvailableForHire) {
+      data.availability = "NotAvailable";
+    } else {
+      data.availability = body.availability;
+      if (body.availability === "WeeklyHours") {
+        data.availableHoursPerWeek = parseInt(body.availableHoursPerWeek || "0");
+      }
     }
 
-    let data_ignorados = {
-        isAvailableForHire: !!body.isAvailableForHire,
-        isAvailableFullTime: !!body.isAvailableFullTime,
-        isAvailablePartTime: !!body.isAvailablePartTime,
-        isAvailableHourly: !!body.isAvailableHourly,
-    };
+    const image = req.file?.buffer || null;
 
-        try {
+
+    try {
         // Registrar el worker en Calendar:
         await seda.registerWorker(developer.email, req.session.loginUser.token);
 
@@ -132,22 +139,18 @@ exports.update = async (req, res, next) => {
         await seda.setWorkerAvailability(developer.email, "FullTime", req.session.loginUser.token);
 
         // Actualizar perfil:
-        await seda.developerUpdate(developerId, data);
+        await seda.developerUpdate(developerId, data, image);
 
         console.log('Developer edited successfully.');
+        res.redirect(`/developers/${developerId}/profile`);
 
-        res.redirect('/developers/' + developerId + '/profile');
     } catch (error) {
         if (error instanceof seda.ValidationError) {
             console.log('There are errors in the form:');
             error.errors.forEach(({message}) => console.log(message));
 
-            const allLanguages = await seda.languageIndex();
-            const allRoles = await seda.roleIndex();
-            const allProficiencies = await seda.proficiencyIndex();
-            const allSkills = await seda.skillIndex();
-
-            res.render('developers/profile/edit', {developer, allLanguages, allRoles, allProficiencies, allSkills});
+            const allLanguages = Object.entries(languagesMap).map(([code, name]) => ({code, name}));
+            res.render('developers/profile/edit', {developer, allLanguages, allRoles, availabilityOptions, allSkills});
 
         } else {
             next(error);
@@ -164,12 +167,12 @@ exports.attachment = async (req, res, next) => {
 
     const attachment = await seda.developerAttachment(developerId);
 
-    if (!attachment) {
-      res.redirect("/images/none.png");
-    } else {
-      res.type(attachment.mime);
-      res.send(attachment.image);
+    if (!attachment || !attachment.image) {
+      return res.redirect("/images/none.png");
     }
+    res.type(attachment.mime);
+    res.send(Buffer.from(attachment.image));
+
   } catch (error) {
     next(error);
   }
