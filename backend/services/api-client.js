@@ -668,7 +668,7 @@ const adapterAPI = {
         try {
             const response = await adapterClient.post(
                 apiConfig.adapterAPI.endpoints.calendar.setAvailability(contractAddress),
-                { availability },
+                { availability: {type: "FullTime"} },
                 {
                     headers: {
                         'Authorization': `Bearer ${token}`
