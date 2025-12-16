@@ -21,7 +21,6 @@
 
                     <div class="profileCard__staticInfo">
                         <p><strong>Email:</strong> <%= developer.email %></p>
-                        <p><strong>Blockchain Address:</strong> <%= developer.address %></p>
                     </div>
 
                     <div class="profileCard__section">
@@ -41,30 +40,28 @@
 
                     <div class="profileCard__section">
                         <h3>Role:</h3>
-                        <select id="role" name="roleId">
+                        <select id="role" name="role">
                             <option value="">None</option>
-                            <% for (const role of allRoles) { %>
-                                <option value="<%= role.id %>"
-                                        <%= developer.roleId === role.id && "selected" %> >
-                                    <%= role.name %> 
+                            <% allRoles.forEach(role => { %>
+                                <option value="<%= role %>" <%= developer.role === role ? "selected" : "" %>>
+                                    <%= role %>
                                 </option>
-                            <% } %>
+                            <% }) %>
                         </select>
                     </div>
-
                     <div class="profileCard__section">
                         <h3>Proficiency:</h3>
-                        <select id="proficiency" name="proficiencyId" >
+                        <select id="proficiency" name="proficiency" >
                             <option value="">None</option>
-                            <% for (const proficiency of allProficiencies) { %>
-                                <option value="<%= proficiency.id %>"
-                                        <%= developer.proficiencyId === proficiency.id && "selected" %> >
-                                    <%= proficiency.description %> 
+                            <% allProficiencies.forEach(prof => { %>
+                                <option value="<%= prof %>" <%= developer.proficiency === prof && "selected" %> >
+                                    <%= prof %>
                                 </option>
-                            <% } %>
+                            <% }) %>
                         </select>
                     </div>
 
+                    
                     <div class="profileCard__section">
                         <h3>Github Username:</h3>
                         <input type="text" id="githubUsername" name="githubUsername" value="<%= developer.githubUsername %>"
@@ -87,22 +84,25 @@
                         <h3>Skills: </h3>
                         <select id="skills" name="skills[]" multiple>
                             <% allSkills.forEach(skill => { 
-                                const selected = (developer.skills || []).some(s => s.id === skill.id); %>
-                            <option value="<%= skill.id %>" <%= selected ? "selected" : "" %>>
-                                <%= skill.name %>
-                            </option>
+                                const selected = (developer.skills || []).includes(skill); %>
+                                <option value="<%= skill %>" <%= selected ? "selected" : "" %>>
+                                    <%= skill %>
+                                </option>
                             <% }) %>
                         </select>
                     </div>
     
+
                     <div class="profileCard__section">
                         <h3>Languages:</h3>
                         <select id="languages" name="languages[]" multiple size="6">
-                            <% (allLanguages || []).forEach(lang => { 
-                                const selected = (developer.languages || []).some(i => i.id === lang.id); %>
-                            <option value="<%= lang.id %>" <%= selected ? "selected" : "" %>>
-                                <%= lang.code %> - <%= lang.name %>
-                            </option>
+                            <% allLanguages.forEach(lang => { 
+                                const selected = (developer.languages || []).includes(lang.code); %>
+
+                                <option value="<%= lang.code %>" <%= selected ? "selected" : "" %>>
+                                    <%= lang.code %> - <%= lang.name %>
+                                </option>
+
                             <% }) %>
                         </select>
                     </div>
@@ -114,30 +114,32 @@
                                     type="checkbox"
                                     name="isAvailableForHire"
                                     value="1"
-                                    <%= developer.isAvailableForHire && "checked" %> />
+                                    <%= developer.availability !== "NotAvailable" ? "checked" : ""  %> />
                                 <p>Show “Available for Work” on profile</p>
                         </div>
-                    
-                        <div id="availabilityOptions"  style="display:none">
+
+                        <div id="availabilityOptions" style="display:none">
                             <h3>Work Mode:</h3>
-                            <select id="availabilityType" name="availabilityType" multiple>
-                                <option value="full" <%= developer.isAvailableFullTime ? "selected" : "" %>>Full-time</option>
-                                <option value="part" <%= developer.isAvailablePartTime ? "selected" : "" %>>Part-time</option>
-                                <option value="hourly" <%= developer.isAvailableHourly ? "selected" : "" %>>Hourly</option>
+
+                            <select id="availabilityType" name="availability">
+                                <% availabilityOptions.forEach(option => { %>
+                                    <option value="<%= option %>"
+                                        <%= developer.availability === option ? "selected" : "" %>>
+                                        <%= option %>
+                                    </option>
+                                <% }) %>
                             </select>
-                            <input type="hidden" name="isAvailableFullTime" id="isFullHidden">
-                            <input type="hidden" name="isAvailablePartTime" id="isPartHidden">
-                            <input type="hidden" name="isAvailableHourly" id="isHourlyHidden">
                         </div>
 
-                        <div  id="hourlyInput"  style="display:none">
-                        <h3>Hours per week:</h3>
-                        <input type="number"
-                            name="availableHoursPerWeek"
-                            value="<%= parseInt(developer.availableHoursPerWeek) || '' %>"
-                            min="0" />
+                        <div id="hourlyInput" style = "display:none">
+                            <h3>Hours per week:</h3>
+                            <input type="number"
+                                name="availableHoursPerWeek"
+                                value="<%= parseInt(developer.availableHoursPerWeek) || '' %>"
+                                min="0" />
                         </div>
                     </div>
+
 
                     <div class="profileCard__section">
                             <h3> New Photo (Max size 2MB):</h3>

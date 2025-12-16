@@ -31,39 +31,16 @@ if (document.getElementById('availabilityType')) {
     const hourlyBox = document.getElementById('hourlyInput');
     const availabilitySelect = document.getElementById("availabilityType");
 
-
-    const availabilityChoices = new Choices('#availabilityType', {
-            removeItemButton: true,
-            searchEnabled: false,
-            placeholderValue: 'Select availability...',
-        });
-
-    
-    //Actualizar los campos ocultos al cambiar la selección de disponibilidad
-    availabilitySelect.addEventListener("change", () => {
-        const selected = availabilityChoices.getValue(true); // ["full", "hourly", ...]
-        
-        document.getElementById("isFullHidden").value = 
-            selected.includes("full") ? "1" : "";
-
-        document.getElementById("isPartHidden").value = 
-            selected.includes("part") ? "1" : "";
-
-        document.getElementById("isHourlyHidden").value = 
-            selected.includes("hourly") ? "1" : "";
-        
-        refreshAvailability()
-    });
     
 
     // Función que muestra u oculta el bloque entero del trabajo disponible
     function refreshAvailability() {
         box.style.display = toggle.checked ? "block" : "none";
         
-        const selected = availabilityChoices.getValue(true); 
-        hourlyBox.style.display =  toggle.checked && selected.includes("hourly") ? "block" : "none";
+        hourlyBox.style.display = (toggle.checked && availabilitySelect.value === "WeeklyHours") ? "block" : "none";
     }
 
+    availabilitySelect.addEventListener("change", refreshAvailability);
     toggle.addEventListener('change', refreshAvailability);
     refreshAvailability();                                      // Inicializar al cargar la página       
 }

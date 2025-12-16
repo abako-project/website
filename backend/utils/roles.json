@@ -1,8 +1,7 @@
-{
-  "roles": [
-    "Front End",
-    "BackEnd",
-    "Full Stack",
-    "UX Designer"
-  ]
-}
+
+[
+  "Front End",
+  "BackEnd",
+  "Full Stack",
+  "UX Designer"
+]

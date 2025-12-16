@@ -1,9 +1,7 @@
-{
-  "skills": [
-    "Rust",
-    "Javascript",
-    "HTML5",
-    "Node",
-    "UX"
-  ]
-}
+[
+  "Rust",
+  "Javascript",
+  "HTML5",
+  "Node",
+  "UX"
+]

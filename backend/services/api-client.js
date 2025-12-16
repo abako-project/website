@@ -259,6 +259,7 @@ const adapterAPI = {
 
     async updateDeveloper(developerId, data, image) {
         try {
+            const FormData = require("form-data");
             const formData = new FormData();
             Object.keys(data).forEach(key => {
                 if (data[key] !== undefined && data[key] !== null) {
@@ -269,26 +270,43 @@ const adapterAPI = {
                     }
                 }
             });
-            if (image) formData.append("image", image);
+            if (image) formData.append("image", image, { filename: "upload.jpg" });
 
             const response = await adapterClient.put(apiConfig.adapterAPI.endpoints.developers.update(developerId), formData, {
                 headers: {
+                    ...formData.getHeaders(), // necesario para multipart/form-data en Node.js
                     'Accept': 'application/json'
                 }
             });
             return response.data;
         } catch (error) {
-            handleError(error, `updateDeveloper(${developerId})`);
+                console.error(error);
+                throw error; 
         }
     },
 
     async getDeveloperAttachment(developerId) {
         try {
-            const response = await adapterClient.get(apiConfig.adapterAPI.endpoints.developers.attachmen(developerId), {
-                responseType: 'blob'
-            });
-            return response.data;
+            const response = await adapterClient.get(
+            apiConfig.adapterAPI.endpoints.developers.attachment(developerId),
+            {
+                responseType: "arraybuffer", // necesario en Node
+                headers: {
+                    "Accept": "*/*" // permite recibir imágenes
+                }
+            }
+        );
+
+        return {
+            mime: response.headers["content-type"],
+            image: response.data
+        };
+
         } catch (error) {
+                //SI ES 404 → NO HAY IMAGEN → NO ES ERROR
+            if (error.response?.status === 404) {
+                return null;
+            }
             handleError(error, `getDeveloperAttachment(${developerId})`);
         }
     },
