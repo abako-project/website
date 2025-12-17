@@ -65,7 +65,7 @@ exports.registeredDevelopers = async (req, res, next) => {
 
             let registeredInCalendar = address && workers.includes(address);
 
-            const hours = availabilities.find(item => item.worker === address)?.hour ?? 0;
+            const hours = availabilities.find(item => item.worker === address)?.hours ?? 0;
 
             info.push({
                 email: developer.email,
