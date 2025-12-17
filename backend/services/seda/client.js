@@ -189,34 +189,7 @@ exports.clientUpdate = async (clientId, data) => {
  */
 exports.clientFindByEmail = async (email) => {
 
-  const client = await Client.findOne({
-    include: [
-      {
-        model: User, as: "user",
-        where: {email}
-      }
-    ]
-  });
-
-  return client ? json.clientJson(client) : null;
-}
-
-
-//-----------------------------------------------------------
-
-/**
- * Busca un cliente por email y verifica su contraseña.
- *
- * @async
- * @function clientFindByEmailPassword
- * @param {string} email - Dirección de correo electrónico del cliente.
- * @param {string} password - Contraseña proporcionada por el cliente.
- * @returns {Promise<Object|null>} Objeto JSON del cliente si las credenciales son correctas, o `null`.
- */
-exports.clientFindByEmailPassword = async (email, password) => {
-
     return await adapterAPI.findClientByEmail(email);
-
 }
 
 //-----------------------------------------------------------

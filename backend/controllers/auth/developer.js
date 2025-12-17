@@ -23,40 +23,37 @@ exports.registerCreate = async (req, res, next) => {
 
 exports.loginCreate = async (req, res, next) => {
 
-    const {email, preparedData: json} = req.body;
+    const {email, token} = req.body;
 
     try {
-        preparedData = JSON.parse(decodeURIComponent(json));
-
-        let {developerId, token, name} = await seda.developerConnect(email);
+          let {id: developerId, name} = await seda.developerFindByEmail(email);
 
         // Guardar la zona horaria del navegador y del servidor en la session
         let browserTimezoneOffset = Number(req.query.browserTimezoneOffset ?? 0);
         req.session.browserTimezoneOffset = Number.isNaN(browserTimezoneOffset) ? 0 : browserTimezoneOffset;
         req.session.serverTimezoneOffset = new Date().getTimezoneOffset() * 60 * 1000;
 
-        console.log("************ loginCreate");
-        console.log({
-            email: email,
-            name: name,
-            clientId: undefined,
-            developerId: developerId,
-            token
-        });
-
+        // console.log("************ loginCreate");
+        // console.log({
+        //     email: email,
+        //     name: name,
+        //     clientId: undefined,
+        //     developerId: developerId,
+        //     token
+        // });
 
         // Create req.session.loginUser.
         // The existence of req.session.loginUser indicates that the session exists.
         req.session.loginUser = {
-            email: email,
-            name: name,
+            email,
+            name,
             clientId: undefined,
-            developerId: developerId,
+            developerId,
             token
         };
 
         req.flash("success", 'Developer authentication completed.');
-       // res.redirect(`/backdoor/developers`);
+
         res.redirect(`/developers/${developerId}/projects`);
 
     } catch (error) {

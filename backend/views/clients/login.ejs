@@ -20,7 +20,7 @@
         />
       </div>
 
-        <input type="hidden" id="preparedData" name="preparedData"/>
+        <input type="hidden" id="token" name="token" />
 
         <div class="form-group">
             <button class="btn btn_primary" type="submit" id="loginButton">
@@ -43,7 +43,7 @@
     import SDK from 'https://cdn.jsdelivr.net/npm/@virtonetwork/sdk@0.0.4-alpha.36/dist/esm/index.js';
 
     const emailElement = document.getElementById("email");
-    const pdElement = document.getElementById("preparedData");
+    const tokenElement = document.getElementById("token");
     const loginButton = document.getElementById("loginButton");
     const statusElement = document.getElementById("status");
 
@@ -85,6 +85,8 @@
                     throw new Error("❌ Error: Email is requerido");
                 }
 
+                showWaitModal();
+
                 const sdk = initializeSDK();
 
                 console.log("Comprobar si es un usuario registrado...");
@@ -100,11 +102,48 @@
                 if (!preparedData) {
                     throw new Error("❌ Error: No se han generado los login data");
                 }
-                pdElement.value = encodeURIComponent(JSON.stringify(preparedData, null, 2));
+
+                // PENDIENTE SPG: Mover esto al servidor
+                statusElement.innerHTML = "Obteniendo extrinsic del servidor";
+                // Llamar al servidor para obtener el extrinsic
+                const response = await fetch(`https://dev.abako.xyz/adapter/v1/auth/custom-connect`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        userId: emailElement.value
+                    })
+                });
+                // console.log("response", response);
+                if (!response.ok) {
+                    throw new Error(`Server responded with status: ${response.status}`);
+                }
+                const result = await response.json();
+                console.log('Connection completed successfully on the server:', 'success');
+                //console.log(JSON.stringify(result, null, 2));
+                if (!result.extrinsic) {
+                    throw new Error("No se recibió el extrinsic del servidor");
+                }
+                if (!result.token) {
+                    throw new Error("No se recibió el token del servidor");
+                }
+
+                statusElement.innerHTML = "Firmando transacción";
+                // El usuario firma la transacción que inicia la sesión en el servidor
+                const signedResult = await sdk.auth.sign(result.extrinsic);
+                // console.log("signedResult", signedResult);
+                if (!signedResult) {
+                    throw new Error("❌ Error: No se pudo firmar el extrinsic");
+                }
+
+                // console.log("=================================================================================================================");
+                // console.log("==== TOKEN ====", result.token);
+                // console.log("=================================================================================================================");
+
+                tokenElement.value = result.token;
 
                 statusElement.innerHTML = "Esperando respuesta del servidor";
-
-                showWaitModal();
 
                 this.submit();
             } catch (error) {
