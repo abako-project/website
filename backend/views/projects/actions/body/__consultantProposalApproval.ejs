@@ -1,6 +1,7 @@
 <% if (locals.loginUser && locals.loginUser.developerId === project.consultantId) { %>
 
-    <% if (project.state && ["WaitingForProposalApproval"].includes(project.state)) { %>
+   // <% if (project.state && ["WaitingForProposalApproval"].includes(project.state)) { %>
+        <% if (["deployed"].includes(project.state)) { %>
 
         <div class="actionsBody">
             <div class="buttonContainer">
