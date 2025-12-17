@@ -116,8 +116,10 @@ exports.update = async (req, res, next) => {
         proficiency: body.proficiency || null,
   };
 
-  data.skills = Array.isArray(body.skills) ? body.skills : body.skills ? [body.skills] : [];
-  data.languages = Array.isArray(body.languages) ? body.languages : body.languages ? [body.languages] : [];
+    // data.skills = Array.isArray(body.skills) ? body.skills : body.skills ? [body.skills] : [];
+    data.skills = Array.isArray(body.skills) ? body.skills : body.skills ? [body.skills] : ["none"];
+    // data.languages = Array.isArray(body.languages) ? body.languages : body.languages ? [body.languages] : [];
+    data.languages = Array.isArray(body.languages) ? body.languages : body.languages ? [body.languages] : ["none"];
 
   if (!body.isAvailableForHire) {
       data.availability = "NotAvailable";
