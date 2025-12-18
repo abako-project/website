@@ -168,9 +168,10 @@ exports.clientCreate = async (email, name, preparedData) => {
  * @param {string} [data.image] - Imagen codificada en base64 (opcional).
  * @throws {Error} Si ocurre un error en la actualización.
  */
-exports.clientUpdate = async (clientId, data) => {
+exports.clientUpdate = async (clientId, data, image) => {
     try {
-        const response = await adapterAPI.updateClient(clientId, data);
+        const response = await adapterAPI.updateClient(clientId, data, image);
+        return response;
     } catch (error) {
         console.error('[SEDA Client] Error creating client:', error);
         throw error;
@@ -230,19 +231,12 @@ exports.clientFindByEmailPassword = async (email, password) => {
  * @returns {Promise<Object|null>} Objeto JSON con los datos del attachment, o `null` si no existe.
  */
 exports.clientAttachment = async clientId => {
-
-    return null;
-
     try {
-        const response = await adapterAPI.clientAttachment(clientId);
-
-        return response;
-
+        return await adapterAPI.getClientAttachment(clientId);
     } catch (error) {
-        console.error('[SEDA Client] Error getting attachment:', error);
-        throw error;
+        console.error('[SEDA Client Attachment] Error:', error);
+        return null;
     }
-
 };
 
 //-----------------------------------------------------------

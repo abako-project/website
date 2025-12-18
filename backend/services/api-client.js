@@ -137,17 +137,24 @@ const adapterAPI = {
     },
 
 
-    async updateClient(clientId, data) {
+    async updateClient(clientId, data, image) {
         try {
+            const FormData = require("form-data");
             const formData = new FormData();
             Object.keys(data).forEach(key => {
                 if (data[key] !== undefined && data[key] !== null) {
-                    formData.append(key, data[key]);
+                    if (Array.isArray(data[key])) {
+                        data[key].forEach(item => formData.append(key, item));
+                    } else {
+                        formData.append(key, data[key]);
+                    }
                 }
             });
+            if (image) formData.append("image", image, { filename: "upload.jpg" });
 
             const response = await adapterClient.put(apiConfig.adapterAPI.endpoints.clients.update(clientId), formData, {
                 headers: {
+                    ...formData.getHeaders(), // necesario para multipart/form-data en Node.js
                     'Accept': 'application/json'
                 }
             });
@@ -157,29 +164,24 @@ const adapterAPI = {
         }
     },
 
-
-  // version mas secilla de la de arriba.
-    async xxxxxx______updateClient(clientId, data) {
-        try {
-            const response = await adapterClient.put(apiConfig.adapterAPI.endpoints.clients.update(clientId), data, {
-                headers: {
-                    'Content-Type': 'multipart/form-data'
-                }
-            });
-            return response.data;
-        } catch (error) {
-            handleError(error, 'updateClient');
-        }
-    },
-
-
     async getClientAttachment(clientId) {
         try {
-            const response = await adapterClient.get(apiConfig.adapterAPI.endpoints.clients.attachment(clientId), {
-                responseType: 'blob'
-            });
-            return response.data;
+            const response = await adapterClient.get(apiConfig.adapterAPI.endpoints.clients.attachment(clientId), 
+                {
+                    responseType: "arraybuffer", // necesario en Node
+                    headers: {
+                        "Accept": "*/*" // permite recibir imágenes
+                    }
+                });
+            return {
+                mime: response.headers["content-type"],
+                image: response.data
+            };
         } catch (error) {
+            //SI ES 404 → NO HAY IMAGEN → NO ES ERROR
+            if (error.response?.status === 404) {
+                return null;
+            }
             handleError(error, `getClientAttachment(${clientId})`);
         }
     },
@@ -202,16 +204,6 @@ const adapterAPI = {
                 return null;
             }
             handleError(error, `findClientByEmail(${email})`);
-        }
-    },
-
-
-    async clientAttachment(clientId) {
-        try {
-            const response = await adapterClient.get(apiConfig.adapterAPI.endpoints.clients.attachment(+clientId));
-            return response.data;
-        } catch (error) {
-            handleError(error, 'clientAttachment');
         }
     },
 

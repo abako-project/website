@@ -1,5 +1,5 @@
 "use strict";
-
+const languagesMap = require('../utils/languages.json');
 const seda = require("../services/seda");
 
 // Autoload the client with id equals to :clientId
@@ -31,8 +31,11 @@ exports.show = async (req, res, next) => {
   try {
     const {client} = req.load;
     const avatarUrl = `/clients/${client.id}/attachment`;
+    //Aún no hace nada porque no hay languages en clients
+    const languageNames = client.languages?.map(code => languagesMap[code]) || [];
 
-    res.render('clients/profile/show', { c: client, avatarUrl });
+
+    res.render('clients/profile/show', { c: client, avatarUrl, languageNames });
   } catch (error) {
     next(error);
   }
@@ -43,7 +46,7 @@ exports.edit = async (req, res, next) => {
 
   const {client} = req.load;
 
-  const allLanguages = await seda.languageIndex();
+  const allLanguages = Object.entries(languagesMap).map(([code, name]) => ({code,name}));
 
   // No se puede usar el valor client en las opciones cuando
   // hay llamadas anidadas a la fumcion include de EJS.
@@ -55,33 +58,31 @@ exports.edit = async (req, res, next) => {
 exports.update = async (req, res, next) => {
 
     const {body} = req;
-
     const clientId = req.params.clientId;
+    const {client} = req.load;
 
     const data = {
-        name: body.name,
-        company: body.company,
-        department: body.department,
-        website: body.website,
-        description: body.description,
-        location: body.location,
-        languageIds: (body.languages || []).map(str => +str),
+        name: body.name || 'name',
+        company: body.company || 'none company',
+        department: body.department || ' none department',
+        website: body.website || 'Not website yet ',
+        description: body.description || 'Not description yet',
+        location: body.location || 'Not location yet',
     };
 
-    if (req.file) {
-        data.mime = req.file?.mimetype;
-        data.image = req.file?.buffer;
-    }
+    data.languages = Array.isArray(body.languages) ? body.languages : body.languages ? [body.languages] : [];
+    const image = req.file?.buffer || null;
 
     try {
-        await seda.clientUpdate(clientId, data);
+        await seda.clientUpdate(clientId, data, image);
         console.log('Client edited successfully.');
         res.redirect('/clients/' + clientId + '/profile');
     } catch (error) {
         if (error instanceof seda.ValidationError) {
             console.log('There are errors in the form:');
             error.errors.forEach(({message}) => console.log(message));
-            res.render('clients/profile/edit', {data});
+            const allLanguages = Object.entries(languagesMap).map(([code, name]) => ({code,name}));
+            res.render('clients/profile/edit', {c: client, allLanguages});
         } else {
             next(error);
         }
@@ -97,11 +98,11 @@ exports.attachment = async (req, res, next) => {
 
         const attachment = await seda.clientAttachment(clientId);
 
-        if (!attachment) {
-            res.redirect("/images/none.png");
+        if (!attachment || !attachment.image) {
+            return res.redirect("/images/none.png");
         } else {
             res.type(attachment.mime);
-            res.send(attachment.image);
+            res.send(Buffer.from(attachment.image));
         }
     } catch (error) {
         next(error);
