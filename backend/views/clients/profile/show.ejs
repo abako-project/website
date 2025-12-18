@@ -44,9 +44,9 @@
                 <div class="profileCard__section">
                     <ul class="infoList">
 
-                        <% if (c.languages && c.languages.length) { %>
+                        <% if (languageNames.length) { %>
                         <li><i class="ri-translate-2"></i> 
-                        <%= c.languages.map(l => l.name).join(', ') %>
+                            <%= languageNames.join(', ') %>
                         </li>
                         <% } %>
 
