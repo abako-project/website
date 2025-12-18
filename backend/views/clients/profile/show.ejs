@@ -44,23 +44,18 @@
                 <div class="profileCard__section">
                     <ul class="infoList">
 
-                        <% if (languageNames.length) { %>
+
                         <li><i class="ri-translate-2"></i> 
-                            <%= languageNames.join(', ') %>
+                             <%= languageNames.length ? languageNames.join(', ') : 'No languages' %>
                         </li>
-                        <% } %>
-
-                        <% if (c.location) { %>
-                        <li><i class="ri-map-pin-line"></i> <%= c.location %></li>
-                        <% } %>
-
-                        <% if (c.website) { %>
-                        <li><i class="ri-earth-line"></i> <%= c.website %></li>
-                        <% } %>
-
-                        <% if (c.user?.email) { %>
-                        <li><i class="ri-mail-line"></i> <%= c.user.email %></li>
-                        <% } %>
+                        
+                        <li><i class="ri-map-pin-line"></i> <%= c.location || 'No location' %></li>
+                        
+                        
+                        <li><i class="ri-earth-line"></i> <%= c.website || 'No website' %></li>
+                       
+                        
+                        <li><i class="ri-mail-line"></i> <%= c.user.email || 'No email' %></li>
 
                     </ul>
                 </div>
