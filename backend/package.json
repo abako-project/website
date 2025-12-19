@@ -4,7 +4,7 @@
   "scripts": {
     "start2": "PORT=3001 node ./bin/www",
     "start": "PORT=3001 supervisor ./bin/www",
-    "migrate": "sequelize db:migrate",
+    "migrate": "sequelize db:migrate"
   },
   "dependencies": {
     "@virtonetwork/sdk": "^0.0.4-alpha.36",

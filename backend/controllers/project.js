@@ -90,7 +90,8 @@ exports.createProposal = async (req, res, next) => {
     console.log('Success: Project created successfully.');
 
     // res.redirect('/clients/' + req.session.loginUser.clientId + '/projects');
-    res.redirect('/projects/' + projectId + '/objectives_constraints/edit');
+      //  res.redirect('/projects/' + projectId + '/objectives_constraints/edit');
+        res.redirect('/projects/' + projectId);
 
   } catch (error) {
     if (error instanceof seda.ValidationError) {
@@ -198,7 +199,8 @@ exports.updateProposal = async (req, res, next) => {
 
     console.log('Project edited successfully.');
 
-    res.redirect('/projects/' + project.id + '/objectives_constraints/edit');
+    //res.redirect('/projects/' + project.id + '/objectives_constraints/edit');
+      res.redirect('/projects/' + projectId);
 
   } catch (error) {
     if (error instanceof seda.ValidationError) {

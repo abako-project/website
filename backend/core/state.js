@@ -3,9 +3,21 @@
 // Constantes
 //
 module.exports = exports = {
-  ProjectState: {
 
-    // Hasta que el cliente no envioa la propuesta, es estado es undefined o null.
+    VirtoProjectState: {
+        Deployed: "deployed",
+        Created: "Created",                    // Initial state when project is created
+        CoordinatorAssigned: "CoordinatorAssigned",        // Coordinator has been assigned to the project
+        TeamAssigned: "TeamAssigned",               // Team members have been assigned
+        ScopeProposalInProgress: "ScopeProposalInProgress",    // Coordinator is actively proposing scope revisions
+        ScopePendingClientApproval: "ScopePendingClientApproval", // Tasks proposed and awaiting client approval
+        ScopeAccepted: "ScopeAccepted",              // Client has accepted the scope and made advance payment
+        Completed: "Completed",                  // All tasks are completed and project is finalized
+    },
+
+    ProjectState: {
+
+        // Hasta que el cliente no envioa la propuesta, es estado es undefined o null.
     //Creating: "creating" , // creando el proyecto
 
     // El cliente ha enviado la propuesta del proyecto,
