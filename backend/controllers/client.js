@@ -62,11 +62,11 @@ exports.update = async (req, res, next) => {
 
     const data = {
         name: body.name || 'name',
-        company: body.company || 'none company',
-        department: body.department || ' none department',
-        website: body.website || 'Not website yet ',
-        description: body.description || 'Not description yet',
-        location: body.location || 'Not location yet',
+        company: body.company || '—',
+        department: body.department || '—',
+        website: body.website || 'No website',
+        description: body.description || 'No description available.',
+        location: body.location || 'No location',
     };
 
     data.languages = Array.isArray(body.languages) ? body.languages : body.languages ? [body.languages] : [];
