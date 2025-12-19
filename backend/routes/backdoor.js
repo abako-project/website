@@ -5,7 +5,6 @@ const backdoorController = require('../controllers/backdoor');
 const clientController = require('../controllers/client');
 const developerController = require('../controllers/developer');
 const projectController = require('../controllers/project');
-const roleController = require('../controllers/role');
 
 const permissionController = require('../controllers/permission');
 

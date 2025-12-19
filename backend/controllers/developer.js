@@ -104,6 +104,9 @@ exports.update = async (req, res, next) => {
   const {developer} = req.load;
   const body = req.body;
 
+  console.log(">>>> BODY >>>>>>", body);
+
+
     // FALTA POR REFINAR CON LO QUE SOPORTE EL BACK
     let data = {
         name: body.name,
@@ -138,7 +141,7 @@ exports.update = async (req, res, next) => {
         await seda.registerWorker(developer.email, req.session.loginUser.token);
 
         // Configurar disponibilidad:
-        await seda.setWorkerAvailability(developer.email, "FullTime", req.session.loginUser.token);
+        await seda.setWorkerAvailability(developer.email, data.availability, req.session.loginUser.token);
 
         // Actualizar perfil:
         await seda.developerUpdate(developerId, data, image);
