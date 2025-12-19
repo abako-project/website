@@ -66,7 +66,7 @@ exports.proposalCreate__BBDD = async (clientId, {title, summary, projectTypeId, 
  *
  * @async
  * @function proposalUpdate
- * @param {number} projectId - ID del proyecto a actualizar.
+ * @param {string|number} projectId - Contract address or ID del proyecto a actualizar.
  * @param {Object} data - Nuevos valores de la propuesta.
  * @param {string} data.title
  * @param {string} data.summary
@@ -76,19 +76,38 @@ exports.proposalCreate__BBDD = async (clientId, {title, summary, projectTypeId, 
  * @param {number} data.budgetId
  * @param {number} data.deliveryTimeId
  * @param {string} data.deliveryDate
+ * @param {string} [token] - Auth token.
  * @returns {Promise<Object>} Objeto JSON con los datos actualizados del proyecto.
  */
-exports.proposalUpdate = async (projectId, {title, summary, description, url, projectTypeId, budgetId, deliveryTimeId, deliveryDate}) => {
+exports.proposalUpdate = async (projectId, {title, summary, description, url, projectTypeId, budgetId, deliveryTimeId, deliveryDate}, token) => {
+    try {
+        // Try to update on backend
+        const updateData = {
+            title,
+            summary,
+            description,
+            url,
+            projectTypeId,
+            budgetId,
+            deliveryTimeId,
+            deliveryDate
+        };
+        
+        const response = await adapterAPI.updateProject(projectId, updateData, token);
+        return response;
+    } catch (error) {
+        console.warn(`[SEDA Proposal] Could not update on backend, falling back to SQLite:`, error.message);
+        
+        // Fallback to SQLite
+        await Project.update({
+            title, summary, description, url, projectTypeId, budgetId, deliveryTimeId, deliveryDate
+        }, {
+            where: {id: projectId}
+        });
 
-  await Project.update({
-    title, summary, description, url, projectTypeId, budgetId, deliveryTimeId, deliveryDate
-  }, {
-    where: {id: projectId}
-  });
-
-  const project = await Project.findByPk(projectId);
-
-  return json.projectJson(project);
+        const project = await Project.findByPk(projectId);
+        return json.projectJson(project);
+    }
 };
 
 
