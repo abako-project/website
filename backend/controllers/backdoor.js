@@ -7,26 +7,6 @@ exports.index = async (req, res) => {
     res.render('backdoor');
 };
 
-// Login como Admin
-exports.adminLogin = async (req, res) => {
-
-    // Guardar la zona horaria del navegador y del servidor en la session
-    let browserTimezoneOffset = Number(req.query.browserTimezoneOffset ?? 0);
-    req.session.browserTimezoneOffset = Number.isNaN(browserTimezoneOffset) ? 0 : browserTimezoneOffset;
-    req.session.serverTimezoneOffset = new Date().getTimezoneOffset() * 60 * 1000;
-
-    req.session.loginUser = {
-        email: "admin@sitio.es",
-        name: "admin",
-        isAdmin: true,
-        clientId: undefined,
-        developerId: undefined
-    };
-
-    res.redirect(`/projects`);
-};
-
-
 
 // Desarrolladores registrados en el calendar.
 exports.registeredDevelopers = async (req, res, next) => {
