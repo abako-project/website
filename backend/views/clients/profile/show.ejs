@@ -1,15 +1,13 @@
-
-
 <script>
-  const client = <%- JSON.stringify(c) %>;
-  console.log("client recibido:", client);
+    const client = <%- JSON.stringify(c) %>;
+    console.log("client recibido:", client);
 </script>
 
 <div id="appTwoColumns">
 
     <div class="col1">
-            <!-- Sidebar -->
-            <%- include('../../components/_mainSidebar') %>
+        <!-- Sidebar -->
+        <%- include('../../components/_mainSidebar') %>
     </div>
 
     <div class="col2">
@@ -34,7 +32,7 @@
                         <i class="ri-user-line"></i>Edit Profile
                     </a>
                 </div>
-            
+
 
                 <div class="profileCard__section">
                     <h3>Description</h3>
@@ -44,46 +42,37 @@
                 <div class="profileCard__section">
                     <ul class="infoList">
 
-                        <% if (languageNames.length) { %>
-                        <li><i class="ri-translate-2"></i> 
-                            <%= languageNames.join(', ') %>
+                        <li>
+                            <i class="ri-translate-2"></i>
+                            <% if (languageNames.length) { %>
+                                <%= languageNames.join(', ') %>
+                            <% } else { %>
+                                none
+                            <% } %>
                         </li>
-                        <% } %>
 
-                        <% if (c.location) { %>
-                        <li><i class="ri-map-pin-line"></i> <%= c.location %></li>
-                        <% } %>
+                        <li>
+                            <i class="ri-map-pin-line"></i>
+                            <%= c.location ?? "" %>
+                        </li>
 
-                        <% if (c.website) { %>
-                        <li><i class="ri-earth-line"></i> <%= c.website %></li>
-                        <% } %>
+                        <li>
+                            <i class="ri-earth-line"></i>
+                            <%= c.website ?? "" %>
+                        </li>
 
-                        <% if (c.user?.email) { %>
-                        <li><i class="ri-mail-line"></i> <%= c.user.email %></li>
-                        <% } %>
+                        <li>
+                            <i class="ri-mail-line"></i>
+                            <%= c.email ?? "" %>
+                        </li>
 
                     </ul>
                 </div>
             </div>
         </section>
 
-        
+
     </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 </div>

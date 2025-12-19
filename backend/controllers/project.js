@@ -65,11 +65,9 @@ exports.newProposal = async (req, res, next) => {
 // Crear proyecto
 exports.createProposal = async (req, res, next) => {
 
-  let {title, summary, description, url, projectTypeId, budgetId, deliveryTimeId, deliveryDate} = req.body;
+  let {title, summary, description, url, projectType, budget, deliveryTime, deliveryDate} = req.body;
 
   deliveryDate = new Date(deliveryDate).valueOf() + req.session.browserTimezoneOffset - req.session.serverTimezoneOffset;
-
-  projectTypeId ||= undefined;
 
   const clientId = req.session.loginUser?.clientId;
 
@@ -78,9 +76,9 @@ exports.createProposal = async (req, res, next) => {
     summary,
     description,
     url,
-    projectTypeId,
-    budgetId,
-    deliveryTimeId,
+    projectType,
+    budget,
+    deliveryTime,
     deliveryDate
   };
 
@@ -126,19 +124,10 @@ exports.show = async (req, res, next) => {
     console.log(project);
     console.log("-----------------------------");
 
-
-    // if (!project.state) {
-
-  //  res.redirect("/projects/" + projectId + "/submit")
-
- // } else {
-
     res.render('projects/showProject', {
       project,
     });
-//  }
 };
-
 
 // Mostrar la pantalla para ofrecer hacer un submit de la propuesta
 exports.submit = async (req, res, next) => {
@@ -150,7 +139,6 @@ exports.submit = async (req, res, next) => {
     project,
   });
 };
-
 
 // Mostrar formulario de edición
 exports.editProposal = async (req, res, next) => {
@@ -174,7 +162,6 @@ exports.editProposal = async (req, res, next) => {
   }
 };
 
-
 // Actualizar proyecto
 exports.updateProposal = async (req, res, next) => {
 
@@ -188,14 +175,14 @@ exports.updateProposal = async (req, res, next) => {
     summary: body.summary,
     description: body.description,
     url: body.url,
-    projectTypeId: body.projectTypeId || undefined,
-    budgetId: body.budgetId,
-    deliveryTimeId: body.deliveryTimeId,
+    projectType: body.projectType || undefined,
+    budget: body.budget,
+    deliveryTime: body.deliveryTime,
     deliveryDate: new Date(body.deliveryDate).valueOf() + req.session.browserTimezoneOffset - req.session.serverTimezoneOffset
   };
 
   try {
-    await seda.proposalUpdate(project.id, proposal);
+    await seda.proposalUpdate(project.id, proposal, req.session.loginUser.token);
 
     console.log('Project edited successfully.');
 

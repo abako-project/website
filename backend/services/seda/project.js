@@ -14,6 +14,9 @@ const {
 const states = require("../../core/state");
 const apiConfig = require("../../config/api.config");
 
+const projectTypes = require('./projectType').projectTypeIndex();
+const budgetTypes = require('./budget').budgetIndex();
+const deliveryTimes = require('./deliveryTime').deliveryTimeIndex();
 
 //-----------------------------------------------------------
 
@@ -34,16 +37,24 @@ exports.project = async projectId => {
 
     project.deliveryDate = new Date(project.deliveryDate);
 
+    project.budgetDescription = budgetTypes.find(bt => bt.id == project.budget)?.description;
+    project.deliveryTimeDescription = deliveryTimes.find(dt => dt.id == project.deliveryTime)?.description;
+    project.projectTypeDescription = projectTypes.find(pt => pt.id == project.projectType)?.description;
+
     const {client} = await adapterAPI.getClient(project.clientId);
     project.client = client;
 
     project.objectives = ["Pendiente"];
     project.constraints = ["Pendiente"];
 
+    console.log("------- budgetTypes--NEW------------------------------");
+    console.log(JSON.stringify(budgetTypes, undefined, 2));
+    console.log("---------------------------------------");
 
-    // console.log("------- Project--------------------------------");
-    // console.log(JSON.stringify(project, undefined, 2));
-    // console.log("---------------------------------------");
+
+    console.log("------- Project--NEW------------------------------");
+    console.log(JSON.stringify(project, undefined, 2));
+    console.log("---------------------------------------");
 
     return project;
 
@@ -173,9 +184,13 @@ exports.projectsIndex = async (clientId, consultantId, developerId) => {
     if (clientId) {
         const response = await adapterAPI.getClientProjects(clientId);
 
-       response.forEach(project => {
+        const {client} = await adapterAPI.getClient(clientId);
+
+        response.forEach(project => {
            project.id = project.contractAddress;
            project.deliveryDate = new Date(project.deliveryDate);
+
+           project.client = client;
        });
 
         return response;
@@ -184,10 +199,13 @@ exports.projectsIndex = async (clientId, consultantId, developerId) => {
     if (consultantId) {
         const response = await adapterAPI.getDeveloperProjects(consultantId);
 
-        response.forEach(project => {
+        for (let project of response) {
             project.id = project.contractAddress;
             project.deliveryDate = new Date(project.deliveryDate);
-        });
+
+            const {client} = await adapterAPI.getClient(project.clientId);
+            project.client = client;
+        }
 
         return response;
     }
@@ -195,10 +213,13 @@ exports.projectsIndex = async (clientId, consultantId, developerId) => {
     if (developerId) {
         const response = await adapterAPI.getDeveloperProjects(developerId);
 
-        response.forEach(project => {
+        for (let project of response) {
             project.id = project.contractAddress;
             project.deliveryDate = new Date(project.deliveryDate);
-        });
+
+            const {client} = await adapterAPI.getClient(project.clientId);
+            project.client = client;
+        }
 
         return response;
     }
@@ -212,12 +233,24 @@ exports.projectsIndex = async (clientId, consultantId, developerId) => {
     let projects = [];
     for (let client of clients) {
         const clientProjects = await adapterAPI.getClientProjects(client.id);
-        clientProjects.forEach(project => {project.id = project.contractAddress});
+        for (let project of clientProjects) {
+            project.id = project.contractAddress;
+            project.deliveryDate = new Date(project.deliveryDate);
+
+            const {client} = await adapterAPI.getClient(project.clientId);
+            project.client = client;
+        }
         projects = projects.concat(clientProjects);
     }
     for (let developer of developers) {
         const developerProjects = await adapterAPI.getDeveloperProjects(developer.id);
-        developerProjects.forEach(project => {project.id = project.contractAddress});
+        for (let project of developerProjects) {
+            project.id = project.contractAddress;
+            project.deliveryDate = new Date(project.deliveryDate);
+
+            const {client} = await adapterAPI.getClient(project.clientId);
+            project.client = client;
+        }
         projects = projects.concat(developerProjects);
     }
     return projects;

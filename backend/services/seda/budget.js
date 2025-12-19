@@ -8,9 +8,9 @@ const BudgetTypes = require('../../utils/budgets.json');
  *
  * @async
  * @function budgetIndex
- * @returns {Promise<Object[]>} Lista de budgets en formato JSON.
+ * @returns {Object[]} Lista de budgets en formato JSON.
  */
-exports.budgetIndex = async () => {
+exports.budgetIndex = () => {
     return BudgetTypes.map((budget, index) => ({id: index, description: budget}));
 }
 

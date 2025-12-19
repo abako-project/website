@@ -31,17 +31,12 @@ const {adapterAPI} = require("../api-client");
  * @param {string} data.deliveryDate - Fecha estimada de entrega.
  * @returns {Promise<string>} string con la direccion del contrato creado.
  */
-exports.proposalCreate = async (clientId, {title, summary, projectTypeId, description, url, budgetId, deliveryTimeId, deliveryDate}, token) => {
-
-   // deliveryDate = "2024-12-31";
-   // projectTypeId = 1;
-   // budgetId = 1;
-   // deliveryTimeId = 1;
+exports.proposalCreate = async (clientId, {title, summary, projectType, description, url, budget, deliveryTime, deliveryDate}, token) => {
 
     const response = await adapterAPI.deployProject(
         "v5",
          {
-            title, summary, description, projectTypeId, url, budgetId, deliveryTimeId, deliveryDate
+            title, summary, description, projectType, url, budget, deliveryTime, deliveryDate
         },
         clientId,
         token);
@@ -49,15 +44,6 @@ exports.proposalCreate = async (clientId, {title, summary, projectTypeId, descri
     return response.address;
 };
 
-
-exports.proposalCreate__BBDD = async (clientId, {title, summary, projectTypeId, description, url, budgetId, deliveryTimeId, deliveryDate}) => {
-
-    const project = await Project.create({
-        title, summary, description, projectTypeId, state: null, url, budgetId, deliveryTimeId, deliveryDate, clientId, consultantId: undefined
-    });
-
-    return json.projectJson(project);
-};
 //-----------------------------------------------------------
 
 /**
@@ -79,35 +65,22 @@ exports.proposalCreate__BBDD = async (clientId, {title, summary, projectTypeId, 
  * @param {string} [token] - Auth token.
  * @returns {Promise<Object>} Objeto JSON con los datos actualizados del proyecto.
  */
-exports.proposalUpdate = async (projectId, {title, summary, description, url, projectTypeId, budgetId, deliveryTimeId, deliveryDate}, token) => {
-    try {
-        // Try to update on backend
-        const updateData = {
-            title,
-            summary,
-            description,
-            url,
-            projectTypeId,
-            budgetId,
-            deliveryTimeId,
-            deliveryDate
-        };
-        
-        const response = await adapterAPI.updateProject(projectId, updateData, token);
-        return response;
-    } catch (error) {
-        console.warn(`[SEDA Proposal] Could not update on backend, falling back to SQLite:`, error.message);
-        
-        // Fallback to SQLite
-        await Project.update({
-            title, summary, description, url, projectTypeId, budgetId, deliveryTimeId, deliveryDate
-        }, {
-            where: {id: projectId}
-        });
+exports.proposalUpdate = async (projectId, {title, summary, description, url, projectType, budget, deliveryTime, deliveryDate}, token) => {
 
-        const project = await Project.findByPk(projectId);
-        return json.projectJson(project);
-    }
+    // Try to update on backend
+    const updateData = {
+        title,
+        summary,
+        description,
+        url,
+        projectType,
+        budget,
+        deliveryTime,
+        deliveryDate
+    };
+
+    const response = await adapterAPI.updateProject(projectId, updateData, token);
+    return response;
 };
 
 

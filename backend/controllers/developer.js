@@ -141,7 +141,7 @@ exports.update = async (req, res, next) => {
         await seda.registerWorker(developer.email, req.session.loginUser.token);
 
         // Configurar disponibilidad:
-        await seda.setWorkerAvailability(developer.email, data.availability, req.session.loginUser.token);
+        await seda.setAvailability(data.availability, req.session.loginUser.token);
 
         // Actualizar perfil:
         await seda.developerUpdate(developerId, data, image);

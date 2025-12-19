@@ -10,9 +10,9 @@ const deliveryTimes = require('../../utils/deliveryTimes.json');
  *
  * @async
  * @function deliveryTimeIndex
- * @returns {Promise<Object[]>} Lista de horas de entrega en formato JSON.
+ * @returns {Object[]} Lista de horas de entrega en formato JSON.
  */
-exports.deliveryTimeIndex = async () => {
+exports.deliveryTimeIndex = () => {
 
     return deliveryTimes.map((dt, index) => ({id: index, description: dt}));
 }

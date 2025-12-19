@@ -20,11 +20,11 @@
 
   <div class="form-group area3">
     <label for="projectTypeId">Project Type:</label>
-    <select id="projectTypeId" name="projectTypeId" class="select">
+    <select id="projectTypeId" name="projectType" class="select">
         <option value="">None</option>
         <% for (const projectType of allProjectTypes) { %>
             <option value="<%= projectType.id %>"
-                    <%= project.projectTypeId === projectType.id && "selected" %> >
+                    <%= project.projectType === projectType.id && "selected" %> >
                 <%= projectType.description %> %>
             </option>
         <% } %>
@@ -33,9 +33,7 @@
 
   <div class="form-group area5">
     <label for="description">Description:</label>
-    <textarea id="description" name="description">
-    <%= project.description %></textarea
-    >
+    <textarea id="description" name="description"><%= project.description %></textarea>
   </div>
 
   <div class="form-group icon-left">
@@ -57,9 +55,9 @@
           <span>
               <input type="radio"
                      id="budgetId"
-                     name="budgetId"
+                     name="budget"
                      value="<%= budget.id %>"
-                      <%= project.budgetId === budget.id && "checked" %>
+                      <%= project.budget == budget.id && "checked" %>
               />
               <p><%= budget.description %></p>
           </span>
@@ -74,9 +72,9 @@
             <span>
                 <input type="radio"
                        id="deliveryTimeId"
-                       name="deliveryTimeId"
+                       name="deliveryTime"
                        value="<%= deliveryTime.id %>"
-                        <%= project.deliveryTimeId === deliveryTime.id && "checked" %>
+                        <%= project.deliveryTime == deliveryTime.id && "checked" %>
                 />
                 <p><%= deliveryTime.description %></p>
             </span>

@@ -10,9 +10,9 @@ const projectTypes = require('../../utils/projectTypes.json');
  *
  * @async
  * @function projectTypeIndex
- * @returns {Promise<Object[]>} Lista de tipos de proyecto en formato JSON.
+ * @returns {Object[]} Lista de tipos de proyecto en formato JSON.
  */
-exports.projectTypeIndex = async () => {
+exports.projectTypeIndex = () => {
 
     return projectTypes.map((pt, index) => ({id: index, description: pt}));
 
