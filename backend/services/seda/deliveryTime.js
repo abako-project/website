@@ -1,10 +1,6 @@
 
 
-const json = require("./json");
-
-const {
-  models: {DeliveryTime}
-} = require('../../models');
+const deliveryTimes = require('../../utils/deliveryTimes.json');
 
 
 //-----------------------------------------------------------
@@ -18,9 +14,7 @@ const {
  */
 exports.deliveryTimeIndex = async () => {
 
-  const deliveryTimes = await DeliveryTime.findAll();
-
-  return deliveryTimes.map(deliveryTime => json.deliveryTimeJson(deliveryTime));
+    return deliveryTimes.map((dt, index) => ({id: index, description: dt}));
 }
 
 //-----------------------------------------------------------

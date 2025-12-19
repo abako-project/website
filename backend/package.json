@@ -5,8 +5,6 @@
     "start2": "PORT=3001 node ./bin/www",
     "start": "PORT=3001 supervisor ./bin/www",
     "migrate": "sequelize db:migrate",
-    "seed": "sequelize db:seed:all",
-    "mss": "npm run migrate && npm run seed && npm start"
   },
   "dependencies": {
     "@virtonetwork/sdk": "^0.0.4-alpha.36",

@@ -21,12 +21,10 @@ const sedaClient = require("./client");
 const sedaDeveloper = require("./developer");
 const sedaAttachment = require("./attachment");
 const sedaLanguage = require("./language");
-const sedaRole = require("./role");
 const sedaProficiency = require("./proficiency");
 const sedaBudget = require("./budget");
 const sedaDeliveryTime = require("./deliveryTime");
 const sedaProjectType = require("./projectType");
-const sedaSkill = require("./skill");
 const sedaVotations = require("./votations");
 const sedaUser = require("./user");
 const sedaCalendar = require("./calendar");
@@ -44,12 +42,10 @@ module.exports = exports = {
     ...sedaDeveloper,
     ...sedaAttachment,
     ...sedaLanguage,
-    ...sedaRole,
     ...sedaProficiency,
     ...sedaBudget,
     ...sedaDeliveryTime,
     ...sedaProjectType,
-    ...sedaSkill,
     ...sedaVotations,
     ...sedaUser,
     ...sedaCalendar

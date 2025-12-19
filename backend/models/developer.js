@@ -1,16 +1,11 @@
 'use strict';
 
 const {Model, DataTypes} = require('sequelize');
-const crypt = require('../helpers/crypt');
 
 // Definition of the Client model:
 module.exports = (sequelize) => {
 
-  class Developer extends Model {
-    verifyPassword(password) {
-      return crypt.encryptPassword(password, this.salt) === this.password;
-    }
-  }
+  class Developer extends Model {}
 
   Developer.init({
       name: {

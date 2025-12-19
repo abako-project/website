@@ -1,10 +1,6 @@
 
+const projectTypes = require('../../utils/projectTypes.json');
 
-const json = require("./json");
-
-const {
-  models: {ProjectType}
-} = require('../../models');
 
 
 //-----------------------------------------------------------
@@ -18,9 +14,8 @@ const {
  */
 exports.projectTypeIndex = async () => {
 
-  const projectTypes = await ProjectType.findAll();
+    return projectTypes.map((pt, index) => ({id: index, description: pt}));
 
-  return projectTypes.map(projectType => json.projectTypeJson(projectType));
 }
 
 //-----------------------------------------------------------

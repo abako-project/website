@@ -1,11 +1,5 @@
 
-
-const json = require("./json");
-
-const {
-  models: {Budget}
-} = require('../../models');
-
+const BudgetTypes = require('../../utils/budgets.json');
 
 //-----------------------------------------------------------
 
@@ -17,10 +11,7 @@ const {
  * @returns {Promise<Object[]>} Lista de budgets en formato JSON.
  */
 exports.budgetIndex = async () => {
-
-  const budgets = await Budget.findAll();
-
-  return budgets.map(budget => json.budgetJson(budget));
+    return BudgetTypes.map((budget, index) => ({id: index, description: budget}));
 }
 
 //-----------------------------------------------------------
