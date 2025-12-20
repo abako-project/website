@@ -86,10 +86,18 @@ exports.clientIndex = async () => {
  */
 exports.client = async clientId => {
 
-    const response = await adapterAPI.getClient(clientId);
+    const {client} = await adapterAPI.getClient(clientId);
 
-    return response.client;
+    // Eliminar las propiedades que no me interesan:
+    delete client._id;
+    delete client.__v;
+    delete client.imageData;
+    delete client.imageMimeType;
+    delete client.projects;
+    delete client.createdAt;
+    delete client.updatedAt;
 
+    return client;
 };
 
 //-----------------------------------------------------------

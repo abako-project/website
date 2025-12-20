@@ -16,7 +16,7 @@ exports.load = async (req, res, next, developerId) => {
   try {
     const developer = await seda.developer(developerId);
 
-    req.load = {...req.load, developer};
+      req.load = {...req.load, developer};
     next();
   } catch (error) {
     next(error);

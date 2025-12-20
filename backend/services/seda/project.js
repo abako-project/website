@@ -33,28 +33,31 @@ const deliveryTimes = require('./deliveryTime').deliveryTimeIndex();
 exports.project = async projectId => {
 
     let project = await adapterAPI.getProjectInfo(projectId);
-    project.id = project.contractAddress;
+
+    // Modificar propiedades:
 
     project.deliveryDate = new Date(project.deliveryDate);
+
+    // Crear propiedades extra:
+
+    project.id = project.contractAddress;
 
     project.budgetDescription = budgetTypes.find(bt => bt.id == project.budget)?.description;
     project.deliveryTimeDescription = deliveryTimes.find(dt => dt.id == project.deliveryTime)?.description;
     project.projectTypeDescription = projectTypes.find(pt => pt.id == project.projectType)?.description;
 
-    const {client} = await adapterAPI.getClient(project.clientId);
+    const seda = require("./index");
+    const client = await seda.client(project.clientId);
     project.client = client;
 
     project.objectives = ["Pendiente"];
     project.constraints = ["Pendiente"];
 
-    console.log("------- budgetTypes--NEW------------------------------");
-    console.log(JSON.stringify(budgetTypes, undefined, 2));
-    console.log("---------------------------------------");
+    // Eliminar propiedades que no me interesan:
 
+    delete project._id;
+    delete project.__v;
 
-    console.log("------- Project--NEW------------------------------");
-    console.log(JSON.stringify(project, undefined, 2));
-    console.log("---------------------------------------");
 
     return project;
 

@@ -69,21 +69,6 @@ exports.developerIndex = async () => {
 
     return response.developers;
 
-    /*
-    const developers = await Developer.findAll({
-        include: [
-            {model: User, as: "user"},
-            {model: Attachment, as: "attachment"},
-            {model: Language, as: "languages"},
-            {model: Role, as: "role"},
-            {model: Proficiency, as: "proficiency"},
-            {model: Skill, as: "skills"},
-        ]
-    });
-
-    return developers.map(developer => json.developerJson(developer));
-
-     */
 }
 
 //-----------------------------------------------------------
@@ -100,9 +85,17 @@ exports.developerIndex = async () => {
  */
 exports.developer = async developerId => {
 
-    const developer = await adapterAPI.getDeveloper(developerId);
+    const {developer} = await adapterAPI.getDeveloper(developerId);
 
-    return developer.developer;
+    // Eliminar las propiedades que no me interesan:
+    delete developer._id;
+    delete developer.__v;
+    delete developer.imageData;
+    delete developer.imageMimeType;
+    delete developer.createdAt;
+    delete developer.updatedAt;
+
+    return developer;
 };
 //-----------------------------------------------------------
 
