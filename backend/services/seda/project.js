@@ -184,80 +184,75 @@ exports.projectConsultantId = async projectId => {
  */
 exports.projectsIndex = async (clientId, consultantId, developerId) => {
 
+    const seda = require("./index");
+
+    let projects;
+
     if (clientId) {
-        const response = await adapterAPI.getClientProjects(clientId);
+        projects = await adapterAPI.getClientProjects(clientId);
+    } else if (consultantId) {
+        projects = await adapterAPI.getDeveloperProjects(consultantId);
+    } else if (developerId) {
+        projects = await adapterAPI.getDeveloperProjects(developerId);
+    } else { // All Projects
 
-        const {client} = await adapterAPI.getClient(clientId);
+        projects = [];
+        const projectIds = Set();
 
-        response.forEach(project => {
-           project.id = project.contractAddress;
-           project.deliveryDate = new Date(project.deliveryDate);
-
-           project.client = client;
-       });
-
-        return response;
-    }
-
-    if (consultantId) {
-        const response = await adapterAPI.getDeveloperProjects(consultantId);
-
-        for (let project of response) {
-            project.id = project.contractAddress;
-            project.deliveryDate = new Date(project.deliveryDate);
-
-            const {client} = await adapterAPI.getClient(project.clientId);
-            project.client = client;
+        const clients = (await adapterAPI.getClients()).clients;
+        for (let client of clients) {
+            const clientProjects = await adapterAPI.getClientProjects(client.id);
+            clientProjects.forEach(project => {
+                if (!projectIds.has(project.contractAddress)) {
+                    projectIds.add(project.contractAddress);
+                    projects.push(project);
+                }
+            });
         }
 
-        return response;
+        const developers = (await adapterAPI.getDevelopers()).developers;
+        for (let developer of developers) {
+            const developerProjects = await adapterAPI.getDeveloperProjects(developer.id);
+            developerProjects.forEach(project => {
+                if (!projectIds.has(project.contractAddress)) {
+                    projectIds.add(project.contractAddress);
+                    projects.push(project);
+                }
+            });
+        }
     }
 
-    if (developerId) {
-        const response = await adapterAPI.getDeveloperProjects(developerId);
+    const clientsCache = {};
+    const developersCache = {};
 
-        for (let project of response) {
-            project.id = project.contractAddress;
-            project.deliveryDate = new Date(project.deliveryDate);
+    for (let project of projects) {
 
-            const {client} = await adapterAPI.getClient(project.clientId);
-            project.client = client;
+        // Modificar propiedades:
+
+        project.deliveryDate = new Date(project.deliveryDate);
+
+        // Crear nuevas propiedades:
+
+        project.id = project.contractAddress;
+
+        clientsCache[project.clientId] ||=  await seda.client(project.clientId);
+        project.client = clientsCache[project.clientId];
+
+        if (project.consultantId) {
+            developersCache[project.consultantId] ||=  await seda.developer(project.consultantId);
+            project.consultant = developersCache[project.consultantId];
         }
 
-        return response;
+        // Eliminr propiedades que no interesan:
+
+        delete project._id;
+        delete project.__v;
     }
 
-    // All Projects
-    const clients = (await adapterAPI.getClients()).clients;
-    console.log(">> # clientes =", clients.length);
-    const developers = (await adapterAPI.getDevelopers()).developers;
-    console.log(">> # developers =", developers.length);
-
-    let projects = [];
-    for (let client of clients) {
-        const clientProjects = await adapterAPI.getClientProjects(client.id);
-        for (let project of clientProjects) {
-            project.id = project.contractAddress;
-            project.deliveryDate = new Date(project.deliveryDate);
-
-            const {client} = await adapterAPI.getClient(project.clientId);
-            project.client = client;
-        }
-        projects = projects.concat(clientProjects);
-    }
-    for (let developer of developers) {
-        const developerProjects = await adapterAPI.getDeveloperProjects(developer.id);
-        for (let project of developerProjects) {
-            project.id = project.contractAddress;
-            project.deliveryDate = new Date(project.deliveryDate);
-
-            const {client} = await adapterAPI.getClient(project.clientId);
-            project.client = client;
-        }
-        projects = projects.concat(developerProjects);
-    }
     return projects;
 }
+
+
 
 exports.projectsIndex_BBDD = async (clientId, consultantId, developerId) => {
 

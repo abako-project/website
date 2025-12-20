@@ -21,7 +21,8 @@ exports.index = async (req, res, next) => {
       // console.log("....... Ctrl + projec + index.......................");
       // console.log(JSON.stringify(projects, undefined, 2));
       // console.log("..............................");
-//
+
+      projects.reverse();
 
     // No se puede usar el valor client en las opciones cuando
     // hay llamadas anidadas a la funcion include de EJS.
@@ -116,8 +117,8 @@ exports.createProposal = async (req, res, next) => {
 // Mostrar detalle de un proyecto
 exports.show = async (req, res, next) => {
 
-  const projectId = req.params.projectId;
-  const project = await seda.project(projectId);
+    const projectId = req.params.projectId;
+    const project = await seda.project(projectId);
 
 
     console.log(">>> ctrl.project.show");
@@ -125,7 +126,7 @@ exports.show = async (req, res, next) => {
     console.log("-----------------------------");
 
     res.render('projects/showProject', {
-      project,
+        project,
     });
 };
 
