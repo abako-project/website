@@ -188,6 +188,13 @@ exports.projectsIndex = async (clientId, consultantId, developerId) => {
 
     let projects;
 
+    // Todos los clientes
+    const clients = (await adapterAPI.getClients()).clients;
+
+    // todos los developers
+    const developers = (await adapterAPI.getDevelopers()).developers;
+
+
     if (clientId) {
         projects = await adapterAPI.getClientProjects(clientId);
     } else if (consultantId) {
@@ -197,9 +204,8 @@ exports.projectsIndex = async (clientId, consultantId, developerId) => {
     } else { // All Projects
 
         projects = [];
-        const projectIds = Set();
+        const projectIds = new Set();
 
-        const clients = (await adapterAPI.getClients()).clients;
         for (let client of clients) {
             const clientProjects = await adapterAPI.getClientProjects(client.id);
             clientProjects.forEach(project => {
@@ -210,7 +216,14 @@ exports.projectsIndex = async (clientId, consultantId, developerId) => {
             });
         }
 
-        const developers = (await adapterAPI.getDevelopers()).developers;
+
+        console.log("....... Seda + projec + index.......................");
+        for (let developer of developers) {
+             delete developer.imageData
+        }
+            console.log(JSON.stringify(developers, undefined, 2));
+        console.log("..............................");
+
         for (let developer of developers) {
             const developerProjects = await adapterAPI.getDeveloperProjects(developer.id);
             developerProjects.forEach(project => {
@@ -222,14 +235,34 @@ exports.projectsIndex = async (clientId, consultantId, developerId) => {
         }
     }
 
+    // Mapping de developer Worker Address a Developer Id:
+    const developerAddress2Id = {};
+    for (let developer of developers) {
+        const address = await seda.getWorkerAddress(developer.email)
+        developerAddress2Id[address] = developer.id;
+    }
+
+
+    // Key: id - Value: client
     const clientsCache = {};
+
+    // Key: id - Value: developer
     const developersCache = {};
+
+     console.log("....... Seda + projec + index.......................");
+     console.log(JSON.stringify(projects, undefined, 2));
+     console.log("..............................");
+
 
     for (let project of projects) {
 
         // Modificar propiedades:
 
         project.deliveryDate = new Date(project.deliveryDate);
+
+        if (project.consultantId) {
+            project.consultantId =  developerAddress2Id[project.consultantId];
+        }
 
         // Crear nuevas propiedades:
 
@@ -238,6 +271,9 @@ exports.projectsIndex = async (clientId, consultantId, developerId) => {
         clientsCache[project.clientId] ||=  await seda.client(project.clientId);
         project.client = clientsCache[project.clientId];
 
+        console.log(">>>>>>>> project.consultantId", project.consultantId)
+
+        // NOTA: el valor de project.consultantId no es la id es la worker address
         if (project.consultantId) {
             developersCache[project.consultantId] ||=  await seda.developer(project.consultantId);
             project.consultant = developersCache[project.consultantId];
