@@ -2,7 +2,8 @@
 const {adapterAPI} = require('../api-client');
 
 // Esto desarparece con el siguiente api adapter
-const calendarAddress = "Cfqrpkb3Fs17DBpQR5UmBq3bDzaDTnFe89RK9EwZvPWtJpr";
+const calendarAddress = "Dd34LSU53MLwJpq4wfHmDFwAifJrcaPbd1qTCGZcR7iXQkd";
+
 
 exports.calendarAddress = calendarAddress;
 
@@ -13,12 +14,7 @@ exports.calendarAddress = calendarAddress;
  */
 exports.registeredWorkers = async () => {
 
-    // Esto desarparece con el siguiente api adapter
-    const calendarAddress = "Cfqrpkb3Fs17DBpQR5UmBq3bDzaDTnFe89RK9EwZvPWtJpr";
-
     const response = await adapterAPI.getRegisteredWorkers(calendarAddress);
-
-
     return response;
 }
 
