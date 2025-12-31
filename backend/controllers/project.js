@@ -8,28 +8,23 @@ const seda = require("../services/seda");
 // GET + /developers/:developerId/projects
 exports.index = async (req, res, next) => {
 
-  try {
+    try {
+        const clientId = req.params.clientId;
+        const client = clientId ? await seda.client(clientId) : null;
 
-    const clientId = req.params.clientId;
-    const client = clientId ? await seda.client(clientId) : null;
+        const developerId = req.params.developerId;
+        const developer = developerId ? await seda.developer(developerId) : null;
 
-    const developerId = req.params.developerId;
-    const developer = developerId ? await seda.developer(developerId) : null;
+        const projects = await seda.projectsIndex(clientId, developerId, developerId);
 
-      const projects = await seda.projectsIndex(clientId, developerId, developerId);
+        projects.reverse();
 
-      // console.log("....... Ctrl + projec + index.......................");
-      // console.log(JSON.stringify(projects, undefined, 2));
-      // console.log("..............................");
-
-      projects.reverse();
-
-    // No se puede usar el valor client en las opciones cuando
-    // hay llamadas anidadas a la funcion include de EJS.
-    res.render('dashboard/projects', {projects, c: client, developer});
-  } catch (error) {
-    next(error);
-  }
+        // No se puede usar el valor client en las opciones cuando
+        // hay llamadas anidadas a la funcion include de EJS.
+        res.render('dashboard/projects', {projects, c: client, developer});
+    } catch (error) {
+        next(error);
+    }
 };
 
 

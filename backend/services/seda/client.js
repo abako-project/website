@@ -66,10 +66,13 @@ exports.clientConnect = async (email) => {
  */
 exports.clientIndex = async () => {
 
-    const response = await adapterAPI.getClients();
+    const {clients} = await adapterAPI.getClients();
 
-    return response.clients;
+    clients.forEach(client => {
+        exports.cleanClient(client);
+    });
 
+    return clients;
 }
 
 //-----------------------------------------------------------
@@ -88,7 +91,16 @@ exports.client = async clientId => {
 
     const {client} = await adapterAPI.getClient(clientId);
 
-    // Eliminar las propiedades que no me interesan:
+    //  require("../../helpers/logs").log(client,"Seda Client");
+
+    exports.cleanClient(client);
+
+    return client;
+};
+
+// Eliminar las propiedades que no me interesan:
+exports.cleanClient = async client => {
+
     delete client._id;
     delete client.__v;
     delete client.imageData;
@@ -96,8 +108,6 @@ exports.client = async clientId => {
     delete client.projects;
     delete client.createdAt;
     delete client.updatedAt;
-
-    return client;
 };
 
 //-----------------------------------------------------------

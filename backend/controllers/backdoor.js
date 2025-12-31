@@ -18,9 +18,7 @@ exports.registeredDevelopers = async (req, res, next) => {
         }
         let workers = response.response;
 
-        // console.log(">>> Ctrl.backdoor > registeredworkers");
-        // console.log(workers);
-        // console.log("-----------------------------");
+        require("../helpers/logs").log(workers, "workers");
 
         const developers = await seda.developerIndex();
 
@@ -34,9 +32,8 @@ exports.registeredDevelopers = async (req, res, next) => {
             throw new Error("no puedo obtener la disponibilidad de los workers..");
         }
         let availabilities = response2.response;
-        // console.log(">>> Ctrl.backdoor > workersAvailability");
-        // console.log(availabilities);
-        // console.log("-----------------------------");
+
+        require("../helpers/logs").log(availabilities, "availabilities");
 
         const info = [];
 

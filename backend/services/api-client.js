@@ -325,7 +325,6 @@ const adapterAPI = {
         try {
             const response = await adapterClient.get(apiConfig.adapterAPI.endpoints.developers.list);
             const developer = response.data.developers.find(d => d.email === email);
-            console.log(">>>>>>>>>>>>>>> ", developer);
             return developer;
         } catch (error) {
             if (error.response?.status === 404) {
@@ -506,12 +505,12 @@ const adapterAPI = {
         }
     },
 
-    async getProjectInfo(contractAddress) {
+    async getProjectInfo(projectId) {
         try {
-            const response = await adapterClient.get(apiConfig.adapterAPI.endpoints.projects.getProjectInfo(contractAddress));
+            const response = await adapterClient.get(apiConfig.adapterAPI.endpoints.projects.getProjectInfo(projectId));
             return response.data;
         } catch (error) {
-            handleError(error, `getProjectInfo(${contractAddress})`);
+            handleError(error, `getProjectInfo(${projectId})`);
         }
     },
 

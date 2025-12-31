@@ -12,11 +12,6 @@ const {
 } = require('../../models');
 
 const states = require("../../core/state");
-const apiConfig = require("../../config/api.config");
-
-const projectTypes = require('./projectType').projectTypeIndex();
-const budgetTypes = require('./budget').budgetIndex();
-const deliveryTimes = require('./deliveryTime').deliveryTimeIndex();
 
 //-----------------------------------------------------------
 
@@ -32,96 +27,40 @@ const deliveryTimes = require('./deliveryTime').deliveryTimeIndex();
  */
 exports.project = async projectId => {
 
+    const seda = require("./index");
+
     let project = await adapterAPI.getProjectInfo(projectId);
+
+    require("../../helpers/logs").log(project, "project");
+
+    const clients = await seda.clientIndex();
+    const developers = await seda.developerIndex();
 
     // Modificar propiedades:
 
     project.deliveryDate = new Date(project.deliveryDate);
 
-    // Crear propiedades extra:
+    // Crear nuevas propiedades:
 
-    project.id = project.contractAddress;
+    project.id = project._id;
 
-    project.budgetDescription = budgetTypes.find(bt => bt.id == project.budget)?.description;
-    project.deliveryTimeDescription = deliveryTimes.find(dt => dt.id == project.deliveryTime)?.description;
-    project.projectTypeDescription = projectTypes.find(pt => pt.id == project.projectType)?.description;
+    project.client = clients.find(client => client.id == project.clientId);
 
-    const seda = require("./index");
-    const client = await seda.client(project.clientId);
-    project.client = client;
+    if (project.consultantId) {
+        project.consultant = developers.find(developer => developer.id == project.consultantId);
+    }
 
-    project.objectives = ["Pendiente"];
-    project.constraints = ["Pendiente"];
+    project.milestones ||= [];
 
-    // Eliminar propiedades que no me interesan:
+    project.objectives = [];
+    project.constraints = [];
+
+    // Eliminar propiedades que no interesan:
 
     delete project._id;
     delete project.__v;
 
-
     return project;
-
-    //---------
-
-    /*
-    const project = await Project.findByPk(projectId, {
-        include: [
-            {
-                model: Client, as: 'client',
-                include: [
-                    {model: User, as: "user"},
-                    {model: Attachment, as: "attachment"}]
-            },
-            {
-                model: Developer, as: 'consultant',
-                include: [
-                    {model: User, as: "user"},
-                    {model: Attachment, as: "attachment"}]
-            },
-            {model: Budget, as: "budget"},
-            {model: DeliveryTime, as: "deliveryTime"},
-            {model: ProjectType, as: "projectType"},
-            {
-                model: Objective, as: 'objectives',
-                separate: true,
-                order: [['displayOrder', 'ASC']]
-            },
-            {
-                model: Constraint, as: 'constraints',
-                separate: true,
-                order: [['displayOrder', 'ASC']]
-            },
-            {
-                model: Milestone, as: 'milestones',
-                separate: true,
-                order: [['displayOrder', 'ASC']],
-                include: [
-                    {
-                        model: Developer, as: 'developer',
-                        include: [
-                            {model: User, as: "user"},
-                            {model: Attachment, as: "attachment"}]
-                    },
-                    {model: DeliveryTime, as: "deliveryTime"},
-                    {model: Role, as: 'role'},
-                    {model: Proficiency, as: 'proficiency'},
-                    {model: Skill, as: 'skills'},
-                ]
-            },
-            {
-                model: Comment, as: "comments",
-                separate: true,
-                order: [['createdAt', 'DESC']],
-            }
-        ]
-    });
-    if (project) {
-        return json.projectJson(project);
-    } else {
-        throw new Error('There is no project with id=' + projectId);
-    }
-
-     */
 };
 
 //-----------------------------------------------------------
@@ -170,6 +109,16 @@ exports.projectConsultantId = async projectId => {
 
 //-----------------------------------------------------------
 
+// Dado el id de un proyecto, devuelve la address de su contrato.
+exports.projectContractAddress = async projectId => {
+
+    let project = await adapterAPI.getProjectInfo(projectId);
+
+    return project?.contractAddress;
+};
+
+//-----------------------------------------------------------
+
 /**
  * Devuelve un índice de proyectos filtrado por cliente, consultor o desarrollador.
  * Si no se pasa ningún parámetro, devuelve todos los proyectos.
@@ -189,15 +138,23 @@ exports.projectsIndex = async (clientId, consultantId, developerId) => {
     let projects;
 
     // Todos los clientes
-    const clients = (await adapterAPI.getClients()).clients;
+    const clients = await seda.clientIndex();
+    //require("../../helpers/logs").log(clients, "Clientes");
 
     // todos los developers
-    const developers = (await adapterAPI.getDevelopers()).developers;
+    const developers = await seda.developerIndex();
+    //  require("../../helpers/logs").log(developers, "Developers");
 
 
     if (clientId) {
         projects = await adapterAPI.getClientProjects(clientId);
+
+        // require("../../helpers/logs").log(projects, "Proyectos ORIGINAL");
+
     } else if (consultantId) {
+
+        //require("../../helpers/logs").log(consultantId, "consultantId");
+
         projects = await adapterAPI.getDeveloperProjects(consultantId);
     } else if (developerId) {
         projects = await adapterAPI.getDeveloperProjects(developerId);
@@ -209,50 +166,27 @@ exports.projectsIndex = async (clientId, consultantId, developerId) => {
         for (let client of clients) {
             const clientProjects = await adapterAPI.getClientProjects(client.id);
             clientProjects.forEach(project => {
-                if (!projectIds.has(project.contractAddress)) {
-                    projectIds.add(project.contractAddress);
+                if (!projectIds.has(project._id)) {
+                    projectIds.add(project._id);
                     projects.push(project);
                 }
             });
         }
 
-
-        console.log("....... Seda + projec + index.......................");
-        for (let developer of developers) {
-             delete developer.imageData
-        }
-            console.log(JSON.stringify(developers, undefined, 2));
-        console.log("..............................");
+        //for (let developer of developers) {
+           //  delete developer.imageData
+       // }
 
         for (let developer of developers) {
             const developerProjects = await adapterAPI.getDeveloperProjects(developer.id);
             developerProjects.forEach(project => {
-                if (!projectIds.has(project.contractAddress)) {
-                    projectIds.add(project.contractAddress);
+                if (!projectIds.has(project._id)) {
+                    projectIds.add(project._id);
                     projects.push(project);
                 }
             });
         }
     }
-
-    // Mapping de developer Worker Address a Developer Id:
-    const developerAddress2Id = {};
-    for (let developer of developers) {
-        const address = await seda.getWorkerAddress(developer.email)
-        developerAddress2Id[address] = developer.id;
-    }
-
-
-    // Key: id - Value: client
-    const clientsCache = {};
-
-    // Key: id - Value: developer
-    const developersCache = {};
-
-     console.log("....... Seda + projec + index.......................");
-     console.log(JSON.stringify(projects, undefined, 2));
-     console.log("..............................");
-
 
     for (let project of projects) {
 
@@ -260,24 +194,20 @@ exports.projectsIndex = async (clientId, consultantId, developerId) => {
 
         project.deliveryDate = new Date(project.deliveryDate);
 
-        if (project.consultantId) {
-            project.consultantId =  developerAddress2Id[project.consultantId];
-        }
-
         // Crear nuevas propiedades:
 
-        project.id = project.contractAddress;
+        project.id = project._id;
 
-        clientsCache[project.clientId] ||=  await seda.client(project.clientId);
-        project.client = clientsCache[project.clientId];
+        project.client = clients.find(client => client.id == project.clientId);
 
-        console.log(">>>>>>>> project.consultantId", project.consultantId)
-
-        // NOTA: el valor de project.consultantId no es la id es la worker address
         if (project.consultantId) {
-            developersCache[project.consultantId] ||=  await seda.developer(project.consultantId);
-            project.consultant = developersCache[project.consultantId];
+            project.consultant = developers.find(developer => developer.id == project.consultantId);
         }
+
+        project.milestones ||= [];
+
+        project.objectives = [];
+        project.constraints = [];
 
         // Eliminr propiedades que no interesan:
 
@@ -285,56 +215,10 @@ exports.projectsIndex = async (clientId, consultantId, developerId) => {
         delete project.__v;
     }
 
+    require("../../helpers/logs").log(projects, "Proyectos LIMPIO");
+
     return projects;
 }
-
-
-
-exports.projectsIndex_BBDD = async (clientId, consultantId, developerId) => {
-
-    let options = {
-        include: [
-            {
-                model: Client, as: 'client',
-                include: [
-                    {model: User, as: "user"},
-                    {model: Attachment, as: "attachment"}]
-            },
-            {
-                model: Developer, as: 'consultant',
-                include: [
-                    {model: User, as: "user"},
-                    {model: Attachment, as: "attachment"}]
-            },
-            {
-                model: Milestone, as: 'milestones',
-                include: [
-                    {model: Developer, as: 'developer'}
-                ]
-            }
-        ]
-    };
-
-    const orItems = [];
-    if (clientId) {
-        orItems.push({clientId});
-    }
-    if (consultantId) {
-        orItems.push({consultantId});
-    }
-    if (developerId) {
-        orItems.push({'$milestones.developerId$': developerId});
-    }
-    if (orItems.length > 0) {
-        options.where = {
-            [Op.or]: orItems
-        };
-    }
-
-    const projects = await Project.findAll(options);
-
-    return projects.map(project => json.projectJson(project));
-};
 
 //-----------------------------------------------------------
 

@@ -63,7 +63,7 @@ module.exports = {
                 coordinatorReject:   (addr) => `/projects/${addr}/coordinator_reject`,
                 completeTask:        (addr) => `/projects/${addr}/complete_task`,
                 //GET Methods
-                getProjectInfo:      (addr) => `/projects/${addr}/get_project_info`,
+                getProjectInfo:      (id) => `/projects/${id}/get_project_info`,
                 getTeam:             (addr) => `/projects/${addr}/get_team`,
                 getScopeInfo:        (addr) => `/projects/${addr}/get_scope_info`,
                 getTask:             (addr) => `/projects/${addr}/get_task`,

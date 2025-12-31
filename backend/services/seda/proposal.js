@@ -41,7 +41,9 @@ exports.proposalCreate = async (clientId, {title, summary, projectType, descript
         clientId,
         token);
 
-    return response.address;
+    // require("../../helpers/logs").log(response, "proposalCreate")
+
+    return response.projectId;
 };
 
 //-----------------------------------------------------------

@@ -9,18 +9,17 @@ const allRoles = require('../utils/roles.json');
 const availabilityOptions = require('../utils/availability.json');
 const allProficiencies = require('../utils/proficiency.json');
 
-
 // Autoload the developer with id equals to :developerId
 exports.load = async (req, res, next, developerId) => {
 
-  try {
-    const developer = await seda.developer(developerId);
+    try {
+        const developer = await seda.developer(developerId);
 
-      req.load = {...req.load, developer};
-    next();
-  } catch (error) {
-    next(error);
-  }
+        req.load = {...req.load, developer};
+        next();
+    } catch (error) {
+        next(error);
+    }
 };
 
 

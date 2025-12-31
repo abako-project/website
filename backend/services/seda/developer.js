@@ -65,10 +65,13 @@ exports.developerConnect = async (email) => {
  */
 exports.developerIndex = async () => {
 
-    const response = await adapterAPI.getDevelopers();
+    const {developers} = await adapterAPI.getDevelopers();
 
-    return response.developers;
+    developers.forEach(developer => {
+        exports.cleanDeveloper(developer);
+    });
 
+    return developers;
 }
 
 //-----------------------------------------------------------
@@ -87,16 +90,22 @@ exports.developer = async developerId => {
 
     const {developer} = await adapterAPI.getDeveloper(developerId);
 
-    // Eliminar las propiedades que no me interesan:
+    exports.cleanDeveloper(developer);
+
+    return developer;
+};
+
+// Eliminar las propiedades que no me interesan:
+exports.cleanDeveloper = async developer => {
+
     delete developer._id;
     delete developer.__v;
     delete developer.imageData;
     delete developer.imageMimeType;
     delete developer.createdAt;
     delete developer.updatedAt;
-
-    return developer;
 };
+
 //-----------------------------------------------------------
 
 /**
@@ -232,7 +241,7 @@ exports.developerCreate = async (email, name, preparedData) => {
  *
  * @returns {Promise<Object>} Objeto JSON con los datos actualizados del desarrollador.
  */
-exports.developerUpdate = async  (developerId, data, image) => {
+exports.developerUpdate = async (developerId, data, image) => {
     try {
 
         const updatedDeveloper = await adapterAPI.updateDeveloper(developerId, data, image);
