@@ -57,7 +57,7 @@ module.exports = {
                 assignTeam:          (addr) => `/projects/${addr}/assign_team`,
                 markCompleted:       (addr) => `/projects/${addr}/mark_completed`,
                 setCalendarContract: (addr) => `/projects/${addr}/set_calendar_contract`,
-                proposeScope:        (addr) => `/projects/${addr}/propose_scope`,
+                proposeScope:        (id) => `/projects/${id}/propose_scope`,
                 approveScope:        (addr) => `/projects/${addr}/approve_scope`,
                 rejectScope:         (addr) => `/projects/${addr}/reject_scope`,
                 coordinatorReject:   (addr) => `/projects/${addr}/coordinator_reject`,
@@ -65,10 +65,10 @@ module.exports = {
                 //GET Methods
                 getProjectInfo:      (id) => `/projects/${id}/get_project_info`,
                 getTeam:             (addr) => `/projects/${addr}/get_team`,
-                getScopeInfo:        (addr) => `/projects/${addr}/get_scope_info`,
+                getScopeInfo:        (id) => `/projects/${id}/get_scope_info`,
                 getTask:             (addr) => `/projects/${addr}/get_task`,
                 getTaskCompletion:   (addr) => `/projects/${addr}/get_task_completion_status`,
-                getAllTasks:         (addr) => `/projects/${addr}/get_all_tasks`,
+                getAllTasks:         (id) => `/projects/${id}/get_all_tasks`,
 
                 // Milestones
                 milestones: {

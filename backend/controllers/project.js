@@ -115,10 +115,16 @@ exports.show = async (req, res, next) => {
     const projectId = req.params.projectId;
     const project = await seda.project(projectId);
 
+    // require("../helpers/logs").log(project, "Project PUNTO 1");
 
-    console.log(">>> ctrl.project.show");
-    console.log(project);
-    console.log("-----------------------------");
+    // Si existe req.session.scope.projectId y vale projectId, entonces sustituyo el
+    // valor de project.milestones por req.session.scope.milestones.
+    // Esto ocurre cuando estoy editando un scope.
+    if (req.session.scope?.projectId == projectId) {
+        project.milestones = req.session.scope.milestones
+    }
+
+   // require("../helpers/logs").log(project, "Project PUNTO 2");
 
     res.render('projects/showProject', {
         project,
@@ -252,25 +258,38 @@ exports.proposalSubmit = async (req, res, next) => {
 // El consultor publicar el scope:
 exports.scopeSubmit = async (req, res, next) => {
 
-  const projectId = req.params.projectId;
+    const projectId = req.params.projectId;
 
-  const developerId = req.session.loginUser?.developerId;
+    const developerId = req.session.loginUser?.developerId;
 
-  const consultantComment = req.body.consultantComment || "";
+    const consultantComment = req.body.consultantComment || "";
 
-  try {
-    await seda.scopeSubmit(projectId, consultantComment)
+    const advancePaymentPercentage = 10;
+    const documentHash = "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef";
 
-    console.log('Success: Scope submitted successfully.');
 
-    if (developerId) {
-      res.redirect('/projects/' + projectId);
-    } else {
-      res.redirect('/projects/');
+    try {
+
+        // require("../helpers/logs").log(projectId, "projectId");
+        // require("../helpers/logs").log(req.session.scope, "Proposed Scope");
+        // require("../helpers/logs").log(advancePaymentPercentage, "advancePaymentPercentage");
+        // require("../helpers/logs").log(documentHash, "documentHash");
+        // require("../helpers/logs").log(req.session.loginUser.token, "Token");
+
+        await seda.scopeSubmit(projectId, req.session.scope.milestones, advancePaymentPercentage, documentHash, consultantComment, req.session.loginUser.token);
+
+        delete req.session.scope;
+
+        console.log('Success: Scope submitted successfully.');
+
+        if (developerId) {
+            res.redirect('/projects/' + projectId);
+        } else {
+            res.redirect('/projects/');
+        }
+    } catch (error) {
+        next(error);
     }
-  } catch (error) {
-    next(error);
-  }
 };
 
 
@@ -328,18 +347,18 @@ exports.scopeReject = async (req, res, next) => {
 // Rechazar el proyecto:
 exports.rejectProposal = async (req, res, next) => {
 
-  const projectId = req.params.projectId;
+    const projectId = req.params.projectId;
 
     const proposalRejectionReason = req.body.proposalRejectionReason || ""
 
     try {
-    await seda.rejectProposal(projectId, proposalRejectionReason);
+        await seda.rejectProposal(projectId, proposalRejectionReason);
 
-    console.log('Success: Project rejected successfully.');
-    res.redirect('/projects/' + projectId);
-  } catch (error) {
-    next(error);
-  }
+        console.log('Success: Project rejected successfully.');
+        res.redirect('/projects/' + projectId);
+    } catch (error) {
+        next(error);
+    }
 };
 
 
@@ -350,6 +369,12 @@ exports.approveProposal = async (req, res, next) => {
 
   try {
     await seda.approveProposal(projectId);
+
+    // Para almacenar los milestones para el scope que hay que crear:
+      req.session.scope = {
+          projectId,
+          milestones: []
+      };
 
     console.log('Success: Project approved successfully.');
     res.redirect('/projects/' + projectId);

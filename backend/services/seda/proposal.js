@@ -132,9 +132,7 @@ exports.proposalSubmit = async (projectId) => {
  * @throws {Error} Si falla la actualización del estado.
  */
 exports.approveProposal = async (projectId) => {
-    await Project.update({
-        state: states.ProjectState.ScopingInProgress
-    }, {where: {id: projectId}});
+
 };
 
 

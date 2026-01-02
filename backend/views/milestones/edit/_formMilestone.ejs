@@ -1,3 +1,12 @@
+
+<!-- Choices.js CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css">
+<!-- Choices.js JS -->
+<script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+
+
+
+
 <div class="formMilestone__milestone">
     <div class="form-group title">
         <label for="title">Title:</label>
@@ -28,9 +37,9 @@
             <span>
                 <input type="radio"
                        id="deliveryTimeId"
-                       name="deliveryTimeId"
-                       value="<%= deliveryTime.id %>"
-                        <%= milestone.deliveryTimeId === deliveryTime.id && "checked" %>
+                       name="deliveryTime"
+                       value="<%= deliveryTime.id ?? 0 %>"
+                        <%= milestone.deliveryTime == deliveryTime.id && "checked" %>
                 />
                 <b><%= deliveryTime.description %></b>
             </span>
@@ -52,62 +61,62 @@
 <div class="formMilestone__dev">
     <div class="form-group role">
         <label for="role">Role:</label>
-        <select id="role" name="roleId">
+        <select id="role" name="role">
             <option value="">None</option>
-            <% for (const role of allRoles) { %>
-                <option value="<%= role.id %>"
-                        <%= milestone.roleId === role.id && "selected" %> >
-                    <%= role.name %> %>
+            <% allRoles.forEach(role => { %>
+                <option value="<%= role %>"
+                        <%= milestone.role === role && "selected" %> >
+                    <%= role %> %>
                 </option>
-            <% } %>
+            <% }) %>
         </select>
     </div>
     
     <div class="form-group proficiency">
         <label for="proficiency">Proficiency:</label>
-        <select id="proficiency" name="proficiencyId">
+        <select id="proficiency" name="proficiency">
             <option value="">None</option>
-            <% for (const proficiency of allProficiencies) { %>
-                <option value="<%= proficiency.id %>"
-                        <%= milestone.proficiencyId === proficiency.id && "selected" %> >
-                    <%= proficiency.description %>
+            <% allProficiencies.forEach(prof => { %>
+                <option value="<%= prof %>"
+                        <%= milestone.proficiency === prof && "selected" %> >
+                    <%= prof %>
                 </option>
-            <% } %>
+            <% }) %>
         </select>
     </div>
-    
-    <div class="form-group skills formGroup--check">
-        <div class="card-title">Skills</div>
-    
-        <% for (let skill of allSkills) { %>
-            <p>
-                <input type="checkbox"
-                name="<%= `skills[]` %>"
-                value="<%= skill.id %>"
-                <%= (milestone.skills || []).map(s => s.id).includes(skill.id) && "checked" %>
-                />
-                <b><%= skill.name %></b>
-            </p>
-        <% } %>
-    </div>
-    
-    <div class="form-group availability">
-        <div class="title">Availability</div>
+
+    <div class="form-group">
+        <label for="availability">Availability:</label>
+
         <select id="availability" name="availability">
-            <option value="fulltime" <%= milestone.neededFullTimeDeveloper && "selected" %> >
-                Full Time
-            </option>
-            <option value="parttime" <%= milestone.neededPartTimeDeveloper && "selected" %> >
-                Part Time
-            </option>
-            <option value="hourly" <%= milestone.neededHourlyDeveloper && "selected" %> >
-                Hours per Week
-            </option>
+            <% availabilityOptions.forEach(option => { %>
+                <option value="<%= option %>"
+                        <%= milestone.availability === option ? "selected" : "" %>>
+                    <%= option %>
+                </option>
+            <% }) %>
         </select>
     </div>
+
+    <div class="form-group skills formGroup--check profileCard__section">
+        <label for="skills">Skills:</label>
+
+        <select id="skills" name="skills[]" multiple>
+            <% allSkills.forEach(skill => { %>
+                <% const selected = (milestone.skills || []).includes(skill); %>
+                <option value="<%= skill %>" <%= selected ? "selected" : "" %>>
+                    <%= skill %>
+                </option>
+            <% }) %>
+        </select>
+    </div>
+
+
 </div>
 
 
+
+<script src="/javascripts/perfil.js"></script>
 
 
 

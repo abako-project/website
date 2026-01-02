@@ -108,6 +108,9 @@ app.use(function (req, res, next) {
     clientId: req.session.loginUser.clientId,
   };
 
+  // Consultor creando un scope cuando acepta una propuesta:
+    res.locals.scope = req.session.scope;
+
   // Navigator and Server timezones offsets
   res.locals.browserTimezoneOffset = req.session.browserTimezoneOffset ?? 0;
   res.locals.serverTimezoneOffset = req.session.serverTimezoneOffset ?? 0;

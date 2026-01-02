@@ -4,16 +4,16 @@ const actions = [];
 if (locals.loginUser.clientId == project.clientId) {
 
     if (["deployed"].includes(project.state)) {
+
+    }
+
+    if (["rejected_by_coordinator"].includes(project.state)) {
+
         actions.push({
             title: "Review",
             classes: "",
             callback: "/projects/" + project.id + "/edit",
         });
-    }
-
-    if (["ProposalRejected"].includes(project.state)) {
-
-        // Header actions
     }
 
     if (["EscrowFundingNeeded"].includes(project.state)) {

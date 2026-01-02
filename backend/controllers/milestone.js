@@ -4,6 +4,11 @@ const seda = require("../services/seda");
 const states = require("../core/state");
 const permissionController = require("./permission");
 
+const allSkills = require('../utils/skills.json');
+const allRoles = require('../utils/roles.json');
+const availabilityOptions = require('../utils/availability.json');
+const allProficiencies = require('../utils/proficiency.json');
+
 
 // Listar todos los milestones o los de un cliente o los de un developer
 // GET + /milestones
@@ -57,9 +62,7 @@ exports.new = async (req, res, next) => {
   };
 
   const allDeliveryTimes = await seda.deliveryTimeIndex();
-  const allRoles = await seda.roleIndex();
-  const allProficiencies = await seda.proficiencyIndex();
-  const allSkills = await seda.skillIndex();
+
 
   res.render('milestones/newMilestone', {
     milestone,
@@ -67,146 +70,168 @@ exports.new = async (req, res, next) => {
     allDeliveryTimes,
     allRoles,
     allProficiencies,
+    availabilityOptions,
     allSkills,
   });
 };
 
 
-
 // Crear milestone
 exports.create = async (req, res, next) => {
 
-  const projectId = req.params.projectId;
-  const project = await seda.project(projectId);
+    const projectId = req.params.projectId;
+    const project = await seda.project(projectId);
 
-  let {title, description, budget, deliveryTimeId, deliveryDate,
-    roleId, proficiencyId, skills, availability} = req.body;
+    let {
+        title, description, budget, deliveryTime, deliveryDate,
+        role, proficiency, skills, availability
+    } = req.body;
 
-  deliveryDate = new Date(deliveryDate).valueOf() + req.session.browserTimezoneOffset - req.session.serverTimezoneOffset;
+    deliveryDate = new Date(deliveryDate).valueOf() + req.session.browserTimezoneOffset - req.session.serverTimezoneOffset;
 
-  roleId ||= null;
-  proficiencyId ||= null;
-  let skillIds = (skills ?? []).map(str => +str);
+    budget || 0;
+    role ||= null;
+    proficiency ||= null;
+    skills = Array.isArray(skills) ? skills : skills ? [skills] : ["none"];
 
-  let milestone = {
-    title,
-    description,
-    budget,
-    deliveryTimeId,
-    deliveryDate,
-    roleId,
-    proficiencyId,
-    skillIds,
-    neededFullTimeDeveloper: availability === "fulltime",
-    neededPartTimeDeveloper: availability === "parttime",
-    neededHourlyDeveloper: availability === "hourly"
-  };
+    let milestone = {
+        title,
+        description,
+        budget,
+        deliveryTime,
+        deliveryDate,
+        role,
+        proficiency,
+        skills,
+        availability
+    };
 
-  try {
-    await seda.milestoneCreate(projectId, milestone);
+    require("../helpers/logs").log(milestone, "Nuevo Milestone");
 
-    console.log('Success: Milestone created successfully.');
-    res.redirect('/projects/' + projectId + '/milestones/edit');
-  } catch (error) {
-    if (error instanceof seda.ValidationError) {
-      req.flash('error', 'Error: There are errors in the form:');
-      error.errors.forEach(({message}) => req.flash('error', message));
+    try {
+        await seda.milestoneCreate(req.session.scope, projectId, milestone);
 
-      const allDeliveryTimes = await seda.deliveryTimeIndex();
-      const allRoles = await seda.roleIndex();
-      const allProficiencies = await seda.proficiencyIndex();
-      const allSkills = await seda.skillIndex();
+        require("../helpers/logs").log(req.session.scope, "Creado Milestone");
 
-      res.render('milestones/newMilestone', {
-        milestone,
-        project,
-        allDeliveryTimes,
-        allRoles,
-        allProficiencies,
-        allSkills,
-      });
-    } else {
-      next(error);
+        console.log('Success: Milestone created successfully.');
+        res.redirect('/projects/' + projectId + '/milestones/edit');
+    } catch (error) {
+        if (error instanceof seda.ValidationError) {
+            req.flash('error', 'Error: There are errors in the form:');
+            error.errors.forEach(({message}) => req.flash('error', message));
+
+            const allDeliveryTimes = await seda.deliveryTimeIndex();
+
+            res.render('milestones/newMilestone', {
+                milestone,
+                project,
+                allDeliveryTimes,
+                allRoles,
+                allProficiencies,
+                availabilityOptions,
+                allSkills,
+            });
+        } else {
+            next(error);
+        }
     }
-  }
 };
 
 
 // Mostrar formulario de edición
 exports.edit = async (req, res) => {
 
-  const projectId = req.params.projectId;
-  const project = await seda.project(projectId);
+    const projectId = req.params.projectId;
+    const project = await seda.project(projectId);
 
-  const milestoneId = req.params.milestoneId;
-  const milestone = await seda.milestone(milestoneId);
+    const milestoneId = req.params.milestoneId;
 
-  const allDeliveryTimes = await seda.deliveryTimeIndex();
-  const allRoles = await seda.roleIndex();
-  const allProficiencies = await seda.proficiencyIndex();
-  const allSkills = await seda.skillIndex();
+    let milestone;
+    if (req.session.scope?.projectId == projectId) {
+        milestone = req.session.scope.milestones[milestoneId];
+    } else {
+        milestone = await seda.milestone(milestoneId);
+    }
 
-  res.render('milestones/editMilestone', {
-    project,
-    milestone,
-    allDeliveryTimes,
-    allRoles,
-    allProficiencies,
-    allSkills,
-  });
+    const allDeliveryTimes = await seda.deliveryTimeIndex();
+
+    res.render('milestones/editMilestone', {
+        project,
+        milestone,
+        milestoneId,
+        allDeliveryTimes,
+        allRoles,
+        allProficiencies,
+        availabilityOptions,
+        allSkills,
+    });
 };
 
 
 // Actualizar milestone
 exports.update = async (req, res) => {
 
-  const {body} = req;
+    const {body} = req;
 
-  const projectId = req.params.projectId;
-  const project = await seda.project(projectId);
+    const projectId = req.params.projectId;
+    const project = await seda.project(projectId);
 
-  const milestoneId = req.params.milestoneId;
-  const milestone = await seda.milestone(milestoneId);
+    const milestoneId = req.params.milestoneId;
 
-  milestone.title = body.title;
-  milestone.description = body.description;
-  milestone.budget = body.budget;
-  milestone.deliveryTimeId = body.deliveryTimeId;
-  milestone.deliveryDate = new Date(body.deliveryDate).valueOf() + req.session.browserTimezoneOffset - req.session.serverTimezoneOffset;
-  milestone.roleId = body.roleId || null;
-  milestone.proficiencyId = body.proficiencyId || null;
-  milestone.skillIds = (body.skills ?? []).map(str => +str);
-  milestone.neededFullTimeDeveloper = body.availability === "fulltime";
+    let milestone;
+    if (req.session.scope?.projectId == projectId) {
+        milestone = req.session.scope.milestones[milestoneId];
+    } else {
+        milestone = await seda.milestones(milestoneId);
+    }
+
+    milestone.title = body.title;
+    milestone.description = body.description;
+    milestone.budget = body.budget;
+    milestone.deliveryTime = body.deliveryTime;
+    milestone.deliveryDate = new Date(body.deliveryDate).valueOf() + req.session.browserTimezoneOffset - req.session.serverTimezoneOffset;
+    milestone.role = body.role || null;
+    milestone.proficiency = body.proficiency || null;
+    milestone.skills = Array.isArray(body.skills) ? body.skills : body.skills ? [body.skills] : ["none"];
+    milestone.availability = body.availability;
+
+    milestone.neededFullTimeDeveloper = body.availability === "fulltime";
     milestone.neededPartTimeDeveloper = body.availability === "parttime";
     milestone.neededHourlyDeveloper = body.availability === "hourly";
-  try {
-    await seda.milestoneUpdate(milestone.id, milestone);
 
-    // await milestone.save();
-    console.log('Milestone edited successfully.');
-    res.redirect('/projects/' + project.id + '/milestones/edit');
-  } catch (error) {
-    if (error instanceof seda.ValidationError) {
-      req.flash('error', 'Error: There are errors in the form:');
-      error.errors.forEach(({message}) => req.flash('error', message));
+    try {
+        if (req.session.scope?.projectId == projectId) {
+            req.session.scope.milestones[milestoneId] = milestone;
+        } else {
+            await seda.milestoneUpdate(milestone.id, milestone);
+        }
 
-      const allDeliveryTimes = await seda.deliveryTimeIndex();
-      const allRoles = await seda.roleIndex();
-      const allProficiencies = await seda.proficiencyIndex();
-      const allSkills = await seda.skillIndex();
+        // await milestone.save();
+        console.log('Milestone edited successfully.');
+        res.redirect('/projects/' + project.id + '/milestones/edit');
+    } catch (error) {
+        if (error instanceof seda.ValidationError) {
+            req.flash('error', 'Error: There are errors in the form:');
+            error.errors.forEach(({message}) => req.flash('error', message));
 
-      res.render('milestones/editMilestone', {
-        project,
-        milestone,
-        allDeliveryTimes,
-        allRoles,
-        allProficiencies,
-        allSkills,
-      });
-    } else {
-      next(error);
+            const allDeliveryTimes = await seda.deliveryTimeIndex();
+            const allRoles = await seda.roleIndex();
+            const allProficiencies = await seda.proficiencyIndex();
+            const allSkills = await seda.skillIndex();
+
+            res.render('milestones/editMilestone', {
+                project,
+                milestone,
+                milestoneId,
+                allDeliveryTimes,
+                allRoles,
+                allProficiencies,
+                allSkills,
+            });
+        } else {
+            next(error);
+        }
     }
-  }
 };
 
 
@@ -218,7 +243,14 @@ exports.destroy = async (req, res, next) => {
   const milestoneId = req.params.milestoneId;
 
   try {
-    await seda.milestoneDestroy(milestoneId);
+
+      if (req.session.scope?.projectId == projectId) {
+
+          req.session.scope.milestones.splice(milestoneId, 1);
+
+      } else {
+          await seda.milestoneDestroy(projectId, milestoneId, req.session.loginUser.token);
+      }
 
     console.log('Milestone deleted successfully.');
     res.redirect('/projects/' + projectId + '/milestones/edit');
@@ -232,12 +264,11 @@ exports.destroy = async (req, res, next) => {
 exports.swapOrder = async (req, res, next) => {
 
   try {
-    const milestone1 = await seda.milestone(req.params.id1);
 
-    await seda.milestonesSwapOrder(req.params.id1, req.params.id2);
+    await seda.milestoneSwapOrder(req.session.scope, req.params.id1, req.params.id2);
 
     console.log('Milestones swapped successfully.');
-    res.redirect('/projects/' + milestone1.projectId + '/milestones/edit');
+    res.redirect('/projects/' + req.session.scope.projectId + '/milestones/edit');
   } catch(error) {
     next(error);
   }

@@ -424,10 +424,10 @@ const adapterAPI = {
         }
     },
 
-    async proposeScope(contractAddress, milestones, advancePaymentPercentage, documentHash, token) {
+    async proposeScope(projectId, milestones, advancePaymentPercentage, documentHash, token) {
         try {
             const response = await adapterClient.post(
-                apiConfig.adapterAPI.endpoints.projects.proposeScope(contractAddress),
+                apiConfig.adapterAPI.endpoints.projects.proposeScope(projectId),
                 {
                     milestones,
                     advance_payment_percentage: advancePaymentPercentage,
@@ -441,7 +441,7 @@ const adapterAPI = {
             );
             return response.data;
         } catch (error) {
-            handleError(error, `proposeScope(${contractAddress})`);
+            handleError(error, `proposeScope(${projectId})`);
         }
     },
 
@@ -523,12 +523,12 @@ const adapterAPI = {
         }
     },
 
-    async getScopeInfo(contractAddress) {
+    async getScopeInfo(projectId) {
         try {
-            const response = await adapterClient.get(apiConfig.adapterAPI.endpoints.projects.getScopeInfo(contractAddress));
+            const response = await adapterClient.get(apiConfig.adapterAPI.endpoints.projects.getScopeInfo(projectId));
             return response.data;
         } catch (error) {
-            handleError(error, `getScopeInfo(${contractAddress})`);
+            handleError(error, `getScopeInfo(${projectId})`);
         }
     },
 
@@ -554,12 +554,12 @@ const adapterAPI = {
         }
     },
 
-    async getAllTasks(contractAddress) {
+    async getAllTasks(projectId) {
         try {
-            const response = await adapterClient.get(apiConfig.adapterAPI.endpoints.projects.getAllTasks(contractAddress));
+            const response = await adapterClient.get(apiConfig.adapterAPI.endpoints.projects.getAllTasks(projectId));
             return response.data;
         } catch (error) {
-            handleError(error, `getAllTasks(${contractAddress})`);
+            handleError(error, `getAllTasks(${projectId})`);
         }
     },
 

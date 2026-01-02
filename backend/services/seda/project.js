@@ -36,6 +36,13 @@ exports.project = async projectId => {
     const clients = await seda.clientIndex();
     const developers = await seda.developerIndex();
 
+    let milestones;
+    if (project.creationStatus == "created") {
+        milestones = await seda.milestones(projectId);
+    } else {
+        milestones = [];
+    }
+
     // Modificar propiedades:
 
     project.deliveryDate = new Date(project.deliveryDate);
@@ -50,7 +57,7 @@ exports.project = async projectId => {
         project.consultant = developers.find(developer => developer.id == project.consultantId);
     }
 
-    project.milestones ||= [];
+    project.milestones = milestones;
 
     project.objectives = [];
     project.constraints = [];
@@ -98,13 +105,10 @@ exports.projectClientId = async projectId => {
  */
 exports.projectConsultantId = async projectId => {
 
-    const project = await Project.findByPk(projectId);
+    let project = await adapterAPI.getProjectInfo(projectId);
 
-    if (project) {
-        return project.consultantId;
-    } else {
-        throw new Error('There is no project with id=' + projectId);
-    }
+    return project?.consultantId;
+
 };
 
 //-----------------------------------------------------------
@@ -250,18 +254,9 @@ exports.projectSetState = async (projectId, state) => {
  * @throws {Error} Si falla la actualización del estado.
  */
 exports.rejectProposal = async (projectId, proposalRejectionReason, token) => {
-    try {
-        // Try to reject on backend
+
         await adapterAPI.coordinatorRejectProject(projectId, proposalRejectionReason, token);
-    } catch (error) {
-        console.warn(`[SEDA Project] Could not reject on backend, falling back to SQLite:`, error.message);
-        
-        // Fallback to SQLite
-        await Project.update({
-            state: states.ProjectState.ProposalRejected,
-            proposalRejectionReason
-        }, {where: {id: projectId}});
-    }
+
 };
 
 //-----------------------------------------------------------

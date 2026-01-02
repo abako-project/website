@@ -8,11 +8,11 @@
 
 
 <div class="milestone__role">
-    <%= milestone.role?.name %>
+    <%= milestone.role || '' %>
 
-    <%= milestone.proficiency?.description %>
+    <%= milestone.proficiency || '' %>
 
-    <%= milestone.skills.map(s => s.name).join(", ") %>
+    <%= milestone.skills?.join(", ") || '' %>
     <!-- <span class="bubble"> -->
         <%= milestone.neededFullTimeDeveloper ? "[Full Time]" : "" %>
     <!-- </span> -->
@@ -53,7 +53,7 @@
 
 
 <div class="milestone__state">
-    <% if (milestone.state.toLowerCase().includes("waiting")) { %>
+    <% if (milestone.state?.toLowerCase().includes("waiting")) { %>
         <i class="ri-timer-2-line"></i>
     <% } %>
     <%= milestone.state %>

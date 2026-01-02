@@ -14,6 +14,34 @@ const seda = require("./index");
 
 //-----------------------------------------------------------
 
+exports.milestones = async (projectId) => {
+
+    const seda = require("./index");
+
+    const {milestones} = await adapterAPI.getAllTasks(projectId);
+
+    require("../../helpers/logs").log(milestones, "Milestones");
+
+    milestones.forEach(milestone => {
+        exports.cleanMilestone(milestone);
+    });
+
+    return milestones;
+};
+
+//-----------------------------------------------------------
+
+exports.cleanMilestone = async milestone => {
+
+    delete milestone._id;
+    delete milestone.__v;
+    delete milestone.createdAt;
+    delete milestone.updatedAt;
+
+}
+
+//-----------------------------------------------------------
+
 /**
  * Devuelve todos los datos de un milestone por su ID,
  * incluyendo el proyecto y sus tareas asociadas.
@@ -82,55 +110,24 @@ exports.milestone = async (projectId, milestoneId, token) => {
  * @param {string} [token] - Auth token.
  * @returns {Promise<Object>} Objeto JSON del milestone creado.
  */
-exports.milestoneCreate = async (projectId, {title, description, budget, deliveryTimeId, deliveryDate,
-  roleId, proficiencyId, skillIds,
-  neededFullTimeDeveloper, neededPartTimeDeveloper, neededHourlyDeveloper}, token) => {
+exports.milestoneCreate = async (scope, projectId, {title, description, budget, deliveryTime, deliveryDate,
+  role, proficiency, skills}, token) => {
 
-    try {
+
         // Try to create on backend
         const milestoneData = {
             title,
             description,
             budget,
-            deliveryTimeId,
+            deliveryTime,
             deliveryDate,
-            roleId,
-            proficiencyId,
-            skillIds,
-            neededFullTimeDeveloper,
-            neededPartTimeDeveloper,
-            neededHourlyDeveloper
+            role,
+            proficiency,
+            skills
         };
 
-        const response = await adapterAPI.createMilestone(projectId, milestoneData, token);
-        return response.milestone || response;
-        
-    } catch (error) {
-        console.warn(`[SEDA Milestone] Could not create on backend, falling back to SQLite:`, error.message);
-        
-        // Fallback to SQLite
-        let milestone = await Milestone.create({
-            title, description, budget, deliveryTimeId, deliveryDate, projectId, roleId, proficiencyId,
-            neededFullTimeDeveloper, neededPartTimeDeveloper, neededHourlyDeveloper
-        });
+    scope.milestones.push(milestoneData);
 
-        await milestone.setSkills(skillIds);
-
-        const milestoneLog = await MilestoneLog.create({
-            fromConsultant: true,
-            title: "Milestone Defined",
-            msg: `
-              * ${title}
-              * ${description}
-              * ${budget}
-              * ${deliveryTimeId}
-            `
-        });
-
-        await milestoneLog.setMilestone(milestone);
-
-        return json.milestoneJson(milestone);
-    }
 };
 
 //-----------------------------------------------------------
@@ -221,33 +218,14 @@ exports.milestoneUpdate = async (projectId, milestoneId, {title, description, bu
  * @returns {Promise<void>}
  * @throws {Error} Si alguno de los milestones no existe o falla la transacción.
  */
-exports.milestoneSwapOrder = async (milestoneId1, milestoneId2) => {
+exports.milestoneSwapOrder = async (scope, milestoneId1, milestoneId2) => {
 
-  const transaction = await sequelize.transaction();
-  try {
-    const milestone1 = await Milestone.findByPk(milestoneId1, {transaction});
-    if (!milestone1) {
-      throw new Error('Milestone 1 not found.');
-    }
+    const milestones = scope.milestones;
 
-    const milestone2 = await Milestone.findByPk(milestoneId2, {transaction});
-    if (!milestone2) {
-      throw new Error('Milestone 2 not found.');
-    }
+    const temp = milestones[milestoneId1];
+    milestones[milestoneId1] = milestones[milestoneId2];
+    milestones[milestoneId2] = temp;
 
-    const displayOrder1 = milestone1.displayOrder;
-    const displayOrder2 = milestone2.displayOrder;
-
-    // Intercambiamos posiciones
-    await milestone1.update({displayOrder: displayOrder2}, {transaction}),
-      await milestone2.update({displayOrder: displayOrder1}, {transaction})
-
-    await transaction.commit();
-
-  } catch(error) {
-    await transaction.rollback();
-    throw error;
-  }
 };
 
 //-----------------------------------------------------------

@@ -2,16 +2,16 @@
 <%
 const actions = [];
 
-if (locals.loginUser.developerId === project.consultantId) {
+if (locals.loginUser.developerId == project.consultantId) {
 
-    if (project.state && ["ScopingInProgress"].includes(project.state)) {
+    if (["deployed"].includes(project.state) && locals.scope?.projectId == project.id) {
         actions.push({
-            title: "Review Project",
+            title: "Review Scope",
             callback: "/projects/" + project.id + "/milestones/edit",
         });
     }
 
-    if (project.state && ["ProjectInProgress"].includes(project.state) && project.milestones.every(milestone => milestone.state === "Paid")) {
+    if (["ProjectInProgress"].includes(project.state) && project.milestones.every(milestone => milestone.state === "Paid")) {
         actions.push({
             title: "Evaluate Teammates",
             callback: "/projects/" + project.id + "/votations",

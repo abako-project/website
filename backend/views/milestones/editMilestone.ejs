@@ -10,7 +10,7 @@
 
         <%- include('../components/headers/_basic', {title: "Edit Milestone"}) %>
 
-        <form id="editMilestoneForm" action="/projects/<%= project.id %>/milestones/<%= milestone.id %>?_method=PUT" method="POST">
+        <form id="editMilestoneForm" action="/projects/<%= project.id %>/milestones/<%= milestoneId %>?_method=PUT" method="POST">
 
             <div class="formContainer formMilestone">
                 <%- include("./edit/_formMilestone", {project, milestone}) %>

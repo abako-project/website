@@ -1,7 +1,7 @@
-<% if (locals.loginUser && locals.loginUser.developerId === project.consultantId) { %>
+<% if (locals.loginUser && locals.loginUser.developerId == project.consultantId) { %>
 
-    <% if (["WaitingForProposalApproval"].includes(project.state)) { %>
-
+    <% if (["deployed"].includes(project.state)) { %>
+        <% if (!locals.scope || locals.scope.projectId != project.id) { %>
 
             <div class="actionsBody">
                 <div class="buttonContainer">
@@ -66,4 +66,5 @@
             </div>
 
         <% } %>
+    <% } %>
 <% } %>

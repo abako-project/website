@@ -9,15 +9,15 @@
     <section class="mainContentContainer editMilestones">
         <%- include('../components/headers/_basic', {title: "Review the Project Scope and Milestones"}) %>
 
-        <% if (project.milestones.length === 0) { %>
+        <% if (locals.scope.milestones.length === 0) { %>
                 <p>
                     No se ha creado ningún milestone todavía.
                 </p>
         <% } %>
 
-        <% for (const i in project.milestones) { %>
+        <% for (const i in locals.scope.milestones) { %>
 
-            <% const milestone = project.milestones[i]; %>
+            <% const milestone = locals.scope.milestones[i]; %>
 
             <div class="editMilestones__item">
                 <div class="milestone">
@@ -26,48 +26,48 @@
 
                 <div class="buttonContainer">
 
-                    <% if (locals.loginUser && locals.loginUser.developerId === project.consultantId) { %>
-                        
+                    <% if (locals.loginUser && locals.loginUser.developerId == project.consultantId) { %>
+
                         <a class="right btn btn_primary"
-                            href="/projects/<%= project.id %>/milestones/<%= milestone.id %>/edit">
+                           href="/projects/<%= project.id %>/milestones/<%= i %>/edit">
                             Edit
                         </a>
-                    
+
                         <a class="right btn"
-                            href="/projects/<%= project.id %>/milestones/<%= milestone.id %>?_method=DELETE">
+                           href="/projects/<%= project.id %>/milestones/<%= i %>?_method=DELETE">
                             <i class="ri-delete-bin-7-line"></i>
                         </a>
-                    
-                    <% if (+i > 0) { %>
-                        <a class="right btn"
-                        href="/projects/<%= project.id %>/milestones/swaporder/<%= milestone.id %>/<%= project.milestones[+i - 1].id %>?_method=PUT">
-                        <i class="ri-arrow-up-s-line"></i>
-                    </a>
-                    <% } else { %>
-                        <a class="right btn">
-                            <i class="ri-arrow-up-s-line"></i>
-                        </a>
-                        <% } %>
-                        
-                        <% if (+i < project.milestones.length - 1) { %>
+
+                        <% if (+i > 0) { %>
                             <a class="right btn"
-                            href="/projects/<%= project.id %>/milestones/swaporder/<%= milestone.id %>/<%= project.milestones[+i + 1].id %>?_method=PUT">
-                            <i class="ri-arrow-down-s-line"></i>
-                        </a>
+                               href="/projects/<%= project.id %>/milestones/swaporder/<%= i %>/<%= +i - 1 %>?_method=PUT">
+                                <i class="ri-arrow-up-s-line"></i>
+                            </a>
+                        <% } else { %>
+                            <a class="right btn">
+                                <i class="ri-arrow-up-s-line"></i>
+                            </a>
+                        <% } %>
+
+                        <% if (+i < locals.scope.milestones.length - 1) { %>
+                            <a class="right btn"
+                               href="/projects/<%= project.id %>/milestones/swaporder/<%= i %>/<%= +i + 1 %>?_method=PUT">
+                                <i class="ri-arrow-down-s-line"></i>
+                            </a>
                         <% } else { %>
                             <a class="right btn">
                                 <i class="ri-arrow-down-s-line"></i>
                             </a>
                         <% } %>
-                            
+
                         <div class="clear"></div>
-                        
+
                     <% } %>
                 </div>
             </div>
         <% } %>
 
-        <% if (locals.loginUser && locals.loginUser.developerId === project.consultantId) { %>
+        <% if (locals.loginUser && locals.loginUser.developerId == project.consultantId) { %>
             <a class=" btn btn_outline"
             href="/projects/<%= project.id %>/milestones/new">
                 Add New Milestone
@@ -76,9 +76,8 @@
 
         <div style="height:20px; clear: both;"></div>
 
-        <% if (locals.loginUser.developerId === project.consultantId &&
-                project.state &&
-                ["ScopingInProgress"].includes(project.state)) { %>
+        <% if (locals.loginUser.developerId == project.consultantId &&
+                ["deployed"].includes(project.state)) { %>
             <a class="right btn btn_primary btn_href"
             href="/projects/<%= project.id %>">
                 Next: Submit Scope

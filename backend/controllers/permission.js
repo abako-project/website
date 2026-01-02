@@ -69,9 +69,9 @@ exports.projectConsultantRequired = async (req, res, next) => {
   const developerIsLogged = !!req.session.loginUser?.developerId;
 
   const projectId = req.params.projectId;
-  const projectConsultanttId = await seda.projectConsultantId(projectId);
+  const projectConsultantId = await seda.projectConsultantId(projectId);
 
-  const developerLoggedIsProjectConsultant = projectConsultanttId === req.session.loginUser?.developerId;
+  const developerLoggedIsProjectConsultant = projectConsultantId == req.session.loginUser?.developerId;
 
   if (developerIsLogged && developerLoggedIsProjectConsultant) {
     next();
@@ -167,9 +167,9 @@ exports.userTypesRequired = ({
     const developerIsLogged = !!req.session.loginUser?.developerId;
 
     const projectId = req.params.projectId;
-    const projectConsultanttId = await seda.projectConsultantId(projectId);
+    const projectConsultantId = await seda.projectConsultantId(projectId);
 
-    const developerLoggedIsProjectConsultant = projectConsultanttId === req.session.loginUser?.developerId;
+    const developerLoggedIsProjectConsultant = projectConsultantId == req.session.loginUser?.developerId;
 
     if (developerIsLogged && developerLoggedIsProjectConsultant) {
       return next();

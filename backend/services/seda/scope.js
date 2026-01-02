@@ -31,20 +31,10 @@ const states = require("../../core/state");
  * @returns {Promise<void>}
  * @throws {Error} Si falla la actualización del proyecto o la creación del comentario.
  */
-exports.scopeSubmit = async (projectId, milestones, advancePaymentPercentage, documentHash, token, consultantComment) => {
-    try {
-        // Try to submit scope to backend
-        await adapterAPI.proposeScope(projectId, milestones, advancePaymentPercentage, documentHash, token);
-    } catch (error) {
-        console.warn(`[SEDA Scope] Could not submit to backend, falling back to SQLite:`, error.message);
-        
-        // Fallback to SQLite
-        await Project.update({
-            state: states.ProjectState.ScopeValidationNeeded
-        }, {where: {id: projectId}});
+exports.scopeSubmit = async (projectId, milestones, advancePaymentPercentage, documentHash, consultantComment, token) => {
 
-        await Comment.create({projectId, consultantComment});
-    }
+    await adapterAPI.proposeScope(projectId, milestones, advancePaymentPercentage, documentHash, token);
+
 };
 
 //-----------------------------------------------------------
