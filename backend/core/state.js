@@ -1,9 +1,7 @@
-
-
 // Constantes
 //
-module.exports = exports = {
 
+/*
     VirtoProjectState: {
         Deployed: "deployed",
         Created: "Created",                    // Initial state when project is created
@@ -13,19 +11,18 @@ module.exports = exports = {
         ScopePendingClientApproval: "ScopePendingClientApproval", // Tasks proposed and awaiting client approval
         ScopeAccepted: "ScopeAccepted",              // Client has accepted the scope and made advance payment
         Completed: "Completed",                  // All tasks are completed and project is finalized
-    },
+    }
+*/
 
-    ProjectState: {
 
-        // Hasta que el cliente no envioa la propuesta, es estado es undefined o null.
-    //Creating: "creating" , // creando el proyecto
+const ProjectState = {
 
     // El cliente ha enviado la propuesta del proyecto,
     // pero la DAO no la ha asignado un consultor.
     ProposalPending: "ProposalPending",
 
     // Una vez que la DAO asigna un consultor a una propuesta pendiente, se pasa al estado WaitingForProposalApproval
-      // En este estado se espera a que el consultor acepte o rechace la propuesta.
+    // En este estado se espera a que el consultor acepte o rechace la propuesta.
     WaitingForProposalApproval: "WaitingForProposalApproval",
 
     // El consultor rechaza la propuesta del cliente.
@@ -40,53 +37,103 @@ module.exports = exports = {
     // El consultor publica su scope y ahora espera a que lo valide el cliente
     ScopeValidationNeeded: "ScopeValidationNeeded", // el cliente tiene que validar el milestone
 
+    // El consultor debe solicitar que se asigne el Team de desarrolladores
+    WaitingForTeamAssigment: "WaitingForTeamAssigment",
+
     // El cliente ha aceptado el Scope propuesto por el consultor y ahora tiene que hacer el Escrow.
     EscrowFundingNeeded: "EscrowFundingNeeded", // proyecto aprobado pera faltan los fondos del cliente
 
-      // Despues de proporcionar los fondos, el proyecto empieza.
-      // Cada uno de los milestones evoluciona con su propio estado.
-      // Cada milestone empieza en el estado WaitingDeveloperAssignation esperando a que la DAO le asigne un developer.
+    // Despues de proporcionar los fondos, el proyecto empieza.
+    // Cada uno de los milestones evoluciona con su propio estado.
+    // Cada milestone empieza en el estado WaitingDeveloperAssignation esperando a que la DAO le asigne un developer.
     ProjectInProgress: "ProjectInProgress", // Empieza a contar el timepo de desarrollo.
 
     DisputeOpen: "disputeOpen", // por la entrega o el scope
     Completed: "completed", // entregado, validado y pagado
     Cancelled: "cancelled", // cancelado por el cliente
 
-     //  TeamAssignmentPending: "TeamAssignmentPending", // La DAO/Admin esta asignando el team de desarrolladores
+    //  TeamAssignmentPending: "TeamAssignmentPending", // La DAO/Admin esta asignando el team de desarrolladores
 
-  },
+    ToBeDone: "ToBeDone",  // Estado que marca algo pendiente de desarrollar
 
-    MilestoneState: {
 
-        // La DAO todavia no ha asignado un developer al milestone.
-        WaitingDeveloperAssignation: "WaitingDeveloperAssignation",
+    Invalid: "Invalid"  // Estado invalido o que no existe
+};
 
-        // Esperando a que el developer acepte el milestone, o lo rechace
-        WaitingDeveloperAcceptAssignation: "WaitingDeveloperAcceptAssignation",
 
-        // El desarrollador ha aceptado el milestone y empieza el trabajo.
-        MilestoneInProgress: "MilestoneInProgress",
+// Devuelve el estado en el que se encuentra el flujo del proyecto.
+// Parametros:
+//   project: objeto con los dtos del proyecto.
+//   sessionScope: El objeto scope que guarda el consultor en req.session para crear el scope.
+//                 No pasarlo como parametro cuando no exista.
+const flowProjectState = (project, scope) => {
 
-        // El consultor ha enviado el milestone para que lo valide el cliente, y estamos esperando a su valoracion
-        WaitingClientAcceptSubmission: "WaitingClientAcceptSubmission",
-
-        // El cliente ha rechazado el trabajo entregado
-        SubmissionRejectedByClient: "SubmissionRejectedByClient",
-
-        // El trabajo del milestone se ha completado (y ha sido aceptado por el cliente)
-        // Ahora hay que pagar al desarrollador.
-        AwaitingPayment: "AwaitingPayment",
-
-        // El milestone ya se ha pagado al desarrollador.
-        Paid: "Paid",
+    if (typeof project.consultantId === "undefined") {
+        return ProjectState.ProposalPending;
     }
-}
+
+    if (project.state === "rejected_by_coordinator") {
+        return ProjectState.ProposalRejected;
+    }
+
+    if (project.state === "deployed") {
+
+        if (typeof project.coordinatorApprovalStatus === "undefined") {
+            if (typeof scope === "undefined" || scope.projectId != project.id) {
+                return ProjectState.WaitingForProposalApproval;
+            } else {
+                return ProjectState.ScopingInProgress;
+            }
+        }
+    }
+
+    if (project.state === "scope_proposed") {
+
+        // CONTINUAR AQUI
+
+        if (typeof project.proposalRejectionReason !== "undefined") {
+            return ProjectState.ToBeDone;
+        }
+
+        if (!true) {
+            return ProjectState.ScopeValidationNeeded;
+        }
+
+        if (true) {
+            return ProjectState.WaitingForTeamAssigment;
+        }
+    }
+
+    return exports.ProjectState.Invalid
+};
 
 
+const MilestoneState = {
 
+    // La DAO todavia no ha asignado un developer al milestone.
+    WaitingDeveloperAssignation: "WaitingDeveloperAssignation",
 
+    // Esperando a que el developer acepte el milestone, o lo rechace
+    WaitingDeveloperAcceptAssignation: "WaitingDeveloperAcceptAssignation",
 
+    // El desarrollador ha aceptado el milestone y empieza el trabajo.
+    MilestoneInProgress: "MilestoneInProgress",
 
+    // El consultor ha enviado el milestone para que lo valide el cliente, y estamos esperando a su valoracion
+    WaitingClientAcceptSubmission: "WaitingClientAcceptSubmission",
 
+    // El cliente ha rechazado el trabajo entregado
+    SubmissionRejectedByClient: "SubmissionRejectedByClient",
 
+    // El trabajo del milestone se ha completado (y ha sido aceptado por el cliente)
+    // Ahora hay que pagar al desarrollador.
+    AwaitingPayment: "AwaitingPayment",
 
+    // El milestone ya se ha pagado al desarrollador.
+    Paid: "Paid",
+};
+
+exports.ProjectState = ProjectState;
+exports.MilestoneState = MilestoneState;
+
+exports.flowProjectState = flowProjectState;

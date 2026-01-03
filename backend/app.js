@@ -15,6 +15,7 @@ console.log('[app.js] Routes cargadas correctamente');
 
 console.log('[app.js] Cargando modelos Sequelize...');
 const sequelize = require("./models");
+const coreState = require("./core/state");
 console.log('[app.js] Modelos Sequelize cargados correctamente');
 
 // import 'remixicon/fonts/remixicon.css';
@@ -108,10 +109,16 @@ app.use(function (req, res, next) {
     clientId: req.session.loginUser.clientId,
   };
 
-  // Consultor creando un scope cuando acepta una propuesta:
+  // Scope creado por un consultor cuando acepta una propuesta y esta creando un scope:
     res.locals.scope = req.session.scope;
 
-  // Navigator and Server timezones offsets
+    // Estado del flujo de un proyecto:
+    const coreState = require("./core/state");
+    res.locals.flowProjectState = coreState.flowProjectState;
+    res.locals.ProjectState = coreState.ProjectState;
+    res.locals.MilestoneState = coreState.MilestoneState;
+
+    // Navigator and Server timezones offsets
   res.locals.browserTimezoneOffset = req.session.browserTimezoneOffset ?? 0;
   res.locals.serverTimezoneOffset = req.session.serverTimezoneOffset ?? 0;
 

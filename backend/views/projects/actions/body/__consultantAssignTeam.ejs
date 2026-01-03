@@ -1,6 +1,6 @@
-<% if (locals.loginUser && locals.loginUser.developerId == project.consultantId) { %>
+<% if (locals.loginUser && locals.loginUser.developerId && locals.loginUser.developerId == project.consultantId) { %>
 
-    <% if (["scope_proposed"].includes(project.state)) { %>
+    <% if (locals.flowProjectState(project, locals.scope) === locals.ProjectState.WaitingForTeamAssigment) { %>
 
         <div class="actionsBody">
             <div class="buttonContainer">

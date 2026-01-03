@@ -1,7 +1,6 @@
+<% if (locals.loginUser && locals.loginUser.clientId && locals.loginUser.clientId == project.clientId) { %>
 
-<% if (locals.loginUser && locals.loginUser.clientId == project.clientId) { %>
-
-    <% if (["scope_proposed"].includes(project.state)) { %>
+    <% if (locals.flowProjectState(project, locals.scope) === locals.ProjectState.ScopeValidationNeeded) { %>
 
         <div class="actionsBody">
             <div class="actionsBody__comment">
@@ -25,12 +24,12 @@
                     <div class="responseScopeForm__item buttonContainer">
 
                         <button class="btn btn_outline"
-                            onclick="document.getElementById('responseScopeForm').action = '/projects/<%= project.id %>/scopeAccept?_method=PUT'; submitFormById('responseScopeForm'); return false;">
+                                onclick="document.getElementById('responseScopeForm').action = '/projects/<%= project.id %>/scopeAccept?_method=PUT'; submitFormById('responseScopeForm'); return false;">
                             Accept Scope
                         </button>
-                        
+
                         <button class="btn btn_outline btn_outline--danger"
-                            onclick="document.getElementById('responseScopeForm').action = '/projects/<%= project.id %>/scopeReject?_method=PUT'; submitFormById('responseScopeForm'); return false;">
+                                onclick="document.getElementById('responseScopeForm').action = '/projects/<%= project.id %>/scopeReject?_method=PUT'; submitFormById('responseScopeForm'); return false;">
                             Reject Scope
                         </button>
                     </div>

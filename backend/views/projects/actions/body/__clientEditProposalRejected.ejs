@@ -1,8 +1,8 @@
-<% if (locals.loginUser && locals.loginUser.clientId === project.clientId) { %>
+<% if (locals.loginUser && locals.loginUser.clientId && locals.loginUser.clientId == project.clientId) { %>
 
-    <% if (project.state && ["ProposalRejected"].includes(project.state)) { %>
+        <% if (locals.flowProjectState(project, locals.scope) === locals.ProjectState.ProposalRejected) { %>
 
-        <div class="actionsBody">
+            <div class="actionsBody">
             <div class="actionsBody__comment">
                 <p>
                     <img class="attachment"
@@ -10,14 +10,14 @@
                     <%= project.consultant.name %> rejected your project
                 </p>
                 <p>
-                    <%= project.proposalRejectionReason %>.
+                    <%= project.coordinatorRejectionReason %>.
                 </p>
             </div>
 
             <div class="buttonContainer">
                 <a class="right projectFlow btn btn_primary btn_href"
                    href="/projects/<%= project.id %>/edit">
-                    Change proposals and re-submit
+                    PENDIENTE DE ADAPTAR Change proposals and re-submit
                 </a>
             </div>
 
@@ -33,7 +33,7 @@
                         Contact the Project Leader to further investigate
                     </small>
                     <p class="contactMail">
-                        <%= project.consultant.user.email %>
+                        <%= project.consultant.email %>
                     </p>
                 </span>
             </div>

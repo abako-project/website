@@ -326,6 +326,7 @@ exports.scopeAccept = async (req, res, next) => {
 exports.scopeReject = async (req, res, next) => {
 
     const projectId = req.params.projectId;
+    const project = await seda.project(projectId);
 
     const clientId = req.session.loginUser?.clientId;
 

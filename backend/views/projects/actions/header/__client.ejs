@@ -1,14 +1,9 @@
 <%
 const actions = [];
 
-if (locals.loginUser.clientId == project.clientId) {
+if (locals.loginUser.clientId && locals.loginUser.clientId == project.clientId) {
 
-    if (["deployed"].includes(project.state)) {
-
-    }
-
-    if (["rejected_by_coordinator"].includes(project.state)) {
-
+    if (locals.flowProjectState(project, locals.scope) === locals.ProjectState.ProposalRejected) {
         actions.push({
             title: "Review",
             classes: "",

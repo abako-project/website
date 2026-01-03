@@ -40,7 +40,7 @@
     <span class="appHeader__state state" style="grid-area: state;"> 
         <i class="ri-timer-2-line"></i>
         <small>
-            <%= project.state %> - <%= project.creationStatus %>
+          <%= locals.flowProjectState(project, locals.scope) %>
         </small>
     </span>
 

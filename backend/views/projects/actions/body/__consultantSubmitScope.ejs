@@ -1,6 +1,6 @@
-<% if (locals.loginUser && locals.loginUser.developerId == project.consultantId) { %>
+<% if (locals.loginUser && locals.loginUser.developerId && locals.loginUser.developerId == project.consultantId) { %>
 
-    <% if (["deployed"].includes(project.state) && locals.scope?.projectId == project.id && locals.scope?.milestones.length > 0) { %>
+    <% if (locals.flowProjectState(project, locals.scope) === locals.ProjectState.ScopingInProgress && locals.scope?.milestones.length > 0) { %>
 
         <% if (locals.scope.milestones.length > 0) { %>
 

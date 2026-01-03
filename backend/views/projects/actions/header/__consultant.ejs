@@ -1,10 +1,10 @@
-
 <%
 const actions = [];
 
-if (locals.loginUser.developerId == project.consultantId) {
 
-    if (["deployed"].includes(project.state) && locals.scope?.projectId == project.id) {
+if (locals.loginUser.developerId && locals.loginUser.developerId == project.consultantId) {
+
+    if (locals.flowProjectState(project, locals.scope) === locals.ProjectState.ScopingInProgress) {
         actions.push({
             title: "Review Scope",
             callback: "/projects/" + project.id + "/milestones/edit",
