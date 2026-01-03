@@ -53,7 +53,7 @@ exports.projectClientRequired = async (req, res, next) => {
   const projectId = req.params.projectId;
   const projectClientId = await seda.projectClientId(projectId);
 
-  const clientLoggedIsProjectClient = projectClientId === req.session.loginUser?.clientId;
+  const clientLoggedIsProjectClient = projectClientId == req.session.loginUser?.clientId;
 
   if (clientIsLogged && clientLoggedIsProjectClient) {
     next();

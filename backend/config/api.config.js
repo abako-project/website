@@ -58,8 +58,8 @@ module.exports = {
                 markCompleted:       (addr) => `/projects/${addr}/mark_completed`,
                 setCalendarContract: (addr) => `/projects/${addr}/set_calendar_contract`,
                 proposeScope:        (id) => `/projects/${id}/propose_scope`,
-                approveScope:        (addr) => `/projects/${addr}/approve_scope`,
-                rejectScope:         (addr) => `/projects/${addr}/reject_scope`,
+                approveScope:        (id) => `/projects/${id}/approve_scope`,
+                rejectScope:         (id) => `/projects/${id}/reject_scope`,
                 coordinatorReject:   (addr) => `/projects/${addr}/coordinator_reject`,
                 completeTask:        (addr) => `/projects/${addr}/complete_task`,
                 //GET Methods

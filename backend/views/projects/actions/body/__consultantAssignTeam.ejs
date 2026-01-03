@@ -1,0 +1,16 @@
+<% if (locals.loginUser && locals.loginUser.developerId == project.consultantId) { %>
+
+    <% if (["scope_proposed"].includes(project.state)) { %>
+
+        <div class="actionsBody">
+            <div class="buttonContainer">
+                <a class="btn btn_primary"
+                   href="/projects/<%= project.id %>/assign_team?_method=PUT">
+                    Assign Team
+                </a>
+            </div>
+        </div>
+
+    <% } %>
+
+<% } %>

@@ -83,10 +83,10 @@ exports.project = async projectId => {
  */
 exports.projectClientId = async projectId => {
 
-    const project = await Project.findByPk(projectId);
+    let project = await adapterAPI.getProjectInfo(projectId);
 
     if (project) {
-        return project.clientId;
+        return project?.clientId;
     } else {
         throw new Error('There is no project with id=' + projectId);
     }

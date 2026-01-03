@@ -54,27 +54,18 @@ exports.scopeSubmit = async (projectId, milestones, advancePaymentPercentage, do
  * @returns {Promise<void>}
  * @throws {Error} Si falla la actualización del proyecto o del comentario.
  */
-exports.scopeAccept = async (projectId, approvedTaskIds, token, clientResponse) => {
-    try {
-        // Try to approve scope on backend
-        await adapterAPI.approveScope(projectId, approvedTaskIds, token);
-    } catch (error) {
-        console.warn(`[SEDA Scope] Could not approve on backend, falling back to SQLite:`, error.message);
-        
-        // Fallback to SQLite
-        await Project.update({
-            state: states.ProjectState.EscrowFundingNeeded
-        }, {where: {id: projectId}});
+exports.scopeAccept = async (projectId, approvedTaskIds, clientResponse, token) => {
 
-        const [comment] = await Comment.findAll({
-            where: {projectId},
-            order: [['createdAt', 'DESC']]
-        });
+    require("../../helpers/logs").log(projectId,"projectId");
+    require("../../helpers/logs").log(approvedTaskIds,"approvedTaskIds");
+    require("../../helpers/logs").log(clientResponse,"clientResponse");
+    require("../../helpers/logs").log(token,"token");
 
-        if (comment && clientResponse) {
-            await comment.update({clientResponse});
-        }
-    }
+    // Try to approve scope on backend
+    const response = await adapterAPI.approveScope(projectId, approvedTaskIds, token);
+
+    require("../../helpers/logs").log(response,"Scope Accept response");
+
 };
 
 //-----------------------------------------------------------
@@ -93,26 +84,11 @@ exports.scopeAccept = async (projectId, approvedTaskIds, token, clientResponse) 
  * @throws {Error} Si falla la actualización del proyecto o del comentario.
  */
 exports.scopeReject = async (projectId, clientResponse, token) => {
-    try {
-        // Try to reject scope on backend
-        await adapterAPI.rejectScope(projectId, clientResponse, token);
-    } catch (error) {
-        console.warn(`[SEDA Scope] Could not reject on backend, falling back to SQLite:`, error.message);
-        
-        // Fallback to SQLite
-        await Project.update({
-            state: states.ProjectState.ScopingInProgress
-        }, {where: {id: projectId}});
+    // Try to reject scope on backend
+    const response = await adapterAPI.rejectScope(projectId, clientResponse, token);
 
-        const [comment] = await Comment.findAll({
-            where: {projectId},
-            order: [['createdAt', 'DESC']]
-        });
+    require("../../helpers/logs").log(response,"Scope Reject response");
 
-        if (comment) {
-            await comment.update({clientResponse});
-        }
-    }
 };
 
 //-----------------------------------------------------------

@@ -220,6 +220,12 @@ router.put('/:projectId/milestones/:milestoneId(\\d+)/submitMilestone',
 
 // === Milestone Developer
 
+// Asignar Team a los milestones
+router.put('/:projectId/assign_team',
+    permissionController.isAuthenticated,
+    permissionController.projectConsultantRequired,
+    projectController.assignTeam);
+
 // Mostrar formulario para asignar developer a un milestone
 router.get('/:projectId/milestones/:milestoneId(\\d+)/developer/select',
   permissionController.isAuthenticated,

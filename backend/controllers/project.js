@@ -298,50 +298,52 @@ exports.scopeSubmit = async (req, res, next) => {
 // pasamos al estado EscrowFundingNeeded.
 exports.scopeAccept = async (req, res, next) => {
 
-  const projectId = req.params.projectId;
+    const projectId = req.params.projectId;
+    const project = await seda.project(projectId);
+    const milestoneIds = project.milestones.map(milestone => milestone.id);
 
-  const clientId = req.session.loginUser?.clientId;
+    const clientId = req.session.loginUser?.clientId;
 
-  const clientResponse = req.body.clientResponse || "Genial no, lo siguiente."
+    const clientResponse = req.body.clientResponse || "Genial no, lo siguiente."
 
-  try {
-    await seda.scopeAccept(projectId, clientResponse);
+    try {
+        await seda.scopeAccept(projectId, milestoneIds, clientResponse, req.session.loginUser.token);
 
-    console.log('Success: Scope accepted successfully.');
+        console.log('Success: Scope accepted successfully.');
 
-    if (clientId) {
-      res.redirect('/projects/' + projectId + '/escrow');
-    } else {
-      res.redirect('/projects/');
+        if (clientId) {
+            res.redirect('/projects/' + projectId + '/escrow');
+        } else {
+            res.redirect('/projects/');
+        }
+    } catch (error) {
+        next(error);
     }
-  } catch (error) {
-    next(error);
-  }
 };
 
 
 // Rechazar el scope: estado = ScopingInProgress
 exports.scopeReject = async (req, res, next) => {
 
-  const projectId = req.params.projectId;
+    const projectId = req.params.projectId;
 
-  const clientId = req.session.loginUser?.clientId;
+    const clientId = req.session.loginUser?.clientId;
 
-  const clientResponse = req.body.clientResponse || "Peor imposible."
+    const clientResponse = req.body.clientResponse || "Peor imposible."
 
-  try {
-    await seda.scopeReject(projectId, clientResponse);
+    try {
+        await seda.scopeReject(projectId, clientResponse, req.session.loginUser.token);
 
-    console.log('Success: Scope rechazados successfully.');
+        console.log('Success: Scope rechazado successfully.');
 
-    if (clientId) {
-      res.redirect('/projects/' + projectId);
-    } else {
-      res.redirect('/projects/');
+        if (clientId) {
+            res.redirect('/projects/' + projectId);
+        } else {
+            res.redirect('/projects/');
+        }
+    } catch (error) {
+        next(error);
     }
-  } catch (error) {
-    next(error);
-  }
 };
 
 // Rechazar el proyecto:
@@ -434,4 +436,32 @@ exports.setConsultant = async (req, res, next) => {
   } catch (error) {
     next(error);
   }
+};
+
+
+// Asigna Team al proyecto
+exports.assignTeam = async (req, res, next) => {
+
+    const projectId = req.params.projectId;
+
+    try {
+        const res1 = await seda.assignTeam(projectId, 2, req.session.loginUser.token);
+        require("../helpers/logs").log(res1, "Assign Team");
+
+        const res2 = await seda.getTeam(projectId);
+        require("../helpers/logs").log(res2, "Get Team");
+
+
+        const res3 = await seda.getScopeInfo(projectId);
+        require("../helpers/logs").log(res3, "Get ScopeI nfo");
+
+
+
+        console.log('Project team assigned successfully.');
+
+        res.redirect('/projects/' + projectId);
+
+    } catch (error) {
+        next(error);
+    }
 };

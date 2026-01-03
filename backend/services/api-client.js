@@ -445,10 +445,10 @@ const adapterAPI = {
         }
     },
 
-    async approveScope(contractAddress, approvedTaskIds, token) {
+    async approveScope(projectId, approvedTaskIds, token) {
         try {
             const response = await adapterClient.post(
-                apiConfig.adapterAPI.endpoints.projects.approveScope(contractAddress),
+                apiConfig.adapterAPI.endpoints.projects.approveScope(projectId),
                 { approved_task_ids: approvedTaskIds },
                 {
                     headers: {
@@ -458,14 +458,14 @@ const adapterAPI = {
             );
             return response.data;
         } catch (error) {
-            handleError(error, `approveScope(${contractAddress})`);
+            handleError(error, `approveScope(${projectId})`);
         }
     },
 
-    async rejectScope(contractAddress, clientResponse, token) {
+    async rejectScope(projectId, clientResponse, token) {
         try {
             const response = await adapterClient.post(
-                apiConfig.adapterAPI.endpoints.projects.rejectScope(contractAddress),
+                apiConfig.adapterAPI.endpoints.projects.rejectScope(projectId),
                 { clientResponse },
                 {
                     headers: {
@@ -475,7 +475,7 @@ const adapterAPI = {
             );
             return response.data;
         } catch (error) {
-            handleError(error, `rejectScope(${contractAddress})`);
+            handleError(error, `rejectScope(${projectId})`);
         }
     },
 
