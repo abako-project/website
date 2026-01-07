@@ -5,7 +5,7 @@
     <img class="attachment" src="<%= member.imageUrl %>" alt="<%= member.name %>"/>
     <div>
       <div class="votationCard__title"><%= member.name %></div>
-      <div class="votationCard__subtitle"><%= (member.role || '') %> <%= (member.proficiency || '') %></div>
+      <div class="votationCard__subtitle"><%= member.role || '' %> <%= member.proficiency || '' %></div>
     </div>
   </div>
 

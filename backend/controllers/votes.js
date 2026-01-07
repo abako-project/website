@@ -19,11 +19,10 @@ exports.viewVotes = async (req, res, next) => {
 
                 return {
                     name: member.name,
-                    role: member.role?.name || null,
-                    proficiency: member.proficiency?.description || null,
-                    userId: member.user?.id || null,
-                    email: member.user?.email || null,
-                    mime: attachment?.mime || member.attachment?.mime || null,
+                    role: member.role || null,
+                    proficiency: member.proficiency || null,
+                    userId: member.developerWorkerAddress || null,
+                    email: member.email || null,
                     imageUrl: attachment ? `/developers/${member.id}/attachment` : '/images/none.png'
                 };
             }))
@@ -51,26 +50,17 @@ exports.submitVotes = async (req, res, next) => {
             throw new Error("Invalid vote data: mismatched arrays.");
         }
 
-        const votes = [];
+        const rating = [];
 
         for (let i = 0; i < userIds.length; i++) {
             const toUserId = parseInt(userIds[i]);
             const score = parseFloat(scores[i]);
-            const existingVote = await seda.voteFindOne({projectId, fromUserId, toUserId});
-
-            if (existingVote) continue;
-            votes.push({projectId, fromUserId, toUserId, score});
+            rating.push([toUserId, score]);
         }
 
         // El proyecto se ha completado
-        await seda.projectCompleted(projectId);
+        await seda.projectCompleted(projectId, rating, req.session.loginUser.token);
 
-        if (votes.length === 0) {
-            console.warn("No valid votes to process.");
-        } else {
-            await seda.votesCreate(votes);
-            console.log("Votes saved successfully.");
-        }
 
         res.redirect("/projects/" + projectId);
 

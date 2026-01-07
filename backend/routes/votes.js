@@ -5,13 +5,13 @@ const votesController = require('../controllers/votes');
 const permissionController = require('../controllers/permission');
 
 //Mostrar protipo de votaciones
-router.get('/:projectId(\\d+)/votations',
+router.get('/:projectId/votations',
     permissionController.isAuthenticated,
     permissionController.userTypesRequired({projectConsultant: true}),
     votesController.viewVotes);
 
 //Procesar votaciones
-router.post('/:projectId(\\d+)/votations',
+router.post('/:projectId/votations',
     permissionController.isAuthenticated,
     permissionController.userTypesRequired({projectConsultant: true}),
     votesController.submitVotes);
