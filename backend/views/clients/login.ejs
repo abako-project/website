@@ -120,6 +120,7 @@
                     throw new Error(`Server responded with status: ${response.status}`);
                 }
                 const result = await response.json();
+
                 console.log('Connection completed successfully on the server:', 'success');
                 //console.log(JSON.stringify(result, null, 2));
                 if (!result.extrinsic) {
@@ -132,14 +133,10 @@
                 statusElement.innerHTML = "Firmando transacción";
                 // El usuario firma la transacción que inicia la sesión en el servidor
                 const signedResult = await sdk.auth.sign(result.extrinsic);
-                // console.log("signedResult", signedResult);
-                if (!signedResult) {
+                // console.log(">>>>>>>>> signedResult >>>>>>>>>", signedResult);
+                if (!signedResult.ok) {
                     throw new Error("❌ Error: No se pudo firmar el extrinsic");
                 }
-
-                // console.log("=================================================================================================================");
-                // console.log("==== TOKEN ====", result.token);
-                // console.log("=================================================================================================================");
 
                 tokenElement.value = result.token;
 
@@ -147,6 +144,8 @@
 
                 this.submit();
             } catch (error) {
+                hideWaitModal();
+
                 statusElement.innerHTML = "El login ha fallado";
                 alert(`❌ Login error: ${error instanceof Error ? error.message : "Unknown error"}`);
                 console.log(`Login error: ${error instanceof Error ? error.message : "Unknown error"}`);
