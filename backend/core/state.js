@@ -98,14 +98,14 @@ const flowProjectState = (project, scope) => {
         if (true) {
             return ProjectState.ScopeValidationNeeded;
         }
+    }
 
-        if (!true) {
-            return ProjectState.WaitingForTeamAssigment;
-        }
+    if (project.state === "scope_accepted") {
+        return ProjectState.WaitingForTeamAssigment;
+    }
 
-        if (true) {
-            return ProjectState.ProjectInProgress;
-        }
+    if (project.state === "team_assigned") { // Valor de estodo no definitivo
+        return ProjectState.ProjectInProgress;
     }
 
     return exports.ProjectState.Invalid
