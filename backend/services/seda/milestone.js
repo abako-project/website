@@ -1,22 +1,11 @@
 
-const json = require("./json");
 const {adapterAPI} = require('../api-client');
 
-const {
-  models: {Developer, User, Attachment, Project,  Milestone, Role, Proficiency,
-    Skill, DeliveryTime, MilestoneLog}
-} = require('../../models');
-
-const sequelize = require("../../models");
-
 const states = require("../../core/state");
-const seda = require("./index");
 
 //-----------------------------------------------------------
 
 exports.milestones = async (projectId) => {
-
-    const seda = require("./index");
 
     const {milestones} = await adapterAPI.getAllTasks(projectId);
 
@@ -55,36 +44,8 @@ exports.cleanMilestone = async milestone => {
  * @throws {Error} Si no se encuentra el milestone.
  */
 exports.milestone = async (projectId, milestoneId, token) => {
-    try {
-        // Try to get from backend first
-        const response = await adapterAPI.getMilestone(projectId, milestoneId, token);
-        return response.milestone || response;
-    } catch (error) {
-        console.warn(`[SEDA Milestone] Could not fetch from backend, falling back to SQLite:`, error.message);
-        
-        // Fallback to SQLite
-        const milestone = await Milestone.findByPk(milestoneId, {
-            include: [
-                {model: Project, as: 'project'},
-                {model: Role, as: 'role'},
-                {model: Proficiency, as: "proficiency"},
-                {model: DeliveryTime, as: "deliveryTime"},
-                {model: Skill, as: "skills"},
-                {
-                    model: Developer, as: 'developer',
-                    include: [
-                        {model: User, as: "user"},
-                        {model: Attachment, as: "attachment"}]
-                }
-            ],
-        });
-
-        if (milestone) {
-            return json.milestoneJson(milestone);
-        } else {
-            throw new Error('There is no milestone with id=' + milestoneId);
-        }
-    }
+    const response = await adapterAPI.getMilestone(projectId, milestoneId, token);
+    return response.milestone || response;
 };
 
 //-----------------------------------------------------------
@@ -157,8 +118,6 @@ exports.milestoneCreate = async (scope, projectId, {title, description, budget, 
 exports.milestoneUpdate = async (projectId, milestoneId, {title, description, budget, deliveryTimeId, deliveryDate,
   roleId, proficiencyId, skillIds, neededFullTimeDeveloper, neededPartTimeDeveloper, neededHourlyDeveloper}, token) => {
 
-    try {
-        // Try to update on backend
         const milestoneData = {
             title,
             description,
@@ -175,35 +134,6 @@ exports.milestoneUpdate = async (projectId, milestoneId, {title, description, bu
 
         const response = await adapterAPI.updateMilestone(projectId, milestoneId, milestoneData, token);
         return response.milestone || response;
-        
-    } catch (error) {
-        console.warn(`[SEDA Milestone] Could not update on backend, falling back to SQLite:`, error.message);
-        
-        // Fallback to SQLite
-        let milestone = await Milestone.findByPk(milestoneId);
-
-        milestone = await milestone.update({
-            title, description, budget, deliveryTimeId, deliveryDate, roleId, proficiencyId,
-            neededFullTimeDeveloper, neededPartTimeDeveloper, neededHourlyDeveloper
-        });
-
-        await milestone.setSkills(skillIds);
-
-        const milestoneLog = await MilestoneLog.create({
-            fromConsultant: true,
-            title: "Milestone Edited",
-            msg: `
-              * ${title}
-              * ${description}
-              * ${budget}
-              * ${deliveryTimeId}
-            `
-        });
-
-        await milestoneLog.setMilestone(milestone);
-
-        return json.milestoneJson(milestone);
-    }
 };
 
 //-----------------------------------------------------------
@@ -242,163 +172,121 @@ exports.milestoneSwapOrder = async (scope, milestoneId1, milestoneId2) => {
  * @throws {Error} Si falla la eliminación.
  */
 exports.milestoneDestroy = async (projectId, milestoneId, token) => {
-    try {
-        // Try to delete from backend
-        await adapterAPI.deleteMilestone(projectId, milestoneId, token);
-    } catch (error) {
-        console.warn(`[SEDA Milestone] Could not delete from backend, falling back to SQLite:`, error.message);
-        // Fallback to SQLite
-        await Milestone.destroy({where: {id: milestoneId}});
-    }
-};
-
-//-----------------------------------------------------------
-
-/**
- * Asigna un desarrollador a un milestgone, eliminando cualquier asignación previa.
- *
- * @async
- * @function milestoneAssignDeveloper
- * @param {number} milestoneId - ID del milestone.
- * @param {number} [developerId] - ID del desarrollador (opcional).
- * @returns {Promise<void>}
- */
-exports.milestoneAssignDeveloper = async (milestoneId, developerId) => {
-
-    try {
-        let milestone = await Milestone.findByPk(milestoneId);
-
-        if (developerId) {
-            // Crear nueva asignacion:
-            milestone = await milestone.update({
-                developerId,
-                state: states.MilestoneState.WaitingDeveloperAcceptAssignation
-            });
-        } else {
-            // Borrar asignacion actual:
-            milestone = await milestone.update({
-                developerId: null,
-                state: states.MilestoneState.WaitingDeveloperAssignation
-            });
-        }
-    } catch (error) {
-        throw error;
-    }
+    await adapterAPI.deleteMilestone(projectId, milestoneId, token);
 };
 
 //-----------------------------------------------------------
 
 exports.milestoneDeveloperAccept = async (milestoneId) => {
 
-    try {
-        const milestone = await Milestone.findByPk(milestoneId);
+    throw new Error('Internal Error. To be adapted.');
 
-        await milestone?.update({state: states.MilestoneState.MilestoneInProgress});
+    /*
+    const milestone = await Milestone.findByPk(milestoneId);
+
+    await milestone?.update({state: states.MilestoneState.MilestoneInProgress});
 
 
-        const milestoneLog = await MilestoneLog.create({
-            fromClient: true,
-            title: "Client approved Milestone",
-        });
+    const milestoneLog = await MilestoneLog.create({
+        fromClient: true,
+        title: "Client approved Milestone",
+    });
 
-        await milestoneLog.setMilestone(milestone);
+    await milestoneLog.setMilestone(milestone);
 
-    } catch (error) {
-        throw error;
-    }
+     */
 };
 
 //-----------------------------------------------------------
 
 exports.milestoneDeveloperReject = async (milestoneId) => {
 
-    try {
-        let milestone = await Milestone.findByPk(milestoneId);
+    throw new Error('Internal Error. To be adapted.');
 
-        // Borrar asignacion actual:
-        milestone = await milestone.update({
-            developerId: null,
-            state: states.MilestoneState.WaitingDeveloperAssignation
-        });
+    /*
+    let milestone = await Milestone.findByPk(milestoneId);
+
+    // Borrar asignacion actual:
+    milestone = await milestone.update({
+        developerId: null,
+        state: states.MilestoneState.WaitingDeveloperAssignation
+    });
 
 
-        const milestoneLog = await MilestoneLog.create({
-            fromClient: true,
-            title: "Client rejected Milestone",
-        });
+    const milestoneLog = await MilestoneLog.create({
+        fromClient: true,
+        title: "Client rejected Milestone",
+    });
 
-        await milestoneLog.setMilestone(milestone);
+    await milestoneLog.setMilestone(milestone);
 
-    } catch (error) {
-        throw error;
-    }
+     */
 };
 
 //-----------------------------------------------------------
 
 exports.milestoneConsultantSubmit = async (milestoneId, documentation, links) => {
 
-    try {
-        let milestone = await Milestone.findByPk(milestoneId);
+    throw new Error('Internal Error. To be adapted.');
 
-        // Actualizar el estado, y guardar doc y links
-        milestone = await milestone.update({
-            state: states.MilestoneState.WaitingClientAcceptSubmission,
-            documentation,
-            links
-        });
+    /*
+    let milestone = await Milestone.findByPk(milestoneId);
 
-    } catch (error) {
-        throw error;
-    }
+    // Actualizar el estado, y guardar doc y links
+    milestone = await milestone.update({
+        state: states.MilestoneState.WaitingClientAcceptSubmission,
+        documentation,
+        links
+    });
+
+     */
 };
 
 //-----------------------------------------------------------
 
 exports.milestoneClientAcceptSubmission = async (milestoneId, comment) => {
 
-    try {
-        const milestone = await Milestone.findByPk(milestoneId);
+    throw new Error('Internal Error. To be adapted.');
 
-        await milestone?.update({state: states.MilestoneState.AwaitingPayment});
+    /*
+    const milestone = await Milestone.findByPk(milestoneId);
 
-    } catch (error) {
-        throw error;
-    }
+    await milestone?.update({state: states.MilestoneState.AwaitingPayment});
+
+     */
 };
 
 //-----------------------------------------------------------
 
 exports.milestoneClientRejectSubmission = async (milestoneId, comment) => {
 
-    try {
-        let milestone = await Milestone.findByPk(milestoneId);
+    throw new Error('Internal Error. To be adapted.');
 
-        // Borrar asignacion actual:
-        milestone = await milestone.update({
-            state: states.MilestoneState.SubmissionRejectedByClient
-        });
+    /*
+    let milestone = await Milestone.findByPk(milestoneId);
 
-    } catch (error) {
-        throw error;
-    }
+    // Borrar asignacion actual:
+    milestone = await milestone.update({
+        state: states.MilestoneState.SubmissionRejectedByClient
+    });
+
+     */
 };
 
 //-----------------------------------------------------------
 
 exports.milestoneClientRollbackRejectedSubmission = async (milestoneId, comment) => {
 
-    try {
-        let milestone = await Milestone.findByPk(milestoneId);
+    throw new Error('Internal Error. To be adapted.');
 
-        // Borrar asignacion actual:
-        milestone = await milestone.update({
-            state: states.MilestoneState.WaitingClientAcceptSubmission
-        });
+    /*
+    let milestone = await Milestone.findByPk(milestoneId);
 
-    } catch (error) {
-        throw error;
-    }
+    // Borrar asignacion actual:
+    milestone = await milestone.update({
+        state: states.MilestoneState.WaitingClientAcceptSubmission
+    });
+     */
 };
 
 //-----------------------------------------------------------
@@ -411,38 +299,40 @@ exports.milestoneClientRollbackRejectedSubmission = async (milestoneId, comment)
  */
 exports.milestoneDaoPay = async (milestoneId) => {
 
-    try {
-        let milestone = await Milestone.findByPk(milestoneId);
+    throw new Error('Internal Error. To be adapted.');
 
-        // Marcar como pagado:
-        milestone = await milestone.update({
-            state: states.MilestoneState.Paid
-        });
+    /*
+    let milestone = await Milestone.findByPk(milestoneId);
 
-    } catch (error) {
-        throw error;
-    }
+    // Marcar como pagado:
+    milestone = await milestone.update({
+        state: states.MilestoneState.Paid
+    });
+
+     */
 };
 
 //-----------------------------------------------------------
 
 exports.milestoneClientAddHistoryComment = async (milestoneId, comment) => {
 
-    try {
-        let milestone = await Milestone.findByPk(milestoneId);
+    throw new Error('Internal Error. To be adapted.');
 
-        // Pendiente añadir a la historia:
+    /*
+    let milestone = await Milestone.findByPk(milestoneId);
 
+    // Pendiente añadir a la historia:
 
-    } catch (error) {
-        throw error;
-    }
+     */
 };
 
 //-----------------------------------------------------------
 
 exports.milestoneConsultantAddHistoryComment = async (milestoneId, comment) => {
 
+    throw new Error('Internal Error. To be adapted.');
+
+    /*
     try {
         let milestone = await Milestone.findByPk(milestoneId);
 
@@ -452,6 +342,7 @@ exports.milestoneConsultantAddHistoryComment = async (milestoneId, comment) => {
     } catch (error) {
         throw error;
     }
+    */
 };
 
 //-----------------------------------------------------------

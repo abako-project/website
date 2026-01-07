@@ -1,8 +1,6 @@
 
 const projectTypes = require('../../utils/projectTypes.json');
 
-
-
 //-----------------------------------------------------------
 
 /**

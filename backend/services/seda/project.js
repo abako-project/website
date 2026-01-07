@@ -1,18 +1,5 @@
+
 const {adapterAPI} = require('../api-client');
-
-const {Op} = require("sequelize");
-
-const json = require("./json");
-
-const {
-    models: {
-        Project, Client, Developer, User, Attachment, Budget, DeliveryTime, ProjectType,
-        Objective, Constraint, Milestone, Role, Proficiency, Comment, Skill
-    }
-} = require('../../models');
-
-const states = require("../../core/state");
-const seda = require("./index");
 
 //-----------------------------------------------------------
 
@@ -262,7 +249,10 @@ exports.projectsIndex = async (clientId, consultantId, developerId) => {
  * @throws {Error} Si falla la actualización del estado.
  */
 exports.projectSetState = async (projectId, state) => {
-    await Project.update({state}, {where: {id: projectId}});
+
+    throw new Error('Internal Error. To be removed.');
+
+    // await Project.update({state}, {where: {id: projectId}});
 };
 
 //-----------------------------------------------------------
@@ -287,35 +277,6 @@ exports.rejectProposal = async (projectId, proposalRejectionReason, token) => {
 //-----------------------------------------------------------
 
 /**
- * Asigna un consultor a un proyecto y cambia el estado a `WaitingForProposalApproval`.
- *
- * @async
- * @function projectSetConsultant
- * @param {string|number} projectId - Contract address or ID del proyecto.
- * @param {number} consultantId - ID del consultor.
- * @param {string} [token] - Auth token.
- * @returns {Promise<void>}
- * @throws {Error} Si falla la asignación del consultor o la actualización del estado.
- */
-exports.projectSetConsultant = async (projectId, consultantId, token) => {
-    try {
-        // Try to assign coordinator on backend
-        await adapterAPI.assignCoordinator(projectId, token);
-    } catch (error) {
-        console.warn(`[SEDA Project] Could not assign coordinator on backend, falling back to SQLite:`, error.message);
-        
-        // Fallback to SQLite
-        await Project.update({
-            consultantId,
-            state: states.ProjectState.WaitingForProposalApproval
-        }, {where: {id: projectId}});
-    }
-};
-
-
-//-----------------------------------------------------------
-
-/**
  * Ya se ha hecho el pago y ahora empieza el projecto.
  * Lo primero va a ser seleccionar al equipo de desarrolladores.
  *
@@ -327,10 +288,13 @@ exports.projectSetConsultant = async (projectId, consultantId, token) => {
  */
 exports.projectStart = async (projectId) => {
 
+    throw new Error('Internal Error. To be removed.');
+
+    /*
     await Project.update({
         state: states.ProjectState.ProjectInProgress
     }, {where: {id: projectId}});
-
+    */
 };
 
 //-----------------------------------------------------------
@@ -351,22 +315,6 @@ exports.projectCompleted = async (projectId, ratings, token) => {
 
     await adapterAPI.markCompleted(projectId, ratings, token);
 
-};
-
-
-//-----------------------------------------------------------
-
-/**
- * Elimina un proyecto por su ID.
- *
- * @async
- * @function projectDestroy
- * @param {number} projectId - ID del proyecto.
- * @returns {Promise<void>}
- * @throws {Error} Si ocurre un error al eliminar el proyecto.
- */
-exports.projectDestroy = async projectId => {
-    await Project.destroy({where: {id: projectId}});
 };
 
 //-----------------------------------------------------------

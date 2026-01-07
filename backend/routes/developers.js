@@ -20,12 +20,13 @@ router.param('developerId', developerController.load);  // autoload :developerId
 router.get('/',
     developerController.index);
 
+router.get('/:developerId(\\d+)/profile',
+    developerController.show);
+
 router.get('/:developerId(\\d+)/profile/edit',
     permissionController.isAuthenticated,
     permissionController.userTypesRequired({developer: true}),
     developerController.edit);
-router.get('/:developerId(\\d+)/profile',
-    developerController.show);
 router.put('/:developerId(\\d+)',
     permissionController.isAuthenticated,
     permissionController.userTypesRequired({developer: true}),
@@ -36,10 +37,8 @@ router.put('/:developerId(\\d+)',
 router.get('/:developerId(\\d+)/attachment',
     developerController.attachment);
 
-
 // Route to developer projects
 router.get('/:developerId(\\d+)/projects', projectController.index);
-
 
 // Route to developer milestones
 router.get('/:developerId(\\d+)/milestones', milestoneController.milestones);

@@ -18,10 +18,11 @@ router.param('clientId', clientController.load);  // autoload :clientId
 router.get('/',
     clientController.index);
 
-router.get('/:clientId(\\d+)/profile/edit',
-    clientController.edit);
 router.get('/:clientId(\\d+)/profile',
     clientController.show);
+
+router.get('/:clientId(\\d+)/profile/edit',
+    clientController.edit);
 router.put('/:clientId(\\d+)',
     upload.single('image'),
     clientController.update);

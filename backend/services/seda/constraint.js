@@ -1,14 +1,4 @@
 
-const json = require("./json");
-
-const {
-  models: {
-    Constraint
-  }
-} = require('../../models');
-const sequelize = require("../../models");
-
-
 //-----------------------------------------------------------
 
 /**
@@ -22,12 +12,17 @@ const sequelize = require("../../models");
  */
 exports.constraint = async constraintId => {
 
-  const constraint = await Constraint.findByPk(constraintId);
+    throw new Error('Internal Error. To be adapted.');
+
+    /*
+    const constraint = await Constraint.findByPk(constraintId);
   if (constraint) {
     return json.constraintJson(constraint);
   } else {
     throw new Error('There is no constraint with id=' + constraintId);
   }
+
+     */
 };
 
 //-----------------------------------------------------------
@@ -43,9 +38,14 @@ exports.constraint = async constraintId => {
  */
 exports.constraintCreate = async (projectId, description) => {
 
-  const constraint = await Constraint.create({projectId, description});
+    throw new Error('Internal Error. To be adapted.');
+
+/*
+    const constraint = await Constraint.create({projectId, description});
 
   return json.constraintJson(constraint);
+
+ */
 };
 
 //-----------------------------------------------------------
@@ -62,7 +62,10 @@ exports.constraintCreate = async (projectId, description) => {
  */
 exports.constraintsSwapOrder = async (constraintId1, constraintId2) => {
 
-  const transaction = await sequelize.transaction();
+    throw new Error('Internal Error. To be adapted.');
+
+    /*
+    const transaction = await sequelize.transaction();
   try {
     const constraint1 = await Constraint.findByPk(constraintId1, {transaction});
     if (!constraint1) {
@@ -87,6 +90,8 @@ exports.constraintsSwapOrder = async (constraintId1, constraintId2) => {
     await transaction.rollback();
     throw error;
   }
+
+     */
 }
 
 //-----------------------------------------------------------
@@ -101,7 +106,12 @@ exports.constraintsSwapOrder = async (constraintId1, constraintId2) => {
  * @throws {Error} Si falla la eliminación.
  */
 exports.constraintDestroy = async constraintId => {
-  await Constraint.destroy({where: {id: constraintId}});
+    throw new Error('Internal Error. To be adapted.');
+
+    /*
+    await Constraint.destroy({where: {id: constraintId}});
+
+     */
 };
 
 //-----------------------------------------------------------

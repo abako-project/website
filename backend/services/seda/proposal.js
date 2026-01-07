@@ -1,15 +1,5 @@
-const {Sequelize, Op} = require("sequelize");
 
-const json = require("./json");
-
-const {
-  models: {
-    Project
-  }
-} = require('../../models');
-const states = require("../../core/state");
 const {adapterAPI} = require("../api-client");
-
 
 //-----------------------------------------------------------
 
@@ -100,6 +90,9 @@ exports.proposalUpdate = async (projectId, {title, summary, description, url, pr
  */
 exports.proposalSubmit = async (projectId) => {
 
+    throw new Error('Internal Error. To be adapted.');
+
+    /*
     const project = await Project.findByPk(projectId);
 
     if (!project) {
@@ -117,6 +110,7 @@ exports.proposalSubmit = async (projectId) => {
     } else {
         throw new Error('Internal Error. Invalid project state.');
     }
+     */
 };
 
 

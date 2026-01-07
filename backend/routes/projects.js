@@ -51,12 +51,6 @@ router.put('/:projectId',
   permissionController.userTypesRequired({client: true, projectConsultant: true}),
   projectController.updateProposal);
 
-// Eliminar proyecto
-router.delete('/:projectId',
-  permissionController.isAuthenticated,
-  permissionController.userTypesRequired({admin: true}),
-    projectController.destroy);
-
 // Publicar la propuesta: estado = ProposalPending
 router.put('/:projectId/proposal_submit',
   permissionController.isAuthenticated,
@@ -141,21 +135,6 @@ router.put('/:projectId/constraints/swaporder/:id1(\\d+)/:id2(\\d+)',
   permissionController.userTypesRequired({client: true, projectConsultant: true}),
   constraintController.swapOrder);
 
-// === Consultant
-
-// Mostrar formulario para asignar consultor al proyecto
-router.get('/:projectId/consultant/select',
-  permissionController.isAuthenticated,
-  permissionController.adminRequired,
-  projectController.selectConsultant);
-
-// Actualizar el consultor del proyecto
-router.post('/:projectId/consultant',
-  permissionController.isAuthenticated,
-  permissionController.adminRequired,
-  projectController.setConsultant);
-
-
 // === Milestones
 
 // Editar todos los milestones de un proyecto
@@ -238,18 +217,6 @@ router.put('/:projectId/assign_team',
     permissionController.isAuthenticated,
     permissionController.projectConsultantRequired,
     projectController.assignTeam);
-
-// Mostrar formulario para asignar developer a un milestone
-router.get('/:projectId/milestones/:milestoneId(\\d+)/developer/select',
-  permissionController.isAuthenticated,
-  permissionController.adminRequired,
-  milestoneController.selectDeveloper);
-
-// Actualizar el developer de un milesrtone
-router.post('/:projectId/milestones/:milestoneId(\\d+)/developer',
-  permissionController.isAuthenticated,
-  permissionController.adminRequired,
-  milestoneController.assignDeveloper);
 
 // Muestra la pagina para que el developer acepte o rechace un milestone.
 router.get('/:projectId/milestones/:milestoneId(\\d+)/acceptOrRejectAssignation',

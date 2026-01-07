@@ -15,7 +15,6 @@ console.log('[app.js] Routes cargadas correctamente');
 
 console.log('[app.js] Cargando modelos Sequelize...');
 const sequelize = require("./models");
-const coreState = require("./core/state");
 console.log('[app.js] Modelos Sequelize cargados correctamente');
 
 // import 'remixicon/fonts/remixicon.css';

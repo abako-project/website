@@ -1,10 +1,3 @@
-const json = require("./json");
-
-const {
-    models: {MilestoneLog}
-} = require('../../models');
-
-const sequelize = require("../../models");
 
 //-----------------------------------------------------------
 
@@ -13,6 +6,9 @@ const sequelize = require("../../models");
  */
 exports.milestoneLogs = async milestoneId => {
 
+    throw new Error('Internal Error. To be adapted.');
+
+    /*
     try {
         const milestoneLogs = await MilestoneLog.findAll({
             where: {milestoneId}
@@ -23,4 +19,5 @@ exports.milestoneLogs = async milestoneId => {
     } catch (error) {
         throw error;
     }
+    */
 };

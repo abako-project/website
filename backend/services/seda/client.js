@@ -1,12 +1,5 @@
 
 
-const json = require("./json");
-
-const {
-  models: {
-    Client, User, Language, Attachment
-  }
-} = require('../../models');
 const {adapterAPI} = require("../api-client");
 
 

@@ -19,14 +19,9 @@ const sedaMilestoneLog = require("./milestoneLog");
 const sedaScope = require("./scope");
 const sedaClient = require("./client");
 const sedaDeveloper = require("./developer");
-const sedaAttachment = require("./attachment");
-const sedaLanguage = require("./language");
-const sedaProficiency = require("./proficiency");
 const sedaBudget = require("./budget");
 const sedaDeliveryTime = require("./deliveryTime");
 const sedaProjectType = require("./projectType");
-const sedaVotations = require("./votations");
-const sedaUser = require("./user");
 const sedaCalendar = require("./calendar");
 
 module.exports = exports = {
@@ -40,13 +35,8 @@ module.exports = exports = {
     ...sedaScope,
     ...sedaClient,
     ...sedaDeveloper,
-    ...sedaAttachment,
-    ...sedaLanguage,
-    ...sedaProficiency,
     ...sedaBudget,
     ...sedaDeliveryTime,
     ...sedaProjectType,
-    ...sedaVotations,
-    ...sedaUser,
     ...sedaCalendar
 };

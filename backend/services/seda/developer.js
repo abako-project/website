@@ -1,13 +1,5 @@
-const json = require("./json");
 
 const {adapterAPI} = require('../api-client');
-
-// Keep Sequelize models for backward compatibility
-const {
-    models: {
-        Developer, User, Attachment, Language, Skill, Role, Proficiency, Project, Milestone
-    }
-} = require('../../models');
 
 //-----------------------------------------------------------
 
@@ -138,44 +130,6 @@ exports.developers = async projectId => {
 
 
     return developers;
-/*
-
-    const project = await Project.findByPk(projectId, {
-        include: [
-            {
-                model: Milestone,
-                as: 'milestones',
-                include: [
-                    {
-                        model: Developer,
-                        as: 'developer',
-                        include: [
-                            {model: User, as: "user"},
-                            {model: Language, as: "languages"},
-                            {model: Attachment, as: "attachment"},
-                            {model: Role, as: "role"},
-                            {model: Proficiency, as: "proficiency"},
-                            {model: Skill, as: "skills"},
-                        ]
-                    }
-                ]
-            }
-        ]
-    });
-
-    if (!project) throw new Error('There is no project with id=' + projectId);
-
-    const developers = project.milestones
-        .map(m => m.developer)
-        .filter(Boolean)
-        .reduce((acc, dev) => {
-            if (!acc.find(d => d.id === dev.id)) acc.push(dev);
-            return acc;
-        }, []);
-
-    return developers.map(d => json.developerJson(d));
-    */
-
 };
 
 
@@ -290,25 +244,6 @@ exports.developerFindByEmail = async (email) => {
     return await adapterAPI.findDeveloperByEmail(email);
 
 };
-
-//-----------------------------------------------------------
-
-/**
- * Busca todos los desarrolladores que tienen asignado un rol específico.
- *
- * @async
- * @function developersWithRole
- * @param {number} roleId - ID del rol.
- * @returns {Promise<Object[]>} Lista de desarrolladores con el rol especificado.
- */
-exports.developersWithRole = async (roleId) => {
-
-    const developers = await Developer.findAll({
-        //  where: {roleId}
-    });
-
-    return developers.map(developer => json.developerJson(developer));
-}
 
 //-----------------------------------------------------------
 

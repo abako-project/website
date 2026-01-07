@@ -1,15 +1,6 @@
 
 
-const json = require("./json");
 const {adapterAPI} = require('../api-client');
-
-const {
-  models: {
-    Project, Comment
-  }
-} = require('../../models');
-
-const states = require("../../core/state");
 
 
 //-----------------------------------------------------------

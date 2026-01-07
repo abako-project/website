@@ -212,22 +212,6 @@ exports.updateProposal = async (req, res, next) => {
   }
 };
 
-// Eliminar proyecto
-exports.destroy = async (req, res, next) => {
-
-  const projectId = req.params.projectId;
-
-  try {
-    await seda.projectDestroy(projectId);
-
-    // project.destroy();
-    console.log('Project deleted successfully.');
-    res.redirect('/projects');
-  } catch (error) {
-    next(error);
-  }
-};
-
 
 // Publicar la propuesta: estado = ProposalPending
 exports.proposalSubmit = async (req, res, next) => {
@@ -396,47 +380,6 @@ exports.editObjectivesConstraints = async (req, res) => {
   res.render('proposals/editObjectivesConstraints', {
     project,
   });
-};
-
-
-// Mostrar formulario para seleccioanr consultor
-exports.selectConsultant = async (req, res, next) => {
-
-  const projectId = req.params.projectId;
-  const project = await seda.project(projectId);
-
-  try {
-    const allDevelopers = await seda.developerIndex();
-
-    res.render('consultants/select', {
-      project,
-      allDevelopers
-    });
-  } catch (error) {
-    next(error);
-  }
-};
-
-
-// Actualizar consultor del proyecto
-exports.setConsultant = async (req, res, next) => {
-
-  const {body} = req;
-
-  const projectId = req.params.projectId;
-
-  const consultantId = body.consultantId;
-
-  try {
-    await seda.projectSetConsultant(projectId, consultantId);
-
-    console.log('Project consultant assigned successfully.');
-
-    res.redirect('/projects/' + projectId);
-
-  } catch (error) {
-    next(error);
-  }
 };
 
 

@@ -314,6 +314,7 @@ button {
   position: sticky;
   top: 0;
   z-index: 1;
+  max-height: fit-content;
 }
 
 .divider-h, .conector-h {
@@ -332,7 +333,7 @@ button {
   background-color: #36D399;
 }
 
-.bubble, .projectProposal__summary, .proposalForm, .projects .projectsIndex, .projectInfo__body, .onboarding__right .content .card, .onboarding__right form .card, .milestoneReviewInfo__content .milestone, .milestoneReviewInfo, .submitMilestone__milestone, .editMilestones__item, .projectContainer__col .milestones__content, .availability, .formContainer, .submitMilestone, input, textarea, select {
+.bubble, .projectProposal__summary, .proposalForm, .projects .projectsIndex, .projectInfo__body, .onboarding__right .content .card, .onboarding__right form .card, .reviewMilestone .projectInfo, .reviewMilestone .milestoneInfo, .milestoneReviewInfo__content .milestone, .milestoneReviewInfo, .submitMilestone__milestone, .editMilestones__item, .projectContainer__col .milestones__content, .availability, .formContainer, .submitMilestone, input, textarea, select {
   padding: 0 16px;
   border-radius: 12px;
   border: 1px solid rgba(245, 245, 245, 0.36);
@@ -497,7 +498,7 @@ button {
   margin-bottom: 8px;
 }
 
-.btn, a.button, input.button, .milestone__actions, button {
+.btn, a.button, input.button, .milestone__actions a, button {
   display: flex;
   justify-content: center;
   place-content: center;
@@ -515,19 +516,25 @@ button {
   font-weight: 700;
   text-align: center;
 }
-.btn:hover, a.button:hover, input.button:hover, .milestone__actions:hover, button:hover {
+.btn:hover, a.button:hover, input.button:hover, .milestone__actions a:hover, button:hover {
   box-shadow: 0 0 8px 0 rgba(245, 245, 245, 0.12);
 }
-.btn_primary, .milestone__actions {
+.btn--disabled {
+  opacity: 0.3;
+}
+.btn:disabled, a.button:disabled, input.button:disabled, .milestone__actions a:disabled, button:disabled {
+  opacity: 0.3;
+}
+.btn_primary, .milestone__actions a {
   color: #141414;
   background-color: #36D399;
 }
-.btn_primary i, .milestone__actions i {
+.btn_primary i, .milestone__actions a i {
   color: #141414 !important;
 }
 .btn_primary--danger {
   background-color: #fa4d4d;
-  border-color: hsba(0, 0%, 100%, 0.12);
+  border-color: #fa4d4d;
 }
 .btn_outline {
   color: #36D399;
@@ -549,7 +556,7 @@ button {
 .btn__link i {
   color: #36D399 !important;
 }
-.btn_sm, .milestone__actions {
+.btn_sm, .milestone__actions a {
   min-height: 28px;
   padding: 0 12px;
   font-size: 14px;
@@ -559,7 +566,7 @@ button {
   width: 44px;
   padding: 0;
 }
-.btn i, a.button i, input.button i, .milestone__actions i, button i, .btn .material-icons, a.button .material-icons, input.button .material-icons, .milestone__actions .material-icons, button .material-icons {
+.btn i, a.button i, input.button i, .milestone__actions a i, button i, .btn .material-icons, a.button .material-icons, input.button .material-icons, .milestone__actions a .material-icons, button .material-icons {
   font-family: "Material Icons";
   font-weight: normal;
   font-style: normal;
@@ -890,6 +897,19 @@ input[type=checkbox] {
   padding: 0;
   position: relative;
   font-weight: 500;
+}
+
+.commentForm {
+  margin-bottom: 32px;
+  padding: 24px;
+  display: flex;
+  justify-content: start;
+  place-content: start;
+  align-items: start;
+  flex-direction: column;
+  gap: 12px;
+  border-radius: 10px;
+  border: 1px solid #36D399;
 }
 
 /* -------------------------
@@ -1523,11 +1543,11 @@ input[type=checkbox] {
   font-weight: 600;
   text-align: center;
 }
-.dashboard .milestone__actions .btn_primary, .dashboard .milestone__actions .milestone__actions, .payments .milestone__actions .btn_primary, .payments .milestone__actions .milestone__actions {
+.dashboard .milestone__actions .btn_primary, .dashboard .milestone__actions a, .payments .milestone__actions .btn_primary, .payments .milestone__actions a {
   min-height: 0;
   width: fit-content;
 }
-.dashboard .milestone .bubble, .dashboard .milestone .projectProposal__summary, .dashboard .milestone .proposalForm, .dashboard .milestone .projects .projectsIndex, .projects .dashboard .milestone .projectsIndex, .dashboard .milestone .projectInfo__body, .dashboard .milestone .onboarding__right .content .card, .onboarding__right .content .dashboard .milestone .card, .dashboard .milestone .onboarding__right form .card, .onboarding__right form .dashboard .milestone .card, .dashboard .milestone .milestoneReviewInfo__content .milestone, .milestoneReviewInfo__content .dashboard .milestone .milestone, .dashboard .milestone .milestoneReviewInfo, .dashboard .milestone .submitMilestone__milestone, .dashboard .milestone .editMilestones__item, .dashboard .milestone input, .dashboard .milestone textarea, .dashboard .milestone select, .dashboard .milestone .formContainer, .dashboard .milestone .submitMilestone, .dashboard .milestone .availability, .dashboard .milestone .projectContainer__col .milestones__content, .projectContainer__col .dashboard .milestone .milestones__content, .payments .milestone .bubble, .payments .milestone .projectProposal__summary, .payments .milestone .proposalForm, .payments .milestone .projects .projectsIndex, .projects .payments .milestone .projectsIndex, .payments .milestone .projectInfo__body, .payments .milestone .onboarding__right .content .card, .onboarding__right .content .payments .milestone .card, .payments .milestone .onboarding__right form .card, .onboarding__right form .payments .milestone .card, .payments .milestone .milestoneReviewInfo__content .milestone, .milestoneReviewInfo__content .payments .milestone .milestone, .payments .milestone .milestoneReviewInfo, .payments .milestone .submitMilestone__milestone, .payments .milestone .editMilestones__item, .payments .milestone input, .payments .milestone textarea, .payments .milestone select, .payments .milestone .formContainer, .payments .milestone .submitMilestone, .payments .milestone .availability, .payments .milestone .projectContainer__col .milestones__content, .projectContainer__col .payments .milestone .milestones__content {
+.dashboard .milestone .bubble, .dashboard .milestone .projectProposal__summary, .dashboard .milestone .proposalForm, .dashboard .milestone .projects .projectsIndex, .projects .dashboard .milestone .projectsIndex, .dashboard .milestone .projectInfo__body, .dashboard .milestone .onboarding__right .content .card, .onboarding__right .content .dashboard .milestone .card, .dashboard .milestone .onboarding__right form .card, .onboarding__right form .dashboard .milestone .card, .dashboard .milestone .reviewMilestone .projectInfo, .reviewMilestone .dashboard .milestone .projectInfo, .dashboard .milestone .reviewMilestone .milestoneInfo, .reviewMilestone .dashboard .milestone .milestoneInfo, .dashboard .milestone .milestoneReviewInfo__content .milestone, .milestoneReviewInfo__content .dashboard .milestone .milestone, .dashboard .milestone .milestoneReviewInfo, .dashboard .milestone .submitMilestone__milestone, .dashboard .milestone .editMilestones__item, .dashboard .milestone input, .dashboard .milestone textarea, .dashboard .milestone select, .dashboard .milestone .formContainer, .dashboard .milestone .submitMilestone, .dashboard .milestone .availability, .dashboard .milestone .projectContainer__col .milestones__content, .projectContainer__col .dashboard .milestone .milestones__content, .payments .milestone .bubble, .payments .milestone .projectProposal__summary, .payments .milestone .proposalForm, .payments .milestone .projects .projectsIndex, .projects .payments .milestone .projectsIndex, .payments .milestone .projectInfo__body, .payments .milestone .onboarding__right .content .card, .onboarding__right .content .payments .milestone .card, .payments .milestone .onboarding__right form .card, .onboarding__right form .payments .milestone .card, .payments .milestone .reviewMilestone .projectInfo, .reviewMilestone .payments .milestone .projectInfo, .payments .milestone .reviewMilestone .milestoneInfo, .reviewMilestone .payments .milestone .milestoneInfo, .payments .milestone .milestoneReviewInfo__content .milestone, .milestoneReviewInfo__content .payments .milestone .milestone, .payments .milestone .milestoneReviewInfo, .payments .milestone .submitMilestone__milestone, .payments .milestone .editMilestones__item, .payments .milestone input, .payments .milestone textarea, .payments .milestone select, .payments .milestone .formContainer, .payments .milestone .submitMilestone, .payments .milestone .availability, .payments .milestone .projectContainer__col .milestones__content, .projectContainer__col .payments .milestone .milestones__content {
   width: fit-content;
   background-color: #231F1F;
 }
@@ -1606,16 +1626,16 @@ input[type=checkbox] {
 }
 .formMilestone__dev .skills {
   grid-column: 1/3;
-  grid-row: 2/3;
+  grid-row: 1/3;
 }
 .formMilestone__dev .availability {
-  grid-column: 3/-1;
-  grid-row: 2/3;
+  grid-column: 3/4;
+  grid-row: 1/3;
 }
-.formMilestone__dev .form-group {
+.formMilestone__dev .xxform-group {
   width: 100%;
 }
-.formMilestone__dev .form-group select {
+.formMilestone__dev .xxform-group select {
   width: 100%;
 }
 
@@ -1692,7 +1712,10 @@ input[type=checkbox] {
 
 /** ---------------------------------------------------------------------
  * REVIEW MILESTONE
- * - Container */
+ * - Container: .reviewMilestone
+ * - Milestone content component: .milestoneReviewInfo
+ * - Milestone actions container: .milestoneReviewActions
+ * - Milestone actions component: .milestoneReviewAction */
 .reviewMilestone {
   display: flex;
   gap: 24px;
@@ -1786,6 +1809,22 @@ input[type=checkbox] {
   margin-top: 12px;
 }
 
+/** ---------------------------------------------------------------------
+ * REVIEW MILESTONE Developer Project Assignation
+ * Se le puede poner un nombre genérico tipo review form o algo así
+ * - Container en .reviewMilestone */
+.reviewMilestone .projectInfo, .reviewMilestone .milestoneInfo {
+  margin-top: 0;
+  margin-bottom: 32px;
+  padding: 24px 24px 32px 24px;
+  gap: 24px;
+}
+
+.acceptOrRejectAssignation__form .buttonContainer {
+  justify-content: end;
+  gap: 12px;
+}
+
 .actionsBody {
   min-width: 20dvw;
   margin-top: 40px;
@@ -1803,7 +1842,7 @@ input[type=checkbox] {
   margin-bottom: 12px;
   text-wrap: pretty;
 }
-.actionsBody .buttonContainer .btn, .actionsBody .buttonContainer a.button, .actionsBody .buttonContainer input.button, .actionsBody .buttonContainer button, .actionsBody .buttonContainer .milestone__actions {
+.actionsBody .buttonContainer .btn, .actionsBody .buttonContainer a.button, .actionsBody .buttonContainer input.button, .actionsBody .buttonContainer button, .actionsBody .buttonContainer .milestone__actions a, .milestone__actions .actionsBody .buttonContainer a {
   width: 100%;
 }
 .actionsBody__comment {
@@ -1986,7 +2025,7 @@ input[type=checkbox] {
 .onboarding__right .content .card__subtitle, .onboarding__right form .card__subtitle {
   color: rgba(245, 245, 245, 0.7);
 }
-.onboarding__right .content .card .btn, .onboarding__right .content .card a.button, .onboarding__right .content .card input.button, .onboarding__right .content .card button, .onboarding__right .content .card .milestone__actions, .onboarding__right form .card .btn, .onboarding__right form .card a.button, .onboarding__right form .card input.button, .onboarding__right form .card button, .onboarding__right form .card .milestone__actions {
+.onboarding__right .content .card .btn, .onboarding__right .content .card a.button, .onboarding__right .content .card input.button, .onboarding__right .content .card button, .onboarding__right .content .card .milestone__actions a, .milestone__actions .onboarding__right .content .card a, .onboarding__right form .card .btn, .onboarding__right form .card a.button, .onboarding__right form .card input.button, .onboarding__right form .card button, .onboarding__right form .card .milestone__actions a, .milestone__actions .onboarding__right form .card a {
   margin-top: 16px;
 }
 
@@ -2189,11 +2228,7 @@ input[type=checkbox] {
   border-right: 0px;
 }
 
-.formContainer, .submitMilestone {
-  background-color: #231F1F;
-  padding: 44px;
-}
-.formContainer .buttonWrapper, .submitMilestone .buttonWrapper {
+.buttonWrapper {
   margin-top: 40px;
   display: flex;
   justify-content: end;

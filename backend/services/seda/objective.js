@@ -1,12 +1,3 @@
-const json = require("./json");
-
-const {
-  models: {
-    Objective
-  }
-} = require('../../models');
-const sequelize = require("../../models");
-
 
 //-----------------------------------------------------------
 
@@ -21,12 +12,14 @@ const sequelize = require("../../models");
  */
 exports.objective = async objectiveId => {
 
+    /*
   const objective = await Objective.findByPk(objectiveId);
   if (objective) {
     return json.objectiveJson(objective);
   } else {
     throw new Error('There is no objective with id=' + objectiveId);
   }
+     */
 };
 
 //-----------------------------------------------------------
@@ -42,9 +35,13 @@ exports.objective = async objectiveId => {
  */
 exports.objectiveCreate = async (projectId, description) => {
 
-  const objective = await Objective.create({projectId, description});
+    throw new Error('Internal Error. To be adapted.');
+
+    /*
+    const objective = await Objective.create({projectId, description});
 
   return json.objectiveJson(objective);
+     */
 };
 
 //-----------------------------------------------------------
@@ -61,7 +58,10 @@ exports.objectiveCreate = async (projectId, description) => {
  */
 exports.objectivesSwapOrder = async (objectiveId1, objectiveId2) => {
 
-  const transaction = await sequelize.transaction();
+    throw new Error('Internal Error. To be adapted.');
+
+    /*
+    const transaction = await sequelize.transaction();
   try {
     const objective1 = await Objective.findByPk(objectiveId1, {transaction});
     if (!objective1) {
@@ -86,7 +86,8 @@ exports.objectivesSwapOrder = async (objectiveId1, objectiveId2) => {
     await transaction.rollback();
     throw error;
   }
-}
+     */
+};
 
 
 //-----------------------------------------------------------
@@ -101,7 +102,12 @@ exports.objectivesSwapOrder = async (objectiveId1, objectiveId2) => {
  * @throws {Error} Si ocurre un error durante la eliminación.
  */
 exports.objectiveDestroy = async objectiveId => {
-  await Objective.destroy({where: {id: objectiveId}});
+
+    throw new Error('Internal Error. To be adapted.');
+
+/*
+await Objective.destroy({where: {id: objectiveId}});
+     */
 };
 
 //-----------------------------------------------------------
