@@ -120,6 +120,26 @@ exports.cleanDeveloper = async developer => {
  */
 
 exports.developers = async projectId => {
+
+    const seda = require("./index");
+
+    const team = (await seda.getTeam(projectId)).response.map(item => item.account_id);
+
+    require("../../helpers/logs").log(team, "team");
+
+    let developers = await seda.developerIndex();
+
+    for (const developer of developers) {
+        const developerWorkerAddress = await seda.getWorkerAddress(developer.email);
+        developer.developerWorkerAddress = developerWorkerAddress;
+    }
+    developers = developers.filter(developer => team.includes(developer.developerWorkerAddress));
+    require("../../helpers/logs").log(developers, "developers");
+
+
+    return developers;
+/*
+
     const project = await Project.findByPk(projectId, {
         include: [
             {
@@ -154,6 +174,8 @@ exports.developers = async projectId => {
         }, []);
 
     return developers.map(d => json.developerJson(d));
+    */
+
 };
 
 

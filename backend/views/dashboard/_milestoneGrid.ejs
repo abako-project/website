@@ -13,9 +13,21 @@
         <section class="milestoneGrid">
             <div class="milestoneGrid__col">
                 <h3 class="colHeader">
-        <span class="counter">
-          <%= milestonesWaitingForDeveloperAssignation.length %>
-        </span>
+                    <span class="counter">
+                        <%= project.milestones.length %>
+                    </span>
+                    <span> All Milestones </span>
+                </h3>
+                <% for (let milestone of project.milestones) { %>
+                    <%- include("./__milestoneGridItem", {project, milestone}) %>
+                <% } %>
+            </div>
+
+            <div class="milestoneGrid__col">
+                <h3 class="colHeader">
+                    <span class="counter">
+                        <%= milestonesWaitingForDeveloperAssignation.length %>
+                    </span>
                     <span> Scheduled Milestones </span>
                 </h3>
                 <% for (let milestone of milestonesWaitingForDeveloperAssignation) { %>
@@ -23,11 +35,13 @@
                 <% } %>
             </div>
 
+
+
             <div class="milestoneGrid__col">
                 <h3 class="colHeader colHeader--active">
-        <span class="counter">
-          <%= milestonesWaitingForClientAcceptSubmission.length %>
-        </span>
+                    <span class="counter">
+                       <%= milestonesWaitingForClientAcceptSubmission.length %>
+                    </span>
                     <span> In Client Review </span>
                 </h3>
                 <% for (let milestone of milestonesWaitingForClientAcceptSubmission) { %>
@@ -41,7 +55,7 @@
                     <span> Completed </span>
                 </h3>
                 <% for (let milestone of completedMilestones) { %> <%-
-                include("./__milestoneGridItem", {project, milestone}) %>
+                   include("./__milestoneGridItem", {project, milestone}) %>
                 <% } %>
             </div>
 

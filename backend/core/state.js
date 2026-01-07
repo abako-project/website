@@ -95,12 +95,16 @@ const flowProjectState = (project, scope) => {
             return ProjectState.ToBeDone;
         }
 
-        if (!true) {
+        if (true) {
             return ProjectState.ScopeValidationNeeded;
         }
 
-        if (true) {
+        if (!true) {
             return ProjectState.WaitingForTeamAssigment;
+        }
+
+        if (true) {
+            return ProjectState.ProjectInProgress;
         }
     }
 

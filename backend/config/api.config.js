@@ -61,7 +61,8 @@ module.exports = {
                 approveScope:        (id) => `/projects/${id}/approve_scope`,
                 rejectScope:         (id) => `/projects/${id}/reject_scope`,
                 coordinatorReject:   (addr) => `/projects/${addr}/coordinator_reject`,
-                completeTask:        (addr) => `/projects/${addr}/complete_task`,
+                submitTaskForReview: (id) => `/projects/${id}/submit_task_for_review`,
+                completeTask:        (id) => `/projects/${id}/complete_task`,
                 //GET Methods
                 getProjectInfo:      (id) => `/projects/${id}/get_project_info`,
                 getTeam:             (addr) => `/projects/${addr}/get_team`,

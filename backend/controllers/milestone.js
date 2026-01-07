@@ -1,4 +1,3 @@
-
 const seda = require("../services/seda");
 
 const states = require("../core/state");
@@ -16,63 +15,63 @@ const allProficiencies = require('../utils/proficiency.json');
 // GET + /developers/:developerId/milestones
 exports.milestones = async (req, res, next) => {
 
-  try {
+    try {
 
-    const clientId = req.params.clientId;
-    const client = clientId ? await seda.client(clientId) : null;
+        const clientId = req.params.clientId;
+        const client = clientId ? await seda.client(clientId) : null;
 
-    const developerId = req.params.developerId;
-    const developer = developerId ? await seda.developer(developerId) : null;
+        const developerId = req.params.developerId;
+        const developer = developerId ? await seda.developer(developerId) : null;
 
-    const projects = await seda.projectsIndex(clientId, developerId, developerId);
+        const projects = await seda.projectsIndex(clientId, developerId, developerId);
 
-    // No se puede usar el valor client en las opciones cuando
-    // hay llamadas anidadas a la funcion include de EJS.
-    res.render('dashboard/milestones', {projects, c: client, developer});
-  } catch (error) {
-    next(error);
-  }
+        // No se puede usar el valor client en las opciones cuando
+        // hay llamadas anidadas a la funcion include de EJS.
+        res.render('dashboard/milestones', {projects, c: client, developer});
+    } catch (error) {
+        next(error);
+    }
 };
 
 
 // Editar todos los milestones de un proyecto
 exports.editAll = async (req, res, next) => {
 
-  try {
-    const projectId = req.params.projectId;
-    const project = await seda.project(projectId);
+    try {
+        const projectId = req.params.projectId;
+        const project = await seda.project(projectId);
 
-    res.render('milestones/editMilestones', {project});
-  } catch (error) {
-    next(error);
-  }
+        res.render('milestones/editMilestones', {project});
+    } catch (error) {
+        next(error);
+    }
 };
 
 // Mostrar formulario de creación de un milestone
 exports.new = async (req, res, next) => {
 
-  const projectId = req.params.projectId;
-  const project = await seda.project(projectId);
+    const projectId = req.params.projectId;
+    const project = await seda.project(projectId);
 
-  const milestone = {
-    title: "",
-    description: "",
-    budget: "",
-    deliveryDate: Date.now()
-  };
+    const milestone = {
+        title: "",
+        description: "",
+        budget: "",
+        deliveryDate: Date.now()
+    };
 
-  const allDeliveryTimes = await seda.deliveryTimeIndex();
+    const allDeliveryTimes = await seda.deliveryTimeIndex();
 
 
-  res.render('milestones/newMilestone', {
-    milestone,
-    project,
-    allDeliveryTimes,
-    allRoles,
-    allProficiencies,
-    availabilityOptions,
-    allSkills,
-  });
+    res.render('milestones/newMilestone', {
+        milestone,
+        project,
+        allDeliveryTimes,
+        allRoles,
+        allProficiencies,
+        availabilityOptions,
+        allSkills,
+    });
 };
 
 
@@ -238,106 +237,105 @@ exports.update = async (req, res) => {
 // Eliminar milestone
 exports.destroy = async (req, res, next) => {
 
-  const projectId = req.params.projectId;
+    const projectId = req.params.projectId;
 
-  const milestoneId = req.params.milestoneId;
+    const milestoneId = req.params.milestoneId;
 
-  try {
+    try {
 
-      if (req.session.scope?.projectId == projectId) {
+        if (req.session.scope?.projectId == projectId) {
 
-          req.session.scope.milestones.splice(milestoneId, 1);
+            req.session.scope.milestones.splice(milestoneId, 1);
 
-      } else {
-          await seda.milestoneDestroy(projectId, milestoneId, req.session.loginUser.token);
-      }
+        } else {
+            await seda.milestoneDestroy(projectId, milestoneId, req.session.loginUser.token);
+        }
 
-    console.log('Milestone deleted successfully.');
-    res.redirect('/projects/' + projectId + '/milestones/edit');
-  } catch (error) {
-    next(error);
-  }
+        console.log('Milestone deleted successfully.');
+        res.redirect('/projects/' + projectId + '/milestones/edit');
+    } catch (error) {
+        next(error);
+    }
 };
 
 
 // Intercambiar el orden de visualizacion de 2 milestones
 exports.swapOrder = async (req, res, next) => {
 
-  try {
+    try {
 
-    await seda.milestoneSwapOrder(req.session.scope, req.params.id1, req.params.id2);
+        await seda.milestoneSwapOrder(req.session.scope, req.params.id1, req.params.id2);
 
-    console.log('Milestones swapped successfully.');
-    res.redirect('/projects/' + req.session.scope.projectId + '/milestones/edit');
-  } catch(error) {
-    next(error);
-  }
+        console.log('Milestones swapped successfully.');
+        res.redirect('/projects/' + req.session.scope.projectId + '/milestones/edit');
+    } catch (error) {
+        next(error);
+    }
 };
 
 
 // Mostrar formulario para seleccioanr el developer de un milestone
 exports.selectDeveloper = async (req, res, next) => {
 
-  const projectId = req.params.projectId;
-  const project = await seda.project(projectId);
+    const projectId = req.params.projectId;
+    const project = await seda.project(projectId);
 
-  const milestoneId = req.params.milestoneId;
-  const milestone = await seda.milestone(milestoneId);
+    const milestoneId = req.params.milestoneId;
+    const milestone = await seda.milestone(milestoneId);
 
-  try {
-    const validDevelopers = await seda.developersWithRole(milestone.roleId);
+    try {
+        const validDevelopers = await seda.developersWithRole(milestone.roleId);
 
-    res.render('milestones/selectDeveloper', {
-      project,
-      milestone,
-      validDevelopers
-    });
-  } catch (error) {
-    next(error);
-  }
+        res.render('milestones/selectDeveloper', {
+            project,
+            milestone,
+            validDevelopers
+        });
+    } catch (error) {
+        next(error);
+    }
 }
 
 // Assignar el developer de un milestone
 exports.assignDeveloper = async (req, res, next) => {
 
-  const {body} = req;
+    const {body} = req;
 
-  const projectId = req.params.projectId;
-  const milestoneId = req.params.milestoneId;
+    const projectId = req.params.projectId;
+    const milestoneId = req.params.milestoneId;
 
-  try {
-    await seda.milestoneAssignDeveloper(milestoneId, body.developerId);
+    try {
+        await seda.milestoneAssignDeveloper(milestoneId, body.developerId);
 
-    console.log('Milestone developer assigned successfully.');
+        console.log('Milestone developer assigned successfully.');
 
-    res.redirect('/projects/' + projectId);
+        res.redirect('/projects/' + projectId);
 
-  } catch (error) {
-    next(error);
-  }
+    } catch (error) {
+        next(error);
+    }
 }
 
 
 // El developer acepta un milestone
 exports.developerAcceptAssignedMilestone = async (req, res, next) => {
 
-  const {body} = req;
+    const {body} = req;
 
-  const projectId = req.params.projectId;
-  const milestoneId = req.params.milestoneId;
+    const projectId = req.params.projectId;
+    const milestoneId = req.params.milestoneId;
 
-  try {
-    await seda.milestoneDeveloperAccept(milestoneId) ;
+    try {
+        await seda.milestoneDeveloperAccept(milestoneId);
 
-    console.log('Milestone state updateded successfully.');
+        console.log('Milestone state updateded successfully.');
 
-    res.redirect('/projects/' + projectId);
+        res.redirect('/projects/' + projectId);
 
-  } catch (error) {
-    next(error);
-  }
+    } catch (error) {
+        next(error);
+    }
 };
-
 
 
 // El developer rechaza un milestone
@@ -349,7 +347,7 @@ exports.developerRejectAssignedMilestone = async (req, res, next) => {
     const milestoneId = req.params.milestoneId;
 
     try {
-        await seda.milestoneDeveloperReject(milestoneId) ;
+        await seda.milestoneDeveloperReject(milestoneId);
 
         console.log('Milestone state updateded successfully.');
 
@@ -390,9 +388,9 @@ exports.developerAcceptOrRejectAssignedMilestoneUpdate = async (req, res, next) 
         const milestoneId = req.params.milestoneId;
 
         if (accept === "accept") {
-            await seda.milestoneDeveloperAccept(milestoneId, comment) ;
+            await seda.milestoneDeveloperAccept(milestoneId, comment);
         } else if (accept === "reject") {
-            await seda.milestoneDeveloperReject(milestoneId, comment) ;
+            await seda.milestoneDeveloperReject(milestoneId, comment);
         } else {
             req.flash("error", "El developer solo puede aceptar o rechazar los milestones que le han asignado");
         }
@@ -439,7 +437,7 @@ exports.submitMilestoneAction = async (req, res, next) => {
         const milestoneId = req.params.milestoneId;
         const milestone = await seda.milestone(milestoneId);
 
-        await seda.milestoneConsultantSubmit(milestoneId, documentation, links) ;
+        await seda.milestoneConsultantSubmit(milestoneId, documentation, links);
 
         res.redirect('/projects/' + projectId);
 
@@ -481,9 +479,9 @@ exports.clientAcceptOrRejectSubmittedMilestoneUpdate = async (req, res, next) =>
         const milestoneId = req.params.milestoneId;
 
         if (accept === "accept") {
-            await seda.milestoneClientAcceptSubmission(milestoneId, comment) ;
+            await seda.milestoneClientAcceptSubmission(milestoneId, comment);
         } else if (accept === "reject") {
-            await seda.milestoneClientRejectSubmission(milestoneId, comment) ;
+            await seda.milestoneClientRejectSubmission(milestoneId, comment);
         } else {
             req.flash("error", "El cliente solo puede aceptar o rechazar los milestones que le han entregado");
         }
@@ -494,7 +492,6 @@ exports.clientAcceptOrRejectSubmittedMilestoneUpdate = async (req, res, next) =>
         next(error);
     }
 };
-
 
 
 // Muestra la pagina con la historia del milestone para que el cliente y el consultor se envien mensajes
@@ -592,7 +589,44 @@ exports.createConsultantHistoryComments = async (req, res, next) => {
 };
 
 
+// El consultor complete un milestone:
+exports.submitMilestoneForReview = async (req, res, next) => {
 
+    const projectId = req.params.projectId;
+    const milestoneId = req.params.milestoneId;
+
+    try {
+
+        await seda.milestoneConsultantSubmitForReview(projectId, milestoneId, req.session.loginUser.token);
+
+        console.log('Success: Milestone submited for review successfully.');
+
+        res.redirect('/projects/' + projectId);
+
+    } catch (error) {
+        next(error);
+    }
+};
+
+
+// El consultor complete un milestone:
+exports.completeMilestone = async (req, res, next) => {
+
+    const projectId = req.params.projectId;
+    const milestoneId = req.params.milestoneId;
+
+    try {
+
+        await seda.milestoneConsultantComplete(projectId, milestoneId, req.session.loginUser.token);
+
+        console.log('Success: Milestone completed successfully.');
+
+        res.redirect('/projects/' + projectId);
+
+    } catch (error) {
+        next(error);
+    }
+};
 
 
 

@@ -1,0 +1,16 @@
+
+<%
+// Consultor complert un milestone.
+%>
+
+<% if (locals.loginUser && locals.loginUser.developerId && locals.loginUser.developerId == project.consultantId) { %>
+
+    <% if (milestone.state === "pending") { %>
+
+        <a class="btn btn_primary"
+           href="/projects/<%= project.id %>/milestones/<%= milestone.id %>/completeMilestone?_method=PUT">
+            Complete Milestone
+        </a>
+
+    <% } %>
+<% } %>

@@ -1,0 +1,18 @@
+
+<%
+ // Pagina con el formulario para que un consultor envie (submit) un milestone
+ // para que lo revise el cliente.
+%>
+
+<% if (locals.loginUser && locals.loginUser.developerId && locals.loginUser.developerId == project.consultantId) { %>
+
+    <% if (milestone.state === "pending") { %>
+
+        <a class="btn btn_primary"
+           href="/projects/<%= project.id %>/milestones/<%= milestone.id %>/submitForReview?_method=PUT">
+            Submit for Review
+        </a>
+
+    <% } %>
+<% } %>
+

@@ -12,6 +12,7 @@ const {
 } = require('../../models');
 
 const states = require("../../core/state");
+const seda = require("./index");
 
 //-----------------------------------------------------------
 
@@ -208,7 +209,31 @@ exports.projectsIndex = async (clientId, consultantId, developerId) => {
             project.consultant = developers.find(developer => developer.id == project.consultantId);
         }
 
-        project.milestones ||= [];
+        // project.milestones ||= [];
+        if (project.creationStatus == "created") {
+            project.milestones = await seda.milestones(project.id);
+
+            /*
+            const workers = await seda.registeredWorkers();
+            require("../../helpers/logs").log(workers, "workers");
+
+            const developers = await seda.developerIndex();
+
+            for (const developer of developers) {
+                const developerWorkerAddress = await seda .getWorkerAddress(developer.email);
+                developer.developerWorkerAddress = developerWorkerAddress;
+            }
+            require("../../helpers/logs").log(developers, "developers");
+
+            for (const developer of developers) {
+                const developerMilestones = await adapterAPI.getDeveloperMilestones(developer.id);
+                require("../../helpers/logs").log(developerMilestones, "developer " + developer.id + " Milestones");
+            }
+           */
+
+        } else {
+            project.milestones = [];
+        }
 
         project.objectives = [];
         project.constraints = [];
@@ -323,18 +348,12 @@ exports.projectStart = async (projectId) => {
  * @throws {Error} Si falla la actualización del proyecto.
  */
 exports.projectCompleted = async (projectId, ratings, token) => {
-    try {
-        // Try to mark completed on backend
-        await adapterAPI.markCompleted(projectId, ratings, token);
-    } catch (error) {
-        console.warn(`[SEDA Project] Could not mark completed on backend, falling back to SQLite:`, error.message);
-        
-        // Fallback to SQLite
-        await Project.update({
-            state: states.ProjectState.Completed
-        }, {where: {id: projectId}});
-    }
+
+    await adapterAPI.markCompleted(projectId, ratings, token);
+
 };
+
+
 //-----------------------------------------------------------
 
 /**

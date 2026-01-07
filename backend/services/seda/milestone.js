@@ -453,3 +453,27 @@ exports.milestoneConsultantAddHistoryComment = async (milestoneId, comment) => {
         throw error;
     }
 };
+
+//-----------------------------------------------------------
+
+exports.milestoneConsultantSubmitForReview = async (projectId, milestoneId, token) => {
+
+    require("../../helpers/logs").log(projectId, "projectId");
+    require("../../helpers/logs").log(milestoneId, "milestoneId");
+    require("../../helpers/logs").log(token, "token");
+
+    await adapterAPI.submitTaskForReview(projectId, milestoneId, token);
+
+};
+
+//-----------------------------------------------------------
+
+exports.milestoneConsultantComplete = async (projectId, milestoneId, token) => {
+
+    require("../../helpers/logs").log(projectId, "projectId");
+    require("../../helpers/logs").log(milestoneId, "milestoneId");
+    require("../../helpers/logs").log(token, "token");
+
+    await adapterAPI.completeTask(projectId, milestoneId, token);
+
+};

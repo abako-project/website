@@ -204,6 +204,7 @@ router.put('/:projectId/milestones/swaporder/:id1(\\d+)/:id2(\\d+)',
   milestoneController.swapOrder);
 
 
+
 // Pagina para que el consultor suba un milestone para que lo revise el cliente
 router.get('/:projectId/milestones/:milestoneId(\\d+)/submitMilestone',
     permissionController.isAuthenticated,
@@ -217,8 +218,20 @@ router.put('/:projectId/milestones/:milestoneId(\\d+)/submitMilestone',
     milestoneController.submitMilestoneAction);
 
 
+// Sube un milestone para que lo revise el cliente
+router.put('/:projectId/milestones/:milestoneId(\\d+)/submitForReview',
+    permissionController.isAuthenticated,
+    permissionController.projectConsultantRequired,
+    milestoneController.submitMilestoneForReview);
+
 
 // === Milestone Developer
+
+// Asignar Team a los milestones
+router.put('/:projectId/milestones/:milestoneId/completeMilestone',
+    permissionController.isAuthenticated,
+    permissionController.projectConsultantRequired,
+    milestoneController.completeMilestone);
 
 // Asignar Team a los milestones
 router.put('/:projectId/assign_team',

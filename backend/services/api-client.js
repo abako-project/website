@@ -479,10 +479,10 @@ const adapterAPI = {
         }
     },
 
-    async completeTask(contractAddress, taskId, token) {
+    async submitTaskForReview(projectId, taskId, token) {
         try {
             const response = await adapterClient.post(
-                apiConfig.adapterAPI.endpoints.projects.completeTask(contractAddress),
+                apiConfig.adapterAPI.endpoints.projects.submitTaskForReview(projectId),
                 { task_id: taskId },
                 {
                     headers: {
@@ -492,7 +492,24 @@ const adapterAPI = {
             );
             return response.data;
         } catch (error) {
-            handleError(error, `completeTask(${contractAddress})`);
+            handleError(error, `submitTaskForReview(${projectId})`);
+        }
+    },
+
+    async completeTask(projectId, taskId, token) {
+        try {
+            const response = await adapterClient.post(
+                apiConfig.adapterAPI.endpoints.projects.completeTask(projectId),
+                { task_id: taskId },
+                {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                }
+            );
+            return response.data;
+        } catch (error) {
+            handleError(error, `completeTask(${projectId})`);
         }
     },
 
