@@ -15,19 +15,13 @@
         <!-- Dashboard -->
         <li class="todo">
 
-            <% if (locals.loginUser?.isAdmin) { %>
-                <a href="/projects">
-                    <i class="ri-layout-vertical-line"></i><span> Dashboard</span>
-                </a>
-            <% } %>
-
-            <% if (locals.loginUser.clientId) { %>
+            <% if (locals.loginUser?.clientId) { %>
                 <a href="/clients/<%= locals.loginUser.clientId %>/projects">
                     <i class="ri-layout-vertical-line"></i><span> Dashboard</span>
                 </a>
             <% } %>
 
-            <% if (locals.loginUser.developerId) { %>
+            <% if (locals.loginUser?.developerId) { %>
                 <a href="/developers/<%= locals.loginUser.developerId %>/projects">
                     <i class="ri-layout-vertical-line"></i><span> Dashboard</span>
                 </a>
@@ -37,14 +31,14 @@
 
         <!-- Profile -->
         <li class="todo">
-                <% if (locals.loginUser.developerId) { %>
+                <% if (locals.loginUser?.developerId) { %>
                     <a href="/developers/<%= loginUser.developerId %>/profile">
                         <i class="ri-user-line"></i>
                         Profile
                     </a>
                 <% } %>
 
-                <% if (locals.loginUser.clientId) { %>
+                <% if (locals.loginUser?.clientId) { %>
                     <a href="/clients/<%= loginUser.clientId %>/profile">
                         <i class="ri-user-line"></i>
                         Profile
@@ -76,23 +70,18 @@
         <% } %>
 
         <!-- Payments -->
-        <li class="todo">
-            <a href="/payments">
-                <i class="ri-bank-card-line"></i>
-                <span>Payments</span>
-            </a>
-        </li>
-        
-        <div class="divider divider-h"></div>
-
-        <!-- Projects -->
-        <% if (locals.loginUser?.isAdmin) { %>
-            <li>
-                <a href="/projects">
-                    <i class="ri-notification-2-line"></i> <span>Proyectos</span>
+        <% if (locals.loginUser) { %>
+            <li class="todo">
+                <a href="/payments">
+                    <i class="ri-bank-card-line"></i>
+                    <span>Payments</span>
                 </a>
             </li>
         <% } %>
+
+        <div class="divider divider-h"></div>
+
+        <!-- Projects -->
 
         <% if (locals.loginUser?.developerId) { %>
             <li>
@@ -116,16 +105,7 @@
     <ul class="sidebarUser">
         <li class="sidebarUser__wrapper menuBtn">
 
-            <% if (locals.loginUser.isAdmin) { %>
-                <div class="userContainer">
-                    <span class="adminDAO">
-                        <i class="ri-user-smile-line"></i>
-                        Admin
-                    </span>
-                </div>
-            <% } %>
-
-            <% if (locals.loginUser.developerId) { %>
+            <% if (locals.loginUser?.developerId) { %>
                 <div class="userContainer">
                     <span class="userContainer__avatar">
                         <img class="attachment"
@@ -139,7 +119,7 @@
                     </span>
                 </div>
             <% } %>
-            <% if (locals.loginUser.clientId) { %>
+            <% if (locals.loginUser?.clientId) { %>
                 <div class="userContainer">
                     <span class="userContainer__avatar">
                         <img class="attachment"
