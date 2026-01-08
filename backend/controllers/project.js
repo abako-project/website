@@ -295,7 +295,7 @@ exports.scopeAccept = async (req, res, next) => {
 
         console.log('Success: Scope accepted successfully.');
 
-        res.redirect('/projects/' + projectId);
+        res.redirect('/projects/' + projectId + '/escrow');
 
     } catch (error) {
         next(error);

@@ -288,8 +288,6 @@ exports.rejectProposal = async (projectId, proposalRejectionReason, token) => {
  */
 exports.projectStart = async (projectId) => {
 
-    throw new Error('Internal Error. To be removed.');
-
     /*
     await Project.update({
         state: states.ProjectState.ProjectInProgress

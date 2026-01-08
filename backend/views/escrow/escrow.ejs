@@ -1,17 +1,166 @@
+<header class="stickyHeader">
+    <%- include('../components/_cancelTopbar', {step: 1}) %>
+    <%- include('../projects/headers/_project', { project }) %>
+</header>
 
-<div id="appOneColumn">
-    <header class="stickyHeader">        
-        <%- include('../components/_cancelTopbar', {step: 1}) %>
-        <%- include('../projects/headers/_project', { project }) %>
-    </header>
-    
+<div id="appTwoColumns">
+
     <div class="mainContentContainer escrow">
-        
-        <h1>Escrow</h1>
-        
-        <%- include("../components/_pending") %>
-        
-        <%- include("../projects/actions/body/_all", {project}) %>
+
+        <section style="padding: 10px; margin: 10px;">
+            <h2>Escrow Payment</h2>
+            <p>
+                Lock your funds in order for the project coordinator to be able to set up the team and start working on
+                the
+                project. We use escrow to protect both you and the development team.
+            </p>
+
+            <section class="progressSidebar">
+
+                <div>
+                    <span class="step step--active"> $ </span>
+                    <p>
+                        <b>You fund the project</b>
+                        <br/>
+                        <small>
+                            When you agree to work with a consultant, the project fee is securely held in escrow. This
+                            shows
+                            commitment without paying upfront.
+                        </small>
+                    </p>
+                </div>
+                <div class="conector conector-v conector--active"></div>
+                <div>
+                    <span class="step step--active"> ☊ </span>
+                    <p>
+                        <b>Work gets done</b>
+                        <br/>
+                        <small>
+                            The consultant and the team start working on your project. You can communicate, give
+                            feedback, and review progress as needed.
+                        </small>
+                    </p>
+                </div>
+                <div class="conector conector-v conector--active"></div>
+                <div>
+                    <span class="step step--active"> ✓ </span>
+                    <p>
+                        <b>You approve the result</b>
+                        <br/>
+                        <small>
+                            Once you're happy with the delivery of the milestones, you release the payment from escrow.
+                            Only
+                            then
+                            do the consultant and the team get paid.
+                        </small>
+                    </p>
+                </div>
+                <div class="conector conector-v conector--active"></div>
+                <div>
+                    <span class="step step--active"> ⌂ </span>
+                    <p>
+                        <b>You're protected</b>
+                        <br/>
+                        <small>
+                            If there’s a dispute or issue, our support team can step in to help resolve it fairly before
+                            funds are
+                            released.
+                        </small>
+                    </p>
+                </div>
+
+            </section>
+        </section>
+
+        <h1>Payment Details</h1>
+        <div id="appTwoColumns">
+
+        <section style="border: 1px dotted; border-radius: 15px; padding: 10px; margin: 10px;">
+            <h2>Card</h2>
+            <ul>
+                <li>- Card Holder: name</li>
+                <li>- Card Number: number</li>
+                <li>- Expiration: MM/YY</li>
+                <li>- CVC: ***</li>
+                <li>- Country: country</li>
+            </ul>
+        </section>
+
+        <section style="border: 1px dotted; border-radius: 15px; padding: 10px; margin: 10px;">
+            <h2>Bank Transfer</h2>
+            <p>
+                In order to be able to lock funds, we require you to send the exact amount of money to our bank
+                account
+                with
+                the corresponding bank transfer description.
+            </p>
+
+            <h3>Bank details:</h3>
+            <ul>
+                <li>- [Bank account owner]</li>
+                <li>- [Bank name]</li>
+                <li>- [IBAN]</li>
+            </ul>
+
+            <h3>Bank transfer description</h3>
+            <ul>
+                [Project ID]
+            </ul>
+        </section>
+        </div>
+
+        <section style="padding: 10px; margin: 10px;">
+            <p>
+                You will be notified once we receive your funds, and your project will start.
+            </p>
+            <p>
+                If you have any question, you can contact us.
+            </p>
+            <p>
+                [Support email]
+            </p>
+        </section>
+
     </div>
-    
+
+    <div class="mainContentContainer escrow">
+
+        <section style="xborder: 1px solid; border-radius: 15px; padding: 10px; margin: 10px;">
+
+            <h1>Project Milestones</h1>
+            <p>
+                Review milestones and lock funds to start the project.
+            </p>
+
+            <% let total = 0; %>
+            <% for (const i in project.milestones) { %>
+                <% const milestone = project.milestones[i]; %>
+                <section style="border: 1px dotted; border-radius: 15px; padding: 10px; margin: 10px;">
+                    <div class="right">
+                        <%= milestone.budget %> USD
+                    </div>
+                    <small>Milestone <%= i %></small>
+                    <br/>
+                    <%= milestone.title %>
+
+                    <% total += milestone.budget; %>
+
+                </section>
+            <% } %>
+
+            <div class="right">
+                Total <%= total %> USD
+            </div>
+
+            <div class="clear"></div>
+        </section>
+
+        <section style="margin: 20px;">
+            <a class="right btn btn_primary btn_href" href="/projects/<%= project.id %>/start">
+                Lock the Funds and Start the Project
+            </a>
+        </section>
+
+    </div>
+
 </div>
