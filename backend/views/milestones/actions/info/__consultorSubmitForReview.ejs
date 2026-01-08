@@ -7,7 +7,7 @@
 
 <% if (locals.loginUser && locals.loginUser.developerId && locals.loginUser.developerId == project.consultantId) { %>
 
-    <% if (milestone.state === "pending") { %>
+    <% if (milestone.state === "task_in_progress") { %>
 
         <a class="btn btn_primary"
            href="/projects/<%= project.id %>/milestones/<%= milestone.id %>/submitForReview?_method=PUT">
