@@ -9,11 +9,11 @@ exports.milestones = async (projectId) => {
 
     const {milestones} = await adapterAPI.getAllTasks(projectId);
 
-    require("../../helpers/logs").log(milestones, "Milestones");
-
     milestones.forEach(milestone => {
         exports.cleanMilestone(milestone);
     });
+
+    require("../../helpers/logs").log(milestones, "Milestones");
 
     return milestones;
 };

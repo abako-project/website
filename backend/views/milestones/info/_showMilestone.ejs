@@ -13,6 +13,7 @@
     <%= milestone.proficiency || '' %>
 
     <%= milestone.skills?.join(", ") || '' %>
+
     <!-- <span class="bubble"> -->
         <%= milestone.neededFullTimeDeveloper ? "[Full Time]" : "" %>
     <!-- </span> -->
@@ -22,22 +23,9 @@
     <!-- <span class="bubble"> -->
         <%= milestone.neededHourlyDeveloper ? "[Hours per Week]" : ""%>
     <!-- </span> -->
-
-    <!-- Pregunta: Esto habría que quitarlo ????? -->
-    <!-- <span class="bubble">
-        <% if (milestone.neededFullTimeDeveloper) { %>
-            "[Full Time]"
-        <% } else if (milestone.neededPartTimeDeveloper) { %>
-            "[Part Time]"
-        <% } else if (milestone.neededHourlyDeveloper) { %>
-            "[Hours per Week]"
-        <% } else { %>
-            ""
-        <% } %>
-    </span> -->
 </div>
 
-<% if (locals.showDeveloper ?? true) { %>
+<% if (false && (locals.showDeveloper ?? true)) { %>
     <div class="milestone__dev">
         <%- include("./__showDeveloper", {milestone}) %>
     </div>
@@ -53,8 +41,25 @@
 
 
 <div class="milestone__state">
-    <% if (milestone.state?.toLowerCase().includes("waiting")) { %>
+    <% if (["pending"].includes(milestone.state)) { %>
         <i class="ri-timer-2-line"></i>
     <% } %>
-    <%= milestone.state %>
+
+    <small class="state state_secondary">
+        <% if (milestone.state === "pending") { %>
+            Waiting for Developer Assignation
+        <% } else if (milestone.state === "task_in_progress") { %>
+            Milestone In Progress
+        <% } else if (milestone.state === "WaitingClientAcceptSubmission") { %>
+            Waiting for Client to Accept Submission
+        <% } else if (milestone.state === "SubmissionRejectedByClient") { %>
+            Submission Rejected By Client
+        <% } else if (milestone.state === "AwaitingPayment") { %>
+            Submission Completed - Awaiting Payment
+        <% } else if (milestone.state === "Paid") { %>
+            Completed and Paid
+        <% } else { %>
+            Unknown state
+        <% } %>
+    </small>
 </div>

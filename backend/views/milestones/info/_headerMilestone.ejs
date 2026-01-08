@@ -4,8 +4,8 @@
     <small><%= milestone.budget %> USD</small>
 </span>
 <span class="subtitle delivery">
-    <small>Delivery:</small> <%= milestone.deliveryTime?.description %> 
-    <small> (<%= new Date(milestone.deliveryDate - browserTimezoneOffset + serverTimezoneOffset).toLocaleString() %>) </small>
+    <small>Delivery:</small> <%= milestone.deliveryTime %>
+    <small> (<%= milestone.deliveryDate ? new Date(milestone.deliveryDate - browserTimezoneOffset + serverTimezoneOffset).toLocaleString() : "Delivery Date" %>) </small>
 </span>
 
 

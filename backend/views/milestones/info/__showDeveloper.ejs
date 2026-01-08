@@ -8,24 +8,6 @@
              src="/developers/<%= milestone.developerId %>/attachment">
 
         <%= milestone.developer?.name ?? "Anonymous" %>
-
-        <small class="state state_secondary">
-            <% if (milestone.state === "WaitingDeveloperAcceptAssignation") { %>
-                Waiting for Developer Accept Assignation
-            <% } else if (milestone.state === "MilestoneInProgress") { %>
-                Milestone In Progress
-            <% } else if (milestone.state === "WaitingClientAcceptSubmission") { %>
-                Waiting for Client to Accept Submission
-            <% } else if (milestone.state === "SubmissionRejectedByClient") { %>
-                Submission Rejected By Client
-            <% } else if (milestone.state === "AwaitingPayment") { %>
-                Submission Completed - Awaiting Payment
-            <% } else if (milestone.state === "Paid") { %>
-                Completed and Paid
-            <% } else { %>
-                Unknown state
-            <% } %>
-            </small>
     <% } %>
 
 </div>

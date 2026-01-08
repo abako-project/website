@@ -1,18 +1,3 @@
-// Constantes
-//
-
-/*
-    VirtoProjectState: {
-        Deployed: "deployed",
-        Created: "Created",                    // Initial state when project is created
-        CoordinatorAssigned: "CoordinatorAssigned",        // Coordinator has been assigned to the project
-        TeamAssigned: "TeamAssigned",               // Team members have been assigned
-        ScopeProposalInProgress: "ScopeProposalInProgress",    // Coordinator is actively proposing scope revisions
-        ScopePendingClientApproval: "ScopePendingClientApproval", // Tasks proposed and awaiting client approval
-        ScopeAccepted: "ScopeAccepted",              // Client has accepted the scope and made advance payment
-        Completed: "Completed",                  // All tasks are completed and project is finalized
-    }
-*/
 
 
 const ProjectState = {
@@ -136,6 +121,9 @@ const MilestoneState = {
     // El milestone ya se ha pagado al desarrollador.
     Paid: "Paid",
 };
+
+
+
 
 exports.ProjectState = ProjectState;
 exports.MilestoneState = MilestoneState;
