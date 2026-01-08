@@ -29,9 +29,7 @@ exports.loginCreate = async (req, res, next) => {
     const {email, token} = req.body;
 
     try {
-        let rrrr = await seda.clientFindByEmail(email);
-        console.log(">>>>>>>>>>>>>>>>>>", rrrr);
-        let {id: clientId, name} = rrrr;
+        let {id: clientId, name} = await seda.clientFindByEmail(email);
 
         // Guardar la zona horaria del navegador y del servidor en la session
         let browserTimezoneOffset = Number(req.query.browserTimezoneOffset ?? 0);
