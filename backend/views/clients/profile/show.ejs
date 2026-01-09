@@ -26,7 +26,7 @@
                 <div class="profileCard__header">
                     <div class="profileCard__titles">
                         <h2 class="profileCard__title"> Client </h2>
-                        <span class="profileCard__subtitle"><%= c.company || '—' %> <%= c.department || '—' %></span>
+                        <span class="profileCard__subtitle"><%= c.company || 'company' %> / <%= c.department || 'No Department' %></span>
                     </div>
                     <a href="/clients/<%= loginUser.clientId %>/profile/edit" class="btn btn__link">
                         <i class="ri-user-line"></i>Edit Profile
@@ -36,7 +36,7 @@
 
                 <div class="profileCard__section">
                     <h3>Description</h3>
-                    <p><%= c.description || 'No description available.' %></p>
+                    <p><%= c.description || 'description' %></p>
                 </div>
 
                 <div class="profileCard__section">
@@ -44,16 +44,16 @@
 
 
                         <li><i class="ri-translate-2"></i>
-                             <%= languageNames.length ? languageNames.join(', ') : 'No languages' %>
+                             <%= languageNames.length ? languageNames.join(', ') : 'languages' %>
                         </li>
 
-                        <li><i class="ri-map-pin-line"></i> <%= c.location || 'No location' %></li>
+                        <li><i class="ri-map-pin-line"></i> <%= c.location || 'location' %></li>
 
 
-                        <li><i class="ri-earth-line"></i> <%= c.website || 'No website' %></li>
+                        <li><i class="ri-earth-line"></i> <%= c.website || 'website' %></li>
 
 
-                        <li><i class="ri-mail-line"></i> <%= c.email || 'No email' %></li>
+                        <li><i class="ri-mail-line"></i> <%= c.email || 'email' %></li>
 
                     </ul>
                 </div>

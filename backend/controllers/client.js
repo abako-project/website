@@ -62,14 +62,14 @@ exports.update = async (req, res, next) => {
 
     const data = {
         name: body.name || 'name',
-        company: body.company || '—',
-        department: body.department || '—',
-        website: body.website || 'No website',
-        description: body.description || 'No description available.',
-        location: body.location || 'No location',
+        company: body.company || 'company',
+        department: body.department || 'department',
+        website: body.website || 'website',
+        description: body.description || 'description',
+        location: body.location || 'location',
     };
 
-    data.languages = Array.isArray(body.languages) ? body.languages : body.languages ? [body.languages] : [];
+    data.languages = Array.isArray(body.languages) ? body.languages : body.languages ? [body.languages] : ["none"];
     const image = req.file?.buffer || null;
 
     try {

@@ -113,7 +113,7 @@ const adapterAPI = {
         }
     },
 
-    async createClient(email, name, company, department, website, description, location, image) {
+    async createClient(email, name, company, department, website, description, location, languages, image) {
         try {
             const formData = new FormData();
             formData.append("email", email);
@@ -123,6 +123,7 @@ const adapterAPI = {
             formData.append("website", website || "website");
             formData.append("description", description || "description");
             formData.append("location", location || "location");
+            if (languages) formData.append("languages", languages);
             if (image) formData.append("image", image);
 
             const response = await adapterClient.post(apiConfig.adapterAPI.endpoints.clients.create, formData, {

@@ -84,9 +84,9 @@ exports.client = async clientId => {
 
     const {client} = await adapterAPI.getClient(clientId);
 
-    //  require("../../helpers/logs").log(client,"Seda Client");
-
     exports.cleanClient(client);
+
+    require("../../helpers/logs").log(client,"Seda Client");
 
     return client;
 };

@@ -27,42 +27,40 @@
 
                     <div class="profileCard__section">
                         <h3>Name:</h3>
-                        <input type="text" id="name" name="name" value="<%= client.name %>" placeholder="name" autocomplete="off" class="smallInput"/>
+                        <input type="text" id="name" name="name" value="<%= client.name %>" placeholder="name" autocomplete="off" class="smallInput" required />
                     </div>
 
                     <div class="profileCard__section">
                         <h3>Description:</h3>
-                        <textarea id="description" name="description"><%= client.description %></textarea>
+                        <textarea id="description" name="description" required ><%= client.description %></textarea>
                     </div>
 
                     <div class="profileCard__section">
                         <h3>Company:</h3>
-                        <input type="text" id="company" name="company" value="<%= client.company %>" placeholder="Company" autocomplete="off" class="smallInput"/>
+                        <input type="text" id="company" name="company" value="<%= client.company %>" placeholder="Company" autocomplete="off" class="smallInput" required />
                     </div>
                     
                     <div class="profileCard__section">
                         <h3>Department:</h3>
-                        <input type="text" id="department" name="department" value="<%= client.department %>" placeholder="Department" autocomplete="off" class="smallInput"/>
+                        <input type="text" id="department" name="department" value="<%= client.department %>" placeholder="Department" autocomplete="off" class="smallInput" required />
                     </div>
 
                     <div class="profileCard__section">
                         <h3>Web site:</h3>
-                        <input type="text" id="website" name="website" value="<%= client.website %>"
-                            placeholder="Web Site" autocomplete="off"/>
+                        <input type="text" id="website" name="website" value="<%= client.website %>" placeholder="Web Site" autocomplete="off" required />
                     </div>
 
                      <div class="profileCard__section">
                         <h3>Location:</h3>
-                        <input type="text" id="location" name="location" value="<%= client.location %>" placeholder="Location"
-                            autocomplete="off"/>
+                        <input type="text" id="location" name="location" value="<%= client.location %>" placeholder="Location" autocomplete="off" required />
                     </div>
 
                     <div class="profileCard__section">
                         <h3>Languages:</h3>
                         <select id="clientLanguages" name="languages[]" multiple size="6">
-                            <% (allLanguages || []).forEach(lang => { 
-                                const selected = (client.languages || []).some(i => i.id === lang.id); %>
-                            <option value="<%= lang.id %>" <%= selected ? "selected" : "" %>>
+                            <% allLanguages.forEach(lang => {
+                                const selected = (client.languages || []).includes(lang.code); %>
+                            <option value="<%= lang.code %>" <%= selected ? "selected" : "" %>>
                                 <%= lang.code %> - <%= lang.name %>
                             </option>
                             <% }) %>
