@@ -84,6 +84,8 @@ exports.developer = async developerId => {
 
     exports.cleanDeveloper(developer);
 
+    require("../../helpers/logs").log(developer, ">>>>> developer <<<<<<");
+
     return developer;
 };
 

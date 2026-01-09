@@ -229,7 +229,7 @@ const adapterAPI = {
         }
     },
 
-    async createDeveloper(email, name, githubUsername, portfolioUrl,  image) {
+    async createDeveloper(email, name, githubUsername, portfolioUrl, image) {
         try {
             const formData = new FormData();
             formData.append("email", email);
@@ -708,11 +708,16 @@ const adapterAPI = {
         }
     },
 
-    async setAvailability(contractAddress, availability, token) {
+    async setAvailability(contractAddress, availability, weeklyHours, token) {
         try {
             const response = await adapterClient.post(
                 apiConfig.adapterAPI.endpoints.calendar.setAvailability(contractAddress),
-                { availability: {type: availability} },
+                {
+                    availability: {
+                        type: availability,
+                        value: weeklyHours
+                    }
+                },
                 {
                     headers: {
                         'Authorization': `Bearer ${token}`

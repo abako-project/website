@@ -85,51 +85,44 @@ exports.show = async (req, res, next) => {
 
 // GET /developers/:developerId/profile/edit
 exports.edit = async (req, res, next) => {
-  try {
     const {developer} = req.load;
 
     const allLanguages = Object.entries(languagesMap).map(([code, name]) => ({code,name}));
 
     res.render('developers/profile/edit', {developer, allLanguages, allRoles, availabilityOptions, allSkills, allProficiencies});
-  } catch (err) {
-    next(err);
-  }
 };
 
 
 // PUT /developers/:developerId
 exports.update = async (req, res, next) => {
-  const developerId = req.params.developerId;
-  const {developer} = req.load;
-  const body = req.body;
-
-  console.log(">>>> BODY >>>>>>", body);
-
+    const developerId = req.params.developerId;
+    const {developer} = req.load;
+    const body = req.body;
 
     // FALTA POR REFINAR CON LO QUE SOPORTE EL BACK
     let data = {
-        name: body.name,
-        githubUsername: body.githubUsername,
-        portfolioUrl: body.portfolioUrl,
-        bio: body.bio,
-        background: body.background,
+        name: body.name || 'name',
+        githubUsername: body.githubUsername || 'githubUsername',
+        portfolioUrl: body.portfolioUrl || 'portfolioUrl',
+        bio: body.bio || 'bio',
+        background: body.background || 'background',
         role: body.role || null,
-        location: body.location,
+        location: body.location || 'location',
         proficiency: body.proficiency || null,
-  };
+    };
 
     // data.skills = Array.isArray(body.skills) ? body.skills : body.skills ? [body.skills] : [];
     data.skills = Array.isArray(body.skills) ? body.skills : body.skills ? [body.skills] : ["none"];
     // data.languages = Array.isArray(body.languages) ? body.languages : body.languages ? [body.languages] : [];
     data.languages = Array.isArray(body.languages) ? body.languages : body.languages ? [body.languages] : ["none"];
 
-  if (!body.isAvailableForHire) {
-      data.availability = "NotAvailable";
+    if (!body.isAvailableForHire) {
+        data.availability = "NotAvailable";
     } else {
-      data.availability = body.availability;
-      if (body.availability === "WeeklyHours") {
-        data.availableHoursPerWeek = parseInt(body.availableHoursPerWeek || "0");
-      }
+        data.availability = body.availability;
+        if (body.availability === "WeeklyHours") {
+            data.availableHoursPerWeek = parseInt(body.availableHoursPerWeek || "0");
+        }
     }
 
     const image = req.file?.buffer || null;
@@ -140,7 +133,7 @@ exports.update = async (req, res, next) => {
         await seda.registerWorker(developer.email, req.session.loginUser.token);
 
         // Configurar disponibilidad:
-        await seda.setAvailability(data.availability, req.session.loginUser.token);
+        await seda.setAvailability(data.availability, data.availableHoursPerWeek, req.session.loginUser.token);
 
         // Actualizar perfil:
         await seda.developerUpdate(developerId, data, image);

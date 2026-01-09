@@ -26,17 +26,17 @@
 
                     <div class="profileCard__section">
                         <h3>Name:</h3>
-                        <input type="text" id="name" name="name" value="<%= developer.name %>" placeholder="name" autocomplete="off" class="smallInput"/>
+                        <input type="text" id="name" name="name" value="<%= developer.name %>" placeholder="name" autocomplete="off" class="smallInput" required />
                     </div>
 
                     <div class="profileCard__section">
                         <h3>Bio:</h3>
-                        <textarea id="bio" name="bio"><%= developer.bio %></textarea>
+                        <textarea id="bio" name="bio" required ><%= developer.bio %></textarea>
                     </div>
 
                     <div class="profileCard__section">
                         <h3>Background:</h3>
-                        <textarea id="background" name="background"><%= developer.background %></textarea>
+                        <textarea id="background" name="background" required ><%= developer.background %></textarea>
                     </div>
 
                     <div class="profileCard__section">
@@ -66,19 +66,19 @@
                     <div class="profileCard__section">
                         <h3>Github Username:</h3>
                         <input type="text" id="githubUsername" name="githubUsername" value="<%= developer.githubUsername %>"
-                            placeholder="Github Username" autocomplete="off"/>
+                            placeholder="Github Username" autocomplete="off" required />
                     </div>
 
                     <div class="profileCard__section">
                         <h3>Portfolio Url:</h3>
                         <input type="text" id="portfolioUrl" name="portfolioUrl" value="<%= developer.portfolioUrl %>"
-                            placeholder="Portfolio Url" autocomplete="off"/>
+                            placeholder="Portfolio Url" autocomplete="off" required />
                     </div>
 
                     <div class="profileCard__section">
                         <h3>Location:</h3>
                         <input type="text" id="location" name="location" value="<%= developer.location %>" placeholder="Location"
-                            autocomplete="off"/>
+                            autocomplete="off" required />
                     </div>
 
                     <div class="profileCard__section">

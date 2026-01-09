@@ -130,9 +130,9 @@ exports.registerWorkers = async (workers, token) => {
  * @param {string} token - Auth token.
  * @returns {Promise<Object>} Response del backend.
  */
-exports.setAvailability = async (availability, token) => {
+exports.setAvailability = async (availability, weeklyHours, token) => {
     try {
-        return await adapterAPI.setAvailability(calendarAddress, availability, token);
+        return await adapterAPI.setAvailability(calendarAddress, availability, weeklyHours, token);
     } catch (error) {
         console.error(`[SEDA Calendar] Error setting availability:`, error.message);
         throw error;
