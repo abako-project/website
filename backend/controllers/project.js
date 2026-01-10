@@ -37,9 +37,9 @@ exports.newProposal = async (req, res, next) => {
       summary: "",
       description: "",
       url: "",
-      projectTypeId: undefined,
-      budgetId: undefined,
-      deliveryTimeId: 4,
+      projectType: 0,
+      budget: 0,
+      deliveryTime: 3,
       deliveryDate: Date.now()
     };
 
@@ -63,7 +63,7 @@ exports.createProposal = async (req, res, next) => {
 
   let {title, summary, description, url, projectType, budget, deliveryTime, deliveryDate} = req.body;
 
-  deliveryDate = new Date(deliveryDate).valueOf() + req.session.browserTimezoneOffset - req.session.serverTimezoneOffset;
+    deliveryDate = new Date(deliveryDate).valueOf() + req.session.browserTimezoneOffset - req.session.serverTimezoneOffset;
 
   const clientId = req.session.loginUser?.clientId;
 
@@ -126,8 +126,15 @@ exports.show = async (req, res, next) => {
 
    // require("../helpers/logs").log(project, "Project PUNTO 2");
 
+    const allBudgets = await seda.budgetIndex();
+    const allDeliveryTimes = await seda.deliveryTimeIndex();
+    const allProjectTypes = await seda.projectTypeIndex();
+
     res.render('projects/showProject', {
         project,
+        allBudgets,
+        allDeliveryTimes,
+        allProjectTypes
     });
 };
 
@@ -177,7 +184,7 @@ exports.updateProposal = async (req, res, next) => {
     summary: body.summary,
     description: body.description,
     url: body.url,
-    projectType: body.projectType || undefined,
+    projectType: body.projectType,
     budget: body.budget,
     deliveryTime: body.deliveryTime,
     deliveryDate: new Date(body.deliveryDate).valueOf() + req.session.browserTimezoneOffset - req.session.serverTimezoneOffset

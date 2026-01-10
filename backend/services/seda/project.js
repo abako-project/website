@@ -20,7 +20,6 @@ exports.project = async projectId => {
 
     let project = await adapterAPI.getProjectInfo(projectId);
 
-
     const clients = await seda.clientIndex();
     const developers = await seda.developerIndex();
 
@@ -33,7 +32,7 @@ exports.project = async projectId => {
 
     // Modificar propiedades:
 
-    project.deliveryDate = new Date(project.deliveryDate);
+    project.deliveryDate = project.deliveryDate ? new Date(project.deliveryDate) : Date.now();
 
     // Crear nuevas propiedades:
 
@@ -189,7 +188,7 @@ exports.projectsIndex = async (clientId, consultantId, developerId) => {
 
         // Modificar propiedades:
 
-        project.deliveryDate = new Date(project.deliveryDate);
+        project.deliveryDate = project.deliveryDate ? new Date(project.deliveryDate) : Date.now();
 
         // Crear nuevas propiedades:
 
