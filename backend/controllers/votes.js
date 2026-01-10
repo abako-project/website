@@ -10,8 +10,8 @@ exports.viewVotes = async (req, res, next) => {
         if (!project) throw new Error('Project not found.');
         
         //SOLO VOTA EL CONSULTOR  
-        let members = await seda.developers(projectId); 
-       
+        let members = await seda.developers(projectId);
+
         const voteData = {
             project,
             members: await Promise.all(members.map(async member => {
@@ -53,7 +53,7 @@ exports.submitVotes = async (req, res, next) => {
         const rating = [];
 
         for (let i = 0; i < userIds.length; i++) {
-            const toUserId = parseInt(userIds[i]);
+            const toUserId = userIds[i];
             const score = parseFloat(scores[i]);
             rating.push([toUserId, score]);
         }

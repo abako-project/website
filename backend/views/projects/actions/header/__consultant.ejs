@@ -11,7 +11,7 @@ if (locals.loginUser.developerId && locals.loginUser.developerId == project.cons
         });
     }
 
-    if (locals.flowProjectState(project, locals.scope) === locals.ProjectState.ProjectInProgress && project.milestones.every(milestone => milestone.state === "pending")) { // "Paid"
+    if (locals.flowProjectState(project, locals.scope) === locals.ProjectState.ProjectInProgress && project.milestones.every(milestone => milestone.state === "completed")) {
         actions.push({
             title: "Evaluate Teammates",
             callback: "/projects/" + project.id + "/votations",

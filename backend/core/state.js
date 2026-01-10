@@ -34,7 +34,7 @@ const ProjectState = {
     ProjectInProgress: "ProjectInProgress", // Empieza a contar el timepo de desarrollo.
 
  //   DisputeOpen: "disputeOpen", // por la entrega o el scope
- //   Completed: "completed", // entregado, validado y pagado
+   Completed: "completed", // entregado, aceptado, votado y pagado
  //   Cancelled: "cancelled", // cancelado por el cliente
 
     //  TeamAssignmentPending: "TeamAssignmentPending", // La DAO/Admin esta asignando el team de desarrolladores
@@ -91,6 +91,10 @@ const flowProjectState = (project, scope) => {
 
     if (project.state === "team_assigned") { // Valor de estodo no definitivo
         return ProjectState.ProjectInProgress;
+    }
+
+    if (project.state === "completed") { // Valor de estodo no definitivo
+        return ProjectState.Completed;
     }
 
     return ProjectState.Invalid;
