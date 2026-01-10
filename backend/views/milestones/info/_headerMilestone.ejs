@@ -1,11 +1,18 @@
 <h5 class="title"><%= milestone.title %></h5>
 
 <span class="subtitle budget">
-    <small><%= milestone.budget %> USD</small>
+    <small>[<%= milestone.budget %> USD]</small>
 </span>
+
 <span class="subtitle delivery">
-    <small>Delivery:</small> <%= milestone.deliveryTime %>
-    <small> (<%= milestone.deliveryDate ? new Date(milestone.deliveryDate - browserTimezoneOffset + serverTimezoneOffset).toLocaleString() : "Delivery Date" %>) </small>
+    <small>
+        Delivery:
+        <%= locals.allDeliveryTimes[milestone.deliveryTime]?.description ?? "Delivery Time Pendiente" %>
+
+        <% if (milestone.deliveryTime == 3) { %>
+            (<%= milestone.deliveryDate ? new Date(milestone.deliveryDate - browserTimezoneOffset + serverTimezoneOffset).toLocaleString() : "Delivery Date" %>)
+        <% } %>
+    </small>
 </span>
 
 

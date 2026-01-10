@@ -1,5 +1,5 @@
 <div class="milestone__header">
-    <%- include("./_headerMilestone", {milestone}) %>
+    <%- include("./_headerMilestone", {milestone, allDeliveryTimes}) %>
 </div>
 
 <div class="milestone__description">
@@ -10,7 +10,7 @@
 <div class="milestone__role">
     <%= milestone.role || '' %>
 
-    <%= milestone.proficiency || '' %>
+    (<%= milestone.proficiency || '' %>)
 
     <%= milestone.skills?.join(", ") || '' %>
 

@@ -18,7 +18,7 @@
     
     <div class="form-group description">
         <label for="description">Descripción:</label>
-        <textarea id="description" name="description"><%= milestone.description %></textarea>
+        <textarea id="description" name="description" placeholder="Description" required><%= milestone.description %></textarea>
     </div>
     
     
@@ -26,7 +26,7 @@
         <label for="budget">Budget (USD):</label>
         <input type="number" step="0.01" id="budget"
                value="<%= milestone.budget %>"
-               name="budget" placeholder="budget" autocomplete="off">
+               name="budget" placeholder="budget" autocomplete="off" required>
     </div>
     
     
@@ -39,6 +39,7 @@
                        id="deliveryTimeId"
                        name="deliveryTime"
                        value="<%= deliveryTime.id ?? 0 %>"
+                       required
                         <%= milestone.deliveryTime == deliveryTime.id && "checked" %>
                 />
                 <b><%= deliveryTime.description %></b>
@@ -61,7 +62,7 @@
 <div class="formMilestone__dev">
     <div class="form-group role">
         <label for="role">Role:</label>
-        <select id="role" name="role">
+        <select id="role" name="role" required>
             <option value="">None</option>
             <% allRoles.forEach(role => { %>
                 <option value="<%= role %>"
@@ -74,7 +75,7 @@
     
     <div class="form-group proficiency">
         <label for="proficiency">Proficiency:</label>
-        <select id="proficiency" name="proficiency">
+        <select id="proficiency" name="proficiency" required>
             <option value="">None</option>
             <% allProficiencies.forEach(prof => { %>
                 <option value="<%= prof %>"
@@ -88,10 +89,11 @@
     <div class="form-group">
         <label for="availability">Availability:</label>
 
-        <select id="availability" name="availability">
+        <select id="availability" name="availability" required>
+            <option value="">None</option>
             <% availabilityOptions.forEach(option => { %>
                 <option value="<%= option %>"
-                        <%= milestone.availability === option ? "selected" : "" %>>
+                        <%= milestone.availability === option && "selected" %>>
                     <%= option %>
                 </option>
             <% }) %>

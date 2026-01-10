@@ -21,7 +21,7 @@
 
             <div class="editMilestones__item">
                 <div class="milestone">
-                    <%- include("./info/_showMilestone", {milestone}) %>
+                    <%- include("./info/_showMilestone", {milestone, allDeliveryTimes}) %>
                 </div>
 
                 <div class="buttonContainer">
@@ -68,7 +68,7 @@
         <% } %>
 
         <% if (locals.loginUser && locals.loginUser.developerId == project.consultantId) { %>
-            <a class=" btn btn_outline"
+            <a class="right btn btn_outline"
             href="/projects/<%= project.id %>/milestones/new">
                 Add New Milestone
             </a>

@@ -1,5 +1,6 @@
 function submitFormById(formId) {
-    showWaitModal();
-    document.getElementById(formId)?.requestSubmit();
+    const formElement = document.getElementById(formId);
+    formElement?.addEventListener("submit", showWaitModal)
+    formElement?.requestSubmit();
 }
 

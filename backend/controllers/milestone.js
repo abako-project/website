@@ -41,7 +41,12 @@ exports.editAll = async (req, res, next) => {
         const projectId = req.params.projectId;
         const project = await seda.project(projectId);
 
-        res.render('milestones/editMilestones', {project});
+        const allDeliveryTimes = await seda.deliveryTimeIndex();
+
+        res.render('milestones/editMilestones', {
+            project,
+            allDeliveryTimes
+        });
     } catch (error) {
         next(error);
     }
@@ -88,7 +93,7 @@ exports.create = async (req, res, next) => {
 
     deliveryDate = new Date(deliveryDate).valueOf() + req.session.browserTimezoneOffset - req.session.serverTimezoneOffset;
 
-    budget || 0;
+    budget ||= null;
     role ||= null;
     proficiency ||= null;
     skills = Array.isArray(skills) ? skills : skills ? [skills] : ["none"];
