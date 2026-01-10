@@ -1,13 +1,11 @@
 
 <%
- // Pagina con el formulario para que un consultor envie (submit) un milestone
- // para que lo revise el cliente.
- // Falta actualizar cuando el backend ponga bien el estado del milestone.
+ // Accion para que el consultor envie (submit) un milestone para que lo revise el cliente.
 %>
 
 <% if (locals.loginUser && locals.loginUser.developerId && locals.loginUser.developerId == project.consultantId) { %>
 
-    <% if (milestone.state === "task_in_progress") { %>
+        <% if (locals.flowMilestoneState(milestone) === locals.MilestoneState.MilestoneInProgress) { %>
 
         <a class="btn btn_primary"
            href="/projects/<%= project.id %>/milestones/<%= milestone.id %>/submitForReview?_method=PUT">
@@ -15,5 +13,6 @@
         </a>
 
     <% } %>
+
 <% } %>
 

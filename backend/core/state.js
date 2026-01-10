@@ -14,7 +14,7 @@ const ProjectState = {
     ProposalRejected: "ProposalRejected", // rechazado por el consultor
 
     // El consultor aprueba la propuesta del cliente.
-    ProposalApproved: "ProposalApproved", // aprobado por el consultor
+  //  ProposalApproved: "ProposalApproved", // aprobado por el consultor
 
     // El consultor esta creando los milestones
     ScopingInProgress: "ScopingInProgress", // consultor definiendo el scope
@@ -26,20 +26,20 @@ const ProjectState = {
     WaitingForTeamAssigment: "WaitingForTeamAssigment",
 
     // El cliente ha aceptado el Scope propuesto por el consultor y ahora tiene que hacer el Escrow.
-    EscrowFundingNeeded: "EscrowFundingNeeded", // proyecto aprobado pera faltan los fondos del cliente
+ //   EscrowFundingNeeded: "EscrowFundingNeeded", // proyecto aprobado pera faltan los fondos del cliente
 
     // Despues de proporcionar los fondos, el proyecto empieza.
     // Cada uno de los milestones evoluciona con su propio estado.
     // Cada milestone empieza en el estado WaitingDeveloperAssignation esperando a que la DAO le asigne un developer.
     ProjectInProgress: "ProjectInProgress", // Empieza a contar el timepo de desarrollo.
 
-    DisputeOpen: "disputeOpen", // por la entrega o el scope
-    Completed: "completed", // entregado, validado y pagado
-    Cancelled: "cancelled", // cancelado por el cliente
+ //   DisputeOpen: "disputeOpen", // por la entrega o el scope
+ //   Completed: "completed", // entregado, validado y pagado
+ //   Cancelled: "cancelled", // cancelado por el cliente
 
     //  TeamAssignmentPending: "TeamAssignmentPending", // La DAO/Admin esta asignando el team de desarrolladores
 
-    ToBeDone: "ToBeDone",  // Estado que marca algo pendiente de desarrollar
+ //   ToBeDone: "ToBeDone",  // Estado que marca algo pendiente de desarrollar
 
 
     Invalid: "Invalid"  // Estado invalido o que no existe
@@ -48,7 +48,7 @@ const ProjectState = {
 
 // Devuelve el estado en el que se encuentra el flujo del proyecto.
 // Parametros:
-//   project: objeto con los dtos del proyecto.
+//   project: objeto con los datos del proyecto.
 //   sessionScope: El objeto scope que guarda el consultor en req.session para crear el scope.
 //                 No pasarlo como parametro cuando no exista.
 const flowProjectState = (project, scope) => {
@@ -93,17 +93,22 @@ const flowProjectState = (project, scope) => {
         return ProjectState.ProjectInProgress;
     }
 
-    return exports.ProjectState.Invalid
+    return ProjectState.Invalid;
 };
 
 
 const MilestoneState = {
 
+    // El consultor esta creando los milestones y aun estan almacenados en req.session.
+    CreatingMilestone: "CreatingMilestone",
+
     // La DAO todavia no ha asignado un developer al milestone.
+    // El milestone ya se ha creado, pero el scope aun no ha sido aceptado por el cliente,
+    // o ha sido aceptado, pero aun sigue sin developer.
     WaitingDeveloperAssignation: "WaitingDeveloperAssignation",
 
     // Esperando a que el developer acepte el milestone, o lo rechace
-    WaitingDeveloperAcceptAssignation: "WaitingDeveloperAcceptAssignation",
+  //  WaitingDeveloperAcceptAssignation: "WaitingDeveloperAcceptAssignation",
 
     // El desarrollador ha aceptado el milestone y empieza el trabajo.
     MilestoneInProgress: "MilestoneInProgress",
@@ -115,17 +120,62 @@ const MilestoneState = {
     SubmissionRejectedByClient: "SubmissionRejectedByClient",
 
     // El trabajo del milestone se ha completado (y ha sido aceptado por el cliente)
+    MilestoneCompleted: "MilestoneCompleted",
+
+
+
     // Ahora hay que pagar al desarrollador.
     AwaitingPayment: "AwaitingPayment",
 
     // El milestone ya se ha pagado al desarrollador.
     Paid: "Paid",
+
+    Invalid: "Invalid"  // Estado invalido o que no existe
 };
 
 
+// Devuelve el estado en el que se encuentra el flujo del milestone.
+// Parametros:
+//   milestone: objeto con los datos del milestone.
+const flowMilestoneState = (milestone) => {
+
+    if (typeof milestone.state === "undefined") {
+        return MilestoneState.CreatingMilestone;
+    }
+
+    if (milestone.state === "pending") {
+        return MilestoneState.WaitingDeveloperAssignation;
+    }
+
+    if (milestone.state === "task_in_progress") {
+        return MilestoneState.MilestoneInProgress;
+    }
+
+    if (milestone.state === "in_review") {
+        return MilestoneState.WaitingClientAcceptSubmission;
+    }
+
+    if (milestone.state === "completed") {
+        return MilestoneState.MilestoneCompleted;
+    }
+
+    if (milestone.state === "rejected") {
+        return MilestoneState.SubmissionRejectedByClient;
+    }
+
+    if (milestone.state === "ALGO") {
+        return MilestoneState.AwaitingPayment;
+    }
+
+    if (milestone.state === "ALGO") {
+        return MilestoneState.Paid;
+    }
+    return MilestoneState.Invalid;
+};
 
 
 exports.ProjectState = ProjectState;
 exports.MilestoneState = MilestoneState;
 
 exports.flowProjectState = flowProjectState;
+exports.flowMilestoneState = flowMilestoneState;

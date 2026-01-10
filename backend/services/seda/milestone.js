@@ -43,8 +43,8 @@ exports.cleanMilestone = async milestone => {
  * @returns {Promise<Object>} Objeto JSON con los datos del milestone.
  * @throws {Error} Si no se encuentra el milestone.
  */
-exports.milestone = async (projectId, milestoneId, token) => {
-    const response = await adapterAPI.getMilestone(projectId, milestoneId, token);
+exports.milestone = async (projectId, milestoneId) => {
+    const response = await adapterAPI.getTask(projectId, milestoneId);
     return response.milestone || response;
 };
 
@@ -225,6 +225,8 @@ exports.milestoneDeveloperReject = async (milestoneId) => {
 
 //-----------------------------------------------------------
 
+// Version BBDD
+
 exports.milestoneConsultantSubmit = async (milestoneId, documentation, links) => {
 
     throw new Error('Internal Error. To be adapted.');
@@ -244,33 +246,26 @@ exports.milestoneConsultantSubmit = async (milestoneId, documentation, links) =>
 
 //-----------------------------------------------------------
 
-exports.milestoneClientAcceptSubmission = async (milestoneId, comment) => {
+exports.milestoneConsultantSubmitForReview = async (projectId, milestoneId, token) => {
 
-    throw new Error('Internal Error. To be adapted.');
+    await adapterAPI.submitTaskForReview(projectId, milestoneId, token);
 
-    /*
-    const milestone = await Milestone.findByPk(milestoneId);
-
-    await milestone?.update({state: states.MilestoneState.AwaitingPayment});
-
-     */
 };
 
 //-----------------------------------------------------------
 
-exports.milestoneClientRejectSubmission = async (milestoneId, comment) => {
+exports.milestoneClientAcceptSubmission = async (projectId, milestoneId, comment, token) => {
 
-    throw new Error('Internal Error. To be adapted.');
+    await adapterAPI.completeTask(projectId, milestoneId, token);
 
-    /*
-    let milestone = await Milestone.findByPk(milestoneId);
+};
 
-    // Borrar asignacion actual:
-    milestone = await milestone.update({
-        state: states.MilestoneState.SubmissionRejectedByClient
-    });
+//-----------------------------------------------------------
 
-     */
+exports.milestoneClientRejectSubmission = async (projectId, milestoneId, comment, token) => {
+
+    await adapterAPI.rejectTask(projectId, milestoneId, comment, token);
+
 };
 
 //-----------------------------------------------------------
@@ -345,26 +340,4 @@ exports.milestoneConsultantAddHistoryComment = async (milestoneId, comment) => {
     */
 };
 
-//-----------------------------------------------------------
 
-exports.milestoneConsultantSubmitForReview = async (projectId, milestoneId, token) => {
-
-    require("../../helpers/logs").log(projectId, "projectId");
-    require("../../helpers/logs").log(milestoneId, "milestoneId");
-    require("../../helpers/logs").log(token, "token");
-
-    await adapterAPI.submitTaskForReview(projectId, milestoneId, token);
-
-};
-
-//-----------------------------------------------------------
-
-exports.milestoneConsultantComplete = async (projectId, milestoneId, token) => {
-
-    require("../../helpers/logs").log(projectId, "projectId");
-    require("../../helpers/logs").log(milestoneId, "milestoneId");
-    require("../../helpers/logs").log(token, "token");
-
-    await adapterAPI.completeTask(projectId, milestoneId, token);
-
-};

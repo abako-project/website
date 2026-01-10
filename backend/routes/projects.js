@@ -183,6 +183,7 @@ router.put('/:projectId/milestones/swaporder/:id1(\\d+)/:id2(\\d+)',
   milestoneController.swapOrder);
 
 
+/* Solo version BBDD
 
 // Pagina para que el consultor suba un milestone para que lo revise el cliente
 router.get('/:projectId/milestones/:milestoneId(\\d+)/submitMilestone',
@@ -196,6 +197,7 @@ router.put('/:projectId/milestones/:milestoneId(\\d+)/submitMilestone',
     permissionController.projectConsultantRequired,
     milestoneController.submitMilestoneAction);
 
+*/
 
 // Sube un milestone para que lo revise el cliente
 router.put('/:projectId/milestones/:milestoneId(\\d+)/submitForReview',
@@ -207,16 +209,12 @@ router.put('/:projectId/milestones/:milestoneId(\\d+)/submitForReview',
 // === Milestone Developer
 
 // Asignar Team a los milestones
-router.put('/:projectId/milestones/:milestoneId/completeMilestone',
-    permissionController.isAuthenticated,
-    permissionController.projectConsultantRequired,
-    milestoneController.completeMilestone);
-
-// Asignar Team a los milestones
 router.put('/:projectId/assign_team',
     permissionController.isAuthenticated,
     permissionController.projectConsultantRequired,
     projectController.assignTeam);
+
+/* Solo version BBDD
 
 // Muestra la pagina para que el developer acepte o rechace un milestone.
 router.get('/:projectId/milestones/:milestoneId(\\d+)/acceptOrRejectAssignation',
@@ -230,20 +228,21 @@ router.put('/:projectId/milestones/:milestoneId(\\d+)/acceptOrRejectAssignation'
     permissionController.isAuthenticated,
     permissionController.userTypesRequired({milestoneDeveloper: true}),
     milestoneController.developerAcceptOrRejectAssignedMilestoneUpdate);
-
+*/
 
 // === Client
 
 router.get('/:projectId/escrow',
   permissionController.isAuthenticated,
-  permissionController.userTypesRequired({client: true}),
+    permissionController.userTypesRequired({projectClient: true}),
   escrowController.escrow);
 
 
 router.get('/:projectId/start',
   permissionController.isAuthenticated,
-  permissionController.userTypesRequired({client: true}),
+    permissionController.userTypesRequired({projectClient: true}),
   escrowController.startProject);
+
 
 // Muestra la pagina para que el cliente acepte o rechace un milestone submission.
 router.get('/:projectId/milestones/:milestoneId(\\d+)/acceptOrRejectSubmission',
@@ -258,6 +257,14 @@ router.put('/:projectId/milestones/:milestoneId(\\d+)/acceptOrRejectSubmission',
     permissionController.userTypesRequired({projectClient: true}),
     milestoneController.clientAcceptOrRejectSubmittedMilestoneUpdate);
 
+
+/* BORRAR
+// El cliente acepta el trabajo realizado en un milestone
+router.put('/:projectId/milestones/:milestoneId/completeMilestone',
+    permissionController.isAuthenticated,
+    permissionController.userTypesRequired({projectClient: true}),
+    milestoneController.completeMilestone);
+ */
 
 // === Disputa
 

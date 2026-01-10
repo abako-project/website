@@ -514,6 +514,23 @@ const adapterAPI = {
         }
     },
 
+    async rejectTask(projectId, taskId, reason, token) {
+        try {
+            const response = await adapterClient.post(
+                apiConfig.adapterAPI.endpoints.projects.rejectTask(projectId, taskId),
+                { rejectionReason: reason },
+                {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                }
+            );
+            return response.data;
+        } catch (error) {
+            handleError(error, `rejectTask(${projectId},${taskId},"${reason}")`);
+        }
+    },
+
     async getProject(contractAddress) {
         try {
             const response = await adapterClient.get(`/projects/${contractAddress}`);
@@ -629,6 +646,7 @@ const adapterAPI = {
         }
     },
 
+    /* No existe
     async getMilestone(contractAddress, milestoneId, token) {
         try {
             const response = await adapterClient.get(apiConfig.adapterAPI.endpoints.projects.milestones.get(contractAddress, milestoneId), {
@@ -641,6 +659,7 @@ const adapterAPI = {
             handleError(error, `getMilestone(${contractAddress}, ${milestoneId})`);
         }
     },
+*/
 
     async createMilestone(contractAddress, milestoneData, token) {
         try {

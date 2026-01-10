@@ -273,7 +273,13 @@ exports.swapOrder = async (req, res, next) => {
     }
 };
 
-
+//-----------------------------------------------------------------------------------
+//
+//  Developer debe aceptar o rechazar el milestone que le han asignado
+//
+//  Solo para la versin BBDD.
+//
+//-------------------------------------------------------------------------------------
 
 // El developer acepta un milestone
 exports.developerAcceptAssignedMilestone = async (req, res, next) => {
@@ -360,6 +366,17 @@ exports.developerAcceptOrRejectAssignedMilestoneUpdate = async (req, res, next) 
     }
 };
 
+
+//-----------------------------------------------------------------------------------
+//
+//  Conssultor presenta un formulario para enviar un milestone al cliente para que lo acepte.
+//  En el formulario se rellena campos con enlaces a documentacion ,....
+//
+//  Solo para la versin BBDD.
+//
+//-------------------------------------------------------------------------------------
+
+
 // Devolver ls pagina para que el consultor suba un milestone para que lo revise el cliente
 exports.submitMilestoneForm = async (req, res, next) => {
 
@@ -406,6 +423,47 @@ exports.submitMilestoneAction = async (req, res, next) => {
 };
 
 
+//-----------------------------------------------------------------------------------
+//
+//  Conssultor envia un milestone al cliente para que lo acepte.
+//  No hay ningun formulario. Se envia directamente.
+//
+//  Solo para la versin Virto.
+//
+//-------------------------------------------------------------------------------------
+
+
+// El consultor complete un milestone:
+exports.submitMilestoneForReview = async (req, res, next) => {
+
+    const projectId = req.params.projectId;
+    const milestoneId = req.params.milestoneId;
+
+    try {
+
+        await seda.milestoneConsultantSubmitForReview(projectId, milestoneId, req.session.loginUser.token);
+
+        console.log('Success: Milestone submited for review successfully.');
+
+        res.redirect('/projects/' + projectId);
+
+    } catch (error) {
+        next(error);
+    }
+};
+
+
+
+//-----------------------------------------------------------------------------------
+//
+//  El cliente debe aceptar o rechazar el trabajo realizado en el milestone que le ha enviado el consultor.
+//
+//  Solo para la versin Virto.
+//
+//-------------------------------------------------------------------------------------
+
+
+
 // Devuelve la pagina para que un cliente acepte o rechace un milestone submission
 exports.clientAcceptOrRejectSubmittedMilestonePage = async (req, res, next) => {
 
@@ -414,7 +472,7 @@ exports.clientAcceptOrRejectSubmittedMilestonePage = async (req, res, next) => {
         const project = await seda.project(projectId);
 
         const milestoneId = req.params.milestoneId;
-        const milestone = await seda.milestone(milestoneId);
+        const milestone = await seda.milestone(projectId, milestoneId);
 
         res.render('milestones/clientAcceptOrRejectSubmittedMilestone', {
             project,
@@ -437,9 +495,9 @@ exports.clientAcceptOrRejectSubmittedMilestoneUpdate = async (req, res, next) =>
         const milestoneId = req.params.milestoneId;
 
         if (accept === "accept") {
-            await seda.milestoneClientAcceptSubmission(milestoneId, comment);
+            await seda.milestoneClientAcceptSubmission(projectId, milestoneId, comment, req.session.loginUser.token);
         } else if (accept === "reject") {
-            await seda.milestoneClientRejectSubmission(milestoneId, comment);
+            await seda.milestoneClientRejectSubmission(projectId, milestoneId, comment, req.session.loginUser.token);
         } else {
             req.flash("error", "El cliente solo puede aceptar o rechazar los milestones que le han entregado");
         }
@@ -450,6 +508,33 @@ exports.clientAcceptOrRejectSubmittedMilestoneUpdate = async (req, res, next) =>
         next(error);
     }
 };
+
+
+
+
+/* BORRAR
+
+// El cliente acepta el trabajo realizado en un milestone:
+exports.completeMilestone = async (req, res, next) => {
+
+    const projectId = req.params.projectId;
+    const milestoneId = req.params.milestoneId;
+
+    try {
+
+        await seda.milestoneClientComplete(projectId, milestoneId, req.session.loginUser.token);
+
+        console.log('Success: Milestone completed successfully.');
+
+        res.redirect('/projects/' + projectId);
+
+    } catch (error) {
+        next(error);
+    }
+};
+
+
+ */
 
 
 // Muestra la pagina con la historia del milestone para que el cliente y el consultor se envien mensajes
@@ -545,46 +630,5 @@ exports.createConsultantHistoryComments = async (req, res, next) => {
         next(error);
     }
 };
-
-
-// El consultor complete un milestone:
-exports.submitMilestoneForReview = async (req, res, next) => {
-
-    const projectId = req.params.projectId;
-    const milestoneId = req.params.milestoneId;
-
-    try {
-
-        await seda.milestoneConsultantSubmitForReview(projectId, milestoneId, req.session.loginUser.token);
-
-        console.log('Success: Milestone submited for review successfully.');
-
-        res.redirect('/projects/' + projectId);
-
-    } catch (error) {
-        next(error);
-    }
-};
-
-
-// El consultor complete un milestone:
-exports.completeMilestone = async (req, res, next) => {
-
-    const projectId = req.params.projectId;
-    const milestoneId = req.params.milestoneId;
-
-    try {
-
-        await seda.milestoneConsultantComplete(projectId, milestoneId, req.session.loginUser.token);
-
-        console.log('Success: Milestone completed successfully.');
-
-        res.redirect('/projects/' + projectId);
-
-    } catch (error) {
-        next(error);
-    }
-};
-
 
 

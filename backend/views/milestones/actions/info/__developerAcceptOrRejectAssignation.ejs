@@ -1,14 +1,20 @@
-<% if (milestone.developerId) { %>
+<% if (false) { %>
 
-    <% if (locals.loginUser && locals.loginUser.developerId === milestone.developerId) { %>
 
-        <% if (milestone.state === "WaitingDeveloperAcceptAssignation") { %>
+    <% if (milestone.developerId) { %>
 
-            <a class="btn btn_primary"
-               href="/projects/<%= project.id %>/milestones/<%= milestone.id %>/acceptOrRejectAssignation">
-                Accept Or Reject
-            </a>
+        <% if (locals.loginUser && locals.loginUser.developerId === milestone.developerId) { %>
 
+            <% if (milestone.state === "WaitingDeveloperAcceptAssignation") { %>
+
+                <a class="btn btn_primary"
+                   href="/projects/<%= project.id %>/milestones/<%= milestone.id %>/acceptOrRejectAssignation">
+                    Accept Or Reject
+                </a>
+
+            <% } %>
         <% } %>
     <% } %>
+
+
 <% } %>

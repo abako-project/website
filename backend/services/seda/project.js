@@ -19,7 +19,6 @@ exports.project = async projectId => {
 
     let project = await adapterAPI.getProjectInfo(projectId);
 
-    require("../../helpers/logs").log(project, "project");
 
     const clients = await seda.clientIndex();
     const developers = await seda.developerIndex();
@@ -54,6 +53,8 @@ exports.project = async projectId => {
 
     delete project._id;
     delete project.__v;
+
+    require("../../helpers/logs").log(project, "project");
 
     return project;
 };

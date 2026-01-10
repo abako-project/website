@@ -1,27 +1,32 @@
+<% if (false) { %>
 
 
-<% if (locals.loginUser && locals.loginUser.clientId === project.clientId) { %>
+    <% if (locals.loginUser && locals.loginUser.clientId === project.clientId) { %>
 
-    <% if (milestone.state === "SubmissionRejectedByClient") { %>
+        <% if (milestone.state === "SubmissionRejectedByClient") { %>
 
-        <a class="projectFlow"
-           href="/projects/<%= project.id %>/milestones/<%= milestone.id %>/history">
-            Show Details
-        </a>
+            <a class="projectFlow"
+               href="/projects/<%= project.id %>/milestones/<%= milestone.id %>/history">
+                Show Details
+            </a>
 
+        <% } %>
     <% } %>
+
+
+
+    <% if (locals.loginUser && locals.loginUser.developerId === project.consultantId) { %>
+
+        <% if (milestone.state === "SubmissionRejectedByClient") { %>
+
+            <a class="projectFlow"
+               href="/projects/<%= project.id %>/milestones/<%= milestone.id %>/history">
+                Show Details
+            </a>
+
+        <% } %>
+    <% } %>
+
+
 <% } %>
 
-
-
-<% if (locals.loginUser && locals.loginUser.developerId === project.consultantId) { %>
-
-    <% if (milestone.state === "SubmissionRejectedByClient") { %>
-
-        <a class="projectFlow"
-           href="/projects/<%= project.id %>/milestones/<%= milestone.id %>/history">
-            Show Details
-        </a>
-
-    <% } %>
-<% } %>

@@ -86,7 +86,7 @@ exports.client = async clientId => {
 
     exports.cleanClient(client);
 
-    require("../../helpers/logs").log(client,"Seda Client");
+   // require("../../helpers/logs").log(client,"Seda Client");
 
     return client;
 };
