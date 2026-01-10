@@ -1,5 +1,6 @@
 
 const {adapterAPI} = require('../api-client');
+const seda = require("./index");
 
 //-----------------------------------------------------------
 
@@ -44,6 +45,9 @@ exports.project = async projectId => {
         project.consultant = developers.find(developer => developer.id == project.consultantId);
     }
 
+    milestones.forEach(milestone => {
+        milestone.developer = developers.find(developer => developer.id == milestone.developerId);
+    });
     project.milestones = milestones;
 
     project.objectives = [];
@@ -199,7 +203,11 @@ exports.projectsIndex = async (clientId, consultantId, developerId) => {
 
         // project.milestones ||= [];
         if (project.creationStatus == "created") {
-            project.milestones = await seda.milestones(project.id);
+            const milestones = await seda.milestones(project.id);
+            milestones.forEach(milestone => {
+                milestone.developer = developers.find(developer => developer.id == milestone.developerId);
+            });
+            project.milestones = milestones;
 
             /*
             const workers = await seda.registeredWorkers();
