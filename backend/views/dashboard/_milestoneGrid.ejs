@@ -5,20 +5,21 @@
 
         <h1>Proyecto <%= project.title %></h1>
 
-        <% let milestonesWaitingForDeveloperAssignation = project.milestones.filter(milestone => (milestone.state === "MilestoneInProgress")); %>
-        <% let milestonesWaitingForClientAcceptSubmission = project.milestones.filter(milestone => (milestone.state === "WaitingClientAcceptSubmission")); %>
-        <% let submissionRejectedByClientMilestones = project.milestones.filter(milestone => (milestone.state === "RejectedByClient")); %>
-        <% let completedMilestones = project.milestones.filter(milestone => (["AwaitingPayment", "Paid"].includes(milestone.state))); %>
+        <% let unassignedMilestones = project.milestones.filter(milestone => (locals.flowMilestoneState(milestone) === locals.MilestoneState.WaitingDeveloperAssignation)); %>
+        <% let scheduledMilestones = project.milestones.filter(milestone => (locals.flowMilestoneState(milestone) === locals.MilestoneState.MilestoneInProgress)); %>
+        <% let milestonesWaitingForClientAcceptSubmission = project.milestones.filter(milestone => (locals.flowMilestoneState(milestone) === locals.MilestoneState.WaitingClientAcceptSubmission)); %>
+        <% let submissionRejectedByClientMilestones = project.milestones.filter(milestone => (locals.flowMilestoneState(milestone) === locals.MilestoneState.SubmissionRejectedByClient)); %>
+        <% let completedMilestones = project.milestones.filter(milestone => (locals.flowMilestoneState(milestone) === locals.MilestoneState.MilestoneCompleted)); %>
 
         <section class="milestoneGrid">
             <div class="milestoneGrid__col">
                 <h3 class="colHeader">
                     <span class="counter">
-                        <%= project.milestones.length %>
+                        <%= unassignedMilestones.length %>
                     </span>
-                    <span> All Milestones </span>
+                    <span> Unassigned Milestones </span>
                 </h3>
-                <% for (let milestone of project.milestones) { %>
+                <% for (let milestone of unassignedMilestones) { %>
                     <%- include("./__milestoneGridItem", {project, milestone}) %>
                 <% } %>
             </div>
@@ -26,11 +27,11 @@
             <div class="milestoneGrid__col">
                 <h3 class="colHeader">
                     <span class="counter">
-                        <%= milestonesWaitingForDeveloperAssignation.length %>
+                        <%= scheduledMilestones.length %>
                     </span>
                     <span> Scheduled Milestones </span>
                 </h3>
-                <% for (let milestone of milestonesWaitingForDeveloperAssignation) { %>
+                <% for (let milestone of scheduledMilestones) { %>
                     <%- include("./__milestoneGridItem", {project, milestone}) %>
                 <% } %>
             </div>

@@ -492,9 +492,16 @@ exports.clientAcceptOrRejectSubmittedMilestonePage = async (req, res, next) => {
         const milestoneId = req.params.milestoneId;
         const milestone = project.milestones.find(milestone => milestone.id == milestoneId);
 
+        const allBudgets = await seda.budgetIndex();
+        const allDeliveryTimes = await seda.deliveryTimeIndex();
+        const allProjectTypes = await seda.projectTypeIndex();
+
         res.render('milestones/clientAcceptOrRejectSubmittedMilestone', {
             project,
-            milestone
+            milestone,
+            allBudgets,
+            allDeliveryTimes,
+            allProjectTypes
         });
     } catch (error) {
         next(error);
