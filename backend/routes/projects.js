@@ -298,7 +298,7 @@ router.post('/:projectId/milestones/:milestoneId(\\d+)/history/consultantComment
 
 router.post('/:projectId/milestones/:milestoneId(\\d+)/pay',
     permissionController.isAuthenticated,
-    permissionController.adminRequired,
+    permissionController.userTypesRequired({projectClient: true}),
     milestoneController.daoPay);
 
 module.exports = router;

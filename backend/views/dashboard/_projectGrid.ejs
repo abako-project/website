@@ -54,14 +54,6 @@
                     Show
                 </a>
 
-                <% if (locals.loginUser && locals.loginUser.isAdmin) { %>
-
-                    <a class="adminDAO btn btn_icon bth_href"
-                       href="/projects/<%= project.id %>?_method=DELETE" >
-                        <i class="ri-delete-bin-7-line"></i>
-                    </a>
-
-                <% } %>
             </div>
         </article>
     <% } %>

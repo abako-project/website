@@ -104,7 +104,6 @@ app.use(function (req, res, next) {
   res.locals.loginUser = req.session.loginUser && {
     email: req.session.loginUser.email,
     name: req.session.loginUser.name,
-    isAdmin: !!req.session.loginUser.isAdmin,
     developerId: req.session.loginUser.developerId,
     clientId: req.session.loginUser.clientId,
   };

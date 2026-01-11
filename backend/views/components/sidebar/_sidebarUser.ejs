@@ -41,27 +41,26 @@
       </div>
     </div>
 
-    <% if (!locals.loginUser) { %>
-    <a href="/auth/login"> <button>Login</button></a>
-    <a href="/auth/register"><button>Registro</button></a>
-    <% } else { %> <% if (locals.loginUser.isAdmin) { %>
-    <span class="adminDAO">Admin</span>
-    <% } %> <% if (locals.loginUser.developerId) { %>
+      <% if (!locals.loginUser) { %>
+          <a href="/auth/login">
+              <button>Login</button>
+          </a>
+          <a href="/auth/register">
+              <button>Registro</button>
+          </a>
+      <% } else { %>
 
-    <div class="userContainer">
-      <span class="userContainer__avatar">
-        <img
-          class="attachment"
-          src="/developers/<%= loginUser.developerId %>/attachment"
-        />
-      </span>
-      <span class="userContainer__info">
-        <a href="/developers/<%= loginUser.developerId %>/edit"
-          ><%= loginUser.email %></a
-        >
-      </span>
-    </div>
-    <% } %>
+          <% if (locals.loginUser.developerId) { %>
+
+              <div class="userContainer">
+                  <span class="userContainer__avatar">
+                       <img class="attachment" src="/developers/<%= loginUser.developerId %>/attachment" />
+                  </span>
+                  <span class="userContainer__info">
+                        <a href="/developers/<%= loginUser.developerId %>/edit"><%= loginUser.email %></a>
+                  </span>
+              </div>
+          <% } %>
     <% if (locals.loginUser.clientId) { %>
     <div class="userContainer">
       <span class="userContainer__avatar">

@@ -37,8 +37,6 @@ const ProjectState = {
    Completed: "completed", // entregado, aceptado, votado y pagado
  //   Cancelled: "cancelled", // cancelado por el cliente
 
-    //  TeamAssignmentPending: "TeamAssignmentPending", // La DAO/Admin esta asignando el team de desarrolladores
-
  //   ToBeDone: "ToBeDone",  // Estado que marca algo pendiente de desarrollar
 
 

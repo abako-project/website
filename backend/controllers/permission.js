@@ -10,18 +10,6 @@ exports.isAuthenticated = (req, res, next) => {
 };
 
 
-// MW that allows to pass only if the logged in user is admin
-exports.adminRequired = (req, res, next) => {
-  const isAdmin = !!req.session.loginUser?.isAdmin;
-  if (isAdmin) {
-    next();
-  } else {
-    console.log('Prohibited operation: The logged in user is not an administrator.');
-    next(new Error('Prohibited operation: The logged in user is not an administrator.'));
-  }
-};
-
-
 // MW that allows actions only if the logged in user is a client.
 exports.clientRequired = (req, res, next) => {
   const clientIsLogged = !!req.session.loginUser?.clientId;
@@ -108,7 +96,6 @@ exports.milestoneDeveloperRequired = async (req, res, next) => {
 };
 
 // MW that allows actions only if the logged in user type is one of these:
-//   admin  - logged user is admin
 //   client - logged user is a client
 //   projectClient - The logged user is the project client
 //   developer - logged user is a developer
@@ -116,7 +103,6 @@ exports.milestoneDeveloperRequired = async (req, res, next) => {
 //   projectConsultant - The logged user is the project consultant
 //   milestoneDeveloper - The logged user is the developer assigned to the milestone
 exports.userTypesRequired = ({
-                              admin = false,
                               client = false,
                               projectClient = false,
                               developer = false,
@@ -124,13 +110,6 @@ exports.userTypesRequired = ({
                               projectConsultant = false,
                               milestoneDeveloper = false
                             }) => async (req, res, next) => {
-
-  if (admin) {
-    const adminIsLogged = !!req.session.loginUser?.isAdmin;
-    if (adminIsLogged) {
-      return next();
-    }
-  }
 
   if (client) {
     const clientIsLogged = !!req.session.loginUser?.clientId;

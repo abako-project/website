@@ -266,7 +266,7 @@ exports.projectSetState = async (projectId, state) => {
 //-----------------------------------------------------------
 
 /**
- * Rechaza un proyecto (rol DAO/Admin) cambiando su estado a `ProposalRejected`.
+ * El consultor rechaza un proyecto.
  *
  * @async
  * @function rejectProposal

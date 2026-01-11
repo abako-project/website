@@ -117,7 +117,7 @@ exports.proposalSubmit = async (projectId) => {
 //-----------------------------------------------------------
 
 /**
- * Aprueba un proyecto (rol DAO/Admin) cambiando su estado a `ScopingInProgress`.
+ * El consultor aprueba un proyecto .
  *
  * @async
  * @function approveProposal

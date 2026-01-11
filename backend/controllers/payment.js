@@ -6,13 +6,7 @@ const seda = require("../services/seda");
 exports.payments = async (req, res, next) => {
 
     try {
-        if (req.session.loginUser?.isAdmin) {
-
-            const projects = await seda.projectsIndex(null, null, null);
-
-            res.render('payments/index', {projects});
-
-        } else if (req.session.loginUser.clientId) {
+        if (req.session.loginUser.clientId) {
 
             const client = await seda.client(req.session.loginUser.clientId);
 

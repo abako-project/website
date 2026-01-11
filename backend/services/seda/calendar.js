@@ -142,28 +142,6 @@ exports.setAvailability = async (availability, weeklyHours, token) => {
 //-----------------------------------------------------------
 
 /**
- * Establece la disponibilidad de un worker (admin).
- *
- * @async
- * @function adminSetWorkerAvailability
- * @param {string} contractAddress - Dirección del contrato de calendario.
- * @param {string} worker - Dirección del worker.
- * @param {number} availability - Horas de disponibilidad.
- * @param {string} token - Auth token.
- * @returns {Promise<Object>} Response del backend.
- */
-exports.adminSetWorkerAvailability = async (worker, availability, token) => {
-    try {
-        return await adapterAPI.adminSetWorkerAvailability(calendarAddress, worker, availability, token);
-    } catch (error) {
-        console.error(`[SEDA Calendar] Error setting worker availability (admin):`, error.message);
-        throw error;
-    }
-};
-
-//-----------------------------------------------------------
-
-/**
  * Obtiene las horas de disponibilidad de un worker.
  *
  * @async
