@@ -5,7 +5,8 @@
     <% if (locals.flowMilestoneState(milestone) === locals.MilestoneState.WaitingClientAcceptSubmission) { %>
 
         <a class="right projectFlow btn_primary"
-           href="/projects/<%= project.id %>/milestones/<%= milestone.id %>/acceptOrRejectSubmission">
+           href="/projects/<%= project.id %>/milestones/<%= milestone.id %>/acceptOrRejectSubmission"
+           onclick="showWaitModal()">
             Accept/Reject Submission
         </a>
 

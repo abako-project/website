@@ -26,6 +26,9 @@ const ProjectState = {
     // El consultor publica su scope y ahora espera a que lo valide el cliente
     ScopeValidationNeeded: "ScopeValidationNeeded", // el cliente tiene que validar el milestone
 
+    ScopeRejected: "ScopeRejected", // el cliente ha rechazado el scope.
+
+
     // El consultor debe solicitar que se asigne el Team de desarrolladores
     WaitingForTeamAssigment: "WaitingForTeamAssigment",
 
@@ -89,6 +92,11 @@ const flowProjectState = (project, scope) => {
             return ProjectState.ScopeValidationNeeded;
         }
     }
+
+    if (project.state === "scope_rejected") {
+        return ProjectState.ScopeRejected;
+    }
+
 
     if (project.state === "scope_accepted") {
         return ProjectState.WaitingForTeamAssigment;

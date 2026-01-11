@@ -18,7 +18,7 @@
                     <span class="profileCard__subtitle">Client data</span>
                 </div>
 
-                <form method="post" action="/clients/<%= client.id %>?_method=PUT" enctype="multipart/form-data">
+                <form id="editClientProfile" method="post" action="/clients/<%= client.id %>?_method=PUT" enctype="multipart/form-data">
 
 
                     <div class="profileCard__staticInfo">
@@ -79,7 +79,9 @@
                         <div class="profileCard__section">
                         <div class="actionRow" >
                             <a href="/clients/<%= client.id %>/profile"> Cancel </a>
-                            <input type="submit" value="Save"/> 
+                            <button class="projectFlow btn btn_primary" onclick="submitFormById('editClientProfile'); return false;">
+                                Save
+                            </button>
                         </div>
                     </div>
                 </form>

@@ -8,7 +8,8 @@
         <% if (locals.flowMilestoneState(milestone) === locals.MilestoneState.MilestoneInProgress) { %>
 
         <a class="btn btn_primary"
-           href="/projects/<%= project.id %>/milestones/<%= milestone.id %>/submitForReview?_method=PUT">
+           href="/projects/<%= project.id %>/milestones/<%= milestone.id %>/submitForReview?_method=PUT"
+           onclick="showWaitModal()">
             Submit for Review
         </a>
 

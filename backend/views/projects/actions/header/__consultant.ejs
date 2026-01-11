@@ -8,6 +8,7 @@ if (locals.loginUser.developerId && locals.loginUser.developerId == project.cons
         actions.push({
             title: "Review Scope",
             callback: "/projects/" + project.id + "/milestones/edit",
+            classes: "btn_primary btn_href"
         });
     }
 

@@ -17,7 +17,7 @@
                 </div>
                 
                     
-                <form method="post" action="/developers/<%= developer.id %>?_method=PUT" enctype="multipart/form-data" class="profileForm"
+                <form id="editDeveloperProfile" method="post" action="/developers/<%= developer.id %>?_method=PUT" enctype="multipart/form-data" class="profileForm"
                       onsubmit="showWaitModal()">
 
                     <div class="profileCard__staticInfo">
@@ -154,7 +154,9 @@
                     <div class="profileCard__section">
                         <div class="actionRow" >
                             <a href="/developers/<%= developer.id %>/profile"> Cancel </a>
-                            <input type="submit" value="Save"/> 
+                            <button class="projectFlow btn btn_primary" onclick="submitFormById('editDeveloperProfile'); return false;">
+                                Save
+                            </button>
                         </div>
                     </div>
 
