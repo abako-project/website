@@ -2,6 +2,10 @@
 
 const ProjectState = {
 
+
+    // Ha ocurrido un error al intentar crear la propuesta del cliente.
+    CreationError: "CreationError",
+
     // El cliente ha enviado la propuesta del proyecto,
     // pero la DAO no la ha asignado un consultor.
     ProposalPending: "ProposalPending",
@@ -39,7 +43,6 @@ const ProjectState = {
 
  //   ToBeDone: "ToBeDone",  // Estado que marca algo pendiente de desarrollar
 
-
     Invalid: "Invalid"  // Estado invalido o que no existe
 };
 
@@ -50,6 +53,10 @@ const ProjectState = {
 //   sessionScope: El objeto scope que guarda el consultor en req.session para crear el scope.
 //                 No pasarlo como parametro cuando no exista.
 const flowProjectState = (project, scope) => {
+
+    if (typeof project.creationError !== "undefined") {
+        return ProjectState.CreationError;
+    }
 
     if (typeof project.consultantId === "undefined") {
         return ProjectState.ProposalPending;
