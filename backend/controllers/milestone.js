@@ -25,9 +25,22 @@ exports.milestones = async (req, res, next) => {
 
         const projects = await seda.projectsIndex(clientId, developerId, developerId);
 
+        projects.reverse();
+
+        const allBudgets = await seda.budgetIndex();
+        const allDeliveryTimes = await seda.deliveryTimeIndex();
+        const allProjectTypes = await seda.projectTypeIndex();
+
         // No se puede usar el valor client en las opciones cuando
         // hay llamadas anidadas a la funcion include de EJS.
-        res.render('dashboard/milestones', {projects, c: client, developer});
+        res.render('dashboard/milestones', {
+            projects,
+            c: client,
+            developer,
+            allBudgets,
+            allDeliveryTimes,
+            allProjectTypes
+        });
     } catch (error) {
         next(error);
     }
