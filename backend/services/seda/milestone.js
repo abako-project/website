@@ -9,6 +9,8 @@ exports.milestones = async (projectId) => {
 
     const {milestones} = await adapterAPI.getAllTasks(projectId);
 
+    require("../../helpers/logs").log(milestones, "getAllTasks");
+
     milestones.forEach(milestone => {
         exports.cleanMilestone(milestone);
     });
@@ -72,7 +74,7 @@ exports.milestone = async (projectId, milestoneId) => {
  * @returns {Promise<Object>} Objeto JSON del milestone creado.
  */
 exports.milestoneCreate = async (scope, projectId, {title, description, budget, deliveryTime, deliveryDate,
-  role, proficiency, skills}, token) => {
+  role, proficiency, skills, availability, neededFullTimeDeveloper, neededPartTimeDeveloper, neededHourlyDeveloper}, token) => {
 
 
         // Try to create on backend
@@ -84,7 +86,11 @@ exports.milestoneCreate = async (scope, projectId, {title, description, budget, 
             deliveryDate,
             role,
             proficiency,
-            skills
+            skills,
+            availability,
+            neededFullTimeDeveloper,
+            neededPartTimeDeveloper,
+            neededHourlyDeveloper
         };
 
     scope.milestones.push(milestoneData);
@@ -115,18 +121,19 @@ exports.milestoneCreate = async (scope, projectId, {title, description, budget, 
  * @param {string} [token] - Auth token.
  * @returns {Promise<Object>} Objeto JSON con los datos actualizados.
  */
-exports.milestoneUpdate = async (projectId, milestoneId, {title, description, budget, deliveryTimeId, deliveryDate,
-  roleId, proficiencyId, skillIds, neededFullTimeDeveloper, neededPartTimeDeveloper, neededHourlyDeveloper}, token) => {
+exports.milestoneUpdate = async (projectId, milestoneId, {title, description, budget, deliveryTime, deliveryDate,
+  role, proficiency, skills, availability, neededFullTimeDeveloper, neededPartTimeDeveloper, neededHourlyDeveloper}, token) => {
 
         const milestoneData = {
             title,
             description,
             budget,
-            deliveryTimeId,
+            deliveryTime,
             deliveryDate,
-            roleId,
-            proficiencyId,
-            skillIds,
+            role,
+            proficiency,
+            skills,
+            availability,
             neededFullTimeDeveloper,
             neededPartTimeDeveloper,
             neededHourlyDeveloper

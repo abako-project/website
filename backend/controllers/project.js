@@ -115,7 +115,7 @@ exports.show = async (req, res, next) => {
     const projectId = req.params.projectId;
     const project = await seda.project(projectId);
 
-    // require("../helpers/logs").log(project, "Project PUNTO 1");
+    require("../helpers/logs").log(project, "Project PUNTO 1");
 
     // Si existe req.session.scope.projectId y vale projectId, entonces sustituyo el
     // valor de project.milestones por req.session.scope.milestones.
@@ -124,7 +124,7 @@ exports.show = async (req, res, next) => {
         project.milestones = req.session.scope.milestones
     }
 
-   // require("../helpers/logs").log(project, "Project PUNTO 2");
+   require("../helpers/logs").log(project, "Project PUNTO 2");
 
     const allBudgets = await seda.budgetIndex();
     const allDeliveryTimes = await seda.deliveryTimeIndex();
@@ -262,7 +262,7 @@ exports.scopeSubmit = async (req, res, next) => {
     try {
 
         // require("../helpers/logs").log(projectId, "projectId");
-        // require("../helpers/logs").log(req.session.scope, "Proposed Scope");
+        require("../helpers/logs").log(req.session.scope, "*****> Proposed Scope");
         // require("../helpers/logs").log(advancePaymentPercentage, "advancePaymentPercentage");
         // require("../helpers/logs").log(documentHash, "documentHash");
         // require("../helpers/logs").log(req.session.loginUser.token, "Token");

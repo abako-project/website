@@ -56,7 +56,7 @@ exports.project = async projectId => {
     delete project._id;
     delete project.__v;
 
-    require("../../helpers/logs").log(project, "project");
+    // require("../../helpers/logs").log(project, "project");
 
     return project;
 };

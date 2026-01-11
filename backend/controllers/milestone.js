@@ -120,7 +120,10 @@ exports.create = async (req, res, next) => {
         role,
         proficiency,
         skills,
-        availability
+        availability,
+        neededFullTimeDeveloper: availability === "FullTime",
+        neededPartTimeDeveloper: availability === "PartTime",
+        neededHourlyDeveloper: availability === "WeeklyHours",
     };
 
     require("../helpers/logs").log(milestone, "Nuevo Milestone");
@@ -212,9 +215,9 @@ exports.update = async (req, res) => {
     milestone.skills = Array.isArray(body.skills) ? body.skills : body.skills ? [body.skills] : ["none"];
     milestone.availability = body.availability;
 
-    milestone.neededFullTimeDeveloper = body.availability === "fulltime";
-    milestone.neededPartTimeDeveloper = body.availability === "parttime";
-    milestone.neededHourlyDeveloper = body.availability === "hourly";
+    milestone.neededFullTimeDeveloper = body.availability === "FullFime";
+    milestone.neededPartTimeDeveloper = body.availability === "PartTime";
+    milestone.neededHourlyDeveloper = body.availability === "WeeklyHours";
 
     try {
         if (req.session.scope?.projectId == projectId) {
@@ -395,7 +398,7 @@ exports.developerAcceptOrRejectAssignedMilestoneUpdate = async (req, res, next) 
 //-------------------------------------------------------------------------------------
 
 
-// Devolver ls pagina para que el consultor suba un milestone para que lo revise el cliente
+// Devolver la pagina para que el consultor suba un milestone para que lo revise el cliente
 exports.submitMilestoneForm = async (req, res, next) => {
 
     try {
@@ -443,7 +446,7 @@ exports.submitMilestoneAction = async (req, res, next) => {
 
 //-----------------------------------------------------------------------------------
 //
-//  Conssultor envia un milestone al cliente para que lo acepte.
+//  Consultor envia un milestone al cliente para que lo acepte.
 //  No hay ningun formulario. Se envia directamente.
 //
 //  Solo para la versin Virto.
