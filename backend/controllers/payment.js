@@ -10,7 +10,7 @@ exports.payments = async (req, res, next) => {
 
             const client = await seda.client(req.session.loginUser.clientId);
 
-            const projects = await seda.projectsIndex(req.session.loginUser.clientId, null, null);
+            const projects = await seda.projectsIndex(req.session.loginUser.clientId, null);
 
             // No se puede usar el valor client en las opciones cuando
             // hay llamadas anidadas a la funcion include de EJS.
@@ -20,7 +20,7 @@ exports.payments = async (req, res, next) => {
 
             const developer = await seda.developer(req.session.loginUser.developerId);
 
-            const projects = await seda.projectsIndex(null, req.session.loginUser.developerId, req.session.loginUser.developerId);
+            const projects = await seda.projectsIndex(null, req.session.loginUser.developerId);
 
             // No se puede usar el valor client en las opciones cuando
             // hay llamadas anidadas a la funcion include de EJS.

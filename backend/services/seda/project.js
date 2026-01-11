@@ -1,6 +1,5 @@
 
 const {adapterAPI} = require('../api-client');
-const seda = require("./index");
 
 //-----------------------------------------------------------
 
@@ -127,7 +126,7 @@ exports.projectContractAddress = async projectId => {
  * @returns {Promise<Object[]>} Lista de proyectos en formato JSON.
  * @throws {Error} Si ocurre un error en la consulta.
  */
-exports.projectsIndex = async (clientId, consultantId, developerId) => {
+exports.projectsIndex = async (clientId, developerId) => {
 
     const seda = require("./index");
 
@@ -141,20 +140,17 @@ exports.projectsIndex = async (clientId, consultantId, developerId) => {
     const developers = await seda.developerIndex();
     //  require("../../helpers/logs").log(developers, "Developers");
 
+    if (clientId) {  // Los proyectos de un cliente
 
-    if (clientId) {
         projects = await adapterAPI.getClientProjects(clientId);
 
         // require("../../helpers/logs").log(projects, "Proyectos ORIGINAL");
 
-    } else if (consultantId) {
+    } else {
 
-        //require("../../helpers/logs").log(consultantId, "consultantId");
+        // require("../../helpers/logs").log(developerId, "projectsIndex");
 
-        projects = await adapterAPI.getDeveloperProjects(consultantId);
-    } else if (developerId) {
-        projects = await adapterAPI.getDeveloperProjects(developerId);
-    } else { // All Projects
+        // Obtener todos los proyectos:
 
         projects = [];
         const projectIds = new Set();
@@ -169,10 +165,6 @@ exports.projectsIndex = async (clientId, consultantId, developerId) => {
             });
         }
 
-        //for (let developer of developers) {
-           //  delete developer.imageData
-       // }
-
         for (let developer of developers) {
             const developerProjects = await adapterAPI.getDeveloperProjects(developer.id);
             developerProjects.forEach(project => {
@@ -182,6 +174,24 @@ exports.projectsIndex = async (clientId, consultantId, developerId) => {
                 }
             });
         }
+
+
+        // Si no existe developerId, devuelvo todos los proyectos
+        // Si existe developerId, filtro para devuelvo solo los proyectos en los que ese developerId es consultor o developer de alguna task.
+
+        if (developerId) {  // Los proyectos en los que soy consultor o desarrollador de alguna trak.
+
+            // Milestones en los que developerId es desarrollador:
+            const {milestones: developerMilestones} = await adapterAPI.getDeveloperMilestones(developerId);
+
+            // ids de los proyectos en los que developerId es desarrollador:
+            const developerProjectIds = developerMilestones.map(milestone => milestone.project._id );
+
+            projects = projects.filter(({consultantId, _id}) =>
+                consultantId == developerId || developerProjectIds.includes(_id)
+            );
+        }
+
     }
 
     for (let project of projects) {

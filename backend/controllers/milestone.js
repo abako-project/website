@@ -23,7 +23,7 @@ exports.milestones = async (req, res, next) => {
         const developerId = req.params.developerId;
         const developer = developerId ? await seda.developer(developerId) : null;
 
-        const projects = await seda.projectsIndex(clientId, developerId, developerId);
+        const projects = await seda.projectsIndex(clientId, developerId);
 
         projects.reverse();
 
