@@ -9,6 +9,7 @@ const upload = multer({
 
 const clientController = require('../controllers/client');
 const projectController = require('../controllers/project');
+const permissionController = require("../controllers/permission");
 
 /* Autoloading */
 router.param('clientId', clientController.load);  // autoload :clientId
@@ -19,22 +20,29 @@ router.get('/',
     clientController.index);
 
 router.get('/:clientId(\\d+)/profile',
+    permissionController.isAuthenticated,
+    permissionController.clientIsMyselfRequired,
     clientController.show);
 
 router.get('/:clientId(\\d+)/profile/edit',
+    permissionController.isAuthenticated,
+    permissionController.clientIsMyselfRequired,
     clientController.edit);
 router.put('/:clientId(\\d+)',
+    permissionController.isAuthenticated,
+    permissionController.clientIsMyselfRequired,
     upload.single('image'),
     clientController.update);
 
 // Route to client attachment
-router.get('/:clientId(\\d+)/attachment', clientController.attachment);
-
+router.get('/:clientId(\\d+)/attachment',
+    clientController.attachment);
 
 
 // Route to client projects
-router.get('/:clientId(\\d+)/projects', projectController.index);
-
-
+router.get('/:clientId(\\d+)/projects',
+    permissionController.isAuthenticated,
+    permissionController.clientIsMyselfRequired,
+    projectController.index);
 
 module.exports = router;

@@ -9,6 +9,38 @@ exports.isAuthenticated = (req, res, next) => {
   res.redirect('/auth/login');
 };
 
+// MW that allows to pass only if the logged in user is the client to be managed.
+exports.clientIsMyselfRequired = (req, res, next) => {
+
+    const clientIdRouteParam = req.params.clientId;
+
+    const loggedUserIsClient = !!req.session.loginUser?.clientId;
+    const loggedClientId = req.session.loginUser?.clientId;
+
+    if (loggedUserIsClient && clientIdRouteParam == loggedClientId) {
+        next();
+    } else {
+        console.log('Prohibited route: logged in user is not the client.');
+        res.sendStatus(403);
+    }
+};
+
+// MW that allows to pass only if the logged in user is the developer to be managed.
+exports.developerIsMyselfRequired = (req, res, next) => {
+
+    const developerIdRouteParam = req.params.developerId;
+
+    const loggedUserIsDeveloper = !!req.session.loginUser?.developerId;
+    const loggedDeveloperId = req.session.loginUser?.developerId;
+
+    if (loggedUserIsDeveloper && developerIdRouteParam == loggedDeveloperId) {
+        next();
+    } else {
+        console.log('Prohibited route: logged in user is not the developer.');
+        res.sendStatus(403);
+    }
+};
+
 
 // MW that allows actions only if the logged in user is a client.
 exports.clientRequired = (req, res, next) => {
