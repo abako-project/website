@@ -31,7 +31,7 @@
     </div>
 <% } %>
 
-<!-- Pregunta: esto hay que evitar que salga un botón vacío o si acaso que cuando no haya nada salga desactivado y ponga que no hay acciones -->
+<!-- Note: This should avoid showing an empty button, or when there's nothing, show it disabled with "no actions" -->
 <% if (locals.showActions ?? true) { %>
         <div class="milestone__actions">
             <%- include("../actions/info/_all", {project, milestone}) %>

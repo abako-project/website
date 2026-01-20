@@ -1,7 +1,7 @@
 
 /*
- * Ejecutar una promesa con un timeout.
- * Ejemplo:
+ * Execute a promise with a timeout.
+ * Example:
  *    try {
  *        const r = await promiseWithTimeout(fetch(url), 5000);
  *    } catch(err) {
@@ -17,8 +17,8 @@ function promiseWithTimeout(promise, ms, msg) {
 }
 
 /*
- * Ejecutar un fetch con un timeout.
- * Ejemplo:
+ * Execute a fetch with a timeout.
+ * Example:
  *    try {
  *        const r = await fetchWithTimeout(url, 5000);
  *    } catch(err) {

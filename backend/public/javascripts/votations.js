@@ -2,14 +2,14 @@ const cards = document.querySelectorAll(".votationCard");
 const submitButton = document.querySelector(".submitVotations");
 const form = document.getElementById("voteForm");
 
-// incialización de las votaciones
+// initialization of votations
 function initializeVotations() {
     cards.forEach(setupCard);
     submitButton?.addEventListener("click", handleSubmit);
     console.log("Votation system initialized successfully");
 }
 
-// incialización de cada tarjeta de votación
+// initialization of each votation card
 function setupCard(card) {
     if (card.dataset.readonly === "true") return;
     const stars = card.querySelectorAll(".star");
@@ -30,14 +30,14 @@ function setupCard(card) {
     });
 }
 
-// actualizar las estrellas visuales
+// update visual stars
 function updateStars(stars, rating) {
     stars.forEach((star, index) => {
         star.textContent = index < rating ? "★" : "☆";
     });
 }
 
-//  gestionar el envío de votaciones
+// handle submission of votations
 function handleSubmit() {
     const allRated = Array.from(cards).every(card => parseInt(card.dataset.rating || "0") > 0);
     if (!allRated) {

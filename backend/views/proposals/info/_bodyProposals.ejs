@@ -6,7 +6,7 @@
             <h6>Delivery Time</h6> 
             <p class="proposalDeliveryTime__content">
                 <span>
-                    <%= locals.allDeliveryTimes[project.deliveryTime]?.description ?? "Delivery Time Pendiente" %>
+                    <%= locals.allDeliveryTimes[project.deliveryTime]?.description ?? "Delivery Time Pending" %>
                 </span>
                 <span>
                     <% if (project.deliveryTime == 3) { %>
@@ -18,21 +18,21 @@
 
         <div class="proposalBudget">
             <h6>Total available budget</h6> 
-            <p><%= locals.allBudgets[project.budget]?.description ?? "Pendiente" %></p>
+            <p><%= locals.allBudgets[project.budget]?.description ?? "Pending" %></p>
         </div>
     </span>
 
     <span class="bodyProposals__item proposalDescription">
         <div class="proposalDescription">
             <h6>Project Description</h6> 
-            <p><%= project.description || "Pendiente" %></p>
+            <p><%= project.description || "Pending" %></p>
         </div>
     </span>
 
     <span class="bodyProposals__item ">
         <div class="proposalProjectType">
             <h6>Project type</h6> 
-            <p><%= locals.allProjectTypes[project.projectType]?.description ?? "Pendiente" %></p>
+            <p><%= locals.allProjectTypes[project.projectType]?.description ?? "Pending" %></p>
         </div>
     </span>
 

@@ -1,17 +1,17 @@
 
 //
-// Timezone offset del browser en milisegundos
+// Browser timezone offset in milliseconds
 //
 const browserTimezoneOffset = new Date().getTimezoneOffset() * 60 * 1000;
 
 
 //
-// Añadir un nuevo variable=valor a la query de una url
+// Add a new variable=value to the URL query
 //
 function agregarParametro(url, clave, valor) {
   const urlObj = new URL(url);
 
-  // Añadir o actualizar el parámetro
+  // Add or update the parameter
   urlObj.searchParams.set(clave, valor);
 
   return urlObj.toString();
@@ -19,12 +19,12 @@ function agregarParametro(url, clave, valor) {
 
 
 //
-// Añadir browserTimezoneOffset=browserTimezoneOffset a la query de una url
+// Add browserTimezoneOffset=browserTimezoneOffset to the URL query
 //
 function addTZO(url) {
   const urlObj = new URL(url, window.location.origin);
 
-  // Añadir o actualizar el parámetro browserTimezoneOffset
+  // Add or update the browserTimezoneOffset parameter
   urlObj.searchParams.set('browserTimezoneOffset', browserTimezoneOffset);
 
   return urlObj.toString();
@@ -32,9 +32,9 @@ function addTZO(url) {
 
 //
 // Web Component:
-// Extensión de la etiqueta <a> como un customized built-in element.
-// Añade el valor browserTimezoneOffset=NUMERO a la query del atributo href.
-// Se usa asi:
+// Extension of the <a> tag as a customized built-in element.
+// Adds the browserTimezoneOffset=NUMBER value to the href attribute query.
+// Usage:
 //       <a is="a-with-tzo">.
 //
 class AWithTimezoneOffset extends HTMLAnchorElement {
@@ -52,22 +52,22 @@ class AWithTimezoneOffset extends HTMLAnchorElement {
         url.searchParams.set('browserTimezoneOffset', new Date().getTimezoneOffset() * 60 * 1000);
         this.setAttribute('href', url.toString());
       } catch (e) {
-        console.warn('URL inválida en <a is="a-with-tzo">:', hrefOriginal);
+        console.warn('Invalid URL in <a is="a-with-tzo">:', hrefOriginal);
       }
     }
   }
 }
 
-// Registrar como customized built-in element
+// Register as customized built-in element
 customElements.define('a-with-tzo', AWithTimezoneOffset, { extends: 'a' });
 
 
 
 //
 // Web Component:
-// Extensión de la etiqueta <form> como un customized built-in element.
-// Añade el valor browserTimezoneOffset=NUMERO a la query del atributo action.
-// Se usa asi:
+// Extension of the <form> tag as a customized built-in element.
+// Adds the browserTimezoneOffset=NUMBER value to the action attribute query.
+// Usage:
 //       <form is="form-with-tzo">.
 //
 class FormWithTimezoneOffset extends HTMLFormElement {
@@ -84,10 +84,10 @@ class FormWithTimezoneOffset extends HTMLFormElement {
       url.searchParams.set('browserTimezoneOffset', new Date().getTimezoneOffset() * 60 * 1000);
       this.setAttribute('action', url.toString());
     } catch (e) {
-      console.warn('URL inválida en <form is="form-with-tzo">:', rawAction);
+      console.warn('Invalid URL in <form is="form-with-tzo">:', rawAction);
     }
   }
 }
 
-// Registrar como customized built-in element (extiende <form>)
+// Register as customized built-in element (extends <form>)
 customElements.define('form-with-tzo', FormWithTimezoneOffset, { extends: 'form' });

@@ -1,8 +1,8 @@
 
 <style>
-    /* Fondo oscuro */
+    /* Dark background */
     .wait-modal-overlay {
-        display: none; /* Oculto por defecto */
+        display: none; /* Hidden by default */
         position: fixed;
         top: 0;
         left: 0;
@@ -14,7 +14,7 @@
         z-index: 1000;
     }
 
-    /* Caja del modal */
+    /* Modal box */
     .wait-modal {
         background: white;
         color: dimgray;
@@ -54,10 +54,10 @@
         waitModalOverlay.style.display = "none";
     };
 
-    // Cerrar modal
+    // Close modal
     closeWaitModalBtn.addEventListener("click", hideWaitModal);
 
-    // Cerrar al hacer click fuera del modal
+    // Close on click outside modal
     waitModalOverlay.addEventListener("click", (event) => {
         if (event.target === waitModalOverlay) {
             hideWaitModal();

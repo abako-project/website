@@ -31,21 +31,21 @@ if (document.getElementById('availabilityType')) {
     const hourlyBox = document.getElementById('hourlyInput');
     const availabilitySelect = document.getElementById("availabilityType");
 
-    
 
-    // Función que muestra u oculta el bloque entero del trabajo disponible
+
+    // Function that shows or hides the entire work availability block
     function refreshAvailability() {
         box.style.display = toggle.checked ? "block" : "none";
-        
+
         hourlyBox.style.display = (toggle.checked && availabilitySelect.value === "WeeklyHours") ? "block" : "none";
     }
 
     availabilitySelect.addEventListener("change", refreshAvailability);
     toggle.addEventListener('change', refreshAvailability);
-    refreshAvailability();                                      // Inicializar al cargar la página       
+    refreshAvailability();                                      // Initialize on page load
 }
 
-// Vista previa de la nueva imagen del perfil seleccionada
+// Preview of the newly selected profile image
 document.getElementById("img").addEventListener("change", function () {
     const preview = document.getElementById("photoPreview");
     const file = this.files[0];

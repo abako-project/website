@@ -7,7 +7,7 @@
     <%- include('../layouts/onboarding/_onboardingBackButton', {message: "Don't have an account yet?", buttonText: "Sign up", href: "/auth/register/"}) %>
 
     <form  is="form-with-tzo" id="loginForm" class="content" action="/auth/login/client" method="POST">
-      <h1>Login de un Cliente</h1>
+      <h1>Client Login</h1>
 
       <div class="form-group">
         <label for="email">Email</label>
@@ -38,7 +38,7 @@
 
 <script type="module">
 
-    console.log("Login de cliente: Empieza el script.");
+    console.log("Client login: Script starting.");
 
     import SDK from 'https://cdn.jsdelivr.net/npm/@virtonetwork/sdk@0.0.4-alpha.36/dist/esm/index.js';
 
@@ -57,11 +57,11 @@
                 },
             });
 
-            console.log("Login de cliente: SDK initialized successfully");
+            console.log("Client login: SDK initialized successfully");
             return sdk;
         } catch (error) {
             console.log(
-                `Login de cliente: Error initializing SDK: ${error instanceof Error ? error.message : "Unknown error"}`,
+                `Client login: Error initializing SDK: ${error instanceof Error ? error.message : "Unknown error"}`,
                 "error"
             );
             throw error;
@@ -72,39 +72,39 @@
     document
         .getElementById("loginForm")
         .addEventListener("submit", async function (event) {
-            event.preventDefault(); // Evita el envío automático del formulario
+            event.preventDefault(); // Prevent automatic form submission
 
             try {
-                console.log("Loguear cliente...");
+                console.log("Logging in client...");
 
                 loginButton.disabled = true;
                 loginButton.innerHTML = ". . .";
-                statusElement.innerHTML = "Empieza el logueo";
+                statusElement.innerHTML = "Starting login";
 
                 if (!emailElement.value) {
-                    throw new Error("❌ Error: Email is requerido");
+                    throw new Error("Error: Email is required");
                 }
 
                 showWaitModal();
 
                 const sdk = initializeSDK();
 
-                console.log("Comprobar si es un usuario registrado...");
+                console.log("Checking if user is registered...");
                 const registered = await sdk.auth.isRegistered(emailElement.value);
                 if (!registered) {
                     throw new Error("Client needs to register first");
                 }
-                console.log("El cliente está registrado.");
+                console.log("The client is registered.");
 
-                statusElement.innerHTML = "Generando certificado para loguearse";
+                statusElement.innerHTML = "Generating certificate for login";
 
-                const preparedData = await promiseWithTimeout(sdk.auth.prepareConnection(emailElement.value), 60000, "Timeout esperando al servidor por los datos para preparar el login");
+                const preparedData = await promiseWithTimeout(sdk.auth.prepareConnection(emailElement.value), 60000, "Timeout waiting for server to prepare login data");
                 if (!preparedData) {
-                    throw new Error("❌ Error: No se han generado los login data");
+                    throw new Error("Error: Login data was not generated");
                 }
 
-                // PENDIENTE SPG: Mover esto al servidor
-                statusElement.innerHTML = "Obteniendo extrinsic del servidor";
+                // TODO SPG: Move this to server
+                statusElement.innerHTML = "Getting extrinsic from server";
                 // Llamar al servidor para obtener el extrinsic
                 const response = await fetch(`https://dev.abako.xyz/adapter/v1/auth/custom-connect`, {
                     method: 'POST',
@@ -124,34 +124,34 @@
                 console.log('Connection completed successfully on the server:', 'success');
                 //console.log(JSON.stringify(result, null, 2));
                 if (!result.extrinsic) {
-                    throw new Error("No se recibió el extrinsic del servidor");
+                    throw new Error("Extrinsic was not received from server");
                 }
                 if (!result.token) {
-                    throw new Error("No se recibió el token del servidor");
+                    throw new Error("Token was not received from server");
                 }
 
-                statusElement.innerHTML = "Firmando transacción";
-                // El usuario firma la transacción que inicia la sesión en el servidor
+                statusElement.innerHTML = "Signing transaction";
+                // User signs the transaction that initiates the session on the server
                 const signedResult = await sdk.auth.sign(result.extrinsic);
                 // console.log(">>>>>>>>> signedResult >>>>>>>>>", signedResult);
                 if (!signedResult.ok) {
-                    throw new Error("❌ Error: No se pudo firmar el extrinsic");
+                    throw new Error("Error: Could not sign the extrinsic");
                 }
 
                 tokenElement.value = result.token;
 
-                statusElement.innerHTML = "Esperando respuesta del servidor";
+                statusElement.innerHTML = "Waiting for server response";
 
                 this.submit();
             } catch (error) {
                 hideWaitModal();
 
-                statusElement.innerHTML = "El login ha fallado";
-                alert(`❌ Login error: ${error instanceof Error ? error.message : "Unknown error"}`);
+                statusElement.innerHTML = "Login failed";
+                alert(`Login error: ${error instanceof Error ? error.message : "Unknown error"}`);
                 console.log(`Login error: ${error instanceof Error ? error.message : "Unknown error"}`);
                 loginButton.disabled = false;
                 loginButton.innerHTML = "Login";
-                statusElement.innerHTML = "El login ha fallado";
+                statusElement.innerHTML = "Login failed";
             }
         });
 </script>
