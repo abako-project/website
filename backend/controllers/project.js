@@ -117,11 +117,14 @@ exports.show = async (req, res, next) => {
 
     require("../helpers/logs").log(project, "Project PUNTO 1");
 
-    // Si existe req.session.scope.projectId y vale projectId, entonces sustituyo el
+    // Si el projecto no tiene milestones y
+    // si existe req.session.scope.projectId y vale projectId, entonces sustituyo el
     // valor de project.milestones por req.session.scope.milestones.
     // Esto ocurre cuando estoy editando un scope.
-    if (req.session.scope?.projectId == projectId) {
-        project.milestones = req.session.scope.milestones
+    if (project.milestones.length == 0) {
+        if (req.session.scope?.projectId == projectId) {
+            project.milestones = req.session.scope.milestones
+        }
     }
 
    require("../helpers/logs").log(project, "Project PUNTO 2");
@@ -267,9 +270,10 @@ exports.scopeSubmit = async (req, res, next) => {
         // require("../helpers/logs").log(documentHash, "documentHash");
         // require("../helpers/logs").log(req.session.loginUser.token, "Token");
 
-        await seda.scopeSubmit(projectId, req.session.scope.milestones, advancePaymentPercentage, documentHash, consultantComment, req.session.loginUser.token);
-
+        const milestones = req.session.scope?.milestones ?? [];
         delete req.session.scope;
+
+        await seda.scopeSubmit(projectId, milestones, advancePaymentPercentage, documentHash, consultantComment, req.session.loginUser.token);
 
         console.log('Success: Scope submitted successfully.');
 

@@ -74,11 +74,14 @@ const flowProjectState = (project, scope) => {
 
         if (typeof project.coordinatorApprovalStatus === "undefined") {
             if (typeof scope === "undefined" || scope.projectId != project.id) {
-                return ProjectState.WaitingForProposalApproval;
-            } else {
-                return ProjectState.ScopingInProgress;
+                if (project.milestones.every(milestone => !milestone.id)) {
+                    return ProjectState.WaitingForProposalApproval;
+                }
             }
         }
+
+        return ProjectState.ScopingInProgress;
+
     }
 
     if (project.state === "scope_proposed") {

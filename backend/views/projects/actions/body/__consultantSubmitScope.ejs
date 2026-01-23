@@ -1,8 +1,8 @@
 <% if (locals.loginUser && locals.loginUser.developerId && locals.loginUser.developerId == project.consultantId) { %>
 
-    <% if (locals.flowProjectState(project, locals.scope) === locals.ProjectState.ScopingInProgress && locals.scope?.milestones.length > 0) { %>
+    <% if (locals.flowProjectState(project, locals.scope) === locals.ProjectState.ScopingInProgress) { %>
 
-        <% if (locals.scope.milestones.length > 0) { %>
+        <% if ((locals.scope?.milestones || []).length > 0  || project.milestones.length > 0) { %>
 
             <div class="actionsBody">
                 <div class="actionsBody__comment">

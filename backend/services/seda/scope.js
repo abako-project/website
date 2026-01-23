@@ -27,7 +27,6 @@ exports.scopeSubmit = async (projectId, milestones, advancePaymentPercentage, do
     require("../../helpers/logs").log(milestones,"adapterAPI.proposeScope milestones");
 
     await adapterAPI.proposeScope(projectId, milestones, advancePaymentPercentage, documentHash, token);
-
 };
 
 //-----------------------------------------------------------
