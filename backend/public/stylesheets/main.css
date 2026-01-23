@@ -1636,6 +1636,10 @@ input[type=checkbox] {
   grid-column: 3/4;
   grid-row: 1/2;
 }
+.formMilestone__dev .hourly {
+  grid-column: 4/5;
+  grid-row: 1/2;
+}
 .formMilestone__dev .skills {
   grid-column: 1/5;
   grid-row: 2/3;

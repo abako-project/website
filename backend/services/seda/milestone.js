@@ -74,7 +74,7 @@ exports.milestone = async (projectId, milestoneId) => {
  * @returns {Promise<Object>} Objeto JSON del milestone creado.
  */
 exports.milestoneCreate = async (scope, projectId, {title, description, budget, deliveryTime, deliveryDate,
-  role, proficiency, skills, availability, neededFullTimeDeveloper, neededPartTimeDeveloper, neededHourlyDeveloper}, token) => {
+  role, proficiency, skills, availability}, token) => {
 
 
         // Try to create on backend
@@ -88,9 +88,6 @@ exports.milestoneCreate = async (scope, projectId, {title, description, budget, 
             proficiency,
             skills,
             availability,
-            neededFullTimeDeveloper,
-            neededPartTimeDeveloper,
-            neededHourlyDeveloper
         };
 
     scope.milestones.push(milestoneData);
@@ -122,7 +119,7 @@ exports.milestoneCreate = async (scope, projectId, {title, description, budget, 
  * @returns {Promise<Object>} Objeto JSON con los datos actualizados.
  */
 exports.milestoneUpdate = async (projectId, milestoneId, {title, description, budget, deliveryTime, deliveryDate,
-  role, proficiency, skills, availability, neededFullTimeDeveloper, neededPartTimeDeveloper, neededHourlyDeveloper}, token) => {
+  role, proficiency, skills, availability}, token) => {
 
         const milestoneData = {
             title,
@@ -134,9 +131,6 @@ exports.milestoneUpdate = async (projectId, milestoneId, {title, description, bu
             proficiency,
             skills,
             availability,
-            neededFullTimeDeveloper,
-            neededPartTimeDeveloper,
-            neededHourlyDeveloper
         };
 
         const response = await adapterAPI.updateMilestone(projectId, milestoneId, milestoneData, token);

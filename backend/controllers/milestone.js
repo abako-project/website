@@ -101,7 +101,7 @@ exports.create = async (req, res, next) => {
 
     let {
         title, description, budget, deliveryTime, deliveryDate,
-        role, proficiency, skills, availability
+        role, proficiency, skills, availability, neededHours
     } = req.body;
 
     deliveryDate = new Date(deliveryDate).valueOf() + req.session.browserTimezoneOffset - req.session.serverTimezoneOffset;
@@ -121,9 +121,7 @@ exports.create = async (req, res, next) => {
         proficiency,
         skills,
         availability,
-        neededFullTimeDeveloper: availability === "FullTime",
-        neededPartTimeDeveloper: availability === "PartTime",
-        neededHourlyDeveloper: availability === "WeeklyHours",
+        neededHours
     };
 
     require("../helpers/logs").log(milestone, "Nuevo Milestone");
@@ -214,10 +212,7 @@ exports.update = async (req, res) => {
     milestone.proficiency = body.proficiency || null;
     milestone.skills = Array.isArray(body.skills) ? body.skills : body.skills ? [body.skills] : ["none"];
     milestone.availability = body.availability;
-
-    milestone.neededFullTimeDeveloper = body.availability === "FullFime";
-    milestone.neededPartTimeDeveloper = body.availability === "PartTime";
-    milestone.neededHourlyDeveloper = body.availability === "WeeklyHours";
+    milestone.neededHours = body.neededHours;
 
     try {
         if (req.session.scope?.projectId == projectId) {

@@ -14,15 +14,16 @@
 
     <%= milestone.skills?.join(", ") || '' %>
 
-    <!-- <span class="bubble"> -->
+    <% if (milestone.availability) { %>
+        <%= milestone.availability === "fulltime" ? "[Full Time]"      : "" %>
+        <%= milestone.availability === "parttime" ? "[Part Time]"      : "" %>
+        <%= milestone.availability === "hourly"   ? ("[" + (milestone.neededHours || 0) + " Hours per Week]") : "" %>
+    <% } else { %>
         <%= milestone.neededFullTimeDeveloper ? "[Full Time]" : "" %>
-    <!-- </span> -->
-    <!-- <span class="bubble"> -->
         <%= milestone.neededPartTimeDeveloper ? "[Part Time]" : "" %>
-    <!-- </span> -->
-    <!-- <span class="bubble"> -->
-        <%= milestone.neededHourlyDeveloper ? "[Hours per Week]" : ""%>
-    <!-- </span> -->
+        <%= milestone.neededHourlyDeveloper   ? ("[" + (milestone.neededHours || 0) + " Hours per Week]") : "" %>
+    <% } %>
+
 </div>
 
 <% if (locals.showDeveloper ?? true) { %>

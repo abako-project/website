@@ -91,13 +91,19 @@
 
         <select id="availability" name="availability" required>
             <option value="">None</option>
-            <% availabilityOptions.forEach(option => { %>
-                <option value="<%= option %>"
-                        <%= milestone.availability === option && "selected" %>>
-                    <%= option %>
-                </option>
-            <% }) %>
+            <option value="fulltime" <%= milestone.availability === "fulltime" && "selected" %>>Full Time</option>
+            <option value="parttime" <%= milestone.availability === "parttime" && "selected" %>>Part Time</option>
+            <option value="hourly"   <%= milestone.availability === "hourly"   && "selected" %>>Hours per Week</option>
         </select>
+    </div>
+
+    <div class="form-group hourly">
+        <label for="neededHours">Hours per week:</label>
+        <input id="neededHours"
+               type="number"
+               name="neededHours"
+               value="<%= parseInt(milestone.neededHours) || '' %>"
+               min="0"/>
     </div>
 
     <div class="form-group skills formGroup--check profileCard__section">
