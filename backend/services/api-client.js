@@ -493,7 +493,7 @@ const adapterAPI = {
             );
             return response.data;
         } catch (error) {
-            handleError(error, `submitTaskForReview(${projectId})`);
+            handleError(error, `submitTaskForReview(${projectId},${taskId})`);
         }
     },
 
@@ -510,7 +510,7 @@ const adapterAPI = {
             );
             return response.data;
         } catch (error) {
-            handleError(error, `completeTask(${projectId})`);
+            handleError(error, `completeTask(${projectId},${taskId})`);
         }
     },
 

@@ -2,7 +2,6 @@
 
 const ProjectState = {
 
-
     // Ha ocurrido un error al intentar crear la propuesta del cliente.
     CreationError: "CreationError",
 
@@ -18,7 +17,7 @@ const ProjectState = {
     ProposalRejected: "ProposalRejected", // rechazado por el consultor
 
     // El consultor aprueba la propuesta del cliente.
-  //  ProposalApproved: "ProposalApproved", // aprobado por el consultor
+    //  ProposalApproved: "ProposalApproved", // aprobado por el consultor
 
     // El consultor esta creando los milestones
     ScopingInProgress: "ScopingInProgress", // consultor definiendo el scope
@@ -28,20 +27,22 @@ const ProjectState = {
 
     ScopeRejected: "ScopeRejected", // el cliente ha rechazado el scope.
 
-
     // El consultor debe solicitar que se asigne el Team de desarrolladores
     WaitingForTeamAssigment: "WaitingForTeamAssigment",
 
     // El cliente ha aceptado el Scope propuesto por el consultor y ahora tiene que hacer el Escrow.
- //   EscrowFundingNeeded: "EscrowFundingNeeded", // proyecto aprobado pera faltan los fondos del cliente
+    //   EscrowFundingNeeded: "EscrowFundingNeeded", // proyecto aprobado pera faltan los fondos del cliente
 
     // Despues de proporcionar los fondos, el proyecto empieza.
     // Cada uno de los milestones evoluciona con su propio estado.
     // Cada milestone empieza en el estado WaitingDeveloperAssignation esperando a que la DAO le asigne un developer.
     ProjectInProgress: "ProjectInProgress", // Empieza a contar el timepo de desarrollo.
 
+    PaymentReleased: "PaymentReleased",
+
+
  //   DisputeOpen: "disputeOpen", // por la entrega o el scope
-   Completed: "completed", // entregado, aceptado, votado y pagado
+    Completed: "completed", // entregado, aceptado, votado y pagado
  //   Cancelled: "cancelled", // cancelado por el cliente
 
  //   ToBeDone: "ToBeDone",  // Estado que marca algo pendiente de desarrollar
@@ -102,12 +103,16 @@ const flowProjectState = (project, scope) => {
         return ProjectState.WaitingForTeamAssigment;
     }
 
-    if (project.state === "team_assigned") { // Valor de estodo no definitivo
+    if (project.state === "team_assigned") {
         return ProjectState.ProjectInProgress;
     }
 
-    if (project.state === "completed") { // Valor de estodo no definitivo
+    if (project.state === "completed") {
         return ProjectState.Completed;
+    }
+
+    if (project.state === "payment_released") {
+        return ProjectState.PaymentReleased;
     }
 
     return ProjectState.Invalid;
@@ -138,8 +143,6 @@ const MilestoneState = {
 
     // El trabajo del milestone se ha completado (y ha sido aceptado por el cliente)
     MilestoneCompleted: "MilestoneCompleted",
-
-
 
     // Ahora hay que pagar al desarrollador.
     AwaitingPayment: "AwaitingPayment",
