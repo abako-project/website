@@ -1,12 +1,12 @@
-const seda = require("../services/seda");
+const seda = require("../models/seda");
 
-const states = require("../core/state");
+const states = require("../models/flowStates");
 const permissionController = require("./permission");
 
-const allSkills = require('../utils/skills.json');
-const allRoles = require('../utils/roles.json');
-const availabilityOptions = require('../utils/availability.json');
-const allProficiencies = require('../utils/proficiency.json');
+const allSkills = require('../models/enums/skills.json');
+const allRoles = require('../models/enums/roles.json');
+const availabilityOptions = require('../models/enums/availability.json');
+const allProficiencies = require('../models/enums/proficiency.json');
 
 
 // Listar todos los milestones o los de un cliente o los de un developer

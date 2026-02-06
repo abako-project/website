@@ -1,5 +1,5 @@
 
-const BudgetTypes = require('../../utils/budgets.json');
+const BudgetTypes = require('../enums/budgets.json');
 
 //-----------------------------------------------------------
 

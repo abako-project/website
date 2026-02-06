@@ -1,4 +1,4 @@
-const seda = require("../services/seda");
+const seda = require("../models/seda");
 // GET pantalla de votaciones segun el tipo de ususrio logueado devuelve a los developers o al consultor para que los voten 
 //se puede resumir codigo pero al ser función sujeta a cambios de requisitos, se deja así para mayor claridad
 

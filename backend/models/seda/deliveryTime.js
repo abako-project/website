@@ -1,6 +1,6 @@
 
 
-const deliveryTimes = require('../../utils/deliveryTimes.json');
+const deliveryTimes = require('../enums/deliveryTimes.json');
 
 
 //-----------------------------------------------------------

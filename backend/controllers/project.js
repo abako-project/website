@@ -1,5 +1,5 @@
 
-const seda = require("../services/seda");
+const seda = require("../models/seda");
 
 
 // Listar todos los proyectos o los de un cliente o los de un developer

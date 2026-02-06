@@ -1,6 +1,6 @@
 "use strict";
-const languagesMap = require('../utils/languages.json');
-const seda = require("../services/seda");
+const languagesMap = require('../models/enums/languages.json');
+const seda = require("../models/seda");
 
 // Autoload the client with id equals to :clientId
 exports.load = async (req, res, next, clientId) => {

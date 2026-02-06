@@ -54,17 +54,6 @@ A web platform connecting clients with developers through a project-based market
    npm install
    ```
 
-4. **Set up the database**:
-   
-   The application uses SQLite with Sequelize ORM. Database setup commands are configured via `sequelize-cli`.
-   
-   ```bash
-   # Run database migrations
-   npx sequelize-cli db:migrate
-   
-   # Seed the database with initial data (test users, reference data, etc.)
-   npx sequelize-cli db:seed:all
-   ```
 
 ---
 
@@ -105,9 +94,7 @@ The application will be accessible on **port 3001** by default.
 | **start** | `npm start` | Start server with supervisor (auto-restart on changes) |
 | **start2** | `npm run start2` | Start server without supervisor (manual restart) |
 | **sass** | `npm run sass` | Compile SASS stylesheets |
-| **migrate** | `npx sequelize-cli db:migrate` | Run pending database migrations |
-| **seed** | `npx sequelize-cli db:seed:all` | Populate database with seed data |
-| **migrate:undo** | `npx sequelize-cli db:migrate:undo` | Revert last migration |
+
 
 ---
 
@@ -152,7 +139,7 @@ After running the seed command, the following test users are available:
 
 - Sessions are stored in the database using `SequelizeStore`
 - Session expiration: **4 hours**
-- Session data includes: `id`, `email`, `name`, `isAdmin`, `developerId` (if developer), `clientId` (if client)
+- Session data includes: `email`, `name`, `token`, `developerId` (if developer), `clientId` (if client)
 
 ---
 
@@ -363,27 +350,27 @@ backend/
 ├── app.js                  # Express app configuration
 ├── bin/www                 # HTTP server entry point
 ├── config/
-│   └── config.json         # Database configuration
+│   ├── bbdd.config.json     # Database configuration
+│   └── adapter.config.json  # Blockchain API configuration
 ├── models/                 # Sequelize models (20+ entities)
-│   └── index.js           # Model definitions and relationships
+│   ├─── enums.js           # Hardcoded values
+│   ├─── adapter.js         # Adapter to access Blockchain services
+│   ├─── flowStates.js      # Projects and milestones states
+│   ├─── session.js         # Dababase model definitions
+│   └── seda/              # Service layer (SEDA system)
+│       └── index.js       # Centralized service exports
 ├── routes/                 # Express route definitions
 │   └── index.js           # Route aggregator
 ├── controllers/           # Business logic handlers
 │   ├── auth/              # Authentication controllers
 │   ├── permission.js      # Authorization middleware
 │   └── [entity].js        # Domain-specific controllers
-├── services/
-│   └── seda/              # Service layer (SEDA system)
-│       └── index.js       # Centralized service exports
 ├── views/                 # EJS templates
 │   ├── layouts/           # Layout templates
 │   ├── components/        # Reusable view components
 │   └── [domain]/          # Domain-specific views
-├── migrations/            # Database migration files
-├── seeders/               # Seed data files
 ├── public/               # Static assets (CSS, JS, images)
-├── helpers/              # Utility functions
-└── utils/                # Additional utilities
+└── helpers/              # Utility functions
 ```
 
 ---
@@ -395,38 +382,13 @@ backend/
 - **Type**: SQLite
 - **ORM**: Sequelize
 
-### Core Models
+### Models
 
-**User Management**:
-- `User` - Base user entity
-- `Client` - Client profile (1:1 with User)
-- `Developer` - Developer profile (1:1 with User)
-- `Role` - Developer roles
-- `Skill` - Technical skills
-- `Language` - Spoken languages
+**Session**:
+- `sid` - Session identifier
+- `expires` - Expiration date
+- `data` - Stored information
 
-**Project System**:
-- `Project` - Main project entity
-- `ProjectType` - Project categorization
-- `Budget` - Budget ranges
-- `DeliveryTime` - Delivery timeframes
-- `Milestone` - Project deliverables
-- `MilestoneLog` - Milestone history
-
-**Social Features**:
-- `Comment` - Project comments
-- `Vote` - User voting system
-- `Attachment` - File uploads
-
-### Key Relationships
-
-- User → Client (1:1)
-- User → Developer (1:1)
-- Client → Projects (1:N)
-- Developer → Milestones (1:N)
-- Project → Milestones (1:N)
-- Developer ↔ Skills (N:M)
-- Milestone ↔ Skills (N:M)
 
 ---
 
@@ -560,22 +522,6 @@ rm -rf node_modules package-lock.json
 npm install
 ```
 
-#### Migration Errors
-
-**Error**: Migration fails or throws errors
-
-**Solution**:
-```bash
-# Undo last migration
-npx sequelize-cli db:migrate:undo
-
-# Or undo all migrations
-npx sequelize-cli db:migrate:undo:all
-
-# Run migrations again
-npx sequelize-cli db:migrate
-```
-
 #### Session Issues
 
 **Error**: User logged out unexpectedly
@@ -611,7 +557,7 @@ For additional support:
 
 3. **Make your changes** to:
    - Controllers: `backend/controllers/`
-   - Services: `backend/services/seda/`
+   - Services: `backend/models/seda/`
    - Views: `backend/views/`
    - Routes: `backend/routes/`
 
@@ -622,23 +568,17 @@ For additional support:
 
 ### Adding New Features
 
-1. **Add Model** (if needed):
-   ```bash
-   npx sequelize-cli model:generate --name ModelName --attributes field1:string,field2:integer
-   npx sequelize-cli db:migrate
-   ```
+1. **Create Service** in `services/seda/[domain].js`
 
-2. **Create Service** in `services/seda/[domain].js`
+2. **Create Controller** in `controllers/[domain].js`
 
-3. **Create Controller** in `controllers/[domain].js`
+3. **Define Routes** in `routes/[domain].js`
 
-4. **Define Routes** in `routes/[domain].js`
+4. **Add Permission Middleware** as needed
 
-5. **Add Permission Middleware** as needed
+5. **Create Views** in `views/[domain]/`
 
-6. **Create Views** in `views/[domain]/`
-
-7. **Test** the feature
+6. **Test** the feature
 
 ---
 
@@ -652,6 +592,6 @@ For additional support:
 
 ---
 
-**Last Updated**: January 2026  
-**Version**: 1.0.0  
+**Last Updated**: February 2026  
+**Version**: 1.1.0  
 **Maintained By**: Development Team

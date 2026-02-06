@@ -4,7 +4,7 @@
  */
 
 const axios = require('axios');
-const apiConfig = require('../config/api.config');
+const apiConfig = require('../config/adapter.config');
 
 /**
  * Create axios instance with default configuration
@@ -710,10 +710,10 @@ const adapterAPI = {
 
     // ================== Calendar =========================
 
-    async registerWorker(contractAddress, worker, token) {
+    async registerWorker(worker, token) {
         try {
             const response = await adapterClient.post(
-                apiConfig.adapterAPI.endpoints.calendar.registerWorker(contractAddress),
+                apiConfig.adapterAPI.endpoints.calendar.registerWorker,
                 { worker },
                 {
                     headers: {
@@ -723,14 +723,14 @@ const adapterAPI = {
             );
             return response.data;
         } catch (error) {
-            handleError(error, `registerWorker(${contractAddress})`);
+            handleError(error, `registerWorker()`);
         }
     },
 
-    async setAvailability(contractAddress, availability, weeklyHours, token) {
+    async setAvailability(availability, weeklyHours, token) {
         try {
             const response = await adapterClient.post(
-                apiConfig.adapterAPI.endpoints.calendar.setAvailability(contractAddress),
+                apiConfig.adapterAPI.endpoints.calendar.setAvailability,
                 {
                     availability: {
                         type: availability,
@@ -745,14 +745,14 @@ const adapterAPI = {
             );
             return response.data;
         } catch (error) {
-            handleError(error, `setAvailability(${contractAddress})`);
+            handleError(error, `setAvailability(${availability})`);
         }
     },
 
-    async registerWorkers(contractAddress, workers, token) {
+    async registerWorkers(workers, token) {
         try {
             const response = await adapterClient.post(
-                apiConfig.adapterAPI.endpoints.calendar.registerWorkers(contractAddress),
+                apiConfig.adapterAPI.endpoints.calendar.registerWorkers,
                 { workers },
                 {
                     headers: {
@@ -762,14 +762,14 @@ const adapterAPI = {
             );
             return response.data;
         } catch (error) {
-            handleError(error, `registerWorkers(${contractAddress})`);
+            handleError(error, `registerWorkers()`);
         }
     },
 
-    async adminSetWorkerAvailability(contractAddress, worker, availability, token) {
+    async adminSetWorkerAvailability(worker, availability, token) {
         try {
             const response = await adapterClient.post(
-                apiConfig.adapterAPI.endpoints.calendar.adminSetWorkerAvailability(contractAddress),
+                apiConfig.adapterAPI.endpoints.calendar.adminSetWorkerAvailability,
                 { worker, availability },
                 {
                     headers: {
@@ -779,67 +779,67 @@ const adapterAPI = {
             );
             return response.data;
         } catch (error) {
-            handleError(error, `adminSetWorkerAvailability(${contractAddress})`);
+            handleError(error, `adminSetWorkerAvailability()`);
         }
     },
 
-    async getAvailabilityHours(contractAddress, worker) {
+    async getAvailabilityHours(worker) {
         try {
             const response = await adapterClient.get(
-                apiConfig.adapterAPI.endpoints.calendar.getAvailabilityHours(contractAddress),
+                apiConfig.adapterAPI.endpoints.calendar.getAvailabilityHours,
                 { params: { worker } }
             );
             return response.data;
         } catch (error) {
-            handleError(error, `getAvailabilityHours(${contractAddress})`);
+            handleError(error, `getAvailabilityHours()`);
         }
     },
 
-    async isAvailable(contractAddress, worker, minHours) {
+    async isAvailable(worker, minHours) {
         try {
             const params = { worker };
             if (minHours !== undefined) params.min_hours = minHours;
 
             const response = await adapterClient.get(
-                apiConfig.adapterAPI.endpoints.calendar.isAvailable(contractAddress),
+                apiConfig.adapterAPI.endpoints.calendar.isAvailable,
                 { params }
             );
             return response.data;
         } catch (error) {
-            handleError(error, `isAvailable(${contractAddress})`);
+            handleError(error, `isAvailable()`);
         }
     },
 
-    async getAvailableWorkers(contractAddress, minHours) {
+    async getAvailableWorkers(minHours) {
         try {
             const params = {};
             if (minHours !== undefined) params.min_hours = minHours;
 
             const response = await adapterClient.get(
-                apiConfig.adapterAPI.endpoints.calendar.getAvailableWorkers(contractAddress),
+                apiConfig.adapterAPI.endpoints.calendar.getAvailableWorkers,
                 { params }
             );
             return response.data;
         } catch (error) {
-            handleError(error, `getAvailableWorkers(${contractAddress})`);
+            handleError(error, `getAvailableWorkers()`);
         }
     },
 
-    async getRegisteredWorkers(contractAddress) {
+    async getRegisteredWorkers() {
         try {
-            const response = await adapterClient.get(apiConfig.adapterAPI.endpoints.calendar.getRegisteredWorkers(contractAddress));
+            const response = await adapterClient.get(apiConfig.adapterAPI.endpoints.calendar.getRegisteredWorkers);
             return response.data;
         } catch (error) {
-            handleError(error, `getRegisteredWorkers(${contractAddress})`);
+            handleError(error, `getRegisteredWorkers()`);
         }
     },
 
-    async getAllWorkersAvailability(contractAddress) {
+    async getAllWorkersAvailability() {
         try {
-            const response = await adapterClient.get(apiConfig.adapterAPI.endpoints.calendar.getAllWorkersAvailability(contractAddress));
+            const response = await adapterClient.get(apiConfig.adapterAPI.endpoints.calendar.getAllWorkersAvailability);
             return response.data;
         } catch (error) {
-            handleError(error, `getAllWorkersAvailability(${contractAddress})`);
+            handleError(error, `getAllWorkersAvailability()`);
         }
     },
 
@@ -1184,27 +1184,27 @@ const contractsAPI = {
         }
     },
 
-    async queryCalendarMethod(contractAddress, methodName, params = {}) {
+    async queryCalendarMethod(methodName, params = {}) {
         try {
             const response = await contractsClient.get(
-                apiConfig.contractsAPI.endpoints.calendar.query(contractAddress, methodName),
+                apiConfig.contractsAPI.endpoints.calendar.query(methodName),
                 { params }
             );
             return response.data;
         } catch (error) {
-            handleError(error, `queryCalendarMethod(${contractAddress}, ${methodName})`);
+            handleError(error, `queryCalendarMethod(${methodName})`);
         }
     },
 
-    async callCalendarMethod(contractAddress, methodName, data = {}) {
+    async callCalendarMethod(methodName, data = {}) {
         try {
             const response = await contractsClient.post(
-                apiConfig.contractsAPI.endpoints.calendar.call(contractAddress, methodName),
+                apiConfig.contractsAPI.endpoints.calendar.call(methodName),
                 data
             );
             return response.data;
         } catch (error) {
-            handleError(error, `callCalendarMethod(${contractAddress}, ${methodName})`);
+            handleError(error, `callCalendarMethod(${methodName})`);
         }
     },
 

@@ -1,5 +1,5 @@
 
-const seda = require("../services/seda");
+const seda = require("../models/seda");
 
 
 // Middleware: autenticación requerida

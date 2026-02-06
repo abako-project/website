@@ -14,8 +14,8 @@ const router = require('./routes');
 console.log('[app.js] Routes cargadas correctamente');
 
 console.log('[app.js] Cargando modelos Sequelize...');
-const sequelize = require("./models");
-const coreState = require("./core/state");
+const sequelize = require("./models/session");
+const coreState = require("./models/flowStates");
 console.log('[app.js] Modelos Sequelize cargados correctamente');
 
 // import 'remixicon/fonts/remixicon.css';
@@ -112,7 +112,7 @@ app.use(function (req, res, next) {
     res.locals.scope = req.session.scope;
 
     // Estado del flujo de un proyecto:
-    const coreState = require("./core/state");
+    const coreState = require("./models/flowStates");
     res.locals.ProjectState = coreState.ProjectState;
     res.locals.flowProjectState = coreState.flowProjectState;
     res.locals.MilestoneState = coreState.MilestoneState;

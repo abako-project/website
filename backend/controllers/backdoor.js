@@ -1,6 +1,6 @@
 "use strict";
 
-const seda = require("../services/seda");
+const seda = require("../models/seda");
 
 // Menu inicial
 exports.index = async (req, res) => {
@@ -52,7 +52,7 @@ exports.registeredDevelopers = async (req, res, next) => {
             })
         }
 
-        res.render(`backdoor/calendar`, {calendarAddress: seda.calendarAddress, info});
+        res.render(`backdoor/calendar`, {info});
     } catch (error) {
         console.log('Error: An error has occurred: ' + error);
         next(error);

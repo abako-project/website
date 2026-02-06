@@ -20,8 +20,8 @@
  *   SKIP_CONNECTIVITY=true - Skip initial connectivity checks
  */
 
-const { adapterAPI, virtoAPI, contractsAPI } = require('../services/api-client');
-const apiConfig = require('../config/api.config');
+const { adapterAPI, virtoAPI, contractsAPI } = require('../models/adapter');
+const apiConfig = require('../config/adapter.config');
 
 // Test configuration
 const TEST_CONFIG = {

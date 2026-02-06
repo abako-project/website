@@ -1,5 +1,5 @@
 
-const seda = require("../../services/seda");
+const seda = require("../../models/seda");
 
 exports.registerCreate = async (req, res, next) => {
 

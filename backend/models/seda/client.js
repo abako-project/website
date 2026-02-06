@@ -1,6 +1,6 @@
 
 
-const {adapterAPI} = require("../api-client");
+const {adapterAPI} = require("../adapter");
 
 
 //-----------------------------------------------------------

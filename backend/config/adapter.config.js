@@ -6,8 +6,11 @@
 // dotenv se carga en bin/www, no es necesario cargarla aquí
 const BASE_URL = process.env.BACKEND_API_URL || 'https://dev.abako.xyz';
 
+const calendarAddress = "Dd34LSU53MLwJpq4wfHmDFwAifJrcaPbd1qTCGZcR7iXQkd";
+
 module.exports = {
     baseURL: BASE_URL,
+
 
     // Adapter API (NestJS - Port 4000)
     adapterAPI: {
@@ -87,16 +90,16 @@ module.exports = {
             calendar: {
                 deploy: (version) => `/calendar/deploy/${version}`,
                 // POST Methods
-                registerWorker:        (addr) => `/calendar/${addr}/register_worker`,
-                registerWorkers:       (addr) => `/calendar/${addr}/register_workers`,
-                setAvailability:       (addr) => `/calendar/${addr}/set_availability`,
-                adminSetAvailability:  (addr) => `/calendar/${addr}/admin_set_worker_availability`,
+                registerWorker:        `/calendar/${calendarAddress}/register_worker`,
+                registerWorkers:       `/calendar/${calendarAddress}/register_workers`,
+                setAvailability:       `/calendar/${calendarAddress}/set_availability`,
+                adminSetAvailability:  `/calendar/${calendarAddress}/admin_set_worker_availability`,
                 // GET Methods
-                getAvailabilityHours:  (addr) => `/calendar/${addr}/get_availability_hours`,
-                isAvailable:           (addr) => `/calendar/${addr}/is_available`,
-                getAvailableWorkers:   (addr) => `/calendar/${addr}/get_available_workers`,
-                getRegisteredWorkers:  (addr) => `/calendar/${addr}/get_registered_workers`,
-                getAllWorkersAvailability: (addr) => `/calendar/${addr}/get_all_workers_availability`
+                getAvailabilityHours:  `/calendar/${calendarAddress}/get_availability_hours`,
+                isAvailable:           `/calendar/${calendarAddress}/is_available`,
+                getAvailableWorkers:   `/calendar/${calendarAddress}/get_available_workers`,
+                getRegisteredWorkers:  `/calendar/${calendarAddress}/get_registered_workers`,
+                getAllWorkersAvailability: `/calendar/${calendarAddress}/get_all_workers_availability`
             }
         }
     },
@@ -131,8 +134,8 @@ module.exports = {
             },
             calendar: {
                 constructors: '/calendar/constructors',
-                query: (address, method) => `/calendar/query/${address}/${method}`,
-                call: (address, method) => `/calendar/call/${address}/${method}`,
+                query: (method) => `/calendar/query/${calendarAddress}/${method}`,
+                call: (method) => `/calendar/call/${calendarAddress}/${method}`,
                 deploy: '/calendar/deploy/v5'
             }
         }

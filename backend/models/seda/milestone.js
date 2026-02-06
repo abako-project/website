@@ -1,7 +1,7 @@
 
-const {adapterAPI} = require('../api-client');
+const {adapterAPI} = require('../adapter');
 
-const states = require("../../core/state");
+const states = require("../flowStates");
 
 //-----------------------------------------------------------
 

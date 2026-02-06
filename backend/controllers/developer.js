@@ -1,13 +1,13 @@
 "use strict";
 
-const seda = require("../services/seda");
+const seda = require("../models/seda");
 const {DataTypes} = require("sequelize");
 
-const languagesMap = require('../utils/languages.json');
-const allSkills = require('../utils/skills.json');
-const allRoles = require('../utils/roles.json');
-const availabilityOptions = require('../utils/availability.json');
-const allProficiencies = require('../utils/proficiency.json');
+const languagesMap = require('../models/enums/languages.json');
+const allSkills = require('../models/enums/skills.json');
+const allRoles = require('../models/enums/roles.json');
+const availabilityOptions = require('../models/enums/availability.json');
+const allProficiencies = require('../models/enums/proficiency.json');
 
 // Autoload the developer with id equals to :developerId
 exports.load = async (req, res, next, developerId) => {

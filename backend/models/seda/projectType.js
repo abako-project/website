@@ -1,5 +1,5 @@
 
-const projectTypes = require('../../utils/projectTypes.json');
+const projectTypes = require('../enums/projectTypes.json');
 
 //-----------------------------------------------------------
 

@@ -1,11 +1,6 @@
 
-const {adapterAPI} = require('../api-client');
+const {adapterAPI} = require('../adapter');
 
-// Esto desarparece con el siguiente api adapter
-const calendarAddress = "Dd34LSU53MLwJpq4wfHmDFwAifJrcaPbd1qTCGZcR7iXQkd";
-
-
-exports.calendarAddress = calendarAddress;
 
 //-----------------------------------------------------------
 
@@ -14,7 +9,7 @@ exports.calendarAddress = calendarAddress;
  */
 exports.registeredWorkers = async () => {
 
-    const response = await adapterAPI.getRegisteredWorkers(calendarAddress);
+    const response = await adapterAPI.getRegisteredWorkers();
     return response;
 }
 
@@ -25,7 +20,7 @@ exports.registeredWorkers = async () => {
  */
 exports.workersAvailability = async () => {
 
-    const response = await adapterAPI.getAllWorkersAvailability(calendarAddress);
+    const response = await adapterAPI.getAllWorkersAvailability();
 
     return response;
 }
@@ -71,7 +66,7 @@ exports.registerWorker = async (userId, token) => {
 
     // Si no estoy registrado en Calendar, registrarme:
     if (!registeredWorkers.includes(address)) {
-        let response = await adapterAPI.registerWorker(calendarAddress, address, token);
+        let response = await adapterAPI.registerWorker(address, token);
         if (!response.success) {
             throw new Error("No puedo registrarme en el contrato Calendar.");
         }
@@ -111,7 +106,7 @@ exports.deployCalendar = async (version, token) => {
  */
 exports.registerWorkers = async (workers, token) => {
     try {
-        return await adapterAPI.registerWorkers(calendarAddress, workers, token);
+        return await adapterAPI.registerWorkers(workers, token);
     } catch (error) {
         console.error(`[SEDA Calendar] Error registering workers:`, error.message);
         throw error;
@@ -132,7 +127,7 @@ exports.registerWorkers = async (workers, token) => {
  */
 exports.setAvailability = async (availability, weeklyHours, token) => {
     try {
-        return await adapterAPI.setAvailability(calendarAddress, availability, weeklyHours, token);
+        return await adapterAPI.setAvailability(availability, weeklyHours, token);
     } catch (error) {
         console.error(`[SEDA Calendar] Error setting availability:`, error.message);
         throw error;
@@ -152,7 +147,7 @@ exports.setAvailability = async (availability, weeklyHours, token) => {
  */
 exports.getAvailabilityHours = async (worker) => {
     try {
-        return await adapterAPI.getAvailabilityHours(calendarAddress, worker);
+        return await adapterAPI.getAvailabilityHours(worker);
     } catch (error) {
         console.error(`[SEDA Calendar] Error getting availability hours:`, error.message);
         throw error;
@@ -173,7 +168,7 @@ exports.getAvailabilityHours = async (worker) => {
  */
 exports.isAvailable = async (worker, minHours) => {
     try {
-        return await adapterAPI.isAvailable(calendarAddress, worker, minHours);
+        return await adapterAPI.isAvailable(worker, minHours);
     } catch (error) {
         console.error(`[SEDA Calendar] Error checking availability:`, error.message);
         throw error;
@@ -193,7 +188,7 @@ exports.isAvailable = async (worker, minHours) => {
  */
 exports.getAvailableWorkers = async (minHours) => {
     try {
-        return await adapterAPI.getAvailableWorkers(calendarAddress, minHours);
+        return await adapterAPI.getAvailableWorkers(minHours);
     } catch (error) {
         console.error(`[SEDA Calendar] Error getting available workers:`, error.message);
         throw error;
@@ -212,7 +207,7 @@ exports.getAvailableWorkers = async (minHours) => {
  */
 exports.getAllWorkersAvailability = async () => {
     try {
-        return await adapterAPI.getAllWorkersAvailability(calendarAddress);
+        return await adapterAPI.getAllWorkersAvailability();
     } catch (error) {
         console.error(`[SEDA Calendar] Error getting all workers availability:`, error.message);
         throw error;

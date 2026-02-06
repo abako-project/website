@@ -1,5 +1,5 @@
 
-const seda = require("../services/seda");
+const seda = require("../models/seda");
 
 // Listar todos los pagos del usuario loggueado.
 // GET + /payments
