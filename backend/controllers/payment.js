@@ -1,6 +1,9 @@
 
 const seda = require("../models/seda");
 
+const advancePaymentPercentage = 25;
+exports.advancePaymentPercentage = advancePaymentPercentage;
+
 // Listar todos los pagos del usuario loggueado.
 // GET + /payments
 exports.payments = async (req, res, next) => {
@@ -12,9 +15,13 @@ exports.payments = async (req, res, next) => {
 
             const projects = await seda.projectsIndex(req.session.loginUser.clientId, null);
 
+            projects.reverse();
+
+            const allDeliveryTimes = await seda.deliveryTimeIndex();
+
             // No se puede usar el valor client en las opciones cuando
             // hay llamadas anidadas a la funcion include de EJS.
-            res.render('payments/index', {projects, c: client});
+            res.render('payments/index', {projects, c: client, allDeliveryTimes, advancePaymentPercentage});
 
         } else if (req.session.loginUser.developerId) {
 
@@ -22,9 +29,13 @@ exports.payments = async (req, res, next) => {
 
             const projects = await seda.projectsIndex(null, req.session.loginUser.developerId);
 
+            projects.reverse();
+
+            const allDeliveryTimes = await seda.deliveryTimeIndex();
+
             // No se puede usar el valor client en las opciones cuando
             // hay llamadas anidadas a la funcion include de EJS.
-            res.render('payments/index', {projects, c: null, developer, developer});
+            res.render('payments/index', {projects, developer, allDeliveryTimes, advancePaymentPercentage});
 
         } else {
             throw new Error("Estado imposible. Para consultar pagos hay que loguearse.");

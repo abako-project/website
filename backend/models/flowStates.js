@@ -187,10 +187,6 @@ const flowMilestoneState = (milestone) => {
     }
 
     if (milestone.state === "ALGO") {
-        return MilestoneState.AwaitingPayment;
-    }
-
-    if (milestone.state === "ALGO") {
         return MilestoneState.Paid;
     }
     return MilestoneState.Invalid;

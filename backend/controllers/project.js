@@ -1,6 +1,8 @@
 
 const seda = require("../models/seda");
 
+const {advancePaymentPercentage} = require("./payment");
+
 
 // Listar todos los proyectos o los de un cliente o los de un developer
 // GET + /projects
@@ -258,7 +260,7 @@ exports.scopeSubmit = async (req, res, next) => {
 
     const consultantComment = req.body.consultantComment || "";
 
-    const advancePaymentPercentage = 10;
+   // const advancePaymentPercentage = 10;
     const documentHash = "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef";
 
 

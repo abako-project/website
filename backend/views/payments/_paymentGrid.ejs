@@ -3,22 +3,60 @@
 
     <% for (let project of projects) { %>
 
+        <% if (!project.milestones.length) continue; %>
+
         <h1 class="payments__projectTitle">
             Project <%= project.title %>
         </h1>
 
+        <%
+            // Milestones with zero payment.
+            // States: CreatingMilestone, WaitingDeveloperAssignation.
+            let zeroPaidMilestones = project.milestones.filter(milestone =>
+                    [locals.MilestoneState.CreatingMilestone,
+                        locals.MilestoneState.WaitingDeveloperAssignation
+                    ].includes(locals.flowMilestoneState(milestone)));
 
-        <% let milestonesAwaitingPayment = project.milestones.filter(milestone => (milestone.state === "AwaitingPayment")); %>
-        <% let milestonesPaid = project.milestones.filter(milestone => (milestone.state === "Paid")); %>
+            // Milestones with advanced payment received.
+            // States: MilestoneInProgress, WaitingClientAcceptSubmission, MilestoneCompleted, SubmissionRejectedByClient.
+            let advancedPaidMilestones = project.milestones.filter(milestone =>
+                    [locals.MilestoneState.MilestoneInProgress,
+                        locals.MilestoneState.WaitingClientAcceptSubmission,
+                        locals.MilestoneState.MilestoneCompleted,
+                        locals.MilestoneState.SubmissionRejectedByClient
+                    ].includes(locals.flowMilestoneState(milestone)));
+
+            // Milestones paid.
+            // States: Paid.
+            let paidMilestones = project.milestones.filter(milestone =>
+                    [locals.MilestoneState.Paid
+                    ].includes(locals.flowMilestoneState(milestone)));
+
+            // Project: Total Budget Funded
+            let projectTotalBudgetFunded = project.milestones.reduce((acc, milestone) => acc + milestone.budget, 0);
+            projectTotalBudgetFunded = Math.round(projectTotalBudgetFunded * 100)/100;
+
+            // Project: Payment in Advanced
+            let projectPaymentInAdvanced = advancedPaidMilestones.reduce((acc, milestone) =>
+                    acc + milestone.budget * advancePaymentPercentage / 100, 0);
+            projectPaymentInAdvanced = Math.round(projectPaymentInAdvanced * 100)/100;
+
+            // Project: Payment for Completed milestones
+            let projectPaymentForCompleted = paidMilestones.reduce((acc, milestone) => acc + milestone.budget, 0);
+            projectPaymentForCompleted = Math.round(projectPaymentForCompleted * 100)/100;
+
+            // Project: Funds Remaining
+            let projectFundsRemaining = projectTotalBudgetFunded - projectPaymentInAdvanced - projectPaymentForCompleted;
+
+        %>
 
         <div class="payments__paymentInfo">
             <p class="paymentInfoItem">
-                <span class="paymentInfoItem__title">
-                    Total Budget Funded
-                </span>
-                <span class="paymentInfoItem__ammount">
-                    $<%= project.milestones.reduce((acc, milestone) => acc + milestone.budget, 0) %>
-                </span>
+                <span class="paymentInfoItem__title">Total Budget Funded</span>
+                <span class="paymentInfoItem__ammount">$<%= projectTotalBudgetFunded %> </span>
+
+                <span class="paymentInfoItem__title">Funds Remaining</span>
+                <span class="paymentInfoItem__ammount">$<%= projectFundsRemaining %> </span>
             </p>
         </div>
 
@@ -26,24 +64,34 @@
 
             <article>
                 <p class="paymentInfoItem">
-                    <span class="paymentInfoItem__title">
-                        Funds Awaiting Payment
-                    </span>
-                    <span class="paymentInfoItem__ammount">
-                        $<%= milestonesAwaitingPayment.reduce((acc, milestone) => acc + milestone.budget, 0) %>
-                    </span>
+                    <span class="paymentInfoItem__title">Awaiting Payment</span>
+                    <span class="paymentInfoItem__ammount">$<%= projectPaymentInAdvanced %></span>
                 </p>
 
                 <div class="milestoneGrid__col">
                     <h3 class="colHeader">
-                        <span class="counter"><%= milestonesAwaitingPayment.length %></span>
+                        <span class="counter"><%= advancedPaidMilestones.length %></span>
                         <span> Awaiting Payment </span>
                     </h3>
-                    <% for (let milestone of milestonesAwaitingPayment) { %>
+                    <% for (let milestone of advancedPaidMilestones) { %>
                         <div class="milestone">
+
+                            <p class="milestone__dev">
+                                <img class="attachment"
+                                     src="/clients/<%= project.clientId %>/attachment"/>
+                                <%= project.client.name %>
+                                for
+                                <%= project.title %>
+
+                                <span>
+                                    [$<%= milestone.budget %> * <%= advancePaymentPercentage %> % =
+                                    $<%= Math.round(milestone.budget * advancePaymentPercentage / 100) * 100 %>]
+                                </span>
+                            </p>
+
                             <%- include("./__paymentGridItem", {project, milestone}) %>
                         </div>
-                        <% } %>
+                        <%  } %>
                 </div>
             </article>
 
@@ -51,21 +99,28 @@
             <article>
                 
                 <p class="paymentInfoItem">
-                    <span class="paymentInfoItem__title">
-                        Funds Paid
-                    </span>
+                    <span class="paymentInfoItem__title">Paid</span>
                     <span class="paymentInfoItem__ammount">
-                        $<%= milestonesPaid.reduce((acc, milestone) => acc + milestone.budget, 0) %>
+                        $<%= projectPaymentForCompleted %>
                     </span>
                 </p>
 
                 <div class="milestoneGrid__col">
                     <h3 class="colHeader">
-                        <span class="counter"><%= milestonesPaid.length %></span>
+                        <span class="counter"><%= paidMilestones.length %></span>
                         <span> Paid</span>
                     </h3>
-                    <% for (let milestone of milestonesPaid) { %>
+                    <% for (let milestone of paidMilestones) { %>
                         <div class="milestone">
+
+                            <p class="milestone__dev">
+                                <img class="attachment"
+                                     src="/clients/<%= project.clientId %>/attachment"/>
+                                <%= project.client.name %>
+                                for
+                                <%= project.title %>
+                            </p>
+
                             <%- include("./__paymentGridItem", {project, milestone}) %>
                         </div>
                     <% } %>
