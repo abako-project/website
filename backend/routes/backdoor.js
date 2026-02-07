@@ -31,5 +31,8 @@ router.get('/projects',
 router.get('/registeredDevelopers',
     backdoorController.registeredDevelopers);
 
+// Comodin
+router.get('/wild',
+    backdoorController.wild);
 
 module.exports = router;

@@ -5,9 +5,9 @@
         display: grid;
 
         grid-template-areas:
-                 'title   title   title   title   client state'
-                 'summary summary summary summary client   flow'
-                 'nav     nav     nav     .       client     flow';
+                 'title   title   title   title   client  state'
+                 'summary summary summary summary client  flow'
+                 'nav     nav     nav     .       client  flow';
     }
 </style>
 
@@ -30,12 +30,14 @@
         </div>
     </div>
 
-    <!-- <div  style="grid-area: nav;">
+    <div style="grid-area: nav;">
         <nav id="projectNav" role="navigation">
-            <a href="/projects/<%= project.id %>"><span>Overview</span></a>
-            <a href="/projects/<%= project.id %>/tasks"><span>Milestones &amp; Tasks</span></a>
+
+            <%- include("./__tabs", {project}) %>
+
         </nav>
-    </div> -->
+    </div>
+
 
     <span class="appHeader__state state" style="grid-area: state;"> 
         <i class="ri-timer-2-line"></i>

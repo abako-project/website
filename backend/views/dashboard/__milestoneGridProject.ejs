@@ -1,0 +1,91 @@
+<% let unassignedMilestones = project.milestones.filter(milestone =>
+        (locals.flowMilestoneState(milestone) === locals.MilestoneState.WaitingDeveloperAssignation) &&
+        (locals.loginUser.clientId == project.clientId ||
+                locals.loginUser.developerId == project.consultantId || locals.loginUser.developerId == milestone.developerId)
+); %>
+
+<% let scheduledMilestones = project.milestones.filter(milestone =>
+        (locals.flowMilestoneState(milestone) === locals.MilestoneState.MilestoneInProgress) &&
+        (locals.loginUser.clientId == project.clientId ||
+                locals.loginUser.developerId == project.consultantId || locals.loginUser.developerId == milestone.developerId)
+); %>
+
+<% let milestonesWaitingForClientAcceptSubmission = project.milestones.filter(milestone =>
+        (locals.flowMilestoneState(milestone) === locals.MilestoneState.WaitingClientAcceptSubmission) &&
+        (locals.loginUser.clientId == project.clientId ||
+                locals.loginUser.developerId == project.consultantId || locals.loginUser.developerId == milestone.developerId)
+); %>
+
+<% let submissionRejectedByClientMilestones = project.milestones.filter(milestone =>
+        (locals.flowMilestoneState(milestone) === locals.MilestoneState.SubmissionRejectedByClient) &&
+        (locals.loginUser.clientId == project.clientId ||
+                locals.loginUser.developerId == project.consultantId || locals.loginUser.developerId == milestone.developerId)
+); %>
+
+<% let completedMilestones = project.milestones.filter(milestone =>
+        (locals.flowMilestoneState(milestone) === locals.MilestoneState.MilestoneCompleted) &&
+        (locals.loginUser.clientId == project.clientId ||
+                locals.loginUser.developerId == project.consultantId || locals.loginUser.developerId == milestone.developerId)
+); %>
+
+<section class="milestoneGrid">
+    <div class="milestoneGrid__col">
+        <h3 class="colHeader">
+                    <span class="counter">
+                        <%= unassignedMilestones.length %>
+                    </span>
+            <span> Unassigned Milestones </span>
+        </h3>
+        <% for (let milestone of unassignedMilestones) { %>
+            <%- include("./__milestoneGridItem", {project, milestone}) %>
+        <% } %>
+    </div>
+
+    <div class="milestoneGrid__col">
+        <h3 class="colHeader">
+                    <span class="counter">
+                        <%= scheduledMilestones.length %>
+                    </span>
+            <span> Scheduled Milestones </span>
+        </h3>
+        <% for (let milestone of scheduledMilestones) { %>
+            <%- include("./__milestoneGridItem", {project, milestone}) %>
+        <% } %>
+    </div>
+
+
+
+    <div class="milestoneGrid__col">
+        <h3 class="colHeader colHeader--active">
+                    <span class="counter">
+                       <%= milestonesWaitingForClientAcceptSubmission.length %>
+                    </span>
+            <span> In Client Review </span>
+        </h3>
+        <% for (let milestone of milestonesWaitingForClientAcceptSubmission) { %>
+            <%- include("./__milestoneGridItem", {project, milestone}) %>
+        <% } %>
+    </div>
+
+    <div class="milestoneGrid__col">
+        <h3 class="colHeader colHeader--completed">
+            <span class="counter"> <%= completedMilestones.length %> </span>
+            <span> Completed </span>
+        </h3>
+        <% for (let milestone of completedMilestones) { %> <%-
+        include("./__milestoneGridItem", {project, milestone}) %>
+        <% } %>
+    </div>
+
+    <div class="milestoneGrid__col">
+        <h3 class="colHeader colHeader--rejected">
+        <span class="counter">
+          <%= submissionRejectedByClientMilestones.length %>
+        </span>
+            <span> Rejected </span>
+        </h3>
+        <% for (let milestone of submissionRejectedByClientMilestones) { %> <%-
+        include("./__milestoneGridItem", {project, milestone}) %>
+        <% } %>
+    </div>
+</section>

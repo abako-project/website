@@ -31,7 +31,7 @@ router.post('/',
 // Mostrar detalles de un proyecto (o propuesta)
 router.get('/:projectId',
   permissionController.isAuthenticated,
-    projectController.show);
+    projectController.showInformation);
 
 // Mostrar la pantalla que ofrece publicar  (submit) una propuesta nueva o rechazada
 router.get('/:projectId/submit',
@@ -136,6 +136,11 @@ router.put('/:projectId/constraints/swaporder/:id1(\\d+)/:id2(\\d+)',
   constraintController.swapOrder);
 
 // === Milestones
+
+// Mostrar milestones de un proyecto
+router.get('/:projectId/milestones',
+    permissionController.isAuthenticated,
+    projectController.showMilestones);
 
 // Editar todos los milestones de un proyecto
 router.get('/:projectId/milestones/edit',
@@ -295,6 +300,11 @@ router.post('/:projectId/milestones/:milestoneId(\\d+)/history/consultantComment
     milestoneController.createConsultantHistoryComments);
 
 // === Pagar
+
+// Mostrar payments de un proyecto
+router.get('/:projectId/payments',
+    permissionController.isAuthenticated,
+    projectController.showPayments);
 
 router.post('/:projectId/milestones/:milestoneId(\\d+)/pay',
     permissionController.isAuthenticated,

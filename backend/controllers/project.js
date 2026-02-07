@@ -111,8 +111,8 @@ exports.createProposal = async (req, res, next) => {
 
 };
 
-// Mostrar detalle de un proyecto
-exports.show = async (req, res, next) => {
+// Mostrar informacion de un proyecto
+exports.showInformation = async (req, res, next) => {
 
     const projectId = req.params.projectId;
     const project = await seda.project(projectId);
@@ -135,7 +135,7 @@ exports.show = async (req, res, next) => {
     const allDeliveryTimes = await seda.deliveryTimeIndex();
     const allProjectTypes = await seda.projectTypeIndex();
 
-    res.render('projects/showProject', {
+    res.render('projects/showProjectInformation', {
         project,
         allBudgets,
         allDeliveryTimes,
@@ -143,15 +143,47 @@ exports.show = async (req, res, next) => {
     });
 };
 
+// Mostrar milestones de un proyecto
+exports.showMilestones = async (req, res, next) => {
+
+    const projectId = req.params.projectId;
+    const project = await seda.project(projectId);
+
+    require("../helpers/logs").log(project, "Project show Milestones");
+
+    const allDeliveryTimes = await seda.deliveryTimeIndex();
+
+    res.render('projects/showProjectMilestones', {
+        project,
+        allDeliveryTimes
+    });
+};
+
+
+// Mostrar payments de un proyecto
+exports.showPayments = async (req, res, next) => {
+    const projectId = req.params.projectId;
+    const project = await seda.project(projectId);
+
+    const allDeliveryTimes = await seda.deliveryTimeIndex();
+
+    res.render('projects/showProjectPayments', {
+        project,
+        allDeliveryTimes,
+        advancePaymentPercentage
+    });
+};
+
+
 // Mostrar la pantalla para ofrecer hacer un submit de la propuesta
 exports.submit = async (req, res, next) => {
 
-  const projectId = req.params.projectId;
-  const project = await seda.project(projectId);
+    const projectId = req.params.projectId;
+    const project = await seda.project(projectId);
 
-  res.render('proposals/submitProposal', {
-    project,
-  });
+    res.render('proposals/submitProposal', {
+        project,
+    });
 };
 
 // Mostrar formulario de edición

@@ -58,3 +58,24 @@ exports.registeredDevelopers = async (req, res, next) => {
         next(error);
     }
 };
+
+
+// Comodin.
+exports.wild = async (req, res, next) => {
+    try {
+
+        req.session.loginUser = {
+            email: "d1@f6.es",
+            name: "d1",
+            clientId: undefined,
+            developerId: 4,
+            token: "aaaaaa"
+        };
+
+        res.redirect('/backdoor');
+    } catch (error) {
+        console.log('Error: An error has occurred: ' + error);
+        next(error);
+    }
+};
+
