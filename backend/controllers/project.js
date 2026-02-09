@@ -63,22 +63,22 @@ exports.newProposal = async (req, res, next) => {
 // Crear proyecto
 exports.createProposal = async (req, res, next) => {
 
-  let {title, summary, description, url, projectType, budget, deliveryTime, deliveryDate} = req.body;
+    let {title, summary, description, url, projectType, budget, deliveryTime, deliveryDate} = req.body;
 
     deliveryDate = new Date(deliveryDate).valueOf() + req.session.browserTimezoneOffset - req.session.serverTimezoneOffset;
 
-  const clientId = req.session.loginUser?.clientId;
+    const clientId = req.session.loginUser?.clientId;
 
-  let proposal = {
-    title,
-    summary,
-    description,
-    url,
-    projectType,
-    budget,
-    deliveryTime,
-    deliveryDate
-  };
+    let proposal = {
+        title,
+        summary,
+        description,
+        url,
+        projectType,
+        budget,
+        deliveryTime,
+        deliveryDate
+    };
 
     try {
     // Save into the data base
@@ -117,7 +117,7 @@ exports.showInformation = async (req, res, next) => {
     const projectId = req.params.projectId;
     const project = await seda.project(projectId);
 
-    require("../helpers/logs").log(project, "Project PUNTO 1");
+    // require("../helpers/logs").log(project, "Project PUNTO 1");
 
     // Si el projecto no tiene milestones y
     // si existe req.session.scope.projectId y vale projectId, entonces sustituyo el
@@ -129,7 +129,7 @@ exports.showInformation = async (req, res, next) => {
         }
     }
 
-   require("../helpers/logs").log(project, "Project PUNTO 2");
+   // require("../helpers/logs").log(project, "Project PUNTO 2");
 
     const allBudgets = await seda.budgetIndex();
     const allDeliveryTimes = await seda.deliveryTimeIndex();
@@ -149,7 +149,7 @@ exports.showMilestones = async (req, res, next) => {
     const projectId = req.params.projectId;
     const project = await seda.project(projectId);
 
-    require("../helpers/logs").log(project, "Project show Milestones");
+    // require("../helpers/logs").log(project, "Project show Milestones");
 
     const allDeliveryTimes = await seda.deliveryTimeIndex();
 
@@ -299,7 +299,7 @@ exports.scopeSubmit = async (req, res, next) => {
     try {
 
         // require("../helpers/logs").log(projectId, "projectId");
-        require("../helpers/logs").log(req.session.scope, "*****> Proposed Scope");
+        // require("../helpers/logs").log(req.session.scope, "*****> Proposed Scope");
         // require("../helpers/logs").log(advancePaymentPercentage, "advancePaymentPercentage");
         // require("../helpers/logs").log(documentHash, "documentHash");
         // require("../helpers/logs").log(req.session.loginUser.token, "Token");
@@ -432,14 +432,14 @@ exports.assignTeam = async (req, res, next) => {
 
     try {
         const res1 = await seda.assignTeam(projectId, 2, req.session.loginUser.token);
-        require("../helpers/logs").log(res1, "Assign Team");
+        // require("../helpers/logs").log(res1, "Assign Team");
 
         const res2 = await seda.getTeam(projectId);
-        require("../helpers/logs").log(res2, "Get Team");
+        // require("../helpers/logs").log(res2, "Get Team");
 
 
         const res3 = await seda.getScopeInfo(projectId);
-        require("../helpers/logs").log(res3, "Get ScopeI nfo");
+       // require("../helpers/logs").log(res3, "Get Scope Info");
 
 
 

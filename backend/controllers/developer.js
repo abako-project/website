@@ -159,19 +159,19 @@ exports.update = async (req, res, next) => {
 // GET /developers/:developerId/attachment
 exports.attachment = async (req, res, next) => {
 
-  try {
-    const developerId = req.params.developerId;
+    try {
+        const developerId = req.params.developerId;
 
-    const attachment = await seda.developerAttachment(developerId);
+        const attachment = await seda.developerAttachment(developerId);
 
-    if (!attachment || !attachment.image) {
-      return res.redirect("/images/none.png");
+        if (!attachment || !attachment.image) {
+            return res.redirect("/images/none.png");
+        }
+        res.type(attachment.mime);
+        res.send(Buffer.from(attachment.image));
+
+    } catch (error) {
+        next(error);
     }
-    res.type(attachment.mime);
-    res.send(Buffer.from(attachment.image));
-
-  } catch (error) {
-    next(error);
-  }
 };
 

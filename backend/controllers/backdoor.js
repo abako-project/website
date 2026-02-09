@@ -59,18 +59,37 @@ exports.registeredDevelopers = async (req, res, next) => {
     }
 };
 
+// login client 1
+exports.loginClient1 = async (req, res) => {
+    req.session.loginUser = {
+        email: "c1@mock.es",
+        name: "c1",
+        clientId: 1,
+        developerId: undefined,
+        token: "aaaaaa"
+    };
+
+    res.redirect('/');
+};
+
+
+// login developer 1
+exports.loginDeveloper1 = async (req, res) => {
+    req.session.loginUser = {
+        email: "d1@mock.es",
+        name: "d1",
+        clientId: undefined,
+        developerId: 1,
+        token: "aaaaaa"
+    };
+
+    res.redirect('/');
+};
 
 // Comodin.
 exports.wild = async (req, res, next) => {
     try {
 
-        req.session.loginUser = {
-            email: "d1@f6.es",
-            name: "d1",
-            clientId: undefined,
-            developerId: 4,
-            token: "aaaaaa"
-        };
 
         res.redirect('/backdoor');
     } catch (error) {

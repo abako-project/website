@@ -23,4 +23,13 @@
     <ul>
         <li><a href="/backdoor/wild">Wild</a></li>
     </ul>
+
+    <% if (process.env.VIRTO_MOCK) { %>
+        <h2>Login</h2>
+        <ul>
+            <li><a href="/backdoor/loginclient1?_method=POST">Login Client 1</a></li>
+            <li><a href="/backdoor/logindeveloper1?_method=POST">Login Developer 1</a></li>
+        </ul>
+    <% } %>
+
 </div>

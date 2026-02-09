@@ -1,0 +1,38 @@
+
+[
+
+  {
+    "_id": "6989b20175bcddfdefc11088",
+    "name": "c1",
+    "email": "c1@mock.es",
+    "company": "company",
+    "department": "department",
+    "website": "website",
+    "description": "description",
+    "location": "location",
+    "languages": [
+      "ASM",
+      "AZE"
+    ],
+    "createdAt": "2026-02-09T10:08:01.131Z",
+    "updatedAt": "2026-02-09T10:09:14.648Z",
+    "id": 1,
+    "__v": 1
+  },
+  {
+    "_id": "6989b26d75bcddfdefc110aa",
+    "name": "c2",
+    "email": "c2@mock.es",
+    "company": "company",
+    "department": "department",
+    "website": "website",
+    "description": "description",
+    "location": "location",
+    "languages": [],
+    "createdAt": "2026-02-09T10:09:49.127Z",
+    "updatedAt": "2026-02-09T10:09:49.128Z",
+    "id": 2,
+    "__v": 0
+  }
+]
+

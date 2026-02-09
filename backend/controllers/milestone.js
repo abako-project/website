@@ -124,12 +124,12 @@ exports.create = async (req, res, next) => {
         neededHours
     };
 
-    require("../helpers/logs").log(milestone, "Nuevo Milestone");
+    // require("../helpers/logs").log(milestone, "Nuevo Milestone");
 
     try {
         await seda.milestoneCreate(req.session.scope, projectId, milestone);
 
-        require("../helpers/logs").log(req.session.scope, "Creado Milestone");
+       // require("../helpers/logs").log(req.session.scope, "Creado Milestone");
 
         console.log('Success: Milestone created successfully.');
         res.redirect('/projects/' + projectId + '/milestones/edit');

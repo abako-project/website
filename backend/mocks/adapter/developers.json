@@ -1,0 +1,72 @@
+[
+  {
+    "_id": "6989a69175bcddfdefc10faa",
+    "email": "d1@mock.es",
+    "name": "d1",
+    "githubUsername": "githubUsername",
+    "portfolioUrl": "portfolioUrl",
+    "proficiency": "junior",
+    "availability": "FullTime",
+    "languages": [
+      "ARA",
+      "ASM"
+    ],
+    "skills": [
+      "Rust",
+      "Javascript"
+    ],
+    "createdAt": "2026-02-09T09:19:13.134Z",
+    "updatedAt": "2026-02-09T09:22:11.979Z",
+    "id": 1,
+    "__v": 1,
+    "background": "asdfgasdfdf",
+    "bio": "sdfgsdfg",
+    "location": "asdfasdf"
+  },
+  {
+    "_id": "6989a76f75bcddfdefc10fef",
+    "email": "d2@mock.es",
+    "name": "d2",
+    "githubUsername": "githubUsername",
+    "portfolioUrl": "portfolioUrl",
+    "proficiency": "junior",
+    "availability": "FullTime",
+    "languages": [
+      "SPA"
+    ],
+    "skills": [
+      "Node"
+    ],
+    "createdAt": "2026-02-09T09:22:55.125Z",
+    "updatedAt": "2026-02-09T09:26:16.391Z",
+    "id": 2,
+    "__v": 1,
+    "background": "bbbbbb",
+    "bio": "aaaaa",
+    "location": "ggggg",
+    "role": "BackEnd"
+  },
+  {
+    "_id": "6989a86575bcddfdefc1101f",
+    "email": "d3@mock.es",
+    "name": "d3",
+    "githubUsername": "githubUsername",
+    "portfolioUrl": "portfolioUrl",
+    "proficiency": "junior",
+    "availability": "FullTime",
+    "languages": [
+      "none"
+    ],
+    "skills": [
+      "none"
+    ],
+    "createdAt": "2026-02-09T09:27:01.118Z",
+    "updatedAt": "2026-02-09T09:29:40.730Z",
+    "id": 3,
+    "__v": 1,
+    "background": "sfgh sfh sfgh",
+    "bio": "tbsfg sfg bs",
+    "location": "hhhhh"
+  }
+]
+

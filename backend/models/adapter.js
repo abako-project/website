@@ -1,3 +1,10 @@
+
+if (process.env.VIRTO_MOCK) {
+    module.exports = require("../mocks/adapter");
+    return;
+}
+
+
 /**
  * HTTP Client for Backend API Communication
  * Wrapper sobre axios para manejar requests al backend desplegado en dev.abako.xyz

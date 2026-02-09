@@ -59,13 +59,17 @@
 
                 showWaitModal();
 
-                sdk = initializeSDK();
-                await checkIsRegistered();
-                await prepareConnection()
-                const {extrinsic, token} = await customConnect();
-                await signExtrinsic(extrinsic);
+                <% if (!process.env.VIRTO_MOCK) { %>
+                    sdk = initializeSDK();
+                    await checkIsRegistered();
+                    await prepareConnection()
+                    const {extrinsic, token} = await customConnect();
+                    await signExtrinsic(extrinsic);
 
-                tokenElement.value = token;
+                    tokenElement.value = token;
+                <% } else {%>
+                    tokenElement.value = "FAKE_TOKE";
+                <% } %>
 
                 statusElement.innerHTML = "Waiting for server response";
 

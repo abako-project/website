@@ -32,6 +32,10 @@ exports.workersAvailability = async () => {
  */
 exports.getWorkerAddress = async (email) => {
 
+    if (process.env.VIRTO_MOCK) {
+        return "address"
+    }
+
     // Peticion al servidor federado:
     const url = `https://dev.abako.xyz/api/get-user-address?userId=${email}`;
 

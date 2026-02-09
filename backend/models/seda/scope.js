@@ -24,7 +24,7 @@ const {adapterAPI} = require('../adapter');
  */
 exports.scopeSubmit = async (projectId, milestones, advancePaymentPercentage, documentHash, consultantComment, token) => {
 
-    require("../../helpers/logs").log(milestones,"adapterAPI.proposeScope milestones");
+    // require("../../helpers/logs").log(milestones,"adapterAPI.proposeScope milestones");
 
     await adapterAPI.proposeScope(projectId, milestones, advancePaymentPercentage, documentHash, token);
 };
@@ -48,15 +48,15 @@ exports.scopeSubmit = async (projectId, milestones, advancePaymentPercentage, do
  */
 exports.scopeAccept = async (projectId, approvedTaskIds, clientResponse, token) => {
 
-    require("../../helpers/logs").log(projectId,"projectId");
-    require("../../helpers/logs").log(approvedTaskIds,"approvedTaskIds");
-    require("../../helpers/logs").log(clientResponse,"clientResponse");
-    require("../../helpers/logs").log(token,"token");
+    // require("../../helpers/logs").log(projectId,"projectId");
+    // require("../../helpers/logs").log(approvedTaskIds,"approvedTaskIds");
+    // require("../../helpers/logs").log(clientResponse,"clientResponse");
+    // require("../../helpers/logs").log(token,"token");
 
     // Try to approve scope on backend
     const response = await adapterAPI.approveScope(projectId, approvedTaskIds, token);
 
-    require("../../helpers/logs").log(response,"Scope Accept response");
+    // require("../../helpers/logs").log(response,"Scope Accept response");
 
 };
 
@@ -79,7 +79,7 @@ exports.scopeReject = async (projectId, clientResponse, token) => {
     // Try to reject scope on backend
     const response = await adapterAPI.rejectScope(projectId, clientResponse, token);
 
-    require("../../helpers/logs").log(response,"Scope Reject response");
+    // require("../../helpers/logs").log(response,"Scope Reject response");
 
 };
 

@@ -49,8 +49,10 @@ exports.loginCreate = async (req, res, next) => {
 
     } catch (error) {
         req.flash("error", 'Authentication has failed. Retry it again.');
+        console.log('Error: Authentication has failed. Retry it again.');
         req.flash("error", `❌ Login error: ${error instanceof Error ? error.message : 'Unknown error'}`);
-        res.redirect('/auth/login/clients/new');
+        console.log(`❌ Login error: ${error instanceof Error ? error.message : 'Unknown error'}`);
+        res.redirect('/auth/login/client/new');
     }
 
 };

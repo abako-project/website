@@ -4,6 +4,7 @@
   "scripts": {
     "start2": "PORT=3001 node ./bin/www",
     "start": "PORT=3001 supervisor ./bin/www",
+    "mock": "VIRTO_MOCK=1 PORT=3001 supervisor ./bin/www",
     "sass": "cd public/stylesheets ; sass main.scss:main.css"
   },
   "dependencies": {

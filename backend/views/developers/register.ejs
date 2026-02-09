@@ -67,10 +67,12 @@
                     throw new Error("Error: Email is required");
                 }
 
-                sdk = initializeSDK();
-                await checkIsRegistered();
-                const preparedData = await fillPreparedData();
-                await customRegister(preparedData);
+                <% if (!process.env.VIRTO_MOCK) { %>
+                    sdk = initializeSDK();
+                    await checkIsRegistered();
+                    const preparedData = await fillPreparedData();
+                    await customRegister(preparedData);
+                <% } %>
 
                 statusElement.innerHTML = "Waiting for server response";
 
@@ -134,7 +136,7 @@
     async function customRegister(preparedData) {
         statusElement.innerHTML = "Creating account with custom-register";
 
-        const response = await fetch(`https://dev.abako.xyz/adapter/v1/auth/custom-register`, {
+        const response = await fetch(`/proxy/auth/custom-register`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

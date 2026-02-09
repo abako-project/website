@@ -75,7 +75,7 @@ exports.developers = async projectId => {
 
     const team = (await seda.getTeam(projectId)).response.map(item => item.account_id);
 
-    require("../../helpers/logs").log(team, "team");
+   // require("../../helpers/logs").log(team, "team");
 
     let developers = await seda.developerIndex();
 
@@ -84,7 +84,7 @@ exports.developers = async projectId => {
         developer.developerWorkerAddress = developerWorkerAddress;
     }
     developers = developers.filter(developer => team.includes(developer.developerWorkerAddress));
-    require("../../helpers/logs").log(developers, "developers");
+    // require("../../helpers/logs").log(developers, "developers");
 
 
     return developers;

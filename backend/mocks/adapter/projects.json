@@ -1,0 +1,63 @@
+
+[
+  {
+    "_id": "6989d87c75defc1199f",
+    "title": "P0_draft",
+    "description": "de que va",
+    "summary": "Resumen",
+    "projectType": 2,
+    "state": "draft",
+    "creationStatus": "creating",
+    "url": "la URL",
+    "budget": 0,
+    "deliveryTime": 3,
+    "clientId": "1",
+    "calendarContract": "Dd34LSU53MLwJpq4wfHmDFwAifJrcaPbd1qTCGZcR7iXQkd",
+    "createdAt": "2026-02-09T12:52:12.608Z",
+    "updatedAt": "2026-02-09T12:52:12.609Z",
+    "__v": 0
+  },
+
+  {
+    "_id": "6989d87c75bcddfdefc1199f",
+    "title": "P0",
+    "description": "de que va",
+    "summary": "Resumen",
+    "projectType": 2,
+    "state": "deployed",
+    "creationStatus": "created",
+    "url": "la URL",
+    "budget": 0,
+    "deliveryTime": 3,
+    "clientId": "1",
+    "calendarContract": "Dd34LSU53MLwJpq4wfHmDFwAifJrcaPbd1qTCGZcR7iXQkd",
+    "createdAt": "2026-02-09T12:52:12.608Z",
+    "updatedAt": "2026-02-09T12:53:16.989Z",
+    "__v": 0,
+    "contractAddress": "JExaDZF9QZq2Vcfe5BqA9sLJ3AYWajPBwccfa7uNhRjXjYj",
+    "consultantId": "1"
+  },
+
+  {
+    "_id": "6989b41375bcddfdefc110ff",
+    "title": "P1",
+    "description": "detalles",
+    "summary": "Resumen",
+    "projectType": 1,
+    "state": "payment_released",
+    "url": "la url",
+    "budget": 0,
+    "deliveryTime": 3,
+    "clientId": "1",
+    "calendarContract": "Dd34LSU53MLwJpq4wfHmDFwAifJrcaPbd1qTCGZcR7iXQkd",
+    "creationStatus": "created",
+    "createdAt": "2026-02-09T10:16:51.800Z",
+    "updatedAt": "2026-02-09T10:25:49.037Z",
+    "__v": 0,
+    "contractAddress": "Hw7CdjPBjmjTzTUy4ioCnMNngG9JGeRpkBnxQPwDv1Tn8RZ",
+    "consultantId": "1",
+    "coordinatorApprovalStatus": "approved",
+    "deliveryDate": "2026-02-09T10:25:46.265Z"
+  }
+
+]

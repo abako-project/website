@@ -31,6 +31,18 @@ router.get('/projects',
 router.get('/registeredDevelopers',
     backdoorController.registeredDevelopers);
 
+if (process.env.VIRTO_MOCK) {
+
+    // Logins
+    router.post('/loginclient1',
+        backdoorController.loginClient1
+    );
+    router.post('/logindeveloper1',
+        backdoorController.loginDeveloper1
+    );
+
+}
+
 // Comodin
 router.get('/wild',
     backdoorController.wild);
