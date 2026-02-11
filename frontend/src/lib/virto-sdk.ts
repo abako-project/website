@@ -43,7 +43,6 @@ export function initializeVirtoSDK(): VirtoSDK {
       },
     });
 
-    console.log('Virto SDK initialized successfully');
     return sdk as VirtoSDK;
   } catch (error) {
     console.error('Error initializing Virto SDK:', error instanceof Error ? error.message : 'Unknown error');

@@ -2,14 +2,12 @@
   "name": "backend",
   "version": "1.0.0",
   "scripts": {
-    "start2": "PORT=3001 node ./bin/www",
     "start": "PORT=3001 supervisor ./bin/www",
-    "sass": "cd public/stylesheets ; sass main.scss:main.css"
+    "sass": "cd public/stylesheets ; sass main.scss:main.css",
+    "lint": "eslint ."
   },
   "dependencies": {
-    "@virtonetwork/sdk": "^0.0.4-alpha.36",
     "axios": "^1.13.2",
-    "base64url": "^3.0.1",
     "connect-session-sequelize": "^8.0.0",
     "cors": "^2.8.6",
     "dotenv": "^17.2.3",
@@ -19,7 +17,6 @@
     "express-partials": "^0.3.0",
     "express-session": "^1.17.3",
     "form-data": "^4.0.5",
-    "markdown-it": "^14.1.0",
     "method-override": "^3.0.0",
     "multer": "^2.0.1",
     "remixicon": "^4.6.0",
@@ -28,8 +25,11 @@
     "sqlite3": "^5.1.6"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "chokidar": "^4.0.3",
     "connect-livereload": "^0.6.1",
+    "eslint": "^10.0.0",
+    "globals": "^17.3.0",
     "livereload": "^0.10.3",
     "supervisor": "^0.12.0"
   }

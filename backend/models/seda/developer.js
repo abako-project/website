@@ -10,29 +10,13 @@ exports.developerConnect = async (email) => {
             throw new Error('El campo email es obligatorio para loguear un developer.');
         }
 
-        if (!preparedData) {
-            throw new Error('El campo preparedData es obligatorio para loguear un developer.');
-        }
-
-        console.log('[SEDA Developer Connect] Step 1: customConnect');
-
         const response = await adapterAPI.customConnect({userId: email});
 
-        console.log('[SEDA Developer Connect] Step 1: customConnect', response);
-
-        if (response.success) {
-            console.log('[SEDA Developer] customConnect is successfull.');
-        } else {
-            console.log('[SEDA Developer] customConnect has failed:', response.error);
+        if (!response.success) {
             throw new Error(response.error);
         }
 
-        console.log('[SEDA Developer Connect] Step 2: Obtener nombre');
-
         const developer = await adapterAPI.findDeveloperByEmail(email);
-        // const developer = (await adapterAPI.getDevelopers()).developers.find(d => d.email === email);
-
-        console.log('[SEDA Developer Connect] Step 3: Fin');
 
         return {
             developerId: developer?.id,
@@ -84,8 +68,6 @@ exports.developer = async developerId => {
 
     exports.cleanDeveloper(developer);
 
-   // require("../../helpers/logs").log(developer, ">>>>> developer <<<<<<");
-
     return developer;
 };
 
@@ -119,8 +101,6 @@ exports.developers = async projectId => {
 
     const team = (await seda.getTeam(projectId)).response.map(item => item.account_id);
 
-    require("../../helpers/logs").log(team, "team");
-
     let developers = await seda.developerIndex();
 
     for (const developer of developers) {
@@ -128,8 +108,6 @@ exports.developers = async projectId => {
         developer.developerWorkerAddress = developerWorkerAddress;
     }
     developers = developers.filter(developer => team.includes(developer.developerWorkerAddress));
-    require("../../helpers/logs").log(developers, "developers");
-
 
     return developers;
 };
@@ -164,23 +142,15 @@ exports.developerCreate = async (email, name, preparedData) => {
     try {
         // ------ PASO 1: Crear la cuenta base con /adapter/v1/custom-register
 
-        console.log('[SEDA Developer] Step 1: Creating account with custom-register');
-
         const response = await adapterAPI.customRegister(preparedData);
 
-        if (response.success) {
-            console.log('[SEDA Developer] Account creation is successfull:', response.message);
-        } else {
-            console.log('[SEDA Developer] Account creation has failed:', response.error);
+        if (!response.success) {
             throw new Error(response.error);
         }
 
         // ------ PASO 2: Completar el perfil de developer con /adapter/v1/developers
 
-        console.log('[SEDA Developer] Step 2: Completing developer profile');
-
         const response2 = await adapterAPI.createDeveloper(email, name);
-        console.log('[SEDA Developer] Developer profile completed:', response2);
 
     } catch (error) {
         console.error('[SEDA Developer] Error creating developer:', error);

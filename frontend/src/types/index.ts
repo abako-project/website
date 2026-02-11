@@ -20,17 +20,13 @@ export type {
 // Client
 export type {
   Client,
-  ClientCreateData,
   ClientUpdateData,
-  ClientAttachment,
 } from './client';
 
 // Developer
 export type {
   Developer,
-  DeveloperCreateData,
   DeveloperUpdateData,
-  DeveloperAttachment,
 } from './developer';
 
 // Project and milestones
@@ -87,9 +83,7 @@ export type {
 // API response types
 export type {
   ApiError,
-  ApiSuccessResponse,
   ApiErrorResponse,
-  ApiErrorCode,
 } from './api';
 
 export { isApiError } from './api';

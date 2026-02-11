@@ -117,8 +117,6 @@ exports.showInformation = async (req, res, next) => {
     const projectId = req.params.projectId;
     const project = await seda.project(projectId);
 
-    require("../helpers/logs").log(project, "Project PUNTO 1");
-
     // Si el projecto no tiene milestones y
     // si existe req.session.scope.projectId y vale projectId, entonces sustituyo el
     // valor de project.milestones por req.session.scope.milestones.
@@ -128,8 +126,6 @@ exports.showInformation = async (req, res, next) => {
             project.milestones = req.session.scope.milestones
         }
     }
-
-   require("../helpers/logs").log(project, "Project PUNTO 2");
 
     const allBudgets = await seda.budgetIndex();
     const allDeliveryTimes = await seda.deliveryTimeIndex();
@@ -148,8 +144,6 @@ exports.showMilestones = async (req, res, next) => {
 
     const projectId = req.params.projectId;
     const project = await seda.project(projectId);
-
-    require("../helpers/logs").log(project, "Project show Milestones");
 
     const allDeliveryTimes = await seda.deliveryTimeIndex();
 
@@ -298,12 +292,6 @@ exports.scopeSubmit = async (req, res, next) => {
 
     try {
 
-        // require("../helpers/logs").log(projectId, "projectId");
-        require("../helpers/logs").log(req.session.scope, "*****> Proposed Scope");
-        // require("../helpers/logs").log(advancePaymentPercentage, "advancePaymentPercentage");
-        // require("../helpers/logs").log(documentHash, "documentHash");
-        // require("../helpers/logs").log(req.session.loginUser.token, "Token");
-
         const milestones = req.session.scope?.milestones ?? [];
         delete req.session.scope;
 
@@ -432,14 +420,10 @@ exports.assignTeam = async (req, res, next) => {
 
     try {
         const res1 = await seda.assignTeam(projectId, 2, req.session.loginUser.token);
-        require("../helpers/logs").log(res1, "Assign Team");
 
         const res2 = await seda.getTeam(projectId);
-        require("../helpers/logs").log(res2, "Get Team");
-
 
         const res3 = await seda.getScopeInfo(projectId);
-        require("../helpers/logs").log(res3, "Get ScopeI nfo");
 
 
 

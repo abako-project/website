@@ -148,7 +148,6 @@ router.put('/:id', upload.single('image'), async (req, res, next) => {
         const updatedDeveloper = await seda.developer(developerId);
         const languageNames = updatedDeveloper.languages?.map(code => languagesMap[code]).filter(Boolean) || [];
 
-        console.log('Developer edited successfully via API.');
         res.success({
             developer: updatedDeveloper,
             languageNames
@@ -204,7 +203,6 @@ router.post('/:id/attachment', upload.single('image'), async (req, res, next) =>
 
         await seda.developerUpdate(developerId, data, image);
 
-        console.log('Developer image uploaded successfully via API.');
         res.success({ message: 'Image uploaded successfully.' });
     } catch (error) {
         next(error);

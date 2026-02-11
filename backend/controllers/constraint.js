@@ -33,7 +33,7 @@ exports.create = async (req, res, next) => {
 
 
 // Eliminar constraint
-exports.destroy = async (req, res) => {
+exports.destroy = async (req, res, next) => {
 
     const projectId = req.params.projectId;
     const constraintId = req.params.constraintId;

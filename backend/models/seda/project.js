@@ -56,8 +56,6 @@ exports.project = async projectId => {
     delete project._id;
     delete project.__v;
 
-    // require("../../helpers/logs").log(project, "project");
-
     return project;
 };
 
@@ -134,21 +132,15 @@ exports.projectsIndex = async (clientId, developerId) => {
 
     // Todos los clientes
     const clients = await seda.clientIndex();
-    //require("../../helpers/logs").log(clients, "Clientes");
 
     // todos los developers
     const developers = await seda.developerIndex();
-    //  require("../../helpers/logs").log(developers, "Developers");
 
     if (clientId) {  // Los proyectos de un cliente
 
         projects = await adapterAPI.getClientProjects(clientId);
 
-        // require("../../helpers/logs").log(projects, "Proyectos ORIGINAL");
-
     } else {
-
-        // require("../../helpers/logs").log(developerId, "projectsIndex");
 
         // Obtener todos los proyectos:
 
@@ -218,24 +210,6 @@ exports.projectsIndex = async (clientId, developerId) => {
             });
             project.milestones = milestones;
 
-            /*
-            const workers = await seda.registeredWorkers();
-            require("../../helpers/logs").log(workers, "workers");
-
-            const developers = await seda.developerIndex();
-
-            for (const developer of developers) {
-                const developerWorkerAddress = await seda .getWorkerAddress(developer.email);
-                developer.developerWorkerAddress = developerWorkerAddress;
-            }
-            require("../../helpers/logs").log(developers, "developers");
-
-            for (const developer of developers) {
-                const developerMilestones = await adapterAPI.getDeveloperMilestones(developer.id);
-                require("../../helpers/logs").log(developerMilestones, "developer " + developer.id + " Milestones");
-            }
-           */
-
         } else {
             project.milestones = [];
         }
@@ -248,8 +222,6 @@ exports.projectsIndex = async (clientId, developerId) => {
         delete project._id;
         delete project.__v;
     }
-
-    require("../../helpers/logs").log(projects, "Proyectos LIMPIO");
 
     return projects;
 }

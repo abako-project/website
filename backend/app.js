@@ -1,4 +1,3 @@
-console.log('[app.js] Iniciando carga de dependencias...');
 const createError = require('http-errors');
 const express = require('express');
 const path = require('path');
@@ -10,30 +9,21 @@ const methodOverride = require('method-override');
 const flash = require('express-flash');
 const cors = require('cors');
 
-console.log('[app.js] Cargando routes...');
 const router = require('./routes');
-console.log('[app.js] Routes cargadas correctamente');
 
-console.log('[app.js] Cargando modelos Sequelize...');
 const sequelize = require("./models/session");
-const coreState = require("./models/flowStates");
-console.log('[app.js] Modelos Sequelize cargados correctamente');
-
-// import 'remixicon/fonts/remixicon.css';
 
 const app = express();
 
 // Only for development: livereload
 // to automatically refresh the browser when files change
 if (process.env.NODE_ENV === 'development') {
-    console.log('[app.js] Configurando livereload...');
     const livereload = require('livereload');
     const connectLivereload = require('connect-livereload');
     const chokidar = require('chokidar');
 
     // Crear servidor de livereload con configuración no bloqueante
     const liveReloadServer = livereload.createServer({ delay: 500 });
-    console.log('[app.js] Livereload server creado');
 
     // Configurar watcher de forma no bloqueante
     const watcher = chokidar.watch(['views', 'public'], {
@@ -44,18 +34,12 @@ if (process.env.NODE_ENV === 'development') {
         }
     });
 
-    watcher.on('ready', () => {
-        console.log('[app.js] Chokidar watcher listo');
-    });
-
     watcher.on('change', (path) => {
-      console.log("🔧 Archivo cambiado:", path);
       liveReloadServer.refresh('/');
-    }); 
+    });
 
     // Forzar recarga del navegador cuando se reinicia el servidor
     liveReloadServer.server.once("connection", () => {
-        console.log("Livereload server connected");
         setTimeout(() => {
         liveReloadServer.refresh("/");
         }, 100);
@@ -66,7 +50,6 @@ if (process.env.NODE_ENV === 'development') {
     });
 
     app.use(connectLivereload());
-    console.log('[app.js] Livereload configurado correctamente');
 }
 
 app.set('views', path.join(__dirname, 'views'));

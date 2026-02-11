@@ -8,7 +8,7 @@ exports.registerCreate = async (req, res, next) => {
     const {email, name, preparedData: json} = req.body;
 
     try {
-        preparedData = JSON.parse(decodeURIComponent(json));
+        const preparedData = JSON.parse(decodeURIComponent(json));
         await seda.clientCreate(email, name, preparedData);
 
         req.flash("success", '✅ Registrado correctamente');

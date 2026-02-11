@@ -96,14 +96,3 @@ export function ProjectStateBadge({
     </span>
   );
 }
-
-/**
- * Utility: returns the computed flow state for a project.
- * Useful when you need the raw state value without rendering a badge.
- */
-export function getProjectFlowState(
-  project: Project,
-  scope?: ScopeSession
-): ProjectStateValue {
-  return flowProjectState(project, scope);
-}

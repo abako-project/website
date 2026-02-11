@@ -130,11 +130,3 @@ export const api = {
 // ---------------------------------------------------------------------------
 
 export type { ApiError, ApiErrorResponse };
-
-/**
- * Type-safe API response wrapper
- */
-export interface ApiResponse<T> {
-  success: true;
-  data: T;
-}

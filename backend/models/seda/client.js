@@ -12,29 +12,13 @@ exports.clientConnect = async (email) => {
             throw new Error('El campo email es obligatorio para loguear un cliente.');
         }
 
-        if (!preparedData) {
-            throw new Error('El campo preparedData es obligatorio para loguear un cliente.');
-        }
-
-        console.log('[SEDA Client Connect] Step 1: customConnect');
-
         const response = await adapterAPI.customConnect({userId: email});
 
-        console.log('[SEDA Client Connect] Step 1: customConnect', response);
-
-        if (response.success) {
-            console.log('[SEDA Client] customConnect is successfull.');
-        } else {
-            console.log('[SEDA Client] customConnect has failed:', response.error);
+        if (!response.success) {
             throw new Error(response.error);
         }
 
-        console.log('[SEDA Client Connect] Step 2: Obtener nombre');
-
         const client = await adapterAPI.findClientByEmail(email);
-        //const client = (await adapterAPI.getClients()).clients.find(d => d.email === email);
-
-        console.log('[SEDA Client Connect] Step 3: Fin');
 
         return {
             clientId: client?.id,
@@ -86,8 +70,6 @@ exports.client = async clientId => {
 
     exports.cleanClient(client);
 
-   // require("../../helpers/logs").log(client,"Seda Client");
-
     return client;
 };
 
@@ -132,25 +114,15 @@ exports.clientCreate = async (email, name, preparedData) => {
     try {
         // ------ PASO 1: Crear la cuenta base con /adapter/v1/custom-register
 
-        console.log('[SEDA Client] Step 1: Creating account with custom-register');
-
         const response = await adapterAPI.customRegister(preparedData);
 
-        if (response.success) {
-            console.log('[SEDA Client] Account creation is successfull:', response.message);
-        } else {
-            console.log('[SEDA Client] Account creation has failed:', response.error);
+        if (!response.success) {
             throw new Error(response.error);
         }
 
         // ------ PASO 2: Completar el perfil de cliente con /adapter/v1/clients
 
-        console.log('[SEDA Client] Step 2: Completing client profile');
-
         const response2 = await adapterAPI.createClient(email, name);
-
-
-        console.log('[SEDA Client] Client profile completed:', response2);
 
     } catch (error) {
         console.error('[SEDA Client] Error creating client:', error);

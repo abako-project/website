@@ -3,3 +3,4 @@
 .idea/
 sessions
 node_modules/
+.claude/

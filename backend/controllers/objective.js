@@ -34,7 +34,7 @@ exports.create = async (req, res, next) => {
 
 
 // Eliminar objectivo
-exports.destroy = async (req, res) => {
+exports.destroy = async (req, res, next) => {
 
   const projectId = req.params.projectId;
   const objectiveId = req.params.objectiveId;
