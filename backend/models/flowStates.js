@@ -45,8 +45,6 @@ const ProjectState = {
     Completed: "completed", // entregado, aceptado, votado y pagado
  //   Cancelled: "cancelled", // cancelado por el cliente
 
- //   ToBeDone: "ToBeDone",  // Estado que marca algo pendiente de desarrollar
-
     Invalid: "Invalid"  // Estado invalido o que no existe
 };
 
@@ -85,16 +83,7 @@ const flowProjectState = (project, scope) => {
     }
 
     if (project.state === "scope_proposed") {
-
-        // CONTINUAR AQUI
-
-        if (typeof project.proposalRejectionReason !== "undefined") {
-            return ProjectState.ToBeDone;
-        }
-
-        if (true) {
-            return ProjectState.ScopeValidationNeeded;
-        }
+        return ProjectState.ScopeValidationNeeded;
     }
 
     if (project.state === "scope_rejected") {
@@ -186,7 +175,7 @@ const flowMilestoneState = (milestone) => {
         return MilestoneState.SubmissionRejectedByClient;
     }
 
-    if (milestone.state === "ALGO") {
+    if (milestone.state === "paid") {
         return MilestoneState.Paid;
     }
     return MilestoneState.Invalid;

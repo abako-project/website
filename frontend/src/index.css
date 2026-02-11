@@ -1,0 +1,105 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/**
+ * Abako Color System
+ *
+ * Matches the SASS variables from backend/public/stylesheets/lib/_variables.sass
+ * Using the dark theme by default to match the existing EJS UI.
+ */
+
+@layer base {
+  :root {
+    /* Base colors matching the SASS $base-1, $base-2, etc */
+    --background: 220 13% 8%;       /* #141414 - $base-1 */
+    --foreground: 0 0% 96%;         /* #F5F5F5 - text */
+
+    --card: 0 5% 13%;               /* #231F1F - $base-2 */
+    --card-foreground: 0 0% 96%;    /* #F5F5F5 */
+
+    --popover: 0 5% 13%;            /* #231F1F */
+    --popover-foreground: 0 0% 96%; /* #F5F5F5 */
+
+    /* Brand color - $brand: #36D399 (green from the design) */
+    --primary: 160 65% 52%;         /* #36D399 */
+    --primary-foreground: 220 13% 8%; /* #141414 - dark text on green */
+
+    --secondary: 0 0% 24%;          /* #3D3D3D - $stroke */
+    --secondary-foreground: 0 0% 96%;
+
+    --muted: 0 0% 24%;              /* #3D3D3D */
+    --muted-foreground: 0 0% 61%;   /* #9B9B9B - $text-dark-2 */
+
+    --accent: 0 0% 20%;             /* #333333 - $fill-1 */
+    --accent-foreground: 0 0% 96%;
+
+    /* Danger/error color matching $danger: #fa4d4d */
+    --destructive: 0 96% 64%;       /* #fa4d4d */
+    --destructive-foreground: 0 0% 96%;
+
+    --border: 0 0% 24%;             /* #3D3D3D - $stroke */
+    --input: 0 0% 24%;              /* #3D3D3D */
+    --ring: 160 65% 52%;            /* #36D399 - same as primary */
+
+    --radius: 0.75rem;              /* 12px - matches $radi-6 */
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    min-height: 100vh;
+  }
+
+  /* Smooth transitions matching the SASS */
+  * {
+    transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+    transition-timing-function: ease-in-out;
+    transition-duration: 0.3s;
+  }
+
+  /* Typography matching the SASS scale */
+  h1 {
+    @apply text-3xl leading-tight font-bold;
+  }
+
+  h2 {
+    @apply text-2xl leading-tight font-bold;
+  }
+
+  h3 {
+    @apply text-xl leading-tight font-bold;
+  }
+
+  h4 {
+    @apply text-lg leading-8 font-semibold;
+  }
+
+  h5 {
+    @apply text-base leading-7 font-medium;
+  }
+
+  h6 {
+    @apply text-base leading-6 font-semibold;
+  }
+
+  p {
+    @apply text-base leading-6 font-normal;
+  }
+
+  /* Scrollbar styling matching .hideScrollbar from SASS */
+  .hide-scrollbar {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+}

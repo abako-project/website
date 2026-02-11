@@ -8,6 +8,7 @@ const SequelizeStore = require('connect-session-sequelize')(session.Store);
 const partials = require('express-partials');
 const methodOverride = require('method-override');
 const flash = require('express-flash');
+const cors = require('cors');
 
 console.log('[app.js] Cargando routes...');
 const router = require('./routes');
@@ -79,6 +80,12 @@ app.use(methodOverride('_method', {methods: ["POST", "GET"]}));
 
 app.use(express.static(path.join(__dirname, 'public')));
 
+// CORS for React SPA dev server
+app.use('/api', cors({
+    origin: 'http://localhost:5173',
+    credentials: true
+}));
+
 // Configuracion de la session para almacenarla en BBDD usando Sequelize.
 var sessionStore = new SequelizeStore({
     db: sequelize,
@@ -87,7 +94,7 @@ var sessionStore = new SequelizeStore({
     expiration: 4 * 60 * 60 * 1000  // The maximum age (in milliseconds) of a valid session. (4 hours)
 });
 app.use(session({
-    secret: "W3S 2025",
+    secret: process.env.SESSION_SECRET || "W3S-dev-only-change-in-production",
     store: sessionStore,
     resave: false,
     saveUninitialized: true
@@ -132,7 +139,11 @@ app.use(function(req, res, next) {
     next(createError(404));
 });
 
-// error handler
+// API error handler: returns JSON for /api routes (must be BEFORE the EJS error handler)
+const apiErrorHandler = require('./middleware/apiErrorHandler');
+app.use(apiErrorHandler);
+
+// EJS error handler (unchanged - handles non-API routes)
 app.use(function(err, req, res, next) {
     // set locals, only providing error in development
     res.locals.message = err.message;

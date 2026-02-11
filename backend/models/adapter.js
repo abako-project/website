@@ -1164,7 +1164,7 @@ const contractsAPI = {
     async deployProjectV6(name, daoAddress) {
         try {
             const response = await contractsClient.post(
-                apiConfig.contractsAPI.endpoints.projects.deploy.v5,
+                apiConfig.contractsAPI.endpoints.projects.deploy.v6,
                 { name, dao_address: daoAddress }
             );
             return response.data;

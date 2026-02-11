@@ -11,7 +11,14 @@ const backdoorRouter = require('./backdoor');
 const paymentsRouter = require('./payments');
 const votesRouter = require('./votes');
 
+// JSON API routes (Phase 1: React SPA migration)
+const apiRouter = require('./api');
 
+
+// API routes (must be before EJS routes to avoid conflicts)
+router.use('/api', apiRouter);
+
+// Existing EJS routes (unchanged)
 router.use('/auth', authRouter);
 router.use('/', homeRouter);
 router.use('/dashboard', dashboardRouter);

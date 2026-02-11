@@ -1,0 +1,84 @@
+import { Routes, Route, Navigate } from 'react-router-dom';
+import { ErrorBoundary } from '@components/shared/ErrorBoundary';
+import { ProtectedRoute } from '@components/shared/ProtectedRoute';
+import { AppLayout } from '@components/layouts/AppLayout';
+import { AuthLayout } from '@components/layouts/AuthLayout';
+
+// Auth Pages
+import LoginPage from '@pages/auth/LoginPage';
+import ClientLoginPage from '@pages/auth/ClientLoginPage';
+import DeveloperLoginPage from '@pages/auth/DeveloperLoginPage';
+import RegisterPage from '@pages/auth/RegisterPage';
+import ClientRegisterPage from '@pages/auth/ClientRegisterPage';
+import DeveloperRegisterPage from '@pages/auth/DeveloperRegisterPage';
+
+// Protected Pages
+import DashboardPage from '@pages/dashboard/DashboardPage';
+import ProjectsPage from '@pages/projects/ProjectsPage';
+import CreateProjectPage from '@pages/projects/CreateProjectPage';
+import ProjectDetailPage from '@pages/projects/ProjectDetailPage';
+import ProfilePage from '@pages/profiles/ProfilePage';
+import PaymentsPage from '@pages/payments/PaymentsPage';
+import PaymentDetailPage from '@pages/payments/PaymentDetailPage';
+
+/**
+ * App - Main application router
+ *
+ * Route structure:
+ * - /login -> Role selection page
+ * - /login/client -> Client login with WebAuthn
+ * - /login/developer -> Developer login with WebAuthn
+ * - / -> Redirects to /dashboard
+ * - /dashboard -> Dashboard page (protected)
+ * - /projects -> Projects list (protected)
+ * - /projects/new -> Create project proposal (protected, client only)
+ * - /projects/:id -> Project detail (protected)
+ * - /profile -> User profile (protected)
+ *
+ * All protected routes require authentication and are wrapped in AppLayout.
+ * Auth routes are wrapped in AuthLayout for a clean login experience.
+ */
+export default function App() {
+  return (
+    <ErrorBoundary>
+      <Routes>
+        {/* Auth Routes - wrapped in AuthLayout */}
+        <Route element={<AuthLayout />}>
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/login/client" element={<ClientLoginPage />} />
+          <Route path="/login/developer" element={<DeveloperLoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
+          <Route path="/register/client" element={<ClientRegisterPage />} />
+          <Route path="/register/developer" element={<DeveloperRegisterPage />} />
+        </Route>
+
+        {/* Protected Routes - wrapped in ProtectedRoute and AppLayout */}
+        <Route element={<ProtectedRoute />}>
+          <Route element={<AppLayout />}>
+            {/* Redirect root to dashboard */}
+            <Route path="/" element={<Navigate to="/dashboard" replace />} />
+
+            {/* Dashboard */}
+            <Route path="/dashboard" element={<DashboardPage />} />
+
+            {/* Projects */}
+            <Route path="/projects" element={<ProjectsPage />} />
+            <Route path="/projects/new" element={<CreateProjectPage />} />
+            <Route path="/projects/:id" element={<ProjectDetailPage />} />
+
+            {/* Payments */}
+            <Route path="/payments" element={<PaymentsPage />} />
+            <Route path="/payments/:id" element={<PaymentDetailPage />} />
+
+            {/* Profile */}
+            <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/profile/edit" element={<ProfilePage />} />
+          </Route>
+        </Route>
+
+        {/* Catch-all - redirect to login if no match */}
+        <Route path="*" element={<Navigate to="/login" replace />} />
+      </Routes>
+    </ErrorBoundary>
+  );
+}

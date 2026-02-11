@@ -31,8 +31,8 @@ router.get('/projects',
 router.get('/registeredDevelopers',
     backdoorController.registeredDevelopers);
 
-// Comodin
-router.get('/wild',
-    backdoorController.wild);
+// Comodin - DISABLED: Security vulnerability (unauthenticated session hijack)
+// router.get('/wild',
+//     backdoorController.wild);
 
 module.exports = router;
