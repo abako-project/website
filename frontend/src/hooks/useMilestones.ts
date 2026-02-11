@@ -1,18 +1,21 @@
 /**
  * Milestone Workflow Hooks
  *
- * React Query mutation hooks for milestone lifecycle operations:
- *   - POST /api/milestones/:projectId/:milestoneId/submit  -> useSubmitMilestone()
- *   - POST /api/milestones/:projectId/:milestoneId/accept  -> useAcceptMilestone()
- *   - POST /api/milestones/:projectId/:milestoneId/reject  -> useRejectMilestone()
+ * React Query mutation hooks for milestone lifecycle operations.
+ * All hooks use direct service calls (no Express backend).
  *
  * These hooks invalidate the project detail and dashboard queries
  * on success so the UI stays in sync after workflow transitions.
  */
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { api } from '@api/client';
 import { projectKeys } from '@hooks/useProjects';
+import {
+  submitMilestoneForReview,
+  acceptMilestoneSubmission,
+  rejectMilestoneSubmission,
+} from '@/services';
+import { useAuthStore } from '@/stores/authStore';
 
 // ---------------------------------------------------------------------------
 // Response types
@@ -45,7 +48,7 @@ export interface SubmitMilestoneInput {
 }
 
 /**
- * Mutation for POST /api/milestones/:projectId/:milestoneId/submit.
+ * Mutation for submitting a milestone for client review.
  *
  * Used by consultants/developers to submit a milestone for client review.
  * Transitions the milestone from MilestoneInProgress to WaitingClientAcceptSubmission.
@@ -57,9 +60,13 @@ export function useSubmitMilestone() {
 
   return useMutation<MilestoneActionResponse, Error, SubmitMilestoneInput>({
     mutationFn: async ({ projectId, milestoneId }: SubmitMilestoneInput) => {
-      return api.post<MilestoneActionResponse>(
-        `/api/milestones/${projectId}/${milestoneId}/submit`
-      );
+      const token = useAuthStore.getState().token || '';
+      await submitMilestoneForReview(projectId, milestoneId, token);
+      return {
+        projectId,
+        milestoneId,
+        message: 'Milestone submitted successfully',
+      };
     },
     onSuccess: (_data, variables) => {
       void queryClient.invalidateQueries({
@@ -83,7 +90,7 @@ export interface AcceptMilestoneInput {
 }
 
 /**
- * Mutation for POST /api/milestones/:projectId/:milestoneId/accept.
+ * Mutation for accepting delivered milestone work.
  *
  * Used by clients to accept delivered milestone work.
  * Transitions the milestone from WaitingClientAcceptSubmission to MilestoneCompleted.
@@ -99,10 +106,13 @@ export function useAcceptMilestone() {
       milestoneId,
       comment,
     }: AcceptMilestoneInput) => {
-      return api.post<MilestoneActionResponse>(
-        `/api/milestones/${projectId}/${milestoneId}/accept`,
-        { comment }
-      );
+      const token = useAuthStore.getState().token || '';
+      await acceptMilestoneSubmission(projectId, milestoneId, comment || '', token);
+      return {
+        projectId,
+        milestoneId,
+        message: 'Milestone accepted successfully',
+      };
     },
     onSuccess: (_data, variables) => {
       void queryClient.invalidateQueries({
@@ -126,7 +136,7 @@ export interface RejectMilestoneInput {
 }
 
 /**
- * Mutation for POST /api/milestones/:projectId/:milestoneId/reject.
+ * Mutation for rejecting delivered milestone work.
  *
  * Used by clients to reject delivered milestone work.
  * Transitions the milestone from WaitingClientAcceptSubmission
@@ -143,10 +153,13 @@ export function useRejectMilestone() {
       milestoneId,
       comment,
     }: RejectMilestoneInput) => {
-      return api.post<MilestoneActionResponse>(
-        `/api/milestones/${projectId}/${milestoneId}/reject`,
-        { comment }
-      );
+      const token = useAuthStore.getState().token || '';
+      await rejectMilestoneSubmission(projectId, milestoneId, comment || '', token);
+      return {
+        projectId,
+        milestoneId,
+        message: 'Milestone rejected successfully',
+      };
     },
     onSuccess: (_data, variables) => {
       void queryClient.invalidateQueries({

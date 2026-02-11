@@ -1,16 +1,14 @@
 /**
  * Profile Data Hooks
  *
- * React Query hooks wrapping the client and developer profile API endpoints:
- *   - GET  /api/clients/:id            -> useClientProfile(id)
- *   - PUT  /api/clients/:id            -> useUpdateClientProfile()
- *   - GET  /api/developers/:id         -> useDeveloperProfile(id)
- *   - PUT  /api/developers/:id         -> useUpdateDeveloperProfile()
- *   - POST /api/clients/:id/attachment -> useUploadProfileImage()
- *   - POST /api/developers/:id/attachment -> useUploadProfileImage()
+ * React Query hooks for client and developer profiles:
+ *   - useClientProfile(id)           -> Fetches client profile
+ *   - useUpdateClientProfile()       -> Updates client profile
+ *   - useDeveloperProfile(id)        -> Fetches developer profile
+ *   - useUpdateDeveloperProfile()    -> Updates developer profile
+ *   - useUploadProfileImage()        -> Uploads profile image
  *
- * These hooks follow the same patterns established by useProjects.ts
- * and useAuth.ts for consistency.
+ * All hooks use direct service calls (no Express backend).
  */
 
 import {
@@ -18,14 +16,20 @@ import {
   useMutation,
   useQueryClient,
 } from '@tanstack/react-query';
-import { api } from '@api/client';
-import apiClient from '@api/client';
+import {
+  getClientById,
+  updateClient,
+  getDeveloperById,
+  updateDeveloper,
+} from '@/services';
+import { adapterConfig } from '@/api/config';
+import { LANGUAGES } from '@/constants/languages';
 import type {
   Client,
   ClientUpdateData,
   Developer,
   DeveloperUpdateData,
-} from '@/types/index';
+} from '@/types';
 
 // ---------------------------------------------------------------------------
 // Query keys
@@ -43,35 +47,71 @@ export const profileKeys = {
 // Response types
 // ---------------------------------------------------------------------------
 
-/** Shape returned by GET /api/clients/:id. */
+/** Client profile response shape. */
 interface ClientProfileResponse {
   client: Client;
   avatarUrl: string;
   languageNames: string[];
 }
 
-/** Shape returned by GET /api/developers/:id. */
+/** Developer profile response shape. */
 interface DeveloperProfileResponse {
   developer: Developer;
   avatarUrl: string;
   languageNames: string[];
 }
 
-/** Shape returned by PUT /api/clients/:id. */
+/** Client update response shape. */
 interface UpdateClientResponse {
   client: Client;
   languageNames: string[];
 }
 
-/** Shape returned by PUT /api/developers/:id. */
+/** Developer update response shape. */
 interface UpdateDeveloperResponse {
   developer: Developer;
   languageNames: string[];
 }
 
-/** Shape returned by POST /api/:type/:id/attachment. */
+/** Image upload response shape. */
 interface UploadImageResponse {
   message: string;
+}
+
+// ---------------------------------------------------------------------------
+// Helper functions
+// ---------------------------------------------------------------------------
+
+/**
+ * Resolves an array of language codes to their human-readable names.
+ * @param languageCodes - Array of ISO 639-3 language codes
+ * @returns Array of language names
+ */
+function resolveLanguageNames(languageCodes: string[] | undefined): string[] {
+  if (!languageCodes || languageCodes.length === 0) {
+    return [];
+  }
+  return languageCodes
+    .map((code) => LANGUAGES[code] || code)
+    .filter(Boolean);
+}
+
+/**
+ * Builds the avatar URL for a client.
+ * @param clientId - The client ID
+ * @returns The full URL to the client's avatar
+ */
+function buildClientAvatarUrl(clientId: string): string {
+  return `${adapterConfig.baseURL}${adapterConfig.endpoints.clients.attachment(clientId)}`;
+}
+
+/**
+ * Builds the avatar URL for a developer.
+ * @param developerId - The developer ID
+ * @returns The full URL to the developer's avatar
+ */
+function buildDeveloperAvatarUrl(developerId: string): string {
+  return `${adapterConfig.baseURL}${adapterConfig.endpoints.developers.attachment(developerId)}`;
 }
 
 // ---------------------------------------------------------------------------
@@ -79,7 +119,7 @@ interface UploadImageResponse {
 // ---------------------------------------------------------------------------
 
 /**
- * Fetches a client profile from GET /api/clients/:id.
+ * Fetches a client profile from the adapter service.
  *
  * Returns the client data, avatar URL, and resolved language names.
  *
@@ -89,7 +129,18 @@ export function useClientProfile(id: string | undefined) {
   return useQuery<ClientProfileResponse>({
     queryKey: profileKeys.client(id ?? ''),
     queryFn: async () => {
-      return api.get<ClientProfileResponse>(`/api/clients/${id}`);
+      if (!id) {
+        throw new Error('Client ID is required');
+      }
+      const client = await getClientById(id);
+      const avatarUrl = buildClientAvatarUrl(id);
+      const languageNames = resolveLanguageNames(client.languages);
+
+      return {
+        client,
+        avatarUrl,
+        languageNames,
+      };
     },
     enabled: !!id,
     staleTime: 2 * 60 * 1000, // 2 minutes
@@ -107,17 +158,26 @@ interface UpdateClientInput {
 }
 
 /**
- * Mutation for PUT /api/clients/:id.
+ * Mutation for updating a client profile.
  *
- * Updates a client profile. On success, invalidates the client profile
- * query so it refetches with the updated data.
+ * Updates a client profile via the adapter service. On success, invalidates
+ * the client profile query so it refetches with the updated data.
  */
 export function useUpdateClientProfile() {
   const queryClient = useQueryClient();
 
   return useMutation<UpdateClientResponse, Error, UpdateClientInput>({
     mutationFn: async ({ id, data }: UpdateClientInput) => {
-      return api.put<UpdateClientResponse>(`/api/clients/${id}`, data);
+      await updateClient(id, data as unknown as Record<string, unknown>);
+
+      // Fetch the updated client to return consistent response shape
+      const client = await getClientById(id);
+      const languageNames = resolveLanguageNames(client.languages);
+
+      return {
+        client,
+        languageNames,
+      };
     },
     onSuccess: (_data, variables) => {
       void queryClient.invalidateQueries({
@@ -132,7 +192,7 @@ export function useUpdateClientProfile() {
 // ---------------------------------------------------------------------------
 
 /**
- * Fetches a developer profile from GET /api/developers/:id.
+ * Fetches a developer profile from the adapter service.
  *
  * Returns the developer data, avatar URL, and resolved language names.
  *
@@ -142,7 +202,18 @@ export function useDeveloperProfile(id: string | undefined) {
   return useQuery<DeveloperProfileResponse>({
     queryKey: profileKeys.developer(id ?? ''),
     queryFn: async () => {
-      return api.get<DeveloperProfileResponse>(`/api/developers/${id}`);
+      if (!id) {
+        throw new Error('Developer ID is required');
+      }
+      const developer = await getDeveloperById(id);
+      const avatarUrl = buildDeveloperAvatarUrl(id);
+      const languageNames = resolveLanguageNames(developer.languages);
+
+      return {
+        developer,
+        avatarUrl,
+        languageNames,
+      };
     },
     enabled: !!id,
     staleTime: 2 * 60 * 1000, // 2 minutes
@@ -160,17 +231,26 @@ interface UpdateDeveloperInput {
 }
 
 /**
- * Mutation for PUT /api/developers/:id.
+ * Mutation for updating a developer profile.
  *
- * Updates a developer profile. On success, invalidates the developer
- * profile query so it refetches with the updated data.
+ * Updates a developer profile via the adapter service. On success, invalidates
+ * the developer profile query so it refetches with the updated data.
  */
 export function useUpdateDeveloperProfile() {
   const queryClient = useQueryClient();
 
   return useMutation<UpdateDeveloperResponse, Error, UpdateDeveloperInput>({
     mutationFn: async ({ id, data }: UpdateDeveloperInput) => {
-      return api.put<UpdateDeveloperResponse>(`/api/developers/${id}`, data);
+      await updateDeveloper(id, data as unknown as Record<string, unknown>);
+
+      // Fetch the updated developer to return consistent response shape
+      const developer = await getDeveloperById(id);
+      const languageNames = resolveLanguageNames(developer.languages);
+
+      return {
+        developer,
+        languageNames,
+      };
     },
     onSuccess: (_data, variables) => {
       void queryClient.invalidateQueries({
@@ -195,9 +275,9 @@ interface UploadImageInput {
 }
 
 /**
- * Mutation for POST /api/clients/:id/attachment or POST /api/developers/:id/attachment.
+ * Mutation for uploading a profile image.
  *
- * Uploads a profile image using multipart/form-data.
+ * Uploads a profile image using the update service with multipart/form-data.
  * On success, invalidates the relevant profile query.
  */
 export function useUploadProfileImage() {
@@ -205,21 +285,19 @@ export function useUploadProfileImage() {
 
   return useMutation<UploadImageResponse, Error, UploadImageInput>({
     mutationFn: async ({ profileType, id, file }: UploadImageInput) => {
-      const formData = new FormData();
-      formData.append('image', file);
+      if (profileType === 'client') {
+        // Fetch current client data to merge with image upload
+        const client = await getClientById(id);
+        await updateClient(id, client as unknown as Record<string, unknown>, file);
+      } else {
+        // Fetch current developer data to merge with image upload
+        const developer = await getDeveloperById(id);
+        await updateDeveloper(id, developer as unknown as Record<string, unknown>, file);
+      }
 
-      const endpoint = profileType === 'client'
-        ? `/api/clients/${id}/attachment`
-        : `/api/developers/${id}/attachment`;
-
-      // Use the raw apiClient (axios) for FormData uploads
-      // so we can set the correct Content-Type header
-      const response = await apiClient.post(endpoint, formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
-
-      // The response interceptor already unwraps response.data
-      return response as unknown as UploadImageResponse;
+      return {
+        message: 'Profile image uploaded successfully',
+      };
     },
     onSuccess: (_data, variables) => {
       if (variables.profileType === 'client') {

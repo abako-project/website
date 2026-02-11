@@ -1,19 +1,26 @@
 /**
  * Enum Data Hooks
  *
- * React Query hooks wrapping the enums API endpoints:
- *   - GET /api/enums           -> useEnums()
- *   - GET /api/enums/budgets   -> useBudgets()
- *   - GET /api/enums/skills    -> useSkills()
- *   - etc.
+ * React Query hooks for enum/reference data:
+ *   - useEnums()     -> Returns all enum data
+ *   - useLanguages() -> Returns languages map
  *
- * Enum data is static reference data that rarely changes, so we use
- * a long staleTime (30 minutes) and gcTime (1 hour).
+ * All enum data is static and loaded from frontend constants,
+ * no backend API calls are needed.
  */
 
 import { useQuery } from '@tanstack/react-query';
-import { api } from '@api/client';
-import type { EnumsResponse, LanguagesMap } from '@/types/index';
+import {
+  BUDGETS,
+  DELIVERY_TIMES,
+  PROJECT_TYPES,
+  SKILLS,
+  ROLES,
+  AVAILABILITY_OPTIONS,
+  PROFICIENCY_LEVELS,
+} from '@/types';
+import { LANGUAGES } from '@/constants/languages';
+import type { EnumsResponse, LanguagesMap } from '@/types';
 
 // ---------------------------------------------------------------------------
 // Query keys
@@ -25,12 +32,14 @@ export const enumKeys = {
   languages: () => [...enumKeys.all, 'languages'] as const,
 };
 
-/** Common query options for enum data (rarely changes). */
+/** Common query options for enum data (static, never changes). */
 const ENUM_QUERY_OPTIONS = {
-  staleTime: 30 * 60 * 1000,  // 30 minutes
-  gcTime: 60 * 60 * 1000,     // 1 hour
+  staleTime: Infinity,  // Static data never goes stale
+  gcTime: Infinity,     // Never garbage collect
   refetchOnWindowFocus: false,
-  retry: 2,
+  refetchOnMount: false,
+  refetchOnReconnect: false,
+  retry: false, // No need to retry static data
 } as const;
 
 // ---------------------------------------------------------------------------
@@ -38,15 +47,27 @@ const ENUM_QUERY_OPTIONS = {
 // ---------------------------------------------------------------------------
 
 /**
- * Fetches all enum data in a single request from GET /api/enums.
+ * Returns all enum data in a single response.
  *
  * This is the preferred hook when you need multiple enum types
  * at once (e.g., in a form with budgets, delivery times, and project types).
+ *
+ * All data is static and loaded from frontend constants - no API calls.
  */
 export function useEnums() {
   return useQuery<EnumsResponse>({
     queryKey: enumKeys.aggregate(),
-    queryFn: () => api.get<EnumsResponse>('/api/enums'),
+    queryFn: () =>
+      Promise.resolve({
+        budgets: BUDGETS,
+        deliveryTimes: DELIVERY_TIMES,
+        projectTypes: PROJECT_TYPES,
+        skills: SKILLS,
+        roles: ROLES,
+        availability: AVAILABILITY_OPTIONS,
+        languages: LANGUAGES,
+        proficiency: PROFICIENCY_LEVELS,
+      } as EnumsResponse),
     ...ENUM_QUERY_OPTIONS,
   });
 }
@@ -56,13 +77,15 @@ export function useEnums() {
 // ---------------------------------------------------------------------------
 
 /**
- * Fetches the languages map from GET /api/enums/languages.
- * Returns an object mapping ISO codes to language names.
+ * Returns the languages map.
+ *
+ * Returns an object mapping ISO 639-3 codes to language names.
+ * Data is static and loaded from frontend constants - no API calls.
  */
 export function useLanguages() {
   return useQuery<LanguagesMap>({
     queryKey: enumKeys.languages(),
-    queryFn: () => api.get<LanguagesMap>('/api/enums/languages'),
+    queryFn: () => Promise.resolve(LANGUAGES),
     ...ENUM_QUERY_OPTIONS,
   });
 }

@@ -1,28 +1,33 @@
 /**
  * Authentication Hooks
  *
- * React Query hooks wrapping the auth API endpoints:
- *   - GET  /api/auth/me     -> useCurrentUser()
- *   - POST /api/auth/login  -> useLogin()
- *   - DELETE /api/auth/logout -> useLogout()
+ * React Query hooks for authentication operations.
+ * All hooks use direct service calls (no Express backend).
  *
- * These hooks work alongside the Zustand authStore:
- *   - useLogin() updates the authStore on success
- *   - useLogout() clears the authStore on success
- *   - useCurrentUser() can be used to rehydrate auth state from the session
+ * Flow:
+ *   - Login: clientConnect/developerConnect → Zustand store
+ *   - Register: createClient/createDeveloper → Zustand store
+ *   - Logout: Clear Zustand store (no server call)
+ *   - CurrentUser: Validate persisted user via findByEmail
  */
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { api } from '@api/client';
 import { useAuthStore } from '@stores/authStore';
+import {
+  clientConnect,
+  developerConnect,
+  createClient,
+  createDeveloper,
+  findClientByEmail,
+  findDeveloperByEmail,
+} from '@/services';
 import type {
   LoginCredentials,
   LoginResponse,
-  MeResponse,
-  LogoutResponse,
   RegisterCredentials,
   RegisterResponse,
   User,
+  UserRole,
 } from '@/types/index';
 
 // ---------------------------------------------------------------------------
@@ -39,29 +44,39 @@ export const authKeys = {
 // ---------------------------------------------------------------------------
 
 /**
- * Fetches the currently authenticated user from GET /api/auth/me.
+ * Validates the persisted user by checking they still exist in the API.
  *
- * This query is disabled when no session exists (i.e., when the user
- * is not authenticated in the Zustand store). It can also be used on
- * app startup to check if an existing session cookie is still valid.
- *
- * @param options.enabled - Override the automatic enable/disable behavior.
+ * Since auth state is persisted in localStorage via Zustand, we don't
+ * need a server session. This hook optionally validates the user
+ * still exists by querying findClientByEmail / findDeveloperByEmail.
  */
 export function useCurrentUser(options?: { enabled?: boolean }) {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const user = useAuthStore((state) => state.user);
 
   return useQuery<User>({
     queryKey: authKeys.me(),
     queryFn: async () => {
-      const response = await api.get<MeResponse>('/api/auth/me');
-      return response.user;
+      if (!user?.email) throw new Error('No user in store');
+
+      // Validate user still exists in the external API
+      if (user.clientId) {
+        const client = await findClientByEmail(user.email);
+        if (!client) throw new Error('Client not found');
+        return { email: user.email, name: client.name, clientId: client.id };
+      }
+
+      if (user.developerId) {
+        const developer = await findDeveloperByEmail(user.email);
+        if (!developer) throw new Error('Developer not found');
+        return { email: user.email, name: developer.name, developerId: developer.id };
+      }
+
+      throw new Error('User has no role');
     },
-    // Only fetch if the user appears to be authenticated
-    // (has a token in Zustand), unless explicitly overridden
     enabled: options?.enabled ?? isAuthenticated,
-    // User data should stay fresh while the tab is active
     staleTime: 5 * 60 * 1000, // 5 minutes
-    retry: false, // Don't retry on 401
+    retry: false,
   });
 }
 
@@ -70,10 +85,10 @@ export function useCurrentUser(options?: { enabled?: boolean }) {
 // ---------------------------------------------------------------------------
 
 /**
- * Mutation for POST /api/auth/login.
+ * Login mutation that calls SEDA services directly.
  *
- * On success, updates the Zustand auth store with the user and token,
- * and invalidates the current user query so it refetches.
+ * Calls clientConnect or developerConnect depending on the role,
+ * then updates the Zustand auth store with user and token.
  */
 export function useLogin() {
   const queryClient = useQueryClient();
@@ -81,13 +96,29 @@ export function useLogin() {
 
   return useMutation<LoginResponse, Error, LoginCredentials>({
     mutationFn: async (credentials: LoginCredentials) => {
-      return api.post<LoginResponse>('/api/auth/login', credentials);
+      const { email, role } = credentials;
+
+      if (role === 'client') {
+        const result = await clientConnect(email);
+        const user: User = {
+          email,
+          name: result.name ?? email,
+          clientId: result.clientId,
+        };
+        return { user, token: result.token };
+      }
+
+      // role === 'developer'
+      const result = await developerConnect(email);
+      const user: User = {
+        email,
+        name: result.name ?? email,
+        developerId: result.developerId,
+      };
+      return { user, token: result.token };
     },
     onSuccess: (data) => {
-      // Update Zustand store
       login(data.user, data.token);
-
-      // Invalidate the "me" query so it picks up the new session
       void queryClient.invalidateQueries({ queryKey: authKeys.me() });
     },
   });
@@ -98,15 +129,22 @@ export function useLogin() {
 // ---------------------------------------------------------------------------
 
 /**
- * Mutation for POST /api/auth/register.
+ * Registration mutation that calls SEDA services directly.
  *
- * Sends the WebAuthn preparedData along with email, name, and role
- * to the backend, which creates the account via SEDA.
+ * Creates a new client or developer account via the adapter API.
  */
 export function useRegister() {
   return useMutation<RegisterResponse, Error, RegisterCredentials>({
     mutationFn: async (credentials: RegisterCredentials) => {
-      return api.post<RegisterResponse>('/api/auth/register', credentials);
+      const { email, name, role, preparedData } = credentials;
+
+      if (role === 'client') {
+        await createClient(email, name, preparedData);
+      } else {
+        await createDeveloper(email, name, preparedData);
+      }
+
+      return { success: true as const, message: 'Registration successful' };
     },
   });
 }
@@ -116,25 +154,33 @@ export function useRegister() {
 // ---------------------------------------------------------------------------
 
 /**
- * Mutation for DELETE /api/auth/logout.
+ * Logout mutation that clears the Zustand store.
  *
- * On success, clears the Zustand auth store and resets all React Query caches
- * (since the user context has changed).
+ * No server call needed since auth is fully client-side
+ * (token from Virto WebAuthn, persisted in localStorage).
  */
 export function useLogout() {
   const queryClient = useQueryClient();
   const logout = useAuthStore((state) => state.logout);
 
-  return useMutation<LogoutResponse, Error, void>({
+  return useMutation<void, Error, void>({
     mutationFn: async () => {
-      return api.delete<LogoutResponse>('/api/auth/logout');
+      // No server call needed - just clear local state
     },
     onSuccess: () => {
-      // Clear Zustand store
       logout();
-
-      // Reset all queries (user-specific data is no longer valid)
       void queryClient.resetQueries();
     },
   });
+}
+
+// ---------------------------------------------------------------------------
+// Helper: get user role from User object
+// ---------------------------------------------------------------------------
+
+export function getUserRole(user: User | null): UserRole | null {
+  if (!user) return null;
+  if (user.clientId) return 'client';
+  if (user.developerId) return 'developer';
+  return null;
 }

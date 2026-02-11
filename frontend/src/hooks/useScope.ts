@@ -1,10 +1,8 @@
 /**
  * Scope and Proposal Action Hooks
  *
- * React Query mutation hooks for project lifecycle actions:
- *   - POST /api/projects/:id/scope         -> useSubmitScope()
- *   - POST /api/projects/:id/scope/accept  -> useAcceptScope()
- *   - POST /api/projects/:id/scope/reject  -> useRejectScope()
+ * React Query mutation hooks for project lifecycle actions.
+ * All hooks use direct service calls (no Express backend).
  *
  * Proposal-level approve/reject mutations live in useProjects.ts
  * (useApproveProposal, useRejectProposal) and are re-exported here
@@ -12,9 +10,15 @@
  */
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { api } from '@api/client';
 import { projectKeys } from '@hooks/useProjects';
 import type { Milestone } from '@/types/index';
+import {
+  submitScope,
+  acceptScope,
+  rejectScope,
+  getProject,
+} from '@/services';
+import { useAuthStore } from '@/stores/authStore';
 
 // ---------------------------------------------------------------------------
 // Response types
@@ -37,7 +41,7 @@ export interface SubmitScopeInput {
 }
 
 /**
- * Mutation for POST /api/projects/:id/scope.
+ * Mutation for submitting the scope (milestones) for client validation.
  *
  * Used by consultants to submit the scope (milestones) for client validation.
  * The milestones are sent directly in the request body rather than being
@@ -54,10 +58,24 @@ export function useSubmitScope() {
       milestones,
       consultantComment,
     }: SubmitScopeInput) => {
-      return api.post<ScopeActionResponse>(
-        `/api/projects/${projectId}/scope`,
-        { milestones, consultantComment }
+      const token = useAuthStore.getState().token || '';
+
+      // Cast milestones to the format expected by the service
+      const milestonesData = milestones as unknown as Record<string, unknown>[];
+
+      await submitScope(
+        projectId,
+        milestonesData,
+        25, // advancePaymentPercentage
+        '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef', // documentHash
+        consultantComment || '',
+        token
       );
+
+      return {
+        projectId,
+        message: 'Scope submitted successfully',
+      };
     },
     onSuccess: (_data, variables) => {
       void queryClient.invalidateQueries({
@@ -80,7 +98,7 @@ export interface AcceptScopeInput {
 }
 
 /**
- * Mutation for POST /api/projects/:id/scope/accept.
+ * Mutation for accepting the proposed scope.
  *
  * Used by clients to accept the proposed scope. The backend will fetch
  * the milestone IDs internally.
@@ -95,10 +113,20 @@ export function useAcceptScope() {
       projectId,
       clientResponse,
     }: AcceptScopeInput) => {
-      return api.post<ScopeActionResponse>(
-        `/api/projects/${projectId}/scope/accept`,
-        { clientResponse }
-      );
+      const token = useAuthStore.getState().token || '';
+
+      // Fetch project to get milestone IDs
+      const project = await getProject(projectId);
+      const milestoneIds = project.milestones
+        .map((m) => m.id)
+        .filter((id): id is string => !!id);
+
+      await acceptScope(projectId, milestoneIds, clientResponse || '', token);
+
+      return {
+        projectId,
+        message: 'Scope accepted successfully',
+      };
     },
     onSuccess: (_data, variables) => {
       void queryClient.invalidateQueries({
@@ -121,7 +149,7 @@ export interface RejectScopeInput {
 }
 
 /**
- * Mutation for POST /api/projects/:id/scope/reject.
+ * Mutation for rejecting the proposed scope.
  *
  * Used by clients to reject the proposed scope. The project will move
  * back to ScopingInProgress state so the consultant can revise.
@@ -136,10 +164,12 @@ export function useRejectScope() {
       projectId,
       clientResponse,
     }: RejectScopeInput) => {
-      return api.post<ScopeActionResponse>(
-        `/api/projects/${projectId}/scope/reject`,
-        { clientResponse }
-      );
+      const token = useAuthStore.getState().token || '';
+      await rejectScope(projectId, clientResponse || '', token);
+      return {
+        projectId,
+        message: 'Scope rejected successfully',
+      };
     },
     onSuccess: (_data, variables) => {
       void queryClient.invalidateQueries({

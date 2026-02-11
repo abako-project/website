@@ -1,17 +1,18 @@
 /**
  * Project Data Hooks
  *
- * React Query hooks wrapping the project API endpoints:
- *   - GET    /api/projects          -> useProjects()
- *   - GET    /api/dashboard         -> useDashboard()
- *   - GET    /api/projects/:id      -> useProject(id)
- *   - POST   /api/projects          -> useCreateProject()
- *   - PUT    /api/projects/:id      -> useUpdateProject()
- *   - POST   /api/projects/:id/approve -> useApproveProposal()
- *   - POST   /api/projects/:id/reject  -> useRejectProposal()
+ * React Query hooks wrapping the project service layer.
+ * All hooks use direct service calls (no Express backend).
  *
- * These hooks use the typed api helper from @api/client and return
- * strongly typed data matching the Project and User types.
+ * Service functions used:
+ *   - getProjectsIndex(clientId?, developerId?) -> Project[]
+ *   - getProject(projectId) -> Project (enriched with client, consultant, milestones)
+ *   - createProposal(clientId, data, token) -> string (projectId)
+ *   - updateProposal(projectId, data, token) -> unknown
+ *   - rejectProposal(projectId, reason, token) -> void
+ *
+ * Auth data is fetched from Zustand store (useAuthStore).
+ * Enums are built from constants (BUDGETS, DELIVERY_TIMES, PROJECT_TYPES).
  */
 
 import {
@@ -19,7 +20,15 @@ import {
   useMutation,
   useQueryClient,
 } from '@tanstack/react-query';
-import { api } from '@api/client';
+import {
+  getProjectsIndex,
+  getProject,
+  createProposal,
+  updateProposal,
+  rejectProposal,
+} from '@/services';
+import { useAuthStore } from '@/stores/authStore';
+import { BUDGETS, DELIVERY_TIMES, PROJECT_TYPES } from '@/types';
 import type {
   Project,
   User,
@@ -45,19 +54,14 @@ export const projectKeys = {
 // Response types
 // ---------------------------------------------------------------------------
 
-/** Shape returned by GET /api/projects (after unwrapping { success, data }). */
-interface ProjectsResponse {
-  projects: Project[];
-}
-
-/** Shape returned by GET /api/dashboard (after unwrapping { success, data }). */
+/** Dashboard response shape. */
 export interface DashboardResponse {
   user: User;
   projects: Project[];
   projectsByState: Record<string, Project[]>;
 }
 
-/** Shape returned by GET /api/projects/:id (after unwrapping). */
+/** Project detail response shape. */
 export interface ProjectDetailResponse {
   project: Project;
   allBudgets: Array<{ id: number; description: string }>;
@@ -65,23 +69,23 @@ export interface ProjectDetailResponse {
   allProjectTypes: Array<{ id: number; description: string }>;
 }
 
-/** Shape returned by POST /api/projects (after unwrapping). */
+/** Create project response shape. */
 interface CreateProjectResponse {
   projectId: string;
 }
 
-/** Shape returned by PUT /api/projects/:id (after unwrapping). */
+/** Update project response shape. */
 interface UpdateProjectResponse {
   projectId: string;
 }
 
-/** Shape returned by POST /api/projects/:id/approve (after unwrapping). */
+/** Approve proposal response shape. */
 interface ApproveProposalResponse {
   projectId: string;
   message: string;
 }
 
-/** Shape returned by POST /api/projects/:id/reject (after unwrapping). */
+/** Reject proposal response shape. */
 interface RejectProposalResponse {
   projectId: string;
   message: string;
@@ -92,17 +96,27 @@ interface RejectProposalResponse {
 // ---------------------------------------------------------------------------
 
 /**
- * Fetches all projects for the authenticated user from GET /api/projects.
+ * Fetches all projects for the authenticated user.
  *
  * Projects are returned in reverse chronological order (newest first),
  * matching the behavior of the EJS dashboard.
+ *
+ * Calls: getProjectsIndex(user.clientId, user.developerId)
  */
 export function useProjects() {
   return useQuery<Project[]>({
     queryKey: projectKeys.lists(),
     queryFn: async () => {
-      const response = await api.get<ProjectsResponse>('/api/projects');
-      return response.projects;
+      const user = useAuthStore.getState().user;
+
+      // Fetch projects using service layer
+      const projects = await getProjectsIndex(
+        user?.clientId,
+        user?.developerId
+      );
+
+      // Reverse to show newest first (matching EJS behavior)
+      return projects.reverse();
     },
     staleTime: 2 * 60 * 1000, // 2 minutes
   });
@@ -113,16 +127,48 @@ export function useProjects() {
 // ---------------------------------------------------------------------------
 
 /**
- * Fetches dashboard data from GET /api/dashboard.
+ * Fetches dashboard data.
  *
  * Returns the authenticated user info, all their projects, and projects
  * grouped by state for display in the dashboard overview.
+ *
+ * Calls: getProjectsIndex(user.clientId, user.developerId)
+ * Then groups by state locally.
  */
 export function useDashboard() {
   return useQuery<DashboardResponse>({
     queryKey: projectKeys.dashboard(),
     queryFn: async () => {
-      return api.get<DashboardResponse>('/api/dashboard');
+      const user = useAuthStore.getState().user;
+
+      if (!user) {
+        throw new Error('User not authenticated');
+      }
+
+      // Fetch projects using service layer
+      const projects = await getProjectsIndex(
+        user.clientId,
+        user.developerId
+      );
+
+      // Reverse to show newest first
+      const reversedProjects = projects.reverse();
+
+      // Group projects by state
+      const projectsByState: Record<string, Project[]> = {};
+      for (const project of reversedProjects) {
+        const state = project.state || 'Unknown';
+        if (!projectsByState[state]) {
+          projectsByState[state] = [];
+        }
+        projectsByState[state].push(project);
+      }
+
+      return {
+        user,
+        projects: reversedProjects,
+        projectsByState,
+      };
     },
     staleTime: 2 * 60 * 1000, // 2 minutes
   });
@@ -133,10 +179,13 @@ export function useDashboard() {
 // ---------------------------------------------------------------------------
 
 /**
- * Fetches a single project with full details from GET /api/projects/:id.
+ * Fetches a single project with full details.
  *
  * The response includes the project with milestones, client, consultant,
  * and the enum reference data (budgets, delivery times, project types).
+ *
+ * Calls: getProject(id)
+ * Enums are built from constants.
  *
  * @param id - The project ID to fetch. When undefined, the query is disabled.
  */
@@ -144,7 +193,24 @@ export function useProject(id: string | undefined) {
   return useQuery<ProjectDetailResponse>({
     queryKey: projectKeys.detail(id ?? ''),
     queryFn: async () => {
-      return api.get<ProjectDetailResponse>(`/api/projects/${id}`);
+      if (!id) {
+        throw new Error('Project ID is required');
+      }
+
+      // Fetch project using service layer
+      const project = await getProject(id);
+
+      // Build enum arrays from constants
+      const allBudgets = BUDGETS.map((b, i) => ({ id: i, description: b }));
+      const allDeliveryTimes = DELIVERY_TIMES.map((d, i) => ({ id: i, description: d }));
+      const allProjectTypes = PROJECT_TYPES.map((p, i) => ({ id: i, description: p }));
+
+      return {
+        project,
+        allBudgets,
+        allDeliveryTimes,
+        allProjectTypes,
+      };
     },
     enabled: !!id,
     staleTime: 60 * 1000, // 1 minute
@@ -156,18 +222,33 @@ export function useProject(id: string | undefined) {
 // ---------------------------------------------------------------------------
 
 /**
- * Mutation for POST /api/projects.
+ * Mutation for creating a new project proposal.
  *
- * Creates a new project proposal. Only clients can create proposals.
+ * Only clients can create proposals.
  * On success, invalidates the projects list and dashboard queries
  * so they refetch with the new project included.
+ *
+ * Calls: createProposal(user.clientId, data, token)
  */
 export function useCreateProject() {
   const queryClient = useQueryClient();
 
   return useMutation<CreateProjectResponse, Error, ProposalCreateData>({
     mutationFn: async (data: ProposalCreateData) => {
-      return api.post<CreateProjectResponse>('/api/projects', data);
+      const { user, token } = useAuthStore.getState();
+
+      if (!user?.clientId) {
+        throw new Error('Client ID not found. Only clients can create proposals.');
+      }
+
+      if (!token) {
+        throw new Error('Authentication token not found');
+      }
+
+      // Call service layer
+      const projectId = await createProposal(user.clientId, data, token);
+
+      return { projectId };
     },
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: projectKeys.lists() });
@@ -187,17 +268,27 @@ interface UpdateProjectInput {
 }
 
 /**
- * Mutation for PUT /api/projects/:id.
+ * Mutation for updating an existing project proposal.
  *
- * Updates an existing project proposal. On success, invalidates the
- * project detail, projects list, and dashboard queries.
+ * On success, invalidates the project detail, projects list, and dashboard queries.
+ *
+ * Calls: updateProposal(projectId, data, token)
  */
 export function useUpdateProject() {
   const queryClient = useQueryClient();
 
   return useMutation<UpdateProjectResponse, Error, UpdateProjectInput>({
     mutationFn: async ({ id, data }: UpdateProjectInput) => {
-      return api.put<UpdateProjectResponse>(`/api/projects/${id}`, data);
+      const { token } = useAuthStore.getState();
+
+      if (!token) {
+        throw new Error('Authentication token not found');
+      }
+
+      // Call service layer
+      await updateProposal(id, data, token);
+
+      return { projectId: id };
     },
     onSuccess: (_data, variables) => {
       void queryClient.invalidateQueries({
@@ -214,19 +305,20 @@ export function useUpdateProject() {
 // ---------------------------------------------------------------------------
 
 /**
- * Mutation for POST /api/projects/:id/approve.
+ * Mutation for approving a project proposal.
  *
  * Used by consultants to approve a client's project proposal.
  * On success, invalidates the relevant queries.
+ *
+ * NOTE: Backend seda.approveProposal is a stub that throws "Not yet implemented".
+ * This hook is kept as a stub for future implementation.
  */
 export function useApproveProposal() {
   const queryClient = useQueryClient();
 
   return useMutation<ApproveProposalResponse, Error, string>({
-    mutationFn: async (projectId: string) => {
-      return api.post<ApproveProposalResponse>(
-        `/api/projects/${projectId}/approve`
-      );
+    mutationFn: async (_projectId: string) => {
+      throw new Error('Approve proposal is not yet implemented');
     },
     onSuccess: (_data, projectId) => {
       void queryClient.invalidateQueries({
@@ -249,20 +341,35 @@ interface RejectProposalInput {
 }
 
 /**
- * Mutation for POST /api/projects/:id/reject.
+ * Mutation for rejecting a project proposal.
  *
  * Used by consultants to reject a client's project proposal.
  * On success, invalidates the relevant queries.
+ *
+ * Calls: rejectProposal(projectId, reason, token)
  */
 export function useRejectProposal() {
   const queryClient = useQueryClient();
 
   return useMutation<RejectProposalResponse, Error, RejectProposalInput>({
     mutationFn: async ({ projectId, proposalRejectionReason }: RejectProposalInput) => {
-      return api.post<RejectProposalResponse>(
-        `/api/projects/${projectId}/reject`,
-        { proposalRejectionReason }
+      const { token } = useAuthStore.getState();
+
+      if (!token) {
+        throw new Error('Authentication token not found');
+      }
+
+      // Call service layer
+      await rejectProposal(
+        projectId,
+        proposalRejectionReason || '',
+        token
       );
+
+      return {
+        projectId,
+        message: 'Proposal rejected successfully',
+      };
     },
     onSuccess: (_data, variables) => {
       void queryClient.invalidateQueries({

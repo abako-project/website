@@ -1,9 +1,8 @@
 /**
  * Votes Data Hooks
  *
- * React Query hooks wrapping the votes API endpoints:
- *   - GET  /api/votes/:projectId  -> useVoteMembers(projectId)
- *   - POST /api/votes/:projectId  -> useSubmitVotes()
+ * React Query hooks for voting/rating flow.
+ * All hooks use direct service calls (no Express backend).
  *
  * These hooks manage the voting/rating flow where consultants
  * rate developer performance at the end of a project.
@@ -14,7 +13,6 @@ import {
   useMutation,
   useQueryClient,
 } from '@tanstack/react-query';
-import { api } from '@api/client';
 import { projectKeys } from '@hooks/useProjects';
 import { paymentKeys } from '@hooks/usePayments';
 import type {
@@ -22,6 +20,14 @@ import type {
   VoteEntry,
   SubmitVotesResponse,
 } from '@/types/index';
+import {
+  getProject,
+  getProjectDevelopers,
+  getDeveloperAttachment,
+  projectCompleted,
+} from '@/services';
+import { useAuthStore } from '@/stores/authStore';
+import { adapterConfig } from '@/api/config';
 
 // ---------------------------------------------------------------------------
 // Query keys
@@ -37,7 +43,7 @@ export const voteKeys = {
 // ---------------------------------------------------------------------------
 
 /**
- * Fetches the team members available for rating from GET /api/votes/:projectId.
+ * Fetches the team members available for rating.
  *
  * @param projectId - The project ID. When undefined, the query is disabled.
  */
@@ -45,7 +51,45 @@ export function useVoteMembers(projectId: string | undefined) {
   return useQuery<VotesResponse>({
     queryKey: voteKeys.members(projectId ?? ''),
     queryFn: async () => {
-      return api.get<VotesResponse>(`/api/votes/${projectId}`);
+      if (!projectId) {
+        throw new Error('Project ID is required');
+      }
+
+      const project = await getProject(projectId);
+      const members = await getProjectDevelopers(projectId);
+
+      // Enrich members with image URLs
+      const enrichedMembers = await Promise.all(
+        members.map(async (member) => {
+          let imageUrl = '/images/none.png';
+          try {
+            const attachment = await getDeveloperAttachment(member.id);
+            if (attachment) {
+              imageUrl = `${adapterConfig.baseURL}/developers/${member.id}/attachment`;
+            }
+          } catch {
+            // Keep default image if attachment fetch fails
+          }
+
+          return {
+            name: member.name,
+            role: member.role || null,
+            proficiency: member.proficiency || null,
+            userId: member.developerWorkerAddress || null,
+            email: member.email || null,
+            imageUrl,
+          };
+        })
+      );
+
+      return {
+        project: {
+          id: project.id,
+          title: project.title,
+          state: project.state || 'Unknown',
+        },
+        members: enrichedMembers,
+      };
     },
     enabled: !!projectId,
     staleTime: 5 * 60 * 1000, // 5 minutes
@@ -63,7 +107,7 @@ export interface SubmitVotesInput {
 }
 
 /**
- * Mutation for POST /api/votes/:projectId.
+ * Mutation for submitting developer ratings.
  *
  * Submits developer ratings and marks the project as completed.
  * On success, invalidates relevant queries.
@@ -73,10 +117,17 @@ export function useSubmitVotes() {
 
   return useMutation<SubmitVotesResponse, Error, SubmitVotesInput>({
     mutationFn: async ({ projectId, votes }: SubmitVotesInput) => {
-      return api.post<SubmitVotesResponse>(
-        `/api/votes/${projectId}`,
-        { votes }
-      );
+      const token = useAuthStore.getState().token || '';
+
+      // Convert votes to the format expected by the service
+      const voteTuples: Array<[string, number]> = votes.map((v) => [v.userId, v.score]);
+
+      await projectCompleted(projectId, voteTuples, token);
+
+      return {
+        projectId,
+        message: 'Votes submitted successfully',
+      };
     },
     onSuccess: (_data, variables) => {
       void queryClient.invalidateQueries({

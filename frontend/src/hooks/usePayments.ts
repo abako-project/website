@@ -1,12 +1,10 @@
 /**
  * Payment Data Hooks
  *
- * React Query hooks wrapping the payment API endpoints:
- *   - GET  /api/payments            -> usePayments()
- *   - GET  /api/payments/:projectId -> usePayment(projectId)
- *   - POST /api/payments/:projectId/release -> useReleasePayment()
+ * React Query hooks for payment data.
+ * All hooks use direct service calls (no Express backend).
  *
- * These hooks use the typed api helper from @api/client and return
+ * These hooks use the typed service functions and return
  * strongly typed data matching the Payment types.
  */
 
@@ -15,13 +13,15 @@ import {
   useMutation,
   useQueryClient,
 } from '@tanstack/react-query';
-import { api } from '@api/client';
 import { projectKeys } from '@hooks/useProjects';
 import type {
   PaymentsResponse,
   PaymentDetailResponse,
   ReleasePaymentResponse,
 } from '@/types/index';
+import { DELIVERY_TIMES } from '@/types';
+import { getProjectsIndex, getProject, projectCompleted } from '@/services';
+import { useAuthStore } from '@/stores/authStore';
 
 // ---------------------------------------------------------------------------
 // Query keys
@@ -40,7 +40,7 @@ export const paymentKeys = {
 // ---------------------------------------------------------------------------
 
 /**
- * Fetches all payment data for the authenticated user from GET /api/payments.
+ * Fetches all payment data for the authenticated user.
  *
  * Returns projects (with milestones) plus the advance payment percentage.
  * The frontend computes payment summaries from this data, mirroring the
@@ -50,7 +50,23 @@ export function usePayments() {
   return useQuery<PaymentsResponse>({
     queryKey: paymentKeys.lists(),
     queryFn: async () => {
-      return api.get<PaymentsResponse>('/api/payments');
+      const user = useAuthStore.getState().user;
+      const projects = await getProjectsIndex(user?.clientId, user?.developerId);
+
+      // Reverse order to match original behavior
+      projects.reverse();
+
+      // Build delivery times array
+      const allDeliveryTimes = DELIVERY_TIMES.map((d, i) => ({
+        id: i,
+        description: d,
+      }));
+
+      return {
+        projects,
+        advancePaymentPercentage: 25,
+        allDeliveryTimes,
+      };
     },
     staleTime: 2 * 60 * 1000, // 2 minutes
   });
@@ -61,8 +77,7 @@ export function usePayments() {
 // ---------------------------------------------------------------------------
 
 /**
- * Fetches payment details for a specific project from
- * GET /api/payments/:projectId.
+ * Fetches payment details for a specific project.
  *
  * @param projectId - The project ID to fetch payment info for.
  *   When undefined, the query is disabled.
@@ -71,7 +86,23 @@ export function usePayment(projectId: string | undefined) {
   return useQuery<PaymentDetailResponse>({
     queryKey: paymentKeys.detail(projectId ?? ''),
     queryFn: async () => {
-      return api.get<PaymentDetailResponse>(`/api/payments/${projectId}`);
+      if (!projectId) {
+        throw new Error('Project ID is required');
+      }
+
+      const project = await getProject(projectId);
+
+      // Build delivery times array
+      const allDeliveryTimes = DELIVERY_TIMES.map((d, i) => ({
+        id: i,
+        description: d,
+      }));
+
+      return {
+        project,
+        advancePaymentPercentage: 25,
+        allDeliveryTimes,
+      };
     },
     enabled: !!projectId,
     staleTime: 60 * 1000, // 1 minute
@@ -89,7 +120,7 @@ export interface ReleasePaymentInput {
 }
 
 /**
- * Mutation for POST /api/payments/:projectId/release.
+ * Mutation for releasing payment.
  *
  * Marks the project as completed with ratings and releases payment.
  * This is the final step after all milestones are completed and rated.
@@ -101,10 +132,12 @@ export function useReleasePayment() {
 
   return useMutation<ReleasePaymentResponse, Error, ReleasePaymentInput>({
     mutationFn: async ({ projectId, rating }: ReleasePaymentInput) => {
-      return api.post<ReleasePaymentResponse>(
-        `/api/payments/${projectId}/release`,
-        { rating }
-      );
+      const token = useAuthStore.getState().token || '';
+      await projectCompleted(projectId, rating, token);
+      return {
+        projectId,
+        message: 'Payment released successfully',
+      };
     },
     onSuccess: (_data, variables) => {
       void queryClient.invalidateQueries({
