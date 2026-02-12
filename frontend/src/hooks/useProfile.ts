@@ -21,7 +21,10 @@ import {
   updateClient,
   getDeveloperById,
   updateDeveloper,
+  ensureWorkerRegistered,
+  setWorkerAvailability,
 } from '@/services';
+import { useAuthStore } from '@/stores/authStore';
 import { adapterConfig } from '@/api/config';
 import { LANGUAGES } from '@/constants/languages';
 import type {
@@ -158,17 +161,45 @@ interface UpdateClientInput {
 }
 
 /**
+ * Builds the filtered data object for the client adapter API.
+ *
+ * Mirrors the old Express controller (backend/controllers/client.js)
+ * which whitelisted fields and applied defaults before sending to the API.
+ */
+function buildClientUpdatePayload(
+  data: ClientUpdateData
+): Record<string, unknown> {
+  const payload: Record<string, unknown> = {
+    name: data.name || 'name',
+    company: data.company || 'company',
+    department: data.department || 'department',
+    website: data.website || 'website',
+    description: data.description || 'description',
+    location: data.location || 'location',
+  };
+
+  // Languages default to ["none"] if empty
+  payload.languages =
+    Array.isArray(data.languages) && data.languages.length > 0
+      ? data.languages
+      : ['none'];
+
+  return payload;
+}
+
+/**
  * Mutation for updating a client profile.
  *
- * Updates a client profile via the adapter service. On success, invalidates
- * the client profile query so it refetches with the updated data.
+ * Fields are whitelisted to only include API-accepted values.
+ * On success, invalidates the client profile query.
  */
 export function useUpdateClientProfile() {
   const queryClient = useQueryClient();
 
   return useMutation<UpdateClientResponse, Error, UpdateClientInput>({
     mutationFn: async ({ id, data }: UpdateClientInput) => {
-      await updateClient(id, data as unknown as Record<string, unknown>);
+      const payload = buildClientUpdatePayload(data);
+      await updateClient(id, payload);
 
       // Fetch the updated client to return consistent response shape
       const client = await getClientById(id);
@@ -231,17 +262,91 @@ interface UpdateDeveloperInput {
 }
 
 /**
+ * Builds the filtered data object for the adapter API.
+ *
+ * Mirrors the old Express controller (backend/controllers/developer.js)
+ * which whitelisted fields and applied defaults before sending to the API.
+ */
+function buildDeveloperUpdatePayload(
+  data: DeveloperUpdateData
+): Record<string, unknown> {
+  const payload: Record<string, unknown> = {
+    name: data.name || 'name',
+    githubUsername: data.githubUsername || 'githubUsername',
+    portfolioUrl: data.portfolioUrl || 'portfolioUrl',
+    bio: data.bio || 'bio',
+    background: data.background || 'background',
+    role: data.role || null,
+    location: data.location || 'location',
+    proficiency: data.proficiency || null,
+  };
+
+  // Skills and languages default to ["none"] if empty
+  payload.skills =
+    Array.isArray(data.skills) && data.skills.length > 0
+      ? data.skills
+      : ['none'];
+  payload.languages =
+    Array.isArray(data.languages) && data.languages.length > 0
+      ? data.languages
+      : ['none'];
+
+  // Availability logic matching old backend
+  if (!data.isAvailableForHire) {
+    payload.availability = 'NotAvailable';
+  } else {
+    payload.availability = data.availability || 'NotAvailable';
+    if (data.availability === 'WeeklyHours') {
+      payload.availableHoursPerWeek = parseInt(
+        String(data.availableHoursPerWeek || '0')
+      );
+    }
+  }
+
+  return payload;
+}
+
+/**
  * Mutation for updating a developer profile.
  *
- * Updates a developer profile via the adapter service. On success, invalidates
- * the developer profile query so it refetches with the updated data.
+ * Replicates the old backend controller's 3-step process:
+ *   1. ensureWorkerRegistered — register worker in calendar contract
+ *   2. setWorkerAvailability — set availability in calendar contract
+ *   3. updateDeveloper — update profile via adapter API
+ *
+ * Fields are whitelisted to only include API-accepted values.
+ * On success, invalidates the developer profile query.
  */
 export function useUpdateDeveloperProfile() {
   const queryClient = useQueryClient();
 
   return useMutation<UpdateDeveloperResponse, Error, UpdateDeveloperInput>({
     mutationFn: async ({ id, data }: UpdateDeveloperInput) => {
-      await updateDeveloper(id, data as unknown as Record<string, unknown>);
+      const { token, user } = useAuthStore.getState();
+      const authToken = token || '';
+      const email = user?.email || '';
+
+      // Build filtered payload (whitelist fields, apply defaults)
+      const payload = buildDeveloperUpdatePayload(data);
+
+      // Steps 1-2: Calendar contract operations (best-effort).
+      // These blockchain write operations may fail due to signing/infra issues.
+      // The profile update (step 3) should still proceed.
+      try {
+        if (email) {
+          await ensureWorkerRegistered(email, authToken);
+        }
+        await setWorkerAvailability(
+          payload.availability as string,
+          (payload.availableHoursPerWeek as number) || 0,
+          authToken
+        );
+      } catch (calendarError) {
+        console.warn('[Calendar] Non-blocking error during availability sync:', calendarError);
+      }
+
+      // Step 3: Update developer profile via adapter API
+      await updateDeveloper(id, payload);
 
       // Fetch the updated developer to return consistent response shape
       const developer = await getDeveloperById(id);
@@ -286,13 +391,15 @@ export function useUploadProfileImage() {
   return useMutation<UploadImageResponse, Error, UploadImageInput>({
     mutationFn: async ({ profileType, id, file }: UploadImageInput) => {
       if (profileType === 'client') {
-        // Fetch current client data to merge with image upload
+        // Fetch current client data, filter to API-accepted fields, merge with image
         const client = await getClientById(id);
-        await updateClient(id, client as unknown as Record<string, unknown>, file);
+        const payload = buildClientUpdatePayload(client as unknown as ClientUpdateData);
+        await updateClient(id, payload, file);
       } else {
-        // Fetch current developer data to merge with image upload
+        // Fetch current developer data, filter to API-accepted fields, merge with image
         const developer = await getDeveloperById(id);
-        await updateDeveloper(id, developer as unknown as Record<string, unknown>, file);
+        const payload = buildDeveloperUpdatePayload(developer as unknown as DeveloperUpdateData);
+        await updateDeveloper(id, payload, file);
       }
 
       return {

@@ -104,13 +104,14 @@ export function addMilestoneToScope(scope: ScopeSession, data: MilestoneFormData
   const milestoneData = {
     title: data.title,
     description: data.description,
-    budget: data.budget,
+    budget: data.budget ?? null,
     deliveryTime: data.deliveryTime,
     deliveryDate: data.deliveryDate,
-    role: data.role,
-    proficiency: data.proficiency,
-    skills: data.skills,
+    role: data.role ?? null,
+    proficiency: data.proficiency ?? null,
+    skills: Array.isArray(data.skills) && data.skills.length > 0 ? data.skills : ['none'],
     availability: data.availability,
+    neededHours: data.neededHours,
   };
 
   scope.milestones.push(milestoneData);
@@ -134,13 +135,14 @@ export async function updateMilestone(
   const milestoneData: Record<string, unknown> = {
     title: data.title,
     description: data.description,
-    budget: data.budget ?? undefined,
+    budget: data.budget ?? null,
     deliveryTime: data.deliveryTime,
     deliveryDate: data.deliveryDate,
-    role: data.role ?? undefined,
-    proficiency: data.proficiency ?? undefined,
-    skills: data.skills,
+    role: data.role ?? null,
+    proficiency: data.proficiency ?? null,
+    skills: Array.isArray(data.skills) && data.skills.length > 0 ? data.skills : ['none'],
     availability: data.availability,
+    neededHours: data.neededHours,
   };
 
   const response = (await apiUpdateMilestone(

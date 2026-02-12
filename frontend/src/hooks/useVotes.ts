@@ -120,7 +120,8 @@ export function useSubmitVotes() {
       const token = useAuthStore.getState().token || '';
 
       // Convert votes to the format expected by the service
-      const voteTuples: Array<[string, number]> = votes.map((v) => [v.userId, v.score]);
+      // Ensure scores are numeric (form inputs may produce strings at runtime)
+      const voteTuples: Array<[string, number]> = votes.map((v) => [v.userId, Number(v.score)]);
 
       await projectCompleted(projectId, voteTuples, token);
 
