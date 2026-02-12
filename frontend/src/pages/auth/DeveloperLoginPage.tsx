@@ -1,14 +1,12 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@components/ui/Card';
-import { Button } from '@components/ui/Button';
-import { Input } from '@components/ui/Input';
 import { useLogin } from '@hooks/useAuth';
 import { performWebAuthnLogin } from '@lib/virto-sdk';
 
 /**
  * Developer Login Page
  *
+ * Figma design: Clean form with email input and submit button.
  * Handles authentication for developers using the Virto Network WebAuthn flow.
  */
 export default function DeveloperLoginPage() {
@@ -54,67 +52,137 @@ export default function DeveloperLoginPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background p-4">
-      <div className="w-full max-w-md">
-        <Card>
-          <CardHeader className="space-y-1">
-            <CardTitle className="text-2xl">Developer Login</CardTitle>
-            <CardDescription>Enter your email to authenticate with WebAuthn</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <Input
-                type="email"
-                label="Email"
-                name="email"
-                placeholder="your-email@example.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                disabled={isAuthenticating}
-                error={error}
-              />
+    <div className="w-full">
+      <div className="mb-6">
+        <h1
+          className="font-bold mb-2"
+          style={{
+            fontSize: '24px',
+            color: 'var(--text-dark-primary, #f5f5f5)',
+          }}
+        >
+          Developer Login
+        </h1>
+        <p
+          style={{
+            fontSize: '14px',
+            color: 'var(--text-dark-secondary, rgba(255,255,255,0.7))',
+          }}
+        >
+          Enter your email to authenticate with WebAuthn
+        </p>
+      </div>
 
-              <Button type="submit" className="w-full" isLoading={isAuthenticating} disabled={isAuthenticating}>
-                {isAuthenticating ? 'Authenticating...' : 'Login'}
-              </Button>
+      <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Email Input */}
+        <div>
+          <label
+            htmlFor="email"
+            className="block mb-2"
+            style={{
+              fontSize: '16px',
+              color: 'var(--text-dark-secondary, rgba(255,255,255,0.7))',
+            }}
+          >
+            Email
+          </label>
+          <input
+            id="email"
+            type="email"
+            name="email"
+            placeholder="your-email@example.com"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            disabled={isAuthenticating}
+            className="w-full font-medium"
+            style={{
+              height: '44px',
+              padding: '0 16px',
+              fontSize: '16px',
+              backgroundColor: 'var(--base-surface-1, #141414)',
+              border: '1px solid var(--base-border, #3d3d3d)',
+              borderRadius: '12px',
+              color: 'var(--text-dark-primary, #f5f5f5)',
+              outline: 'none',
+            }}
+          />
+          {error && (
+            <p
+              className="mt-2"
+              style={{
+                fontSize: '14px',
+                color: '#ef4444',
+              }}
+            >
+              {error}
+            </p>
+          )}
+        </div>
 
-              {status && (
-                <p
-                  className={`text-center text-sm ${
-                    status.includes('failed') || status.includes('error') ? 'text-destructive' : 'text-muted-foreground'
-                  }`}
-                >
-                  {status}
-                </p>
-              )}
-            </form>
+        {/* Submit Button */}
+        <button
+          type="submit"
+          disabled={isAuthenticating}
+          className="w-full font-semibold transition-opacity hover:opacity-90 disabled:opacity-50"
+          style={{
+            height: '44px',
+            fontSize: '16px',
+            backgroundColor: 'var(--state-brand-active, #36d399)',
+            color: 'var(--text-light-primary, #141414)',
+            borderRadius: '12px',
+            border: 'none',
+            cursor: isAuthenticating ? 'not-allowed' : 'pointer',
+          }}
+        >
+          {isAuthenticating ? 'Authenticating...' : 'Login'}
+        </button>
 
-            <div className="mt-6 space-y-4">
-              <div className="relative">
-                <div className="absolute inset-0 flex items-center">
-                  <span className="w-full border-t" />
-                </div>
-                <div className="relative flex justify-center text-xs uppercase">
-                  <span className="bg-card px-2 text-muted-foreground">Or</span>
-                </div>
-              </div>
+        {status && (
+          <p
+            className="text-center"
+            style={{
+              fontSize: '14px',
+              color:
+                status.includes('failed') || status.includes('error')
+                  ? '#ef4444'
+                  : 'var(--text-dark-secondary, rgba(255,255,255,0.7))',
+            }}
+          >
+            {status}
+          </p>
+        )}
+      </form>
 
-              <div className="text-center text-sm">
-                <Link to="/login" className="text-muted-foreground hover:text-primary">
-                  Back to role selection
-                </Link>
-              </div>
+      <div className="mt-8 space-y-4">
+        <div className="text-center">
+          <Link
+            to="/login"
+            className="hover:underline"
+            style={{
+              fontSize: '14px',
+              color: 'var(--text-dark-secondary, rgba(255,255,255,0.7))',
+            }}
+          >
+            Back to role selection
+          </Link>
+        </div>
 
-              <div className="text-center text-sm">
-                <span className="text-muted-foreground">Don't have an account? </span>
-                <Link to="/register/developer" className="font-medium text-primary hover:underline">
-                  Sign up
-                </Link>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+        <div className="text-center">
+          <span style={{ fontSize: '14px', color: 'var(--text-dark-secondary, rgba(255,255,255,0.7))' }}>
+            Don't have an account?{' '}
+          </span>
+          <Link
+            to="/register/developer"
+            className="font-medium hover:underline"
+            style={{
+              fontSize: '14px',
+              color: 'var(--state-brand-active, #36d399)',
+            }}
+          >
+            Sign up
+          </Link>
+        </div>
       </div>
     </div>
   );

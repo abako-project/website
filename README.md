@@ -1,103 +1,103 @@
-# :globe_with_meridians: Work3Spaces (Abako / PolkaTalent)
+# Work3Spaces (Abako / PolkaTalent)
 
-**Marketplace descentralizado para freelancers, construido sobre Polkadot/Virto Network.**
+**Decentralized marketplace for freelancers, built on Polkadot/Virto Network.**
 
-> Un cliente propone un proyecto, una DAO (organizacion autonoma descentralizada) asigna un consultor, el consultor define el alcance con hitos, el cliente aprueba, se forma el equipo, se desarrolla, se revisa y se paga a traves de un sistema de custodia (escrow) en blockchain.
+> A client proposes a project, a DAO (decentralized autonomous organization) assigns a consultant, the consultant defines the scope with milestones, the client approves, a team is formed, development takes place, work is reviewed and payment is released through a blockchain escrow system.
 
-[![Estado: En Migracion](https://img.shields.io/badge/Estado-En%20Migraci%C3%B3n-orange)]()
+[![Status: In Migration](https://img.shields.io/badge/Status-In%20Migration-orange)]()
 [![Branch](https://img.shields.io/badge/Branch-feature%2Fweb--refactor-blue)]()
 [![Node](https://img.shields.io/badge/Node.js-%3E%3D18-green)]()
 [![Frontend](https://img.shields.io/badge/Frontend-React%2018%20%2B%20TypeScript-61dafb)]()
 
 ---
 
-## Tabla de Contenidos
+## Table of Contents
 
-1. [Sobre el Proyecto](#-sobre-el-proyecto)
-2. [Stack Tecnologico](#-stack-tecnologico)
-3. [Arquitectura General](#-arquitectura-general)
-4. [Estructura del Proyecto](#-estructura-del-proyecto)
-5. [Prerrequisitos](#-prerrequisitos)
-6. [Comenzar a Trabajar](#-comenzar-a-trabajar)
-7. [Scripts Disponibles](#-scripts-disponibles)
-8. [Estado de la Migracion](#-estado-de-la-migracion)
-9. [TODOs para Desarrolladores Junior](#-todos-para-desarrolladores-junior)
-10. [Contribuir al Proyecto](#-contribuir-al-proyecto)
-11. [Enlaces Utiles](#-enlaces-utiles)
-
----
-
-## Sobre el Proyecto
-
-### Que problema resuelve
-
-Imagina que eres una empresa (un **cliente**) y necesitas desarrollar un software. Normalmente tendrias que buscar freelancers por tu cuenta, negociar precios, confiar en que entreguen a tiempo y gestionar pagos manualmente. Work3Spaces resuelve todo esto usando **blockchain** (un registro digital descentralizado, transparente e inmutable).
-
-### Como funciona
-
-```
-1. El CLIENTE propone un proyecto (descripcion, presupuesto, plazo)
-2. Una DAO (comunidad) vota y asigna un CONSULTOR al proyecto
-3. El CONSULTOR define el ALCANCE: divide el proyecto en HITOS (milestones)
-4. El CLIENTE aprueba (o rechaza) el alcance propuesto
-5. Se asigna un EQUIPO DE DESARROLLADORES a los hitos
-6. Los desarrolladores trabajan y envian entregas para revision
-7. El cliente revisa y aprueba cada hito
-8. El pago se libera automaticamente desde el sistema de custodia (escrow)
-```
-
-### Conceptos clave para juniors
-
-| Concepto | Que es | Por que importa |
-|----------|--------|-----------------|
-| **Blockchain** | Una base de datos distribuida donde nadie puede alterar los registros. | Garantiza que los pagos y acuerdos sean transparentes e inmutables. |
-| **Polkadot** | Una red de blockchains interconectadas. | Es la infraestructura donde vive nuestro proyecto. |
-| **Virto Network** | Una blockchain dentro de Polkadot, especializada en comercio y pagos. | Proporciona las herramientas de autenticacion (WebAuthn) y pagos. |
-| **DAO** | Organizacion Autonoma Descentralizada: un grupo que toma decisiones por votacion. | Asigna consultores y equipos de forma justa y transparente. |
-| **Escrow** | Sistema de custodia: el dinero se retiene hasta que se cumplan condiciones. | El cliente deposita fondos, pero solo se liberan cuando aprueba el trabajo. |
-| **Hito (Milestone)** | Una entrega parcial del proyecto con alcance definido. | Permite dividir el trabajo en partes manejables con pagos incrementales. |
-| **WebAuthn** | Autenticacion sin contrasena, usando biometricos o llaves de seguridad. | Los usuarios se registran con su dispositivo, no con email/password. |
-| **SPA** | Single Page Application: una aplicacion web que carga una sola vez y navega sin recargar la pagina. | El frontend React es una SPA que se comunica directamente con las APIs externas. |
+1. [About the Project](#-about-the-project)
+2. [Technology Stack](#-technology-stack)
+3. [General Architecture](#-general-architecture)
+4. [Project Structure](#-project-structure)
+5. [Prerequisites](#-prerequisites)
+6. [Getting Started](#-getting-started)
+7. [Available Scripts](#-available-scripts)
+8. [Migration Status](#-migration-status)
+9. [TODOs](#-todos)
+10. [Contributing to the Project](#-contributing-to-the-project)
+11. [Useful Links](#-useful-links)
 
 ---
 
-## :wrench: Stack Tecnologico
+## About the Project
 
-### Frontend (la aplicacion completa)
+### What problem does it solve
 
-| Tecnologia | Version | Para que se usa |
-|------------|---------|-----------------|
-| **React** | 18.3 | Biblioteca para construir la interfaz de usuario con componentes |
-| **TypeScript** | 5.7 | JavaScript con tipos estaticos (detecta errores antes de ejecutar) |
-| **Vite** | 6.0 | Herramienta de desarrollo ultrarapida (compila, recarga al instante) |
-| **TailwindCSS** | 3.4 | Framework de estilos basado en clases utilitarias |
-| **Zustand** | 5.0 | Gestor de estado global (alternativa ligera a Redux) |
-| **TanStack React Query** | 5.62 | Manejo inteligente de datos del servidor (cache, reintentos, etc.) |
-| **React Router** | 6.28 | Navegacion entre paginas sin recargar |
-| **React Hook Form** | 7.54 | Manejo eficiente de formularios |
-| **Zod** | 3.24 | Validacion de datos con esquemas tipados |
-| **Axios** | 1.7 | Cliente HTTP para comunicarse directamente con las 3 APIs externas |
+Imagine you are a company (a **client**) and you need to develop software. Normally you would have to find freelancers on your own, negotiate prices, trust that they deliver on time, and manage payments manually. Work3Spaces solves all of this using **blockchain** (a decentralized, transparent, and immutable digital ledger).
 
-### APIs Externas (no necesitas instalar nada)
+### How it works
 
-El frontend se comunica **directamente** con 3 APIs que viven en `dev.abako.xyz`. No necesitas levantar ningun servidor, ya estan desplegadas y accesibles via CORS.
+```
+1. The CLIENT proposes a project (description, budget, deadline)
+2. A DAO (community) votes and assigns a CONSULTANT to the project
+3. The CONSULTANT defines the SCOPE: divides the project into MILESTONES
+4. The CLIENT approves (or rejects) the proposed scope
+5. A DEVELOPMENT TEAM is assigned to the milestones
+6. Developers work and submit deliverables for review
+7. The client reviews and approves each milestone
+8. Payment is automatically released from the escrow system
+```
 
-| API | Base URL | Para que se usa |
-|-----|----------|-----------------|
-| **Adapter API** | `dev.abako.xyz/adapter/v1` | CRUD de clientes, developers, proyectos, hitos y calendario |
-| **Virto API** | `dev.abako.xyz/api` | Autenticacion WebAuthn, pagos, membresias |
-| **Contracts API** | `dev.abako.xyz` | Despliegue e interaccion con contratos inteligentes en blockchain |
+### Key Concepts
 
-> **Nota para juniors**: Antes, existia un backend Express.js que actuaba como intermediario entre el navegador y las APIs externas. Ese backend ya no es necesario. El frontend React habla directamente con las APIs usando CORS (Cross-Origin Resource Sharing, un mecanismo de seguridad del navegador que permite peticiones entre dominios diferentes).
+| Concept | What is it | Why it matters |
+|---------|------------|----------------|
+| **Blockchain** | A distributed database where no one can alter the records. | Guarantees that payments and agreements are transparent and immutable. |
+| **Polkadot** | A network of interconnected blockchains. | It is the infrastructure where our project lives. |
+| **Virto Network** | A blockchain within Polkadot, specialized in commerce and payments. | Provides authentication tools (WebAuthn) and payments. |
+| **DAO** | Decentralized Autonomous Organization: a group that makes decisions by voting. | Assigns consultants and teams fairly and transparently. |
+| **Escrow** | Custody system: money is held until conditions are met. | The client deposits funds, but they are only released when the work is approved. |
+| **Milestone** | A partial project deliverable with a defined scope. | Allows dividing work into manageable parts with incremental payments. |
+| **WebAuthn** | Passwordless authentication, using biometrics or security keys. | Users register with their device, not with email/password. |
+| **SPA** | Single Page Application: a web application that loads once and navigates without reloading the page. | The React frontend is an SPA that communicates directly with the external APIs. |
 
 ---
 
-## :building_construction: Arquitectura General
+## Technology Stack
 
-### Como funciona la aplicacion
+### Frontend (the complete application)
+
+| Technology | Version | What it is used for |
+|------------|---------|---------------------|
+| **React** | 18.3 | Library for building the user interface with components |
+| **TypeScript** | 5.7 | JavaScript with static types (catches errors before execution) |
+| **Vite** | 6.0 | Ultra-fast development tool (compiles, reloads instantly) |
+| **TailwindCSS** | 3.4 | Utility-class-based styling framework |
+| **Zustand** | 5.0 | Global state manager (lightweight alternative to Redux) |
+| **TanStack React Query** | 5.62 | Intelligent server data management (cache, retries, etc.) |
+| **React Router** | 6.28 | Navigation between pages without reloading |
+| **React Hook Form** | 7.54 | Efficient form handling |
+| **Zod** | 3.24 | Data validation with typed schemas |
+| **Axios** | 1.7 | HTTP client for communicating directly with the 3 external APIs |
+
+### External APIs (no installation needed)
+
+The frontend communicates **directly** with 3 APIs hosted at `dev.abako.xyz`. You do not need to start any server; they are already deployed and accessible via CORS.
+
+| API | Base URL | What it is used for |
+|-----|----------|---------------------|
+| **Adapter API** | `dev.abako.xyz/adapter/v1` | CRUD for clients, developers, projects, milestones, and calendar |
+| **Virto API** | `dev.abako.xyz/api` | WebAuthn authentication, payments, memberships |
+| **Contracts API** | `dev.abako.xyz` | Deployment and interaction with smart contracts on the blockchain |
+
+> **Note**: Previously, there was an Express.js backend that acted as an intermediary between the browser and the external APIs. That backend is no longer needed. The React frontend talks directly to the APIs using CORS (Cross-Origin Resource Sharing, a browser security mechanism that allows requests between different domains).
+
+---
+
+## General Architecture
+
+### How the application works
 
 ```
-         NAVEGADOR DEL USUARIO
+         USER'S BROWSER
                  |
            React SPA (Vite)
            http://localhost:5173
@@ -112,181 +112,181 @@ El frontend se comunica **directamente** con 3 APIs que viven en `dev.abako.xyz`
        dev.abako.xyz (CORS)
 ```
 
-**Importante**: No hay backend intermedio. El navegador envia peticiones HTTP directamente a `dev.abako.xyz`. Esto simplifica enormemente la arquitectura: un solo proyecto (el frontend) que se comunica con APIs ya desplegadas.
+**Important**: There is no intermediate backend. The browser sends HTTP requests directly to `dev.abako.xyz`. This greatly simplifies the architecture: a single project (the frontend) that communicates with already-deployed APIs.
 
-### Las 3 capas del frontend
+### The 3 frontend layers
 
-La aplicacion esta organizada en 3 capas bien definidas. Cada capa tiene una responsabilidad unica:
+The application is organized into 3 well-defined layers. Each layer has a single responsibility:
 
 ```
 +------------------------------------------------------------------+
-|  CAPA DE PRESENTACION (componentes React, paginas, layouts)      |
-|  Responsabilidad: mostrar datos y capturar interacciones         |
+|  PRESENTATION LAYER (React components, pages, layouts)            |
+|  Responsibility: display data and capture interactions            |
 +------------------------------------------------------------------+
                             |
-                    usa hooks y stores
+                    uses hooks and stores
                             |
 +------------------------------------------------------------------+
-|  CAPA DE SERVICIOS (services/)  -  58 funciones de negocio       |
-|  Responsabilidad: componer datos, orquestar llamadas API,        |
-|  aplicar logica de negocio (ej: agregar proyecto con sus hitos)  |
+|  SERVICE LAYER (services/)  -  58 business functions              |
+|  Responsibility: compose data, orchestrate API calls,             |
+|  apply business logic (e.g.: aggregate project with its milestones)|
 +------------------------------------------------------------------+
                             |
-                  llama funciones de API
+                  calls API functions
                             |
 +------------------------------------------------------------------+
-|  CAPA DE API (api/adapter, api/virto, api/contracts)             |
-|  Responsabilidad: comunicarse con las APIs externas via HTTP     |
-|  52 funciones (adapter) + 17 funciones (virto) + 10 (contracts)  |
+|  API LAYER (api/adapter, api/virto, api/contracts)                |
+|  Responsibility: communicate with external APIs via HTTP          |
+|  52 functions (adapter) + 17 functions (virto) + 10 (contracts)   |
 +------------------------------------------------------------------+
                             |
                   Axios HTTP requests
                             |
 +------------------------------------------------------------------+
-|  dev.abako.xyz  -  3 APIs externas (ya desplegadas)              |
+|  dev.abako.xyz  -  3 external APIs (already deployed)             |
 +------------------------------------------------------------------+
 ```
 
-### La capa de Servicios (`frontend/src/services/`)
+### The Service Layer (`frontend/src/services/`)
 
-Los servicios son el **corazon de la logica de negocio**. Antes, esta logica vivia en el backend dentro de la "capa SEDA" (`backend/models/seda/`). Ahora esta portada a TypeScript y vive directamente en el frontend.
+Services are the **heart of the business logic**. Previously, this logic lived in the backend within the "SEDA layer" (`backend/models/seda/`). It has now been ported to TypeScript and lives directly in the frontend.
 
-**Sin servicios** (malo):
+**Without services** (bad):
 ```typescript
-// El componente llama directamente a la API y compone datos manualmente
+// The component calls the API directly and composes data manually
 const project = await getProjectInfo(projectId);
 const clients = await getClients();
 const developers = await getDevelopers();
 const milestones = await getAllTasks(projectId);
-// ... composicion manual de datos en el componente
+// ... manual data composition in the component
 ```
 
-**Con servicios** (bueno):
+**With services** (good):
 ```typescript
-// El componente usa el servicio, que se encarga internamente
+// The component uses the service, which handles everything internally
 import { getProject } from '@/services';
 const project = await getProject(projectId);
-// El servicio agrega proyecto + cliente + consultor + hitos automaticamente
+// The service aggregates project + client + consultant + milestones automatically
 ```
 
-La capa de servicios tiene 7 modulos con 58 funciones en total:
+The service layer has 7 modules with 58 functions in total:
 
-| Modulo | Funciones | Responsabilidad |
+| Module | Functions | Responsibility |
 |--------|-----------|----------------|
-| `projectService.ts` | 15 | Agregacion de proyectos, listas optimizadas con `Promise.allSettled`, acciones de flujo |
-| `proposalService.ts` | 2 | Crear y actualizar propuestas de proyecto |
-| `clientService.ts` | 8 | CRUD de clientes, busqueda por email, conexion |
-| `developerService.ts` | 9 | CRUD de developers, resolucion de equipos, busqueda por email |
-| `milestoneService.ts` | 10 | CRUD de hitos, reordenamiento, envio/aceptacion/rechazo |
-| `scopeService.ts` | 3 | Enviar, aceptar y rechazar alcances |
-| `calendarService.ts` | 11 | Registro de workers, disponibilidad, contratos de calendario |
+| `projectService.ts` | 15 | Project aggregation, optimized lists with `Promise.allSettled`, flow actions |
+| `proposalService.ts` | 2 | Create and update project proposals |
+| `clientService.ts` | 8 | Client CRUD, search by email, connection |
+| `developerService.ts` | 9 | Developer CRUD, team resolution, search by email |
+| `milestoneService.ts` | 10 | Milestone CRUD, reordering, submission/acceptance/rejection |
+| `scopeService.ts` | 3 | Submit, accept, and reject scopes |
+| `calendarService.ts` | 11 | Worker registration, availability, calendar contracts |
 
-### La capa de API (`frontend/src/api/`)
+### The API Layer (`frontend/src/api/`)
 
-Las funciones de API son **wrappers delgados** sobre Axios que se encargan de: construir la URL correcta, enviar headers de autenticacion, manejar errores y tipar respuestas.
+API functions are **thin wrappers** over Axios that handle: building the correct URL, sending authentication headers, handling errors, and typing responses.
 
-| Modulo | Funciones | API externa |
-|--------|-----------|-------------|
+| Module | Functions | External API |
+|--------|-----------|--------------|
 | `api/adapter/` | 52 | Adapter API (`/adapter/v1`) - auth, clients, developers, projects, milestones, calendar |
 | `api/virto/` | 17 | Virto API (`/api`) - WebAuthn, payments, memberships |
 | `api/contracts/` | 10 | Contracts API - deploy, query, call |
-| `api/config.ts` | -- | Configuracion centralizada de URLs y endpoints para las 3 APIs |
+| `api/config.ts` | -- | Centralized URL and endpoint configuration for the 3 APIs |
 
-### Estado global con Zustand
+### Global State with Zustand
 
-Usamos **Zustand** para manejar el estado global (datos que necesitan compartirse entre varios componentes). El estado de autenticacion se persiste en `localStorage` para que el usuario no pierda su sesion al recargar la pagina.
+We use **Zustand** to manage global state (data that needs to be shared between multiple components). The authentication state is persisted in `localStorage` so that the user does not lose their session when reloading the page.
 
-- **`authStore.ts`**: Almacena la informacion del usuario autenticado, su token y su rol (cliente o developer). Usa `zustand/middleware/persist` para guardar el estado en `localStorage` bajo la clave `abako-auth-storage`.
+- **`authStore.ts`**: Stores the authenticated user's information, their token, and their role (client or developer). Uses `zustand/middleware/persist` to save the state in `localStorage` under the key `abako-auth-storage`.
 
-Zustand es mucho mas simple que Redux. Ejemplo:
+Zustand is much simpler than Redux. Example:
 
 ```typescript
-// Asi se usa Zustand en un componente
+// How Zustand is used in a component
 import { useAuthStore } from '@/stores/authStore';
 
-function MiComponente() {
+function MyComponent() {
   const user = useAuthStore((state) => state.user);
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
 
-  if (!isAuthenticated) return <p>No estas logueado</p>;
-  return <p>Hola, {user?.name}</p>;
+  if (!isAuthenticated) return <p>You are not logged in</p>;
+  return <p>Hello, {user?.name}</p>;
 }
 ```
 
-### Permisos con funciones puras (`frontend/src/lib/permissions.ts`)
+### Permissions with Pure Functions (`frontend/src/lib/permissions.ts`)
 
-Los permisos se calculan con **funciones puras** (sin efectos secundarios, sin estado). Antes vivian en el backend como middleware de Express. Ahora son funciones TypeScript que reciben el usuario y devuelven `true` o `false`.
+Permissions are calculated with **pure functions** (no side effects, no state). They previously lived in the backend as Express middleware. Now they are TypeScript functions that receive the user and return `true` or `false`.
 
 ```typescript
 import { isClient, isProjectConsultant, checkPermission } from '@/lib/permissions';
 import { useAuthStore } from '@/stores/authStore';
 
-function AccionesProyecto({ project }) {
+function ProjectActions({ project }) {
   const user = useAuthStore((s) => s.user);
 
-  // Verificacion simple
-  if (isClient(user)) { /* mostrar boton de aprobar */ }
+  // Simple check
+  if (isClient(user)) { /* show approve button */ }
 
-  // Verificacion compuesta (permite cliente O consultor)
+  // Compound check (allows client OR consultant)
   const allowed = checkPermission(user, {
     projectClient: project.clientId,
     projectConsultant: project.consultantId,
   });
-  if (allowed) { /* mostrar acciones */ }
+  if (allowed) { /* show actions */ }
 }
 ```
 
-### Datos del servidor con React Query
+### Server Data with React Query
 
-Para los datos que vienen de las APIs externas (proyectos, hitos, pagos), usamos **TanStack React Query**. Los hooks llaman directamente a los servicios (no a un backend propio). Esto nos da:
+For data coming from the external APIs (projects, milestones, payments), we use **TanStack React Query**. The hooks call services directly (not a proprietary backend). This gives us:
 
-- **Cache automatico**: Si ya cargaste la lista de proyectos, no la vuelve a pedir a la API.
-- **Reintentos**: Si falla una peticion, lo intenta de nuevo automaticamente.
-- **Actualizacion en segundo plano**: Los datos se refrescan sin que el usuario lo note.
+- **Automatic caching**: If you already loaded the project list, it will not request it from the API again.
+- **Retries**: If a request fails, it automatically retries.
+- **Background updates**: Data refreshes without the user noticing.
 
 ```typescript
-// Ejemplo: hook que obtiene proyectos directamente de las APIs externas
+// Example: hook that fetches projects directly from the external APIs
 import { useProjects } from '@/hooks/useProjects';
 
-function ListaProyectos() {
+function ProjectList() {
   const { data: projects, isLoading, error } = useProjects();
 
   if (isLoading) return <Spinner />;
-  if (error) return <p>Error al cargar proyectos</p>;
+  if (error) return <p>Error loading projects</p>;
   return projects.map(p => <ProjectCard key={p.id} project={p} />);
 }
 ```
 
-### Constantes y Enums
+### Constants and Enums
 
-Los datos de referencia (presupuestos, tipos de proyecto, skills, idiomas, etc.) ya **no se obtienen del backend**. Estan definidos como constantes estaticas en TypeScript:
+Reference data (budgets, project types, skills, languages, etc.) is **no longer fetched from the backend**. They are defined as static constants in TypeScript:
 
-| Archivo | Contenido |
-|---------|-----------|
-| `types/enums.ts` | Presupuestos, tiempos de entrega, tipos de proyecto, skills, roles, disponibilidad, proficiency |
-| `constants/languages.ts` | Mapa de 154 codigos ISO 639-3 a nombres de idiomas |
+| File | Contents |
+|------|----------|
+| `types/enums.ts` | Budgets, delivery times, project types, skills, roles, availability, proficiency |
+| `constants/languages.ts` | Map of 154 ISO 639-3 codes to language names |
 
-Esto elimina una llamada HTTP (antes `GET /api/enums`) y garantiza que los formularios nunca muestren un spinner esperando las opciones.
+This eliminates an HTTP call (previously `GET /api/enums`) and guarantees that forms never show a spinner waiting for options.
 
 ---
 
-## :file_folder: Estructura del Proyecto
+## Project Structure
 
 <details>
-<summary><strong>Haz clic para expandir el arbol completo del proyecto</strong></summary>
+<summary><strong>Click to expand the full project tree</strong></summary>
 
 ```
 website/
 |
-|-- frontend/                              # Aplicacion React SPA (todo lo necesario)
+|-- frontend/                              # React SPA application (everything needed)
 |   |-- src/
-|   |   |-- main.tsx                       # Punto de entrada: React + QueryClient + Router
-|   |   |-- App.tsx                        # Componente raiz con React Router
-|   |   |-- index.css                      # Estilos globales con Tailwind
+|   |   |-- main.tsx                       # Entry point: React + QueryClient + Router
+|   |   |-- App.tsx                        # Root component with React Router
+|   |   |-- index.css                      # Global styles with Tailwind
 |   |   |
-|   |   |-- api/                           # Capa de comunicacion con APIs externas
-|   |   |   |-- config.ts                  # URLs y endpoints de las 3 APIs (Adapter, Virto, Contracts)
-|   |   |   |-- adapter/                   # 52 funciones - Adapter API (NestJS)
+|   |   |-- api/                           # Communication layer with external APIs
+|   |   |   |-- config.ts                  # URLs and endpoints for the 3 APIs (Adapter, Virto, Contracts)
+|   |   |   |-- adapter/                   # 52 functions - Adapter API (NestJS)
 |   |   |   |   |-- index.ts              # Barrel export
 |   |   |   |   |-- auth.ts               # checkRegistered, customRegister, customConnect, sign
 |   |   |   |   |-- clients.ts            # getClients, getClient, createClient, updateClient, ...
@@ -294,332 +294,323 @@ website/
 |   |   |   |   |-- projects.ts           # deployProject, assignTeam, proposeScope, getAllTasks, ...
 |   |   |   |   |-- milestones.ts         # getMilestones, createMilestone, updateMilestone, delete
 |   |   |   |   `-- calendar.ts           # registerWorker, setAvailability, getAvailableWorkers, ...
-|   |   |   |-- virto/                     # 17 funciones - Virto API (WebAuthn + pagos)
+|   |   |   |-- virto/                     # 17 functions - Virto API (WebAuthn + payments)
 |   |   |   |   |-- index.ts              # Barrel export + namespace exports
-|   |   |   |   |-- client.ts             # Axios client configurado para Virto
-|   |   |   |   |-- types.ts              # Tipos de request/response de Virto
+|   |   |   |   |-- client.ts             # Axios client configured for Virto
+|   |   |   |   |-- types.ts              # Virto request/response types
 |   |   |   |   |-- auth.ts               # checkUserRegistered, getAttestationOptions, customConnect, ...
 |   |   |   |   |-- payments.ts           # createPayment, releasePayment, acceptAndPay, getPayment
 |   |   |   |   `-- memberships.ts        # getMembers, checkMembership, addCommunityMember, ...
-|   |   |   `-- contracts/                 # 10 funciones - Smart Contracts API
+|   |   |   `-- contracts/                 # 10 functions - Smart Contracts API
 |   |   |       `-- index.ts              # healthCheck, deployProjectV5/V6, queryMethod, callMethod, ...
 |   |   |
-|   |   |-- services/                      # Capa de logica de negocio (port de SEDA)
-|   |   |   |-- index.ts                  # Barrel export (58 funciones)
-|   |   |   |-- projectService.ts         # Agregacion de proyectos + optimizacion N+1
-|   |   |   |-- proposalService.ts        # Crear y actualizar propuestas
-|   |   |   |-- clientService.ts          # CRUD de clientes + connect + busqueda
-|   |   |   |-- developerService.ts       # CRUD de developers + resolucion de equipos
-|   |   |   |-- milestoneService.ts       # CRUD de hitos + envio/aceptacion/rechazo
-|   |   |   |-- scopeService.ts           # Enviar, aceptar, rechazar alcance
-|   |   |   `-- calendarService.ts        # Registro de workers + disponibilidad
+|   |   |-- services/                      # Business logic layer (SEDA port)
+|   |   |   |-- index.ts                  # Barrel export (58 functions)
+|   |   |   |-- projectService.ts         # Project aggregation + N+1 optimization
+|   |   |   |-- proposalService.ts        # Create and update proposals
+|   |   |   |-- clientService.ts          # Client CRUD + connect + search
+|   |   |   |-- developerService.ts       # Developer CRUD + team resolution
+|   |   |   |-- milestoneService.ts       # Milestone CRUD + submission/acceptance/rejection
+|   |   |   |-- scopeService.ts           # Submit, accept, reject scope
+|   |   |   `-- calendarService.ts        # Worker registration + availability
 |   |   |
 |   |   |-- components/
-|   |   |   |-- ui/                        # Componentes base reutilizables
-|   |   |   |   |-- Button.tsx             # Boton con variantes
-|   |   |   |   |-- Card.tsx               # Tarjeta contenedora
-|   |   |   |   |-- Input.tsx              # Campo de entrada
-|   |   |   |   |-- Label.tsx              # Etiqueta de formulario
-|   |   |   |   |-- Spinner.tsx            # Indicador de carga
-|   |   |   |   `-- index.ts              # Barrel export (re-exporta todo)
-|   |   |   |-- shared/                    # Componentes compartidos entre paginas
-|   |   |   |   |-- ProtectedRoute.tsx     # Ruta que requiere autenticacion
-|   |   |   |   |-- ErrorBoundary.tsx      # Captura errores de React
-|   |   |   |   |-- LoadingScreen.tsx      # Pantalla de carga completa
-|   |   |   |   |-- EmptyState.tsx         # Estado vacio (sin datos)
-|   |   |   |   `-- ProjectStateBadge.tsx  # Badge del estado del proyecto
-|   |   |   |-- features/                  # Componentes especificos por funcionalidad
+|   |   |   |-- ui/                        # Reusable base components
+|   |   |   |   |-- Button.tsx             # Button with variants
+|   |   |   |   |-- Card.tsx               # Container card
+|   |   |   |   |-- Input.tsx              # Input field
+|   |   |   |   |-- Label.tsx              # Form label
+|   |   |   |   |-- Spinner.tsx            # Loading indicator
+|   |   |   |   `-- index.ts              # Barrel export (re-exports everything)
+|   |   |   |-- shared/                    # Components shared between pages
+|   |   |   |   |-- ProtectedRoute.tsx     # Route that requires authentication
+|   |   |   |   |-- ErrorBoundary.tsx      # Catches React errors
+|   |   |   |   |-- LoadingScreen.tsx      # Full loading screen
+|   |   |   |   |-- EmptyState.tsx         # Empty state (no data)
+|   |   |   |   `-- ProjectStateBadge.tsx  # Project state badge
+|   |   |   |-- features/                  # Feature-specific components
 |   |   |   |   |-- projects/
-|   |   |   |   |   |-- ProjectActions.tsx         # Botones de accion del proyecto
-|   |   |   |   |   |-- ScopeBuilder.tsx           # Constructor de alcance
-|   |   |   |   |   `-- MilestoneStatusBadge.tsx   # Badge de estado de hito
+|   |   |   |   |   |-- ProjectActions.tsx         # Project action buttons
+|   |   |   |   |   |-- ScopeBuilder.tsx           # Scope builder
+|   |   |   |   |   `-- MilestoneStatusBadge.tsx   # Milestone status badge
 |   |   |   |   `-- milestones/
-|   |   |   |       |-- MilestoneCard.tsx          # Tarjeta de hito
-|   |   |   |       |-- MilestoneList.tsx          # Lista de hitos
-|   |   |   |       `-- MilestoneActions.tsx       # Acciones de hito
-|   |   |   `-- layouts/                   # Estructuras de pagina
-|   |   |       |-- AppLayout.tsx          # Layout principal (sidebar + header + contenido)
-|   |   |       |-- AuthLayout.tsx         # Layout de autenticacion
-|   |   |       |-- Header.tsx             # Barra superior
-|   |   |       `-- Sidebar.tsx            # Menu lateral
+|   |   |   |       |-- MilestoneCard.tsx          # Milestone card
+|   |   |   |       |-- MilestoneList.tsx          # Milestone list
+|   |   |   |       `-- MilestoneActions.tsx       # Milestone actions
+|   |   |   `-- layouts/                   # Page structures
+|   |   |       |-- AppLayout.tsx          # Main layout (sidebar + header + content)
+|   |   |       |-- AuthLayout.tsx         # Authentication layout
+|   |   |       |-- Header.tsx             # Top bar
+|   |   |       `-- Sidebar.tsx            # Side menu
 |   |   |
-|   |   |-- pages/                         # Paginas completas (una por ruta)
+|   |   |-- pages/                         # Full pages (one per route)
 |   |   |   |-- auth/
-|   |   |   |   |-- LoginPage.tsx                  # Pagina de login
-|   |   |   |   |-- RegisterPage.tsx               # Seleccion de rol
-|   |   |   |   |-- ClientLoginPage.tsx            # Login de cliente
-|   |   |   |   |-- DeveloperLoginPage.tsx         # Login de developer
-|   |   |   |   |-- ClientRegisterPage.tsx         # Registro de cliente
-|   |   |   |   `-- DeveloperRegisterPage.tsx      # Registro de developer
+|   |   |   |   |-- LoginPage.tsx                  # Login page
+|   |   |   |   |-- RegisterPage.tsx               # Role selection
+|   |   |   |   |-- ClientLoginPage.tsx            # Client login
+|   |   |   |   |-- DeveloperLoginPage.tsx         # Developer login
+|   |   |   |   |-- ClientRegisterPage.tsx         # Client registration
+|   |   |   |   `-- DeveloperRegisterPage.tsx      # Developer registration
 |   |   |   |-- dashboard/
-|   |   |   |   `-- DashboardPage.tsx              # Panel principal
+|   |   |   |   `-- DashboardPage.tsx              # Main dashboard
 |   |   |   |-- projects/
-|   |   |   |   |-- ProjectsPage.tsx               # Lista de proyectos
-|   |   |   |   |-- ProjectDetailPage.tsx          # Detalle de un proyecto
-|   |   |   |   `-- CreateProjectPage.tsx          # Crear propuesta
+|   |   |   |   |-- ProjectsPage.tsx               # Project list
+|   |   |   |   |-- ProjectDetailPage.tsx          # Project detail
+|   |   |   |   `-- CreateProjectPage.tsx          # Create proposal
 |   |   |   |-- payments/
-|   |   |   |   |-- PaymentsPage.tsx               # Lista de pagos
-|   |   |   |   `-- PaymentDetailPage.tsx          # Detalle de un pago
+|   |   |   |   |-- PaymentsPage.tsx               # Payment list
+|   |   |   |   `-- PaymentDetailPage.tsx          # Payment detail
 |   |   |   `-- profiles/
-|   |   |       |-- ProfilePage.tsx                # Perfil general
-|   |   |       |-- ClientProfilePage.tsx          # Perfil de cliente
-|   |   |       `-- DeveloperProfilePage.tsx       # Perfil de developer
+|   |   |       |-- ProfilePage.tsx                # General profile
+|   |   |       |-- ClientProfilePage.tsx          # Client profile
+|   |   |       `-- DeveloperProfilePage.tsx       # Developer profile
 |   |   |
-|   |   |-- hooks/                         # Custom hooks (logica reutilizable)
-|   |   |   |-- useAuth.ts                # Hook de autenticacion (llama a servicios)
-|   |   |   |-- useProjects.ts            # Hook de proyectos (React Query + servicios)
-|   |   |   |-- useMilestones.ts          # Hook de hitos
-|   |   |   |-- usePayments.ts            # Hook de pagos
-|   |   |   |-- useVotes.ts               # Hook de votaciones
-|   |   |   |-- useProfile.ts            # Hook de perfil
-|   |   |   |-- useScope.ts               # Hook de alcance
-|   |   |   `-- useEnums.ts               # Hook de enums (constantes estaticas)
+|   |   |-- hooks/                         # Custom hooks (reusable logic)
+|   |   |   |-- useAuth.ts                # Authentication hook (calls services)
+|   |   |   |-- useProjects.ts            # Projects hook (React Query + services)
+|   |   |   |-- useMilestones.ts          # Milestones hook
+|   |   |   |-- usePayments.ts            # Payments hook
+|   |   |   |-- useVotes.ts               # Voting hook
+|   |   |   |-- useProfile.ts            # Profile hook
+|   |   |   |-- useScope.ts               # Scope hook
+|   |   |   `-- useEnums.ts               # Enums hook (static constants)
 |   |   |
 |   |   |-- stores/
-|   |   |   `-- authStore.ts              # Estado global de autenticacion (Zustand + localStorage)
+|   |   |   `-- authStore.ts              # Global authentication state (Zustand + localStorage)
 |   |   |
-|   |   |-- lib/                           # Utilidades y logica pura
-|   |   |   |-- permissions.ts            # Funciones puras de permisos (port de permission.js)
-|   |   |   |-- flowStates.ts             # Maquina de estados (TypeScript)
-|   |   |   |-- cn.ts                     # Utilidad para combinar clases CSS (clsx + tailwind-merge)
-|   |   |   |-- paymentUtils.ts           # Utilidades de pagos
-|   |   |   `-- virto-sdk.ts              # Integracion con Virto Network SDK
+|   |   |-- lib/                           # Utilities and pure logic
+|   |   |   |-- permissions.ts            # Pure permission functions (port of permission.js)
+|   |   |   |-- flowStates.ts             # State machine (TypeScript)
+|   |   |   |-- cn.ts                     # Utility for combining CSS classes (clsx + tailwind-merge)
+|   |   |   |-- paymentUtils.ts           # Payment utilities
+|   |   |   `-- virto-sdk.ts              # Virto Network SDK integration
 |   |   |
-|   |   |-- types/                         # Definiciones de tipos TypeScript
-|   |   |   |-- index.ts                  # Barrel export de todos los tipos
-|   |   |   |-- user.ts                   # Tipos de usuario y autenticacion
-|   |   |   |-- project.ts               # Tipos de proyecto y hito
-|   |   |   |-- client.ts                # Tipos de cliente
-|   |   |   |-- developer.ts             # Tipos de developer
-|   |   |   |-- payment.ts               # Tipos de pago y votacion
-|   |   |   |-- enums.ts                 # Constantes estaticas (presupuestos, skills, roles, etc.)
-|   |   |   `-- api.ts                   # Tipos de respuesta/error de API
+|   |   |-- types/                         # TypeScript type definitions
+|   |   |   |-- index.ts                  # Barrel export of all types
+|   |   |   |-- user.ts                   # User and authentication types
+|   |   |   |-- project.ts               # Project and milestone types
+|   |   |   |-- client.ts                # Client types
+|   |   |   |-- developer.ts             # Developer types
+|   |   |   |-- payment.ts               # Payment and voting types
+|   |   |   |-- enums.ts                 # Static constants (budgets, skills, roles, etc.)
+|   |   |   `-- api.ts                   # API response/error types
 |   |   |
 |   |   `-- constants/
-|   |       `-- languages.ts              # 154 codigos ISO 639-3 de idiomas
+|   |       `-- languages.ts              # 154 ISO 639-3 language codes
 |   |
-|   |-- vite.config.ts                    # Configuracion de Vite (aliases, build, server)
-|   |-- tsconfig.json                     # Configuracion de TypeScript
-|   |-- tailwind.config.js                # Configuracion de Tailwind CSS
-|   `-- package.json                      # Dependencias del frontend
+|   |-- vite.config.ts                    # Vite configuration (aliases, build, server)
+|   |-- tsconfig.json                     # TypeScript configuration
+|   |-- tailwind.config.js                # Tailwind CSS configuration
+|   `-- package.json                      # Frontend dependencies
 |
-|-- backend/                               # :warning: LEGACY - Solo como referencia
-|   |                                      # NO es necesario para ejecutar la aplicacion.
-|   |                                      # Se conserva como referencia durante la migracion.
-|   |-- app.js                            # Configuracion de Express (legacy)
+|-- backend/                               # :warning: LEGACY - For reference only
+|   |                                      # NOT required to run the application.
+|   |                                      # Kept as reference during the migration.
+|   |-- app.js                            # Express configuration (legacy)
 |   |-- models/
-|   |   |-- adapter.js                    # Cliente HTTP original (~1243 lineas, portado a api/)
-|   |   |-- flowStates.js                # Maquina de estados original (portada a lib/)
-|   |   `-- seda/                         # Logica de negocio original (portada a services/)
-|   |-- controllers/                      # Controladores Express (logica portada a hooks/services)
-|   |-- routes/                           # Rutas Express (ya no se usan)
-|   `-- views/                            # 90+ plantillas EJS (sistema antiguo)
+|   |   |-- adapter.js                    # Original HTTP client (~1243 lines, ported to api/)
+|   |   |-- flowStates.js                # Original state machine (ported to lib/)
+|   |   `-- seda/                         # Original business logic (ported to services/)
+|   |-- controllers/                      # Express controllers (logic ported to hooks/services)
+|   |-- routes/                           # Express routes (no longer used)
+|   `-- views/                            # 90+ EJS templates (old system)
 |
-|-- .context/                              # Documentacion tecnica del proyecto
-|   |-- PROJECT_ANALYSIS.md               # Analisis completo del proyecto
-|   |-- CODE_REVIEW_RESULTS.md            # Resultados de revision de codigo
-|   |-- FRONTEND_ARCHITECTURE.md          # Arquitectura del frontend React
-|   |-- MIGRATION_PLAN.md                 # Plan de migracion detallado
-|   `-- IMPLEMENTATION_BLUEPRINT.md       # Blueprint de implementacion con codigo
+|-- .context/                              # Technical project documentation
+|   |-- PROJECT_ANALYSIS.md               # Full project analysis
+|   |-- CODE_REVIEW_RESULTS.md            # Code review results
+|   |-- FRONTEND_ARCHITECTURE.md          # React frontend architecture
+|   |-- MIGRATION_PLAN.md                 # Detailed migration plan
+|   `-- IMPLEMENTATION_BLUEPRINT.md       # Implementation blueprint with code
 |
-|-- .gitignore                             # Archivos excluidos de git
-`-- README.md                              # Este archivo
+|-- .gitignore                             # Files excluded from git
+`-- README.md                              # This file
 ```
 
 </details>
 
 ---
 
-## :gear: Prerrequisitos
+## Prerequisites
 
-Antes de empezar, asegurate de tener instalado lo siguiente en tu computadora:
+Before getting started, make sure you have the following installed on your computer:
 
-| Herramienta | Version minima | Como verificar | Como instalar |
-|-------------|---------------|----------------|---------------|
+| Tool | Minimum version | How to verify | How to install |
+|------|----------------|---------------|----------------|
 | **Node.js** | >= 18.0 | `node --version` | [nodejs.org](https://nodejs.org/) |
-| **npm** | >= 9.0 | `npm --version` | Viene con Node.js |
+| **npm** | >= 9.0 | `npm --version` | Comes with Node.js |
 | **Git** | >= 2.0 | `git --version` | [git-scm.com](https://git-scm.com/) |
 
-> **Nota para juniors**: Node.js es el entorno que ejecuta JavaScript fuera del navegador. npm es su gestor de paquetes (como una tienda de librerias que puedes instalar con un comando). No necesitas instalar nada mas: no hay base de datos, no hay servidor backend. Solo necesitas Node.js para ejecutar Vite (la herramienta de desarrollo del frontend).
+> **Note**: Node.js is the runtime that executes JavaScript outside the browser. npm is its package manager (like a library store where you can install packages with a single command). You do not need to install anything else: there is no database, no backend server. You only need Node.js to run Vite (the frontend development tool).
 
 ---
 
-## :rocket: Comenzar a Trabajar
+## Getting Started
 
-### 1. Clonar el repositorio
+### 1. Clone the repository
 
 ```bash
-# Clona el proyecto en tu computadora
+# Clone the project to your computer
 git clone <URL_DEL_REPOSITORIO>
 
-# Entra en la carpeta del proyecto
+# Enter the project folder
 cd website/website
 
-# Cambia a la rama de trabajo activa
+# Switch to the active working branch
 git checkout feature/web-refactor
 ```
 
-### 2. Instalar dependencias del frontend
+### 2. Install frontend dependencies
 
 ```bash
-# Entra en la carpeta del frontend
+# Enter the frontend folder
 cd frontend
 
-# Instala todas las librerias necesarias
+# Install all required libraries
 npm install
 ```
 
-### 3. Iniciar la aplicacion
+### 3. Start the application
 
 ```bash
-# Dentro de frontend/
+# Inside frontend/
 npm run dev
 ```
 
-Deberia mostrar algo como:
+It should display something like:
 ```
   VITE v6.0.3  ready in 300 ms
 
   > Local:   http://localhost:5173/
 ```
 
-### 4. Abrir la aplicacion
+### 4. Open the application
 
-Abre tu navegador y ve a **http://localhost:5173**. La aplicacion React se comunicara directamente con las APIs externas en `dev.abako.xyz` gracias a CORS. No necesitas ningun servidor backend.
+Open your browser and go to **http://localhost:5173**. The React application will communicate directly with the external APIs at `dev.abako.xyz` thanks to CORS. You do not need any backend server.
 
-> **Eso es todo.** Un solo comando (`npm run dev`) y ya tienes la aplicacion corriendo. No hay que configurar variables de entorno, no hay que levantar un backend, no hay que instalar bases de datos.
+> **That is all.** A single command (`npm run dev`) and you have the application running. There is no need to configure environment variables, no need to start a backend, no need to install databases.
 
-### Resumen rapido
+### Quick summary
 
 ```bash
 git clone <URL_DEL_REPOSITORIO>
 cd website/website/frontend
 npm install
 npm run dev
-# Abrir http://localhost:5173
+# Open http://localhost:5173
 ```
 
-### Configuracion avanzada (opcional)
+### Advanced configuration (optional)
 
-Si necesitas apuntar a un servidor diferente (por ejemplo, un entorno de staging o produccion), puedes crear un archivo `.env` en la carpeta `frontend/`:
+If you need to point to a different server (for example, a staging or production environment), you can create a `.env` file in the `frontend/` folder:
 
 ```bash
-# frontend/.env (opcional - por defecto usa dev.abako.xyz)
+# frontend/.env (optional - defaults to dev.abako.xyz)
 VITE_API_BASE_URL=https://staging.abako.xyz
 ```
 
-La configuracion de la URL base esta en `frontend/src/api/config.ts`. Si no creas el archivo `.env`, la app usara `https://dev.abako.xyz` automaticamente.
+The base URL configuration is in `frontend/src/api/config.ts`. If you do not create the `.env` file, the app will use `https://dev.abako.xyz` automatically.
 
 ---
 
-## :scroll: Scripts Disponibles
+## Available Scripts
 
 ### Frontend (`frontend/package.json`)
 
-| Script | Comando | Que hace |
-|--------|---------|----------|
-| `dev` | `npm run dev` | Inicia el servidor de desarrollo Vite con recarga en caliente (HMR) en `http://localhost:5173` |
-| `build` | `npm run build` | Compila TypeScript y genera la version de produccion en `dist/` |
-| `preview` | `npm run preview` | Sirve la version de produccion localmente para verificar antes de desplegar |
-| `lint` | `npm run lint` | Ejecuta ESLint con cero warnings permitidos |
-| `type-check` | `npm run type-check` | Verifica tipos TypeScript sin generar archivos (solo comprueba errores) |
+| Script | Command | What it does |
+|--------|---------|--------------|
+| `dev` | `npm run dev` | Starts the Vite development server with hot module replacement (HMR) at `http://localhost:5173` |
+| `build` | `npm run build` | Compiles TypeScript and generates the production build in `dist/` |
+| `preview` | `npm run preview` | Serves the production build locally for verification before deployment |
+| `lint` | `npm run lint` | Runs ESLint with zero warnings allowed |
+| `type-check` | `npm run type-check` | Checks TypeScript types without generating files (only checks for errors) |
 
-> **Nota para juniors**: El comando mas importante es `npm run dev`. Es el que usaras el 99% del tiempo. Los otros son para verificar calidad (`lint`, `type-check`) o preparar el despliegue (`build`, `preview`).
+> **Note**: The most important command is `npm run dev`. It is the one you will use 99% of the time. The others are for verifying quality (`lint`, `type-check`) or preparing deployment (`build`, `preview`).
 
 ---
 
-## :chart_with_upwards_trend: Estado de la Migracion
+## Migration Status
 
-El proyecto esta migrando de **EJS** (plantillas HTML renderizadas en el servidor con un backend Express) a **React SPA** (aplicacion moderna que habla directamente con APIs externas). La migracion se divide en fases:
+The project is migrating from **EJS** (HTML templates rendered on the server with an Express backend) to **React SPA** (a modern application that talks directly to external APIs). The migration is divided into phases:
 
 ```
-Fase 0: Correcciones previas              [##########] 100%  COMPLETADA
-  - Bugs en flowStates.js corregidos
-  - Bugs en adapter.js corregidos
-  - CORS configurado en las APIs externas
-  - Session secret movido a variable de entorno
-  - Ruta /backdoor/wild eliminada
-  - QA pasado: 71/71 tests
+Phase 0: Prior fixes                      [##########] 100%  COMPLETED
+  - Bugs in flowStates.js fixed
+  - Bugs in adapter.js fixed
+  - CORS configured on the external APIs
+  - Session secret moved to environment variable
+  - /backdoor/wild route removed
+  - QA passed: 71/71 tests
 
-Fase 1: Infraestructura + API + Servicios [##########] 100%  COMPLETADA
-  - [x] Scaffold React + Vite + TypeScript
-  - [x] Tailwind CSS configurado
-  - [x] Capa de API completa (52 adapter + 17 virto + 10 contracts)
-  - [x] Configuracion centralizada en api/config.ts
-  - [x] React Router configurado
-  - [x] Zustand auth store con persistencia localStorage
-  - [x] Capa de servicios completa (58 funciones, port de SEDA)
-  - [x] Optimizacion N+1 con Promise.allSettled en projectService.ts
-  - [x] Hooks de React Query conectados a servicios
+Phase 1: Infrastructure + API + Services  [##########] 100%  COMPLETED
+  - [x] React + Vite + TypeScript scaffold
+  - [x] Tailwind CSS configured
+  - [x] Complete API layer (52 adapter + 17 virto + 10 contracts)
+  - [x] Centralized configuration in api/config.ts
+  - [x] React Router configured
+  - [x] Zustand auth store with localStorage persistence
+  - [x] Complete service layer (58 functions, SEDA port)
+  - [x] N+1 optimization with Promise.allSettled in projectService.ts
+  - [x] React Query hooks connected to services
 
-Fase 2: Logica compartida                 [##########] 100%  COMPLETADA
-  - [x] Tipos TypeScript completos (7 archivos en types/)
-  - [x] Maquina de estados en TypeScript (lib/flowStates.ts)
-  - [x] Constantes estaticas en types/enums.ts (sin llamada a backend)
-  - [x] Mapa de idiomas en constants/languages.ts (154 codigos)
+Phase 2: Shared logic                     [##########] 100%  COMPLETED
+  - [x] Complete TypeScript types (7 files in types/)
+  - [x] State machine in TypeScript (lib/flowStates.ts)
+  - [x] Static constants in types/enums.ts (no backend call)
+  - [x] Language map in constants/languages.ts (154 codes)
 
-Fase 3: Auth + App Shell                  [########--]  80%  CASI COMPLETA
-  - [x] Layout principal (AppLayout, Sidebar, Header)
-  - [x] Layout de autenticacion (AuthLayout)
-  - [x] 6 paginas de auth (login/registro para cliente y developer)
-  - [x] Rutas protegidas con ProtectedRoute
+Phase 3: Auth + App Shell                 [########--]  80%  NEARLY COMPLETE
+  - [x] Main layout (AppLayout, Sidebar, Header)
+  - [x] Authentication layout (AuthLayout)
+  - [x] 6 auth pages (login/registration for client and developer)
+  - [x] Protected routes with ProtectedRoute
   - [x] Error boundaries
-  - [x] Permisos portados a funciones puras (lib/permissions.ts)
-  - [ ] Pulir flujo de WebAuthn completo (integracion con Virto SDK)
-  - [ ] Tests de autenticacion
+  - [x] Permissions ported to pure functions (lib/permissions.ts)
+  - [ ] Polish complete WebAuthn flow (integration with Virto SDK)
+  - [ ] Authentication tests
 
-Fase 4: Paginas Core + Alcance            [----------]   0%  PENDIENTE
-  ** FASE ATOMICA - no se puede dividir **
-  - Dashboard, proyectos, hitos y alcance
-  - Deben completarse todos juntos
+Phase 4: Core Pages + Scope              [----------]   0%  PENDING
+  ** ATOMIC PHASE - cannot be split **
+  - Dashboard, projects, milestones, and scope
+  - All must be completed together
 
-Fase 5: Pagos + Perfiles + Corte final   [----------]   0%  PENDIENTE
-  - Paginas de perfiles completamente funcionales
-  - Paginas de pagos con integracion escrow
-  - Eliminacion del sistema EJS
-  - Despliegue en produccion
+Phase 5: Payments + Profiles + Cutover   [----------]   0%  PENDING
+  - Fully functional profile pages
+  - Payment pages with escrow integration
+  - Removal of the EJS system
+  - Production deployment
 ```
 
-> **Que significa "ATOMICA"**: La Fase 4 no se puede hacer parcialmente. El flujo de trabajo de alcance (crear hitos, editar, enviar para aprobacion) requiere que todas las paginas y componentes esten conectados. Si completamos la mitad, la aplicacion queda en un estado inconsistente donde el usuario no puede terminar un flujo que empezo.
+> **What "ATOMIC" means**: Phase 4 cannot be done partially. The scope workflow (create milestones, edit, submit for approval) requires that all pages and components are connected. If we complete only half, the application is left in an inconsistent state where the user cannot finish a flow they started.
 
 ---
 
-## :clipboard: TODOs para Desarrolladores Junior
+## :clipboard: TODOs
 
-Esta seccion contiene tareas concretas ordenadas por dificultad. Cada tarea incluye:
-- **Que hay que hacer** y **por que importa**
-- **Archivos a consultar** para entender el contexto
-- **Criterios de aceptacion** (como saber que terminaste bien)
+Concrete tasks ordered by estimated complexity. Each task includes context, files to consult, and acceptance criteria.
 
 ---
 
-### :hatching_chick: Nivel Becario (primeras contribuciones)
+#### TODO 1: Complete the frontend `.env.example` file
 
-Estas tareas estan pensadas para tu primera semana en el proyecto. Son muy concretas, no requieren entender la arquitectura completa, y te ayudaran a familiarizarte con el codigo mientras haces contribuciones reales. Si algo no queda claro, pregunta sin miedo.
+- [ ] Completed
 
----
+**What to do**: The file `frontend/.env.example` already exists but only documents `VITE_API_BASE_URL`. However, `frontend/.env.local` also uses `VITE_BACKEND_URL`. Your task is to review all the frontend source code, find **all** environment variables that are used (search for `import.meta.env.VITE_`), and document all of them in `.env.example` with clear comments.
 
-#### TODO B1: Completar el archivo `.env.example` del frontend
+**Why it matters**: When a new developer clones the project, the first thing they need is to know which environment variables to configure. If `.env.example` is incomplete, the developer wastes time figuring out why something is not working. A good `.env.example` saves hours of frustration.
 
-- [ ] Completado
+**Files to consult**:
+- `frontend/.env.example` (current file, incomplete)
+- `frontend/.env.local` (has additional variables)
+- `frontend/src/api/config.ts` (this is where `VITE_API_BASE_URL` is read)
+- Search all of `frontend/src/` with: `grep -r "import.meta.env" frontend/src/`
 
-**Que hacer**: El archivo `frontend/.env.example` ya existe pero solo documenta `VITE_API_BASE_URL`. Sin embargo, en `frontend/.env.local` se usa tambien `VITE_BACKEND_URL`. Tu tarea es revisar todo el codigo fuente del frontend, encontrar **todas** las variables de entorno que se usen (busca `import.meta.env.VITE_`), y documentarlas todas en `.env.example` con comentarios claros en espanol.
+**Acceptance criteria**:
+1. `frontend/.env.example` contains ALL `VITE_*` variables used in the project
+2. Each variable has a clear explanatory comment
+3. Default values point to the development environment (`dev.abako.xyz`)
+4. There are clear instructions at the top of the file on how to use it
 
-**Por que importa**: Cuando un nuevo desarrollador clona el proyecto, lo primero que necesita es saber que variables de entorno configurar. Si `.env.example` esta incompleto, el desarrollador pierde tiempo averiguando por que algo no funciona. Un buen `.env.example` ahorra horas de frustracion.
-
-**Archivos a consultar**:
-- `frontend/.env.example` (archivo actual, incompleto)
-- `frontend/.env.local` (tiene variables adicionales)
-- `frontend/src/api/config.ts` (aqui se lee `VITE_API_BASE_URL`)
-- Busca en todo `frontend/src/` con: `grep -r "import.meta.env" frontend/src/`
-
-**Criterios de aceptacion**:
-1. `frontend/.env.example` contiene TODAS las variables `VITE_*` usadas en el proyecto
-2. Cada variable tiene un comentario explicativo en espanol
-3. Los valores por defecto apuntan al entorno de desarrollo (`dev.abako.xyz`)
-4. Hay instrucciones claras al inicio del archivo sobre como usarlo
-
-**Ejemplo de como debe quedar**:
+**Example of the expected result**:
 
 ```bash
 # ============================================================
@@ -644,68 +635,28 @@ VITE_BACKEND_URL=https://dev.abako.xyz
 
 ---
 
-#### TODO B2: Traducir los mensajes de error del hook de autenticacion al espanol
+#### TODO 2: Add informative tooltips to project state badges
 
-- [ ] Completado
+- [ ] Completed
 
-**Que hacer**: El hook `frontend/src/hooks/useAuth.ts` tiene mensajes de error en ingles como `'No user in store'`, `'Client not found'`, `'Developer not found'` y `'User has no role'`. Tambien hay mensajes en ingles en `frontend/src/hooks/useProjects.ts` (`'User not authenticated'`, `'Authentication token not found'`, etc.) y en `frontend/src/hooks/usePayments.ts`. Tu tarea es traducirlos todos al espanol.
+**What to do**: The `ProjectStateBadge` component displays a colored label for each project state (for example "Proposal Pending" in yellow). It currently does not explain what each state means. Your task is to add a `title` attribute to the badge's `<span>` so that when the user hovers over it, they see a Spanish description of what that state means.
 
-**Por que importa**: La aplicacion esta pensada para usuarios hispanohablantes. Cuando un error llega al usuario (por ejemplo en un toast o mensaje de error), debe estar en espanol para que lo entienda. Ademas, mantener coherencia de idioma en el codigo fuente ayuda a todos los desarrolladores del equipo.
+**Why it matters**: New users do not know what "Scope Validation Needed" or "Awaiting Team Assignment" means. A tooltip with a brief explanation saves them from having to read the documentation. It is a small change that greatly improves the user experience.
 
-**Archivos a consultar**:
-- `frontend/src/hooks/useAuth.ts` (4 mensajes en ingles)
-- `frontend/src/hooks/useProjects.ts` (5+ mensajes en ingles)
-- `frontend/src/hooks/usePayments.ts` (1 mensaje en ingles)
-- `frontend/src/hooks/useVotes.ts` (1 mensaje en ingles)
-- `frontend/src/hooks/useProfile.ts` (2 mensajes en ingles)
-- `frontend/src/lib/virto-sdk.ts` (multiples mensajes en ingles)
+**Files to consult**:
+- `frontend/src/components/shared/ProjectStateBadge.tsx` (the component to modify)
+- `frontend/src/lib/flowStates.ts` (definitions of each state with English comments explaining their meaning)
 
-**Criterios de aceptacion**:
-1. Ejecutar `grep -rn "throw new Error(" frontend/src/hooks/` no muestra ningun mensaje en ingles
-2. Todos los mensajes de error estan en espanol claro y descriptivo
-3. Los mensajes de `console.error` (logs internos) pueden quedarse en ingles, solo se traducen los `throw new Error()`
-4. La aplicacion sigue funcionando igual (no se rompe ningun test ni flujo)
+**Acceptance criteria**:
+1. Each project state has a `title` with a Spanish description
+2. The `title` is displayed as the browser's native tooltip on hover
+3. The descriptions are brief (1 line) and clear for a non-technical user
+4. The component still renders exactly the same visually (only the tooltip is added)
 
-**Ejemplo del cambio**:
+**Example of the change**:
 
 ```typescript
-// ANTES (ingles):
-if (!user?.email) throw new Error('No user in store');
-if (!client) throw new Error('Client not found');
-throw new Error('User has no role');
-
-// DESPUES (espanol):
-if (!user?.email) throw new Error('No hay usuario en el almacenamiento local');
-if (!client) throw new Error('No se encontro el cliente');
-throw new Error('El usuario no tiene un rol asignado');
-```
-
-> **Nota**: Los servicios (`frontend/src/services/clientService.ts` y `developerService.ts`) ya tienen sus mensajes en espanol. Usa ese mismo estilo como referencia.
-
----
-
-#### TODO B3: Agregar tooltips informativos a los badges de estado del proyecto
-
-- [ ] Completado
-
-**Que hacer**: El componente `ProjectStateBadge` muestra una etiqueta de color para cada estado del proyecto (por ejemplo "Proposal Pending" en amarillo). Actualmente no explica que significa cada estado. Tu tarea es agregar un atributo `title` al `<span>` del badge para que cuando el usuario pase el raton por encima, vea una descripcion en espanol de lo que significa ese estado.
-
-**Por que importa**: Los usuarios nuevos no saben que significa "Scope Validation Needed" o "Awaiting Team Assignment". Un tooltip con una explicacion breve les ahorra tener que leer la documentacion. Es un cambio pequeno que mejora mucho la experiencia de usuario.
-
-**Archivos a consultar**:
-- `frontend/src/components/shared/ProjectStateBadge.tsx` (el componente a modificar)
-- `frontend/src/lib/flowStates.ts` (definiciones de cada estado con comentarios en ingles que explican su significado)
-
-**Criterios de aceptacion**:
-1. Cada estado del proyecto tiene un `title` con descripcion en espanol
-2. El `title` se muestra como tooltip nativo del navegador al pasar el raton
-3. Las descripciones son breves (1 linea) y claras para un usuario no tecnico
-4. El componente sigue renderizando exactamente igual visualmente (solo se anade el tooltip)
-
-**Ejemplo del cambio**:
-
-```typescript
-// 1. Crear un nuevo Record con las descripciones:
+// 1. Create a new Record with the descriptions:
 const STATE_TOOLTIPS: Record<ProjectStateValue, string> = {
   [ProjectState.CreationError]: 'Ocurrio un error al crear la propuesta del cliente',
   [ProjectState.ProposalPending]: 'La propuesta fue enviada y esta esperando que la DAO asigne un consultor',
@@ -721,10 +672,10 @@ const STATE_TOOLTIPS: Record<ProjectStateValue, string> = {
   [ProjectState.Invalid]: 'Estado no reconocido',
 };
 
-// 2. Usar el tooltip en el JSX:
+// 2. Use the tooltip in the JSX:
 <span
   className={cn('inline-flex items-center ...', colors, className)}
-  title={STATE_TOOLTIPS[state]}  // <-- Esta linea es nueva
+  title={STATE_TOOLTIPS[state]}  // <-- This line is new
 >
   {label}
 </span>
@@ -732,73 +683,71 @@ const STATE_TOOLTIPS: Record<ProjectStateValue, string> = {
 
 ---
 
-#### TODO B4: Crear constantes para los mensajes de exito en los hooks de mutacion
+#### TODO 3: Create constants for success messages in mutation hooks
 
-- [ ] Completado
+- [ ] Completed
 
-**Que hacer**: Actualmente, los hooks de React Query tienen mensajes de exito escritos directamente en el codigo (hardcoded) y en ingles, como `'Scope accepted successfully'` o `'Milestone submitted successfully'`. Tu tarea es:
-1. Crear un nuevo archivo `frontend/src/constants/messages.ts`
-2. Definir ahi todas las constantes de mensajes (en espanol)
-3. Importar y usar esas constantes en los hooks que las necesitan
+**What to do**: Currently, the React Query hooks have success messages written directly in the code (hardcoded), like `'Scope accepted successfully'` or `'Milestone submitted successfully'`. Your task is:
+1. Create a new file `frontend/src/constants/messages.ts`
+2. Define all message constants there
+3. Import and use those constants in the hooks that need them
 
-**Por que importa**: Los strings hardcoded son dificiles de mantener. Si manana queremos cambiar un mensaje, tendriamos que buscar en 10 archivos diferentes. Con un archivo centralizado, cambiamos una sola linea y se actualiza en todos lados. Ademas, esto prepara el terreno para una futura internacionalizacion (i18n).
+**Why it matters**: Hardcoded strings are difficult to maintain. If tomorrow we want to change a message, we would have to search across 10 different files. With a centralized file, we change a single line and it updates everywhere. Additionally, this paves the way for future internationalization (i18n).
 
-**Archivos a consultar**:
-- `frontend/src/hooks/useScope.ts` (3 mensajes: submitted, accepted, rejected)
-- `frontend/src/hooks/useMilestones.ts` (3 mensajes: submitted, accepted, rejected)
-- `frontend/src/hooks/useVotes.ts` (1 mensaje: submitted)
-- `frontend/src/hooks/usePayments.ts` (1 mensaje: released)
-- `frontend/src/hooks/useProjects.ts` (1 mensaje: proposal rejected)
-- `frontend/src/hooks/useProfile.ts` (1 mensaje: image uploaded)
-- `frontend/src/constants/languages.ts` (ya existe un archivo de constantes, usalo como referencia de estilo)
+**Files to consult**:
+- `frontend/src/hooks/useScope.ts` (3 messages: submitted, accepted, rejected)
+- `frontend/src/hooks/useMilestones.ts` (3 messages: submitted, accepted, rejected)
+- `frontend/src/hooks/useVotes.ts` (1 message: submitted)
+- `frontend/src/hooks/usePayments.ts` (1 message: released)
+- `frontend/src/hooks/useProjects.ts` (1 message: proposal rejected)
+- `frontend/src/hooks/useProfile.ts` (1 message: image uploaded)
+- `frontend/src/constants/languages.ts` (an existing constants file; use it as a style reference)
 
-**Criterios de aceptacion**:
-1. Existe `frontend/src/constants/messages.ts` con todas las constantes
-2. Los mensajes estan en espanol
-3. Los hooks importan las constantes en vez de usar strings hardcoded
-4. `grep -rn "successfully" frontend/src/hooks/` no devuelve resultados
-5. La aplicacion funciona exactamente igual
+**Acceptance criteria**:
+1. `frontend/src/constants/messages.ts` exists with all the constants
+2. Hooks import the constants instead of using hardcoded strings
+3. `grep -rn "successfully" frontend/src/hooks/` returns no results
+4. The application works exactly the same
 
-**Ejemplo del archivo a crear**:
+**Example of the file to create**:
 
 ```typescript
 // frontend/src/constants/messages.ts
 
 /**
- * Mensajes de exito y error centralizados.
- * Todos los mensajes visibles al usuario deben estar en espanol.
+ * Centralized success and error messages.
  */
 
-// --- Alcance (Scope) ---
-export const SCOPE_SUBMITTED = 'Alcance enviado para validacion';
-export const SCOPE_ACCEPTED = 'Alcance aceptado correctamente';
-export const SCOPE_REJECTED = 'Alcance rechazado';
+// --- Scope ---
+export const SCOPE_SUBMITTED = 'Scope submitted successfully';
+export const SCOPE_ACCEPTED = 'Scope accepted successfully';
+export const SCOPE_REJECTED = 'Scope rejected successfully';
 
-// --- Hitos (Milestones) ---
-export const MILESTONE_SUBMITTED = 'Hito enviado para revision';
-export const MILESTONE_ACCEPTED = 'Hito aceptado correctamente';
-export const MILESTONE_REJECTED = 'Hito rechazado';
+// --- Milestones ---
+export const MILESTONE_SUBMITTED = 'Milestone submitted for review';
+export const MILESTONE_ACCEPTED = 'Milestone accepted successfully';
+export const MILESTONE_REJECTED = 'Milestone rejected';
 
-// --- Votaciones ---
-export const VOTES_SUBMITTED = 'Votaciones enviadas correctamente';
+// --- Voting ---
+export const VOTES_SUBMITTED = 'Votes submitted successfully';
 
-// --- Pagos ---
-export const PAYMENT_RELEASED = 'Pago liberado correctamente';
+// --- Payments ---
+export const PAYMENT_RELEASED = 'Payment released successfully';
 
-// --- Propuestas ---
-export const PROPOSAL_REJECTED = 'Propuesta rechazada';
+// --- Proposals ---
+export const PROPOSAL_REJECTED = 'Proposal rejected';
 
-// --- Perfil ---
-export const PROFILE_IMAGE_UPLOADED = 'Imagen de perfil subida correctamente';
+// --- Profile ---
+export const PROFILE_IMAGE_UPLOADED = 'Profile image uploaded successfully';
 ```
 
-**Ejemplo de como se usa en un hook**:
+**Example of how it is used in a hook**:
 
 ```typescript
-// frontend/src/hooks/useScope.ts (ANTES)
+// frontend/src/hooks/useScope.ts (BEFORE)
 return { projectId, message: 'Scope submitted successfully' };
 
-// frontend/src/hooks/useScope.ts (DESPUES)
+// frontend/src/hooks/useScope.ts (AFTER)
 import { SCOPE_SUBMITTED } from '@/constants/messages';
 // ...
 return { projectId, message: SCOPE_SUBMITTED };
@@ -806,26 +755,26 @@ return { projectId, message: SCOPE_SUBMITTED };
 
 ---
 
-#### TODO B5: Agregar meta tags descriptivos al archivo index.html del frontend
+#### TODO 4: Add descriptive meta tags to the frontend index.html file
 
-- [ ] Completado
+- [ ] Completed
 
-**Que hacer**: El archivo `frontend/index.html` tiene lo minimo: un `<title>`, un favicon y el viewport. Tu tarea es agregar meta tags para SEO y redes sociales (Open Graph), cambiar el `lang` de `"en"` a `"es"`, y mejorar el titulo.
+**What to do**: The file `frontend/index.html` has the bare minimum: a `<title>`, a favicon, and the viewport. Your task is to add meta tags for SEO and social media (Open Graph), change `lang` from `"en"` to `"es"`, and improve the title.
 
-**Por que importa**: Cuando alguien comparte un enlace de Work3Spaces en Slack, Twitter o WhatsApp, se muestra una preview con el titulo y la descripcion. Sin meta tags, la preview sale vacia o fea. Ademas, el atributo `lang="en"` esta incorrecto porque la app es en espanol, y los lectores de pantalla (accesibilidad) usan este atributo.
+**Why it matters**: When someone shares a Work3Spaces link on Slack, Twitter, or WhatsApp, a preview with the title and description is shown. Without meta tags, the preview appears empty or unattractive. Additionally, the `lang="en"` attribute is incorrect because the app is in Spanish, and screen readers (accessibility) use this attribute.
 
-**Archivos a consultar**:
-- `frontend/index.html` (el archivo a modificar)
-- `frontend/src/main.tsx` (para verificar que no haya configuracion de titulo ahi)
+**Files to consult**:
+- `frontend/index.html` (the file to modify)
+- `frontend/src/main.tsx` (to verify there is no title configuration there)
 
-**Criterios de aceptacion**:
-1. `<html lang="es">` en vez de `<html lang="en">`
-2. `<title>` dice "Work3Spaces - Marketplace Descentralizado para Freelancers"
-3. Hay meta tag `description` con una descripcion breve del proyecto
-4. Hay meta tags Open Graph (`og:title`, `og:description`, `og:type`)
-5. El favicon sigue funcionando
+**Acceptance criteria**:
+1. `<html lang="es">` instead of `<html lang="en">`
+2. `<title>` reads "Work3Spaces - Marketplace Descentralizado para Freelancers"
+3. There is a `description` meta tag with a brief project description
+4. There are Open Graph meta tags (`og:title`, `og:description`, `og:type`)
+5. The favicon still works
 
-**Ejemplo del cambio**:
+**Example of the change**:
 
 ```html
 <!DOCTYPE html>
@@ -839,12 +788,12 @@ return { projectId, message: SCOPE_SUBMITTED };
     <title>Work3Spaces - Marketplace Descentralizado para Freelancers</title>
     <meta name="description" content="Plataforma descentralizada para conectar freelancers con clientes, construida sobre Polkadot y Virto Network. Gestiona proyectos, hitos y pagos con transparencia blockchain." />
 
-    <!-- Open Graph (previews en redes sociales) -->
+    <!-- Open Graph (social media previews) -->
     <meta property="og:title" content="Work3Spaces - Marketplace Descentralizado" />
     <meta property="og:description" content="Conecta con freelancers y gestiona proyectos de forma transparente con tecnologia blockchain." />
     <meta property="og:type" content="website" />
 
-    <!-- Iconos y fuentes -->
+    <!-- Icons and fonts -->
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet" />
   </head>
   <body>
@@ -856,46 +805,46 @@ return { projectId, message: SCOPE_SUBMITTED };
 
 ---
 
-#### TODO B6: Documentar las funciones exportadas en services/index.ts con JSDoc
+#### TODO 5: Document the exported functions in services/index.ts with JSDoc
 
-- [ ] Completado
+- [ ] Completed
 
-**Que hacer**: El archivo `frontend/src/services/index.ts` re-exporta todas las funciones del servicio, pero no tiene documentacion sobre que hace cada funcion. Tu tarea es agregar comentarios JSDoc breves agrupados por categoria, de modo que cualquier desarrollador pueda entender que hace cada funcion sin tener que abrir el archivo fuente.
+**What to do**: The file `frontend/src/services/index.ts` re-exports all service functions, but has no documentation about what each function does. Your task is to add brief JSDoc comments grouped by category, so that any developer can understand what each function does without having to open the source file.
 
-**Por que importa**: Este archivo es el "indice" de todo lo que el frontend puede hacer con las APIs. Un nuevo desarrollador llega y ve 40+ funciones exportadas sin explicacion. Con comentarios claros agrupados por seccion, puede encontrar rapidamente lo que necesita. Ademas, los editores de codigo (como VS Code) muestran los comentarios JSDoc al hacer hover, lo que acelera el desarrollo.
+**Why it matters**: This file is the "index" of everything the frontend can do with the APIs. A new developer arrives and sees 40+ exported functions with no explanation. With clear comments grouped by section, they can quickly find what they need. Additionally, code editors (like VS Code) display JSDoc comments on hover, which speeds up development.
 
-**Archivos a consultar**:
-- `frontend/src/services/index.ts` (el archivo a modificar)
-- `frontend/src/services/projectService.ts` (para entender que hace cada funcion de proyecto)
-- `frontend/src/services/clientService.ts` (funciones de cliente)
-- `frontend/src/services/developerService.ts` (funciones de developer)
-- `frontend/src/services/milestoneService.ts` (funciones de hitos)
-- `frontend/src/services/scopeService.ts` (funciones de alcance)
-- `frontend/src/services/calendarService.ts` (funciones de calendario)
+**Files to consult**:
+- `frontend/src/services/index.ts` (the file to modify)
+- `frontend/src/services/projectService.ts` (to understand what each project function does)
+- `frontend/src/services/clientService.ts` (client functions)
+- `frontend/src/services/developerService.ts` (developer functions)
+- `frontend/src/services/milestoneService.ts` (milestone functions)
+- `frontend/src/services/scopeService.ts` (scope functions)
+- `frontend/src/services/calendarService.ts` (calendar functions)
 
-**Criterios de aceptacion**:
-1. Cada grupo de exports tiene un comentario de seccion descriptivo en espanol
-2. Cada funcion exportada tiene un comentario JSDoc de una linea que explica que hace
-3. Los comentarios son concisos (maximo 1-2 lineas por funcion)
-4. El archivo sigue compilando sin errores (`npm run build` pasa)
+**Acceptance criteria**:
+1. Each group of exports has a descriptive section comment in Spanish
+2. Each exported function has a one-line JSDoc comment explaining what it does
+3. Comments are concise (maximum 1-2 lines per function)
+4. The file still compiles without errors (`npm run build` passes)
 
-**Ejemplo del cambio**:
+**Example of the change**:
 
 ```typescript
 // frontend/src/services/index.ts
 
 /**
- * Barrel Export de Servicios
+ * Service Barrel Export
  *
- * Punto de entrada unico para todas las funciones del servicio.
- * Los servicios encapsulan la logica de negocio sobre las llamadas API crudas.
+ * Single entry point for all service functions.
+ * Services encapsulate business logic over raw API calls.
  *
- * Uso:
+ * Usage:
  *   import { getProject, createProposal, clientConnect } from '@/services';
  */
 
 // ===================================================================
-// Proyecto - Consultas, actualizaciones y acciones sobre proyectos
+// Project - Queries, updates, and actions on projects
 // ===================================================================
 
 export {
@@ -911,42 +860,36 @@ export {
 } from './projectService';
 ```
 
-> **Consejo**: Abre cada archivo de servicio, lee la funcion, y escribe una linea que resuma lo que hace. No necesitas entender todos los detalles, solo el proposito general.
+> **Tip**: Open each service file, read the function, and write one line summarizing what it does. You do not need to understand all the details, just the general purpose.
 
 ---
 
-### :green_circle: Nivel Facil (buenas primeras tareas)
+#### TODO 6: Add loading spinners to all frontend pages
 
-Estas tareas son ideales para familiarizarte con el proyecto. No requieren conocimiento profundo de la arquitectura.
+**What to do**: Review the frontend pages (`frontend/src/pages/`) and ensure they all display a spinner (loading indicator) while waiting for data from the external APIs, and an error message when the request fails.
 
----
+**Why it matters**: Without a loading indicator, the user sees a blank page and thinks the application is broken. A spinner tells them "I am loading, please wait." Similarly, a clear error message tells them something went wrong and they can retry.
 
-#### TODO 1: Agregar spinners de carga a todas las paginas del frontend
+**Files to consult**:
+- `frontend/src/components/ui/Spinner.tsx` (existing Spinner component)
+- `frontend/src/components/shared/LoadingScreen.tsx` (full loading screen)
+- `frontend/src/pages/dashboard/DashboardPage.tsx` (page to review)
+- `frontend/src/pages/projects/ProjectsPage.tsx` (page to review)
+- `frontend/src/pages/payments/PaymentsPage.tsx` (page to review)
 
-**Que hacer**: Revisar las paginas del frontend (`frontend/src/pages/`) y asegurarse de que todas muestren un spinner (indicador de carga) mientras esperan datos de las APIs externas, y un mensaje de error cuando falla la peticion.
+**Acceptance criteria**:
+- [ ] Each page that uses `useQuery` displays a `<Spinner />` or `<LoadingScreen />` during `isLoading`
+- [ ] The spinner is centered vertically and horizontally on the screen
+- [ ] The existing `Spinner` component is used (do not create a new one)
+- [ ] There is a visible error message when `isError` is true
+- [ ] `npm run type-check` passes without errors
 
-**Por que importa**: Sin un indicador de carga, el usuario ve una pagina en blanco y piensa que la aplicacion esta rota. Un spinner le indica "estoy cargando, espera un momento". Del mismo modo, un mensaje de error claro le dice que algo salio mal y puede reintentar.
-
-**Archivos a consultar**:
-- `frontend/src/components/ui/Spinner.tsx` (componente Spinner ya existente)
-- `frontend/src/components/shared/LoadingScreen.tsx` (pantalla de carga completa)
-- `frontend/src/pages/dashboard/DashboardPage.tsx` (pagina para revisar)
-- `frontend/src/pages/projects/ProjectsPage.tsx` (pagina para revisar)
-- `frontend/src/pages/payments/PaymentsPage.tsx` (pagina para revisar)
-
-**Criterios de aceptacion**:
-- [ ] Cada pagina que usa `useQuery` muestra un `<Spinner />` o `<LoadingScreen />` durante `isLoading`
-- [ ] El spinner esta centrado vertical y horizontalmente en la pantalla
-- [ ] Se usa el componente `Spinner` existente (no crear uno nuevo)
-- [ ] Existe un mensaje de error visible cuando `isError` es true
-- [ ] `npm run type-check` pasa sin errores
-
-**Patron a seguir**:
+**Pattern to follow**:
 ```tsx
 import { Spinner } from '@/components/ui';
 import { useProjects } from '@/hooks/useProjects';
 
-function MiPagina() {
+function MyPage() {
   const { data, isLoading, isError, error } = useProjects();
 
   if (isLoading) {
@@ -961,57 +904,57 @@ function MiPagina() {
     return <p className="text-red-500">Error: {error.message}</p>;
   }
 
-  return <div>{/* contenido normal */}</div>;
+  return <div>{/* normal content */}</div>;
 }
 ```
 
 ---
 
-#### TODO 2: Escribir tests unitarios para la maquina de estados `flowStates`
+#### TODO 7: Write unit tests for the `flowStates` state machine
 
-**Que hacer**: Crear un archivo de tests para `frontend/src/lib/flowStates.ts` que verifique que cada transicion de estado funciona correctamente.
+**What to do**: Create a test file for `frontend/src/lib/flowStates.ts` that verifies each state transition works correctly.
 
-**Que es un test unitario**: Es un fragmento de codigo que verifica automaticamente que una funcion se comporta como se espera. Por ejemplo: "si el proyecto esta en estado ProposalPending y se aprueba, debe pasar a ScopingInProgress".
+**What is a unit test**: It is a piece of code that automatically verifies that a function behaves as expected. For example: "if the project is in ProposalPending state and it is approved, it should move to ScopingInProgress."
 
-**Por que importa**: La maquina de estados es el corazon de la logica de negocio. Si un estado se calcula mal, el usuario ve botones incorrectos o no puede avanzar en el flujo. Los tests previenen regresiones (que algo que funcionaba deje de funcionar).
+**Why it matters**: The state machine is the heart of the business logic. If a state is calculated incorrectly, the user sees incorrect buttons or cannot advance in the flow. Tests prevent regressions (something that used to work stops working).
 
-**Archivos a consultar**:
-- `frontend/src/lib/flowStates.ts` (la maquina de estados a testear)
-- `backend/models/flowStates.js` (version original en JavaScript, para comparar)
-- `.context/PROJECT_ANALYSIS.md` (seccion 5: State Machines, describe todos los flujos)
+**Files to consult**:
+- `frontend/src/lib/flowStates.ts` (the state machine to test)
+- `backend/models/flowStates.js` (original JavaScript version, for comparison)
+- `.context/PROJECT_ANALYSIS.md` (section 5: State Machines, describes all flows)
 
-**Criterios de aceptacion**:
-- [ ] Existe un archivo `frontend/src/lib/__tests__/flowStates.test.ts` (o similar)
-- [ ] Se prueban todas las transiciones de ProjectState (al menos 8 transiciones)
-- [ ] Se prueban todas las transiciones de MilestoneState (al menos 5 transiciones)
-- [ ] Se prueban casos limite: estado invalido, transicion no permitida
-- [ ] Todos los tests pasan con `npm test` (puede necesitar configurar Vitest primero)
+**Acceptance criteria**:
+- [ ] A file `frontend/src/lib/__tests__/flowStates.test.ts` (or similar) exists
+- [ ] All ProjectState transitions are tested (at least 8 transitions)
+- [ ] All MilestoneState transitions are tested (at least 5 transitions)
+- [ ] Edge cases are tested: invalid state, disallowed transition
+- [ ] All tests pass with `npm test` (may need to configure Vitest first)
 
-> **Nota**: Si Vitest no esta configurado aun, este TODO incluye instalarlo y configurarlo. Puedes seguir la guia de [Vitest](https://vitest.dev/guide/).
+> **Note**: If Vitest is not configured yet, this TODO includes installing and configuring it. You can follow the [Vitest](https://vitest.dev/guide/) guide.
 
 ---
 
-#### TODO 3: Agregar tests unitarios para las funciones de permisos
+#### TODO 8: Add unit tests for the permission functions
 
-**Que hacer**: Crear tests para `frontend/src/lib/permissions.ts` que verifiquen que cada funcion de permisos retorna el valor correcto segun el usuario y el contexto.
+**What to do**: Create tests for `frontend/src/lib/permissions.ts` that verify each permission function returns the correct value based on the user and context.
 
-**Que es `permissions.ts`**: Son funciones puras que determinan si un usuario puede realizar una accion. Por ejemplo: "solo el cliente que propuso el proyecto puede aprobar el alcance" o "solo el consultor asignado puede crear hitos".
+**What is `permissions.ts`**: These are pure functions that determine whether a user can perform an action. For example: "only the client who proposed the project can approve the scope" or "only the assigned consultant can create milestones."
 
-**Por que importa**: Los permisos definen la seguridad de la aplicacion. Si `isProjectClient` devuelve `true` para un usuario que no es el cliente, ese usuario podria aprobar un alcance que no le corresponde. Los tests garantizan que esto no pase.
+**Why it matters**: Permissions define the application's security. If `isProjectClient` returns `true` for a user who is not the client, that user could approve a scope that does not belong to them. Tests ensure this does not happen.
 
-**Archivos a consultar**:
-- `frontend/src/lib/permissions.ts` (7 funciones + 1 funcion compuesta)
-- `frontend/src/types/user.ts` (tipo `User` que reciben las funciones)
-- `backend/controllers/permission.js` (version original para comparar)
+**Files to consult**:
+- `frontend/src/lib/permissions.ts` (7 functions + 1 compound function)
+- `frontend/src/types/user.ts` (the `User` type received by the functions)
+- `backend/controllers/permission.js` (original version for comparison)
 
-**Criterios de aceptacion**:
-- [ ] Existe un archivo `frontend/src/lib/__tests__/permissions.test.ts`
-- [ ] Se prueban las 7 funciones: `isClient`, `isDeveloper`, `isClientSelf`, `isDeveloperSelf`, `isProjectClient`, `isProjectConsultant`, `isMilestoneDeveloper`
-- [ ] Se prueba la funcion compuesta `checkPermission` con multiples combinaciones
-- [ ] Se prueban casos con `user = null` (no autenticado)
-- [ ] Todos los tests pasan
+**Acceptance criteria**:
+- [ ] A file `frontend/src/lib/__tests__/permissions.test.ts` exists
+- [ ] All 7 functions are tested: `isClient`, `isDeveloper`, `isClientSelf`, `isDeveloperSelf`, `isProjectClient`, `isProjectConsultant`, `isMilestoneDeveloper`
+- [ ] The compound function `checkPermission` is tested with multiple combinations
+- [ ] Cases with `user = null` (not authenticated) are tested
+- [ ] All tests pass
 
-**Ejemplo de test**:
+**Test example**:
 ```typescript
 import { describe, it, expect } from 'vitest';
 import { isClient, isDeveloper, checkPermission } from '../permissions';
@@ -1021,13 +964,13 @@ const clientUser: User = { clientId: 'client-1', name: 'Ana' } as User;
 const devUser: User = { developerId: 'dev-1', name: 'Carlos' } as User;
 
 describe('isClient', () => {
-  it('devuelve true para un usuario con clientId', () => {
+  it('returns true for a user with clientId', () => {
     expect(isClient(clientUser)).toBe(true);
   });
-  it('devuelve false para un developer', () => {
+  it('returns false for a developer', () => {
     expect(isClient(devUser)).toBe(false);
   });
-  it('devuelve false para null', () => {
+  it('returns false for null', () => {
     expect(isClient(null)).toBe(false);
   });
 });
@@ -1035,57 +978,51 @@ describe('isClient', () => {
 
 ---
 
-#### TODO 4: Mejorar el componente ErrorBoundary
+#### TODO 9: Improve the ErrorBoundary component
 
-**Que hacer**: Mejorar el `ErrorBoundary.tsx` existente para que muestre un mensaje amigable, un boton de "Reintentar" y registre el error en la consola. Asegurarse de que envuelve correctamente las secciones clave de la aplicacion.
+**What to do**: Improve the existing `ErrorBoundary.tsx` to display a friendly message, a "Retry" button, and log the error to the console. Ensure it properly wraps the key sections of the application.
 
-**Que es un Error Boundary**: Es un componente de React que "atrapa" errores en sus hijos. Sin el, un error en un componente rompe TODA la pagina. Con el, solo la seccion afectada muestra un mensaje de error y el resto de la app sigue funcionando.
+**What is an Error Boundary**: It is a React component that "catches" errors in its children. Without it, an error in a component breaks the ENTIRE page. With it, only the affected section shows an error message and the rest of the app keeps working.
 
-**Por que importa**: En produccion, un error no capturado muestra una pantalla en blanco. Un Error Boundary muestra un mensaje amigable y puede ofrecer un boton de "reintentar".
+**Why it matters**: In production, an uncaught error shows a blank screen. An Error Boundary shows a friendly message and can offer a "retry" button.
 
-**Archivos a consultar**:
-- `frontend/src/components/shared/ErrorBoundary.tsx` (implementacion existente)
-- `frontend/src/App.tsx` (donde se deben colocar los boundaries)
-- `frontend/src/components/layouts/AppLayout.tsx` (otro punto clave)
+**Files to consult**:
+- `frontend/src/components/shared/ErrorBoundary.tsx` (existing implementation)
+- `frontend/src/App.tsx` (where boundaries should be placed)
+- `frontend/src/components/layouts/AppLayout.tsx` (another key placement point)
 
-**Criterios de aceptacion**:
-- [ ] El `ErrorBoundary` muestra un mensaje de error amigable (no tecnico)
-- [ ] Incluye un boton "Reintentar" que limpia el error y re-renderiza
-- [ ] Se envuelven al menos: el contenido principal del layout, cada pagina individualmente
-- [ ] El error se registra con `console.error` para depuracion
-- [ ] Funciona con errores asincronos (combinado con React Query `ErrorBoundary`)
-
----
-
-### :yellow_circle: Nivel Intermedio
-
-Estas tareas requieren comprender mas sobre la arquitectura del proyecto y escribir codigo mas complejo.
+**Acceptance criteria**:
+- [ ] The `ErrorBoundary` displays a friendly (non-technical) error message
+- [ ] Includes a "Retry" button that clears the error and re-renders
+- [ ] At minimum, it wraps: the main layout content, each individual page
+- [ ] The error is logged with `console.error` for debugging
+- [ ] Works with asynchronous errors (combined with React Query `ErrorBoundary`)
 
 ---
 
-#### TODO 5: Agregar validacion de formularios con esquemas Zod
+#### TODO 10: Add form validation with Zod schemas
 
-**Que hacer**: Crear esquemas de validacion Zod para los formularios del frontend y conectarlos con React Hook Form usando `@hookform/resolvers`.
+**What to do**: Create Zod validation schemas for the frontend forms and connect them with React Hook Form using `@hookform/resolvers`.
 
-**Que es Zod**: Una libreria de validacion que te permite definir "la forma" que deben tener tus datos. Por ejemplo: "el nombre es una cadena de al menos 2 caracteres y el email debe tener formato de correo".
+**What is Zod**: A validation library that lets you define "the shape" your data must have. For example: "the name is a string of at least 2 characters and the email must be in email format."
 
-**Por que importa**: Sin validacion, un usuario puede enviar un formulario vacio o con datos incorrectos, causando errores en las APIs externas. La validacion en el frontend da feedback inmediato antes de enviar.
+**Why it matters**: Without validation, a user can submit an empty form or one with incorrect data, causing errors in the external APIs. Frontend validation provides immediate feedback before submission.
 
-**Archivos a consultar**:
-- `frontend/package.json` (Zod y `@hookform/resolvers` ya estan instalados)
-- `frontend/src/pages/projects/CreateProjectPage.tsx` (formulario de crear proyecto)
-- `frontend/src/pages/auth/ClientRegisterPage.tsx` (formulario de registro)
-- `frontend/src/types/project.ts` (tipos existentes para basarse)
-- `frontend/src/types/enums.ts` (constantes de opciones: BUDGETS, PROJECT_TYPES, etc.)
+**Files to consult**:
+- `frontend/package.json` (Zod and `@hookform/resolvers` are already installed)
+- `frontend/src/pages/projects/CreateProjectPage.tsx` (create project form)
+- `frontend/src/pages/auth/ClientRegisterPage.tsx` (registration form)
+- `frontend/src/types/project.ts` (existing types to base schemas on)
+- `frontend/src/types/enums.ts` (option constants: BUDGETS, PROJECT_TYPES, etc.)
 
-**Criterios de aceptacion**:
-- [ ] Al menos 2 formularios tienen validacion Zod completa
-- [ ] Los mensajes de error son en espanol y amigables
-- [ ] Se validan campos obligatorios, formatos y longitudes minimas/maximas
-- [ ] Los errores se muestran debajo de cada campo (no como alerta generica)
-- [ ] Los esquemas Zod estan en archivos separados (ej: `frontend/src/lib/schemas/`)
+**Acceptance criteria**:
+- [ ] At least 2 forms have complete Zod validation
+- [ ] Error messages are in Spanish and user-friendly
+- [ ] Required fields, formats, and minimum/maximum lengths are validated
+- [ ] Errors are displayed below each field (not as a generic alert)
+- [ ] Zod schemas are in separate files (e.g.: `frontend/src/lib/schemas/`)
 
-**Ejemplo**:
+**Example**:
 ```typescript
 import { z } from 'zod';
 import { BUDGETS, DELIVERY_TIMES, PROJECT_TYPES } from '@/types/enums';
@@ -1112,56 +1049,56 @@ export type CreateProjectInput = z.infer<typeof createProjectSchema>;
 
 ---
 
-#### TODO 6: Crear stories de Storybook para los componentes UI
+#### TODO 11: Create Storybook stories for the UI components
 
-**Que hacer**: Instalar Storybook y crear stories para los componentes existentes en `frontend/src/components/ui/` (Button, Card, Input, Label, Spinner).
+**What to do**: Install Storybook and create stories for the existing components in `frontend/src/components/ui/` (Button, Card, Input, Label, Spinner).
 
-**Que es Storybook**: Es una herramienta que permite desarrollar y probar componentes de forma aislada, fuera de la aplicacion. Cada "story" muestra una variante del componente (boton primario, boton deshabilitado, boton de peligro, etc.).
+**What is Storybook**: It is a tool that allows developing and testing components in isolation, outside of the application. Each "story" shows a variant of the component (primary button, disabled button, danger button, etc.).
 
-**Por que importa**: Permite ver todos los componentes del sistema de diseno en un solo lugar, probar variantes sin navegar por toda la app, y sirve como documentacion visual para el equipo.
+**Why it matters**: It allows viewing all design system components in one place, testing variants without navigating through the entire app, and serves as visual documentation for the team.
 
-**Archivos a consultar**:
+**Files to consult**:
 - `frontend/src/components/ui/Button.tsx`
 - `frontend/src/components/ui/Card.tsx`
 - `frontend/src/components/ui/Input.tsx`
 - `frontend/src/components/ui/Label.tsx`
 - `frontend/src/components/ui/Spinner.tsx`
 
-**Criterios de aceptacion**:
-- [ ] Storybook esta instalado y funciona con `npm run storybook`
-- [ ] Cada componente de `ui/` tiene al menos 3 stories (variantes diferentes)
-- [ ] Las stories muestran todas las props posibles del componente
-- [ ] Se incluyen stories para estados: default, hover, disabled, loading
-- [ ] Documentacion basica incluida en cada story (descripcion de uso)
+**Acceptance criteria**:
+- [ ] Storybook is installed and works with `npm run storybook`
+- [ ] Each component in `ui/` has at least 3 stories (different variants)
+- [ ] Stories show all possible props of the component
+- [ ] Stories for states are included: default, hover, disabled, loading
+- [ ] Basic documentation is included in each story (usage description)
 
 ---
 
-#### TODO 7: Agregar tests de integracion para los servicios
+#### TODO 12: Add integration tests for the services
 
-**Que hacer**: Crear tests para los servicios en `frontend/src/services/` que verifiquen que la composicion de datos funciona correctamente. Usar mocks para las funciones de la capa de API.
+**What to do**: Create tests for the services in `frontend/src/services/` that verify data composition works correctly. Use mocks for the API layer functions.
 
-**Que es un test de integracion**: A diferencia de un test unitario (que prueba una funcion aislada), un test de integracion verifica que varias piezas trabajan juntas. En este caso, verificamos que un servicio llama a las funciones de API correctas y compone los datos esperados.
+**What is an integration test**: Unlike a unit test (which tests an isolated function), an integration test verifies that multiple pieces work together. In this case, we verify that a service calls the correct API functions and composes the expected data.
 
-**Por que importa**: Los servicios son la capa mas critica de la aplicacion. Si `getProject` no agrega correctamente los hitos, la pagina de detalle muestra datos incompletos. Los tests con mocks permiten probar la logica sin depender de APIs externas.
+**Why it matters**: Services are the most critical layer of the application. If `getProject` does not correctly aggregate milestones, the detail page shows incomplete data. Tests with mocks allow testing the logic without depending on external APIs.
 
-**Archivos a consultar**:
-- `frontend/src/services/projectService.ts` (la funcion `getProject` es ideal para testear)
-- `frontend/src/services/clientService.ts` (funciones mas sencillas para empezar)
-- `frontend/src/api/adapter/index.ts` (funciones que hay que mockear)
+**Files to consult**:
+- `frontend/src/services/projectService.ts` (the `getProject` function is ideal for testing)
+- `frontend/src/services/clientService.ts` (simpler functions to start with)
+- `frontend/src/api/adapter/index.ts` (functions that need to be mocked)
 
-**Criterios de aceptacion**:
-- [ ] Al menos 2 servicios tienen tests de integracion
-- [ ] Las funciones de API estan mockeadas (no se hacen llamadas HTTP reales)
-- [ ] Se prueba que `getProject` agrega proyecto + cliente + consultor + hitos
-- [ ] Se prueba que `getProjectsIndex` usa `Promise.allSettled` y no falla si una peticion falla
-- [ ] Todos los tests pasan con `npm test`
+**Acceptance criteria**:
+- [ ] At least 2 services have integration tests
+- [ ] API functions are mocked (no real HTTP calls are made)
+- [ ] It is tested that `getProject` aggregates project + client + consultant + milestones
+- [ ] It is tested that `getProjectsIndex` uses `Promise.allSettled` and does not fail if a request fails
+- [ ] All tests pass with `npm test`
 
-**Ejemplo**:
+**Example**:
 ```typescript
 import { describe, it, expect, vi } from 'vitest';
 import { getProject } from '../projectService';
 
-// Mockear el modulo de API
+// Mock the API module
 vi.mock('@/api/adapter', () => ({
   getProjectInfo: vi.fn().mockResolvedValue({
     _id: 'proj-1', clientId: 'client-1', consultantId: 'dev-1', creationStatus: 'created',
@@ -1178,7 +1115,7 @@ vi.mock('@/api/adapter', () => ({
 }));
 
 describe('getProject', () => {
-  it('agrega cliente, consultor y hitos al proyecto', async () => {
+  it('aggregates client, consultant, and milestones into the project', async () => {
     const project = await getProject('proj-1');
     expect(project.client?.name).toBe('Ana');
     expect(project.consultant?.name).toBe('Carlos');
@@ -1189,244 +1126,226 @@ describe('getProject', () => {
 
 ---
 
-#### TODO 8: Implementar paginacion y busqueda en la lista de proyectos
+#### TODO 13: Implement pagination and search in the project list
 
-**Que hacer**: Agregar paginacion del lado del cliente y un campo de busqueda a la pagina `ProjectsPage.tsx`. Como la API externa no soporta paginacion nativa, la implementacion sera en el frontend: se cargan todos los proyectos una vez y se paginan/filtran localmente.
+**What to do**: Add client-side pagination and a search field to the `ProjectsPage.tsx` page. Since the external API does not support native pagination, the implementation will be on the frontend: all projects are loaded once and paginated/filtered locally.
 
-**Por que importa**: Actualmente se muestran TODOS los proyectos de golpe. Con 100+ proyectos, la pagina sera lenta y dificil de navegar. La paginacion muestra solo una porcion (ej: 10 proyectos a la vez) y la busqueda permite encontrar rapidamente un proyecto especifico.
+**Why it matters**: Currently ALL projects are displayed at once. With 100+ projects, the page will be slow and hard to navigate. Pagination shows only a portion (e.g., 10 projects at a time) and search allows quickly finding a specific project.
 
-**Archivos a consultar**:
-- `frontend/src/pages/projects/ProjectsPage.tsx` (pagina a modificar)
-- `frontend/src/hooks/useProjects.ts` (hook que obtiene datos)
-- `frontend/src/services/projectService.ts` (servicio que carga proyectos)
+**Files to consult**:
+- `frontend/src/pages/projects/ProjectsPage.tsx` (page to modify)
+- `frontend/src/hooks/useProjects.ts` (hook that fetches data)
+- `frontend/src/services/projectService.ts` (service that loads projects)
 
-**Criterios de aceptacion**:
-- [ ] La pagina muestra 10 proyectos a la vez (configurable)
-- [ ] Existen controles de paginacion (anterior/siguiente, numeros de pagina)
-- [ ] El campo de busqueda filtra por titulo o descripcion del proyecto
-- [ ] React Query mantiene el cache correctamente
-- [ ] La experiencia es fluida (sin parpadeos ni recargas)
-
----
-
-### :red_circle: Nivel Avanzado
-
-Estas tareas requieren comprension profunda de la arquitectura y posiblemente investigacion adicional.
+**Acceptance criteria**:
+- [ ] The page displays 10 projects at a time (configurable)
+- [ ] Pagination controls exist (previous/next, page numbers)
+- [ ] The search field filters by project title or description
+- [ ] React Query maintains the cache correctly
+- [ ] The experience is smooth (no flickering or reloads)
 
 ---
 
-#### TODO 9: Completar las paginas del Dashboard con datos reales
+#### TODO 14: Complete the Dashboard pages with real data
 
-**Que hacer**: Conectar `DashboardPage.tsx` con los hooks de React Query para que muestre datos reales de las APIs externas: conteo de proyectos activos, hitos pendientes, pagos recientes y resumen por estado.
+**What to do**: Connect `DashboardPage.tsx` with the React Query hooks so that it displays real data from the external APIs: count of active projects, pending milestones, recent payments, and summary by state.
 
-**Por que importa**: El dashboard es la primera pagina que ve un usuario al entrar. Actualmente puede estar mostrando datos placeholder. Conectarlo con datos reales es fundamental para que la aplicacion sea funcional.
+**Why it matters**: The dashboard is the first page a user sees when they log in. It may currently be showing placeholder data. Connecting it with real data is fundamental for the application to be functional.
 
-**Archivos a consultar**:
-- `frontend/src/pages/dashboard/DashboardPage.tsx` (pagina a completar)
-- `frontend/src/hooks/useProjects.ts` (datos de proyectos)
-- `frontend/src/hooks/usePayments.ts` (datos de pagos)
-- `frontend/src/services/projectService.ts` (funcion `getProjectsIndex`)
-- `frontend/src/lib/flowStates.ts` (para agrupar proyectos por estado)
+**Files to consult**:
+- `frontend/src/pages/dashboard/DashboardPage.tsx` (page to complete)
+- `frontend/src/hooks/useProjects.ts` (project data)
+- `frontend/src/hooks/usePayments.ts` (payment data)
+- `frontend/src/services/projectService.ts` (the `getProjectsIndex` function)
+- `frontend/src/lib/flowStates.ts` (for grouping projects by state)
 
-**Criterios de aceptacion**:
-- [ ] El dashboard muestra conteo real de proyectos por estado (pendiente, en progreso, completado)
-- [ ] Muestra los ultimos 5 proyectos con links a su pagina de detalle
-- [ ] Muestra hitos pendientes de revision (si es consultor) o pendientes de aprobacion (si es cliente)
-- [ ] Maneja correctamente los estados de carga y error
-- [ ] Se diferencia la vista entre cliente y developer usando `permissions.ts`
-
----
-
-#### TODO 10: Agregar tests E2E (End-to-End) con Playwright
-
-**Que hacer**: Configurar Playwright e implementar tests que simulen el flujo completo de un usuario: registrarse, ver la lista de proyectos, navegar al detalle de un proyecto, etc.
-
-**Que es un test E2E**: A diferencia de un test unitario (que prueba una funcion aislada), un test E2E abre un navegador real, hace clic en botones, rellena formularios y verifica que la pagina muestra lo esperado. Simula un usuario real.
-
-**Por que importa**: Es la unica forma de verificar que todos los componentes funcionan correctamente juntos: navegacion, carga de datos, permisos, formularios, etc. Un test unitario puede pasar pero la app puede estar rota si los componentes no se integran bien.
-
-**Archivos a consultar**:
-- `frontend/src/App.tsx` (rutas de la aplicacion)
-- `frontend/src/pages/auth/LoginPage.tsx` (primer flujo a testear)
-- `frontend/src/pages/projects/ProjectsPage.tsx` (segundo flujo a testear)
-- [Documentacion de Playwright](https://playwright.dev/docs/intro)
-
-**Criterios de aceptacion**:
-- [ ] Playwright esta instalado y configurado
-- [ ] Existe un script `npm run test:e2e` en el frontend
-- [ ] Al menos 3 flujos E2E implementados: login, ver proyectos, navegar al detalle
-- [ ] Los tests se pueden ejecutar contra el entorno de desarrollo (`dev.abako.xyz`)
-- [ ] Se incluye documentacion de como ejecutar los tests
+**Acceptance criteria**:
+- [ ] The dashboard displays a real count of projects by state (pending, in progress, completed)
+- [ ] Shows the last 5 projects with links to their detail page
+- [ ] Shows milestones pending review (if consultant) or pending approval (if client)
+- [ ] Correctly handles loading and error states
+- [ ] The view differs between client and developer using `permissions.ts`
 
 ---
 
-#### TODO 11: Implementar Zustand devtools y monitoreo de estado
+#### TODO 15: Add E2E (End-to-End) tests with Playwright
 
-**Que hacer**: Agregar herramientas de depuracion para el estado de Zustand: integrar con Redux DevTools Extension, agregar logging en desarrollo, y crear un segundo store si se necesita (por ejemplo `uiStore` para estado de la interfaz como sidebar abierto/cerrado, tema, etc.).
+**What to do**: Configure Playwright and implement tests that simulate a complete user flow: register, view the project list, navigate to a project's detail, etc.
 
-**Por que importa**: A medida que la aplicacion crece, es importante poder inspeccionar el estado global para depurar problemas. Zustand soporta Redux DevTools, lo que permite ver el historial de cambios de estado en el navegador.
+**What is an E2E test**: Unlike a unit test (which tests an isolated function), an E2E test opens a real browser, clicks buttons, fills in forms, and verifies the page displays what is expected. It simulates a real user.
 
-**Archivos a consultar**:
-- `frontend/src/stores/authStore.ts` (store existente como referencia)
-- [Documentacion de Zustand middleware](https://github.com/pmndrs/zustand#devtools)
+**Why it matters**: It is the only way to verify that all components work correctly together: navigation, data loading, permissions, forms, etc. A unit test can pass but the app can still be broken if the components do not integrate well.
 
-**Criterios de aceptacion**:
-- [ ] `authStore` esta conectado a Redux DevTools (visible en la extension del navegador)
-- [ ] Se agrega logging condicional en desarrollo (`import.meta.env.DEV`)
-- [ ] Se crea un `uiStore.ts` si hay estado de UI repetido en multiples componentes
-- [ ] `npm run type-check` pasa sin errores
+**Files to consult**:
+- `frontend/src/App.tsx` (application routes)
+- `frontend/src/pages/auth/LoginPage.tsx` (first flow to test)
+- `frontend/src/pages/projects/ProjectsPage.tsx` (second flow to test)
+- [Playwright documentation](https://playwright.dev/docs/intro)
 
----
-
-#### TODO 12: Configurar CI/CD con GitHub Actions
-
-**Que hacer**: Crear un workflow de GitHub Actions que ejecute automaticamente lint, type-check, build y tests en cada push y pull request.
-
-**Que es CI/CD**: Integracion Continua (CI) es la practica de verificar automaticamente que cada cambio de codigo no rompe nada. Se ejecutan lint, type-check, build y tests automaticamente. Despliegue Continuo (CD) es desplegar automaticamente cuando los checks pasan.
-
-**Por que importa**: Sin CI, los errores llegan a la rama principal y rompen cosas para todos. Con CI, cada pull request se verifica automaticamente y solo se puede mergear si todo pasa.
-
-**Criterios de aceptacion**:
-- [ ] Existe un archivo `.github/workflows/ci.yml`
-- [ ] El workflow se ejecuta en push y pull request a `feature/web-refactor` y `main`
-- [ ] Ejecuta: `npm install`, `npm run lint`, `npm run type-check`, `npm run build`
-- [ ] Ejecuta tests si estan configurados
-- [ ] El badge de estado se muestra en el README
+**Acceptance criteria**:
+- [ ] Playwright is installed and configured
+- [ ] A script `npm run test:e2e` exists in the frontend
+- [ ] At least 3 E2E flows are implemented: login, view projects, navigate to detail
+- [ ] Tests can be run against the development environment (`dev.abako.xyz`)
+- [ ] Documentation on how to run the tests is included
 
 ---
 
-## :handshake: Contribuir al Proyecto
+#### TODO 16: Implement Zustand devtools and state monitoring
 
-### Flujo de trabajo con Git
+**What to do**: Add debugging tools for Zustand state: integrate with Redux DevTools Extension, add development logging, and create a second store if needed (for example `uiStore` for interface state like sidebar open/closed, theme, etc.).
+
+**Why it matters**: As the application grows, it is important to be able to inspect global state for debugging issues. Zustand supports Redux DevTools, which allows viewing the history of state changes in the browser.
+
+**Files to consult**:
+- `frontend/src/stores/authStore.ts` (existing store as reference)
+- [Zustand middleware documentation](https://github.com/pmndrs/zustand#devtools)
+
+**Acceptance criteria**:
+- [ ] `authStore` is connected to Redux DevTools (visible in the browser extension)
+- [ ] Conditional logging is added in development (`import.meta.env.DEV`)
+- [ ] A `uiStore.ts` is created if there is repeated UI state across multiple components
+- [ ] `npm run type-check` passes without errors
+
+---
+
+#### TODO 17: Review and adjust the UI design to match the Figma mockups
+
+- [ ] Completed
+
+**What to do**: Compare every page and component in the frontend against the original Figma designs and fix any visual discrepancies. This includes spacing, typography, colors, component sizing, layout alignment, responsive breakpoints, and any missing UI elements. The goal is pixel-level fidelity with the Figma source of truth.
+
+**Why it matters**: During the migration from EJS to React, the focus was on functional correctness (data flow, API calls, state management). Visual styling was implemented with Tailwind utility classes but was not systematically compared against the Figma designs. The current UI may have misaligned elements, incorrect spacing, wrong color shades, or missing visual details that affect the professional look and feel of the product.
+
+**Files to consult**:
+- The Figma project (ask the team lead for the link if you do not have access)
+- `frontend/src/components/layouts/AppLayout.tsx` (main layout: sidebar + header + content area)
+- `frontend/src/components/layouts/Sidebar.tsx` (navigation sidebar)
+- `frontend/src/components/layouts/Header.tsx` (top header bar)
+- `frontend/src/components/layouts/AuthLayout.tsx` (login/register layout)
+- `frontend/src/components/ui/` (Button, Card, Input, Label, Spinner — design system primitives)
+- `frontend/src/pages/dashboard/DashboardPage.tsx` (dashboard)
+- `frontend/src/pages/projects/ProjectsPage.tsx` (project list)
+- `frontend/src/pages/projects/ProjectDetailPage.tsx` (project detail)
+- `frontend/src/pages/projects/CreateProjectPage.tsx` (create project form)
+- `frontend/src/pages/payments/PaymentsPage.tsx` (payments list)
+- `frontend/src/pages/profiles/ClientProfilePage.tsx` (client profile)
+- `frontend/src/pages/profiles/DeveloperProfilePage.tsx` (developer profile)
+- `frontend/src/pages/auth/LoginPage.tsx` (login page)
+- `frontend/src/pages/auth/ClientRegisterPage.tsx` (client registration)
+- `frontend/src/pages/auth/DeveloperRegisterPage.tsx` (developer registration)
+- `frontend/tailwind.config.js` (Tailwind theme: colors, fonts, breakpoints)
+
+**Acceptance criteria**:
+- [ ] Every page has been compared side-by-side with its Figma counterpart
+- [ ] Colors, typography (font family, size, weight), and spacing match the Figma design tokens
+- [ ] Layout structure (sidebar width, header height, content margins) matches the mockups
+- [ ] UI components (buttons, cards, inputs, badges) match the Figma component library
+- [ ] Responsive behavior (mobile, tablet, desktop) follows the Figma breakpoints
+- [ ] Any missing visual elements from Figma (icons, dividers, shadows, hover states) are added
+- [ ] `npm run build` passes without errors
+
+---
+
+## Contributing to the Project
+
+### Git workflow
 
 ```bash
-# 1. Asegurate de tener la ultima version de la rama principal
+# 1. Make sure you have the latest version of the main branch
 git checkout feature/web-refactor
 git pull origin feature/web-refactor
 
-# 2. Crea una rama nueva para tu tarea
-git checkout -b tipo/descripcion-corta
-# Ejemplos:
+# 2. Create a new branch for your task
+git checkout -b type/short-description
+# Examples:
 #   fix/loading-spinners-all-pages
 #   feat/zod-validation-create-project
 #   test/flow-states-unit-tests
 
-# 3. Haz tus cambios y commitea frecuentemente
+# 3. Make your changes and commit frequently
 git add .
-git commit -m "tipo: descripcion del cambio"
+git commit -m "type: description of the change"
 
-# 4. Sube tu rama al repositorio remoto
-git push origin tipo/descripcion-corta
+# 4. Push your branch to the remote repository
+git push origin type/short-description
 
-# 5. Crea un Pull Request (PR) en la interfaz web de git
+# 5. Create a Pull Request (PR) in the git web interface
 ```
 
-### Convenciones de commits
+### Commit conventions
 
-Usamos el formato [Conventional Commits](https://www.conventionalcommits.org/):
+We use the [Conventional Commits](https://www.conventionalcommits.org/) format:
 
-| Prefijo | Cuando usarlo | Ejemplo |
-|---------|--------------|---------|
-| `feat:` | Nueva funcionalidad | `feat: add Zod validation to CreateProjectPage` |
-| `fix:` | Correccion de bug | `fix: add missing loading spinner to DashboardPage` |
-| `docs:` | Solo documentacion | `docs: update README with new architecture` |
-| `style:` | Formateo, sin cambio de logica | `style: fix indentation in ProjectActions.tsx` |
-| `refactor:` | Cambio de codigo sin alterar funcionalidad | `refactor: extract error handling to shared util` |
-| `test:` | Agregar o corregir tests | `test: add unit tests for flowStates transitions` |
-| `chore:` | Tareas de mantenimiento | `chore: install and configure Storybook` |
+| Prefix | When to use it | Example |
+|--------|----------------|---------|
+| `feat:` | New feature | `feat: add Zod validation to CreateProjectPage` |
+| `fix:` | Bug fix | `fix: add missing loading spinner to DashboardPage` |
+| `docs:` | Documentation only | `docs: update README with new architecture` |
+| `style:` | Formatting, no logic change | `style: fix indentation in ProjectActions.tsx` |
+| `refactor:` | Code change without altering functionality | `refactor: extract error handling to shared util` |
+| `test:` | Adding or fixing tests | `test: add unit tests for flowStates transitions` |
+| `chore:` | Maintenance tasks | `chore: install and configure Storybook` |
 
-### Checklist antes de crear un PR
+### Checklist before creating a PR
 
-- [ ] El codigo compila sin errores (`npm run build` en frontend)
-- [ ] Los tipos estan correctos (`npm run type-check` en frontend)
-- [ ] El linter pasa sin warnings (`npm run lint`)
-- [ ] Los tests pasan (si hay tests configurados)
-- [ ] El PR tiene una descripcion clara de que cambia y por que
-- [ ] Se mencionan los archivos clave modificados
+- [ ] The code compiles without errors (`npm run build` in frontend)
+- [ ] Types are correct (`npm run type-check` in frontend)
+- [ ] The linter passes with no warnings (`npm run lint`)
+- [ ] Tests pass (if tests are configured)
+- [ ] The PR has a clear description of what changes and why
+- [ ] Key modified files are mentioned
 
-### Estructura de un buen PR
+### Structure of a good PR
 
 ```markdown
-## Que cambia
-- Agrega validacion Zod al formulario de CreateProjectPage
-- Crea esquemas en src/lib/schemas/createProject.ts
+## What changes
+- Adds Zod validation to the CreateProjectPage form
+- Creates schemas in src/lib/schemas/createProject.ts
 
-## Por que
-- Sin validacion, se pueden enviar formularios vacios causando errores 400
+## Why
+- Without validation, empty forms can be submitted causing 400 errors
 
-## Como probar
-1. Ir a /projects/new
-2. Intentar enviar el formulario vacio -> debe mostrar errores en cada campo
-3. Rellenar correctamente -> debe enviar sin problemas
+## How to test
+1. Go to /projects/new
+2. Try to submit the form empty -> errors should appear on each field
+3. Fill in correctly -> should submit without issues
 
-## Archivos clave
-- frontend/src/lib/schemas/createProject.ts (NUEVO)
-- frontend/src/pages/projects/CreateProjectPage.tsx (MODIFICADO)
+## Key files
+- frontend/src/lib/schemas/createProject.ts (NEW)
+- frontend/src/pages/projects/CreateProjectPage.tsx (MODIFIED)
 ```
 
----
+## Useful Links
 
-## :file_cabinet: Directorio `backend/` (LEGACY)
+### About the blockchain ecosystem
 
-> :warning: **El directorio `backend/` se conserva unicamente como referencia durante la migracion. NO es necesario instalarlo ni ejecutarlo para que la aplicacion funcione.**
+| Resource | URL | Description |
+|----------|-----|-------------|
+| Polkadot | [polkadot.network](https://polkadot.network/) | Network of blockchains where the project lives |
+| Virto Network | [virto.network](https://virto.network/) | Commerce blockchain with payment tools |
+| WebAuthn | [webauthn.guide](https://webauthn.guide/) | Guide on passwordless authentication |
 
-El backend Express.js original servia como intermediario entre el navegador y las APIs externas. Su logica ya ha sido portada al frontend:
+### About frontend technologies
 
-| Backend original | Portado a (frontend) | Estado |
-|-----------------|----------------------|--------|
-| `models/adapter.js` (1243 lineas) | `src/api/adapter/` + `src/api/virto/` + `src/api/contracts/` | Completado |
-| `models/seda/` (13 modulos) | `src/services/` (7 modulos, 58 funciones) | Completado |
-| `models/flowStates.js` | `src/lib/flowStates.ts` | Completado |
-| `controllers/permission.js` | `src/lib/permissions.ts` | Completado |
-| `models/enums/` (JSON) | `src/types/enums.ts` + `src/constants/languages.ts` | Completado |
-| Sesiones Express + SQLite | `src/stores/authStore.ts` (Zustand + localStorage) | Completado |
-
-Si necesitas entender la logica original de alguna funcion o endpoint, puedes consultar los archivos del backend como referencia. Pero no necesitas ejecutarlo.
-
----
-
-## :link: Enlaces Utiles
-
-### Sobre el ecosistema blockchain
-
-| Recurso | URL | Descripcion |
-|---------|-----|-------------|
-| Polkadot | [polkadot.network](https://polkadot.network/) | Red de blockchains donde vive el proyecto |
-| Virto Network | [virto.network](https://virto.network/) | Blockchain de comercio con herramientas de pago |
-| WebAuthn | [webauthn.guide](https://webauthn.guide/) | Guia sobre autenticacion sin contrasena |
-
-### Sobre las tecnologias del frontend
-
-| Recurso | URL | Descripcion |
-|---------|-----|-------------|
-| React | [react.dev](https://react.dev/) | Documentacion oficial de React |
-| TypeScript | [typescriptlang.org](https://www.typescriptlang.org/docs/) | Manual de TypeScript |
-| Vite | [vitejs.dev](https://vitejs.dev/) | Documentacion de Vite |
-| TailwindCSS | [tailwindcss.com/docs](https://tailwindcss.com/docs) | Documentacion de Tailwind |
-| TanStack Query | [tanstack.com/query](https://tanstack.com/query/latest) | Documentacion de React Query |
-| Zustand | [github.com/pmndrs/zustand](https://github.com/pmndrs/zustand) | Documentacion de Zustand |
-| Zod | [zod.dev](https://zod.dev/) | Documentacion de Zod |
-| React Hook Form | [react-hook-form.com](https://react-hook-form.com/) | Documentacion de React Hook Form |
-| React Router | [reactrouter.com](https://reactrouter.com/) | Documentacion de React Router |
-| Axios | [axios-http.com](https://axios-http.com/) | Cliente HTTP |
-| Vitest | [vitest.dev](https://vitest.dev/) | Framework de testing para Vite |
-| Playwright | [playwright.dev](https://playwright.dev/) | Framework de testing E2E |
-| Storybook | [storybook.js.org](https://storybook.js.org/) | Herramienta de desarrollo de componentes |
-
-### Documentacion interna del proyecto
-
-Estos archivos en `.context/` contienen informacion detallada sobre la arquitectura y las decisiones de diseno:
-
-| Archivo | Descripcion |
-|---------|-------------|
-| `.context/PROJECT_ANALYSIS.md` | Analisis completo del proyecto: arquitectura, APIs, bugs conocidos |
-| `.context/CODE_REVIEW_RESULTS.md` | Resultados de la revision de codigo: 17 bugs, 14 vulnerabilidades |
-| `.context/FRONTEND_ARCHITECTURE.md` | Arquitectura del frontend React: stack, decisiones, patrones |
-| `.context/MIGRATION_PLAN.md` | Plan de migracion detallado: riesgos, fases, dependencias |
-| `.context/IMPLEMENTATION_BLUEPRINT.md` | Blueprint con codigo concreto para cada fase |
+| Resource | URL | Description |
+|----------|-----|-------------|
+| React | [react.dev](https://react.dev/) | Official React documentation |
+| TypeScript | [typescriptlang.org](https://www.typescriptlang.org/docs/) | TypeScript manual |
+| Vite | [vitejs.dev](https://vitejs.dev/) | Vite documentation |
+| TailwindCSS | [tailwindcss.com/docs](https://tailwindcss.com/docs) | Tailwind documentation |
+| TanStack Query | [tanstack.com/query](https://tanstack.com/query/latest) | React Query documentation |
+| Zustand | [github.com/pmndrs/zustand](https://github.com/pmndrs/zustand) | Zustand documentation |
+| Zod | [zod.dev](https://zod.dev/) | Zod documentation |
+| React Hook Form | [react-hook-form.com](https://react-hook-form.com/) | React Hook Form documentation |
+| React Router | [reactrouter.com](https://reactrouter.com/) | React Router documentation |
+| Axios | [axios-http.com](https://axios-http.com/) | HTTP client |
+| Vitest | [vitest.dev](https://vitest.dev/) | Testing framework for Vite |
+| Playwright | [playwright.dev](https://playwright.dev/) | E2E testing framework |
+| Storybook | [storybook.js.org](https://storybook.js.org/) | Component development tool |
 
 ---
 
 <p align="center">
-  <sub>Desarrollado con la red <a href="https://virto.network/">Virto Network</a> sobre <a href="https://polkadot.network/">Polkadot</a></sub>
+  <sub>Developed with <a href="https://virto.network/">Virto Network</a> on <a href="https://polkadot.network/">Polkadot</a></sub>
 </p>

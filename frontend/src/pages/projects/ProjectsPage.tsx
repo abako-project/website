@@ -1,15 +1,14 @@
 /**
  * ProjectsPage - Projects list view
  *
- * Displays all projects for the authenticated user in a responsive layout:
- *   - Desktop: table view with sortable columns
- *   - Mobile: card grid view
+ * Displays all projects for the authenticated user in a CardWidget grid layout
+ * matching the Figma design (117:9363).
  *
  * Features:
  *   - Filter by project state
- *   - Sort by title or state
+ *   - CardWidget grid view with badges + progress
  *   - "New Project" button (visible to clients only)
- *   - Click a row/card to navigate to /projects/:id
+ *   - Click a card to navigate to /projects/:id
  */
 
 import { useState, useMemo } from 'react';
@@ -48,13 +47,6 @@ const FILTER_OPTIONS: FilterOption[] = [
 ];
 
 // ---------------------------------------------------------------------------
-// Sort options
-// ---------------------------------------------------------------------------
-
-type SortField = 'title' | 'state';
-type SortDirection = 'asc' | 'desc';
-
-// ---------------------------------------------------------------------------
 // Projects Page Component
 // ---------------------------------------------------------------------------
 
@@ -65,12 +57,10 @@ export default function ProjectsPage() {
 
   const { data: projects, isLoading, isError, error } = useProjects();
 
-  // Filter and sort state
+  // Filter state
   const [stateFilter, setStateFilter] = useState<'all' | ProjectStateValue>('all');
-  const [sortField, setSortField] = useState<SortField>('title');
-  const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
 
-  // Compute flow state for each project and filter/sort
+  // Compute flow state for each project and filter
   const processedProjects = useMemo(() => {
     if (!projects) return [];
 
@@ -86,44 +76,17 @@ export default function ProjectsPage() {
         ? annotated
         : annotated.filter((item) => item.flowState === stateFilter);
 
-    // Sort
-    filtered.sort((a, b) => {
-      let comparison = 0;
-      if (sortField === 'title') {
-        comparison = a.project.title.localeCompare(b.project.title);
-      } else if (sortField === 'state') {
-        comparison = a.flowState.localeCompare(b.flowState);
-      }
-      return sortDirection === 'asc' ? comparison : -comparison;
-    });
-
     return filtered;
-  }, [projects, stateFilter, sortField, sortDirection]);
-
-  // Toggle sort direction when clicking the same column header
-  const handleSort = (field: SortField) => {
-    if (sortField === field) {
-      setSortDirection((prev) => (prev === 'asc' ? 'desc' : 'asc'));
-    } else {
-      setSortField(field);
-      setSortDirection('asc');
-    }
-  };
-
-  // Sort indicator icon
-  const sortIcon = (field: SortField) => {
-    if (sortField !== field) return 'ri-arrow-up-down-line';
-    return sortDirection === 'asc' ? 'ri-arrow-up-s-line' : 'ri-arrow-down-s-line';
-  };
+  }, [projects, stateFilter]);
 
   // ------- Loading state -------
   if (isLoading) {
     return (
-      <div className="px-8 lg:px-14 py-10">
+      <div className="px-8 lg:px-[var(--spacing-22,112px)] py-10">
         <div className="flex items-center justify-center py-24">
           <div className="flex flex-col items-center gap-4">
             <Spinner size="lg" />
-            <p className="text-muted-foreground">Loading projects...</p>
+            <p className="text-[var(--text-dark-secondary,rgba(255,255,255,0.7))]">Loading projects...</p>
           </div>
         </div>
       </div>
@@ -133,19 +96,19 @@ export default function ProjectsPage() {
   // ------- Error state -------
   if (isError) {
     return (
-      <div className="px-8 lg:px-14 py-10">
+      <div className="px-8 lg:px-[var(--spacing-22,112px)] py-10">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-foreground mb-2">Projects</h1>
+          <h1 className="text-3xl font-bold text-[var(--text-dark-primary,#f5f5f5)] mb-2">Projects</h1>
         </div>
         <Card className="max-w-2xl mx-auto">
           <CardContent className="p-8 text-center">
             <div className="w-14 h-14 mx-auto mb-4 rounded-full bg-red-500/15 flex items-center justify-center">
               <i className="ri-error-warning-line text-2xl text-red-400" />
             </div>
-            <h2 className="text-xl font-semibold text-foreground mb-2">
+            <h2 className="text-xl font-semibold text-[var(--text-dark-primary,#f5f5f5)] mb-2">
               Failed to load projects
             </h2>
-            <p className="text-muted-foreground mb-4">
+            <p className="text-[var(--text-dark-secondary,rgba(255,255,255,0.7))] mb-4">
               {error?.message || 'An unexpected error occurred.'}
             </p>
             <Button variant="outline" onClick={() => window.location.reload()}>
@@ -160,7 +123,7 @@ export default function ProjectsPage() {
   // ------- Empty state (no projects at all) -------
   if (!projects || projects.length === 0) {
     return (
-      <div className="px-8 lg:px-14 py-10">
+      <div className="px-8 lg:px-[var(--spacing-22,112px)] py-10">
         <PageHeader
           isClient={isClient}
           onNewProject={() => navigate('/projects/new')}
@@ -188,129 +151,105 @@ export default function ProjectsPage() {
 
   // ------- Main projects list -------
   return (
-    <div className="px-8 lg:px-14 py-10">
-      <PageHeader
-        isClient={isClient}
-        onNewProject={() => navigate('/projects/new')}
-      />
-
-      {/* Filters */}
-      <div className="mb-6 flex flex-col sm:flex-row sm:items-center gap-3">
-        <div className="flex items-center gap-2">
-          <label htmlFor="state-filter" className="text-sm text-muted-foreground">
-            Filter by state:
-          </label>
-          <select
-            id="state-filter"
-            value={stateFilter}
-            onChange={(e) =>
-              setStateFilter(e.target.value as 'all' | ProjectStateValue)
-            }
-            className="h-9 rounded-md border border-input bg-background px-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
-          >
-            {FILTER_OPTIONS.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <span className="text-sm text-muted-foreground ml-auto">
-          {processedProjects.length} of {projects.length} project
-          {projects.length === 1 ? '' : 's'}
-        </span>
-      </div>
-
-      {/* Empty filtered results */}
-      {processedProjects.length === 0 ? (
-        <div className="py-12 text-center">
-          <p className="text-muted-foreground">
-            No projects match the selected filter.
-          </p>
-          <Button
-            variant="ghost"
-            className="mt-3"
-            onClick={() => setStateFilter('all')}
-          >
-            Clear Filter
-          </Button>
-        </div>
-      ) : (
-        <>
-          {/* Desktop table view */}
-          <div className="hidden lg:block">
-            <div className="rounded-lg border border-border overflow-hidden">
-              <table className="w-full">
-                <thead>
-                  <tr className="border-b border-border bg-card">
-                    <th className="text-left px-4 py-3">
-                      <button
-                        type="button"
-                        className="flex items-center gap-1 text-sm font-medium text-muted-foreground hover:text-foreground"
-                        onClick={() => handleSort('title')}
-                      >
-                        Title
-                        <i className={`${sortIcon('title')} text-xs`} />
-                      </button>
-                    </th>
-                    <th className="text-left px-4 py-3">
-                      <button
-                        type="button"
-                        className="flex items-center gap-1 text-sm font-medium text-muted-foreground hover:text-foreground"
-                        onClick={() => handleSort('state')}
-                      >
-                        State
-                        <i className={`${sortIcon('state')} text-xs`} />
-                      </button>
-                    </th>
-                    <th className="text-left px-4 py-3 text-sm font-medium text-muted-foreground">
-                      {isClient ? 'Consultant' : 'Client'}
-                    </th>
-                    <th className="text-left px-4 py-3 text-sm font-medium text-muted-foreground">
-                      Budget
-                    </th>
-                    <th className="text-left px-4 py-3 text-sm font-medium text-muted-foreground">
-                      Delivery Time
-                    </th>
-                    <th className="text-right px-4 py-3 text-sm font-medium text-muted-foreground">
-                      Actions
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {processedProjects.map(({ project }) => (
-                    <ProjectTableRow
-                      key={project.id}
-                      project={project}
-                      isClient={isClient}
-                      onClick={() => navigate(`/projects/${project.id}`)}
-                    />
-                  ))}
-                </tbody>
-              </table>
-            </div>
+    <div className="min-h-screen bg-[var(--base-surface-1,#141414)]">
+      {/* Header section */}
+      <div className="bg-[var(--base-surface-2,#231f1f)] border-b border-[var(--base-border,#3d3d3d)] px-8 lg:px-[var(--spacing-22,112px)] pt-[var(--spacing-12,32px)] pb-[var(--spacing-8,16px)]">
+        <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
+          {/* Left column: Title + subtitle + learn more link */}
+          <div className="flex-1">
+            <h1 className="text-[30px] font-bold leading-[42px] text-[var(--text-dark-primary,#f5f5f5)] mb-1" style={{ fontFamily: 'Inter' }}>
+              Projects
+            </h1>
+            <p className="text-base text-[var(--text-dark-secondary,rgba(255,255,255,0.7))] mb-2" style={{ fontFamily: 'Inter' }}>
+              Find out the progress of all your projects
+            </p>
+            <a
+              href="#"
+              className="inline-flex items-center gap-1 text-base font-semibold text-[var(--state-brand-active,#36d399)] hover:underline"
+              style={{ fontFamily: 'Inter' }}
+            >
+              Learn more about projects
+              <i className="ri-arrow-right-s-line" />
+            </a>
           </div>
 
-          {/* Mobile card view */}
-          <div className="lg:hidden grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {/* Right: New Project button */}
+          {isClient && (
+            <button
+              onClick={() => navigate('/projects/new')}
+              className="flex items-center justify-center gap-2 h-11 px-6 bg-[var(--state-brand-active,#36d399)] rounded-[var(--radi-6,12px)] border border-[var(--colors-alpha-dark-200,rgba(255,255,255,0.12))] hover:shadow-lg transition-shadow"
+            >
+              <i className="ri-add-line text-lg text-[var(--text-light-primary,#141414)]" />
+              <span className="text-lg font-semibold text-[var(--text-light-primary,#141414)]" style={{ fontFamily: 'Inter' }}>
+                New Project
+              </span>
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* Content area */}
+      <div className="px-8 lg:px-[var(--spacing-22,112px)] py-10">
+        {/* Filters */}
+        <div className="mb-6 flex flex-col sm:flex-row sm:items-center gap-3">
+          <div className="flex items-center gap-2">
+            <label htmlFor="state-filter" className="text-sm text-[var(--text-dark-secondary,rgba(255,255,255,0.7))]">
+              Filter by state:
+            </label>
+            <select
+              id="state-filter"
+              value={stateFilter}
+              onChange={(e) =>
+                setStateFilter(e.target.value as 'all' | ProjectStateValue)
+              }
+              className="h-9 rounded-md border border-[var(--base-border,#3d3d3d)] bg-[var(--base-surface-2,#231f1f)] px-3 text-sm text-[var(--text-dark-primary,#f5f5f5)] focus:outline-none focus:ring-2 focus:ring-[var(--state-brand-active,#36d399)]"
+            >
+              {FILTER_OPTIONS.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <span className="text-sm text-[var(--text-dark-secondary,rgba(255,255,255,0.7))] ml-auto">
+            {processedProjects.length} of {projects.length} project
+            {projects.length === 1 ? '' : 's'}
+          </span>
+        </div>
+
+        {/* Empty filtered results */}
+        {processedProjects.length === 0 ? (
+          <div className="py-12 text-center">
+            <p className="text-[var(--text-dark-secondary,rgba(255,255,255,0.7))]">
+              No projects match the selected filter.
+            </p>
+            <Button
+              variant="ghost"
+              className="mt-3"
+              onClick={() => setStateFilter('all')}
+            >
+              Clear Filter
+            </Button>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
             {processedProjects.map(({ project }) => (
-              <ProjectCardMobile
+              <ProjectCardWidget
                 key={project.id}
                 project={project}
-                isClient={isClient}
                 onClick={() => navigate(`/projects/${project.id}`)}
               />
             ))}
           </div>
-        </>
-      )}
+        )}
+      </div>
     </div>
   );
 }
 
 // ---------------------------------------------------------------------------
-// Page Header
+// Page Header (for empty state only)
 // ---------------------------------------------------------------------------
 
 interface PageHeaderProps {
@@ -322,8 +261,8 @@ function PageHeader({ isClient, onNewProject }: PageHeaderProps) {
   return (
     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8 gap-4">
       <div>
-        <h1 className="text-3xl font-bold text-foreground mb-1">Projects</h1>
-        <p className="text-muted-foreground">Browse and manage your projects</p>
+        <h1 className="text-3xl font-bold text-[var(--text-dark-primary,#f5f5f5)] mb-1">Projects</h1>
+        <p className="text-[var(--text-dark-secondary,rgba(255,255,255,0.7))]">Browse and manage your projects</p>
       </div>
 
       <div className="flex items-center gap-3">
@@ -339,128 +278,114 @@ function PageHeader({ isClient, onNewProject }: PageHeaderProps) {
 }
 
 // ---------------------------------------------------------------------------
-// Project Table Row (Desktop)
+// Project Card Widget (Figma CardWidget pattern)
 // ---------------------------------------------------------------------------
 
-interface ProjectTableRowProps {
+interface ProjectCardWidgetProps {
   project: Project;
-  isClient: boolean;
   onClick: () => void;
 }
 
-function ProjectTableRow({ project, isClient, onClick }: ProjectTableRowProps) {
-  const personName = isClient
-    ? project.consultant?.name ?? 'Unassigned'
-    : project.client?.name ?? 'No client';
-
-  const budgetDisplay =
-    typeof project.budget === 'number'
-      ? `Budget tier ${project.budget}`
-      : project.budget ?? '--';
-
-  const deliveryTimeDisplay =
-    typeof project.deliveryTime === 'number'
-      ? `Delivery tier ${project.deliveryTime}`
-      : project.deliveryTime ?? '--';
+function ProjectCardWidget({ project, onClick }: ProjectCardWidgetProps) {
+  // Calculate progress percentage (mock data for now)
+  const progress = calculateProjectProgress(project);
+  const pendingTasksCount = calculatePendingTasks(project);
 
   return (
-    <tr
-      className="border-b border-border last:border-b-0 hover:bg-accent/50 cursor-pointer transition-colors"
+    <div
+      className="bg-[var(--base-surface-2,#231f1f)] border border-[var(--base-border,#3d3d3d)] rounded-[var(--radi-6,12px)] p-[var(--spacing-10,24px)] cursor-pointer hover:border-[var(--state-brand-active,#36d399)]/40 transition-colors shadow-[0.5px_0.5px_3px_rgba(255,255,255,0.08)]"
       onClick={onClick}
     >
-      <td className="px-4 py-3">
-        <span className="text-sm font-medium text-foreground line-clamp-1">
-          {project.title}
-        </span>
-      </td>
-      <td className="px-4 py-3">
-        <ProjectStateBadge project={project} />
-      </td>
-      <td className="px-4 py-3">
-        <span className="text-sm text-muted-foreground">{personName}</span>
-      </td>
-      <td className="px-4 py-3">
-        <span className="text-sm text-muted-foreground">{budgetDisplay}</span>
-      </td>
-      <td className="px-4 py-3">
-        <span className="text-sm text-muted-foreground">
-          {deliveryTimeDisplay}
-        </span>
-      </td>
-      <td className="px-4 py-3 text-right">
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={(e) => {
-            e.stopPropagation();
-            onClick();
-          }}
-        >
-          View
-          <i className="ri-arrow-right-s-line ml-1" />
-        </Button>
-      </td>
-    </tr>
+      {/* Top row: badges */}
+      <div className="flex items-center justify-between mb-4">
+        {/* Left badge: pending tasks (success style) */}
+        {pendingTasksCount > 0 && (
+          <span className="inline-flex items-center px-3 py-1 bg-[var(--state-success-active,#85efac)] text-[var(--text-light-primary,#141414)] text-xs font-medium rounded-[var(--radi-6,12px)]" style={{ fontFamily: 'Inter' }}>
+            {pendingTasksCount} Pending Task{pendingTasksCount !== 1 ? 's' : ''}
+          </span>
+        )}
+
+        {/* Right badge: state */}
+        <div className="ml-auto">
+          <ProjectStateBadge project={project} />
+        </div>
+      </div>
+
+      {/* Title */}
+      <h3 className="text-2xl font-semibold leading-[38px] text-[var(--text-dark-primary,#f5f5f5)] mb-4 line-clamp-2" style={{ fontFamily: 'Inter' }}>
+        {project.title}
+      </h3>
+
+      {/* Progress segmented bar */}
+      <ProgressSegmented percentage={progress} />
+    </div>
   );
 }
 
 // ---------------------------------------------------------------------------
-// Project Card (Mobile)
+// Progress Segmented Component
 // ---------------------------------------------------------------------------
 
-interface ProjectCardMobileProps {
-  project: Project;
-  isClient: boolean;
-  onClick: () => void;
+interface ProgressSegmentedProps {
+  percentage: number;
 }
 
-function ProjectCardMobile({ project, isClient, onClick }: ProjectCardMobileProps) {
-  const personName = isClient
-    ? project.consultant?.name ?? 'Unassigned'
-    : project.client?.name ?? 'No client';
-
-  const budgetDisplay =
-    typeof project.budget === 'number'
-      ? `Budget tier ${project.budget}`
-      : project.budget ?? '--';
-
-  const deliveryTimeDisplay =
-    typeof project.deliveryTime === 'number'
-      ? `Delivery tier ${project.deliveryTime}`
-      : project.deliveryTime ?? '--';
+function ProgressSegmented({ percentage }: ProgressSegmentedProps) {
+  const segments = 10;
+  const filledSegments = Math.round((percentage / 100) * segments);
 
   return (
-    <Card
-      className="cursor-pointer hover:border-primary/40 transition-colors group"
-      onClick={onClick}
-    >
-      <CardContent className="p-5">
-        {/* Title and badge */}
-        <div className="flex items-start justify-between gap-3 mb-3">
-          <h3 className="text-base font-semibold text-foreground leading-snug line-clamp-2 group-hover:text-primary transition-colors">
-            {project.title}
-          </h3>
-          <ProjectStateBadge project={project} className="shrink-0" />
-        </div>
-
-        {/* Person */}
-        <div className="flex items-center gap-1.5 mb-3 text-sm text-muted-foreground">
-          <i className={isClient ? 'ri-user-star-line' : 'ri-user-line'} />
-          <span className="truncate">{personName}</span>
-        </div>
-
-        {/* Metadata */}
-        <div className="flex items-center gap-4 text-sm text-muted-foreground">
-          <div className="flex items-center gap-1.5">
-            <i className="ri-money-dollar-circle-line" />
-            <span>{budgetDisplay}</span>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <i className="ri-time-line" />
-            <span>{deliveryTimeDisplay}</span>
-          </div>
-        </div>
-      </CardContent>
-    </Card>
+    <div className="space-y-2">
+      <div className="flex gap-1">
+        {Array.from({ length: segments }).map((_, index) => (
+          <div
+            key={index}
+            className={`h-2 flex-1 rounded-full ${
+              index < filledSegments
+                ? 'bg-[var(--state-brand-active,#36d399)]'
+                : 'bg-[var(--base-fill-2,#3d3d3d)]'
+            }`}
+          />
+        ))}
+      </div>
+      <div className="flex justify-end">
+        <span className="text-xs font-medium text-[var(--text-dark-secondary,rgba(255,255,255,0.7))]" style={{ fontFamily: 'Inter' }}>
+          {percentage}%
+        </span>
+      </div>
+    </div>
   );
+}
+
+// ---------------------------------------------------------------------------
+// Helper functions
+// ---------------------------------------------------------------------------
+
+/**
+ * Calculate project progress percentage based on milestones.
+ * Returns a value between 0 and 100.
+ */
+function calculateProjectProgress(project: Project): number {
+  if (!project.milestones || project.milestones.length === 0) {
+    return 0;
+  }
+
+  const completedMilestones = project.milestones.filter(
+    (m) => m.state === 'completed' || m.state === 'paid'
+  ).length;
+
+  return Math.round((completedMilestones / project.milestones.length) * 100);
+}
+
+/**
+ * Calculate the number of pending tasks/milestones.
+ */
+function calculatePendingTasks(project: Project): number {
+  if (!project.milestones || project.milestones.length === 0) {
+    return 0;
+  }
+
+  return project.milestones.filter(
+    (m) => m.state === 'task_in_progress' || m.state === 'in_review'
+  ).length;
 }

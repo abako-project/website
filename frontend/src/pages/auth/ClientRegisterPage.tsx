@@ -1,15 +1,12 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@components/ui/Card';
-import { Button } from '@components/ui/Button';
-import { Input } from '@components/ui/Input';
 import { useRegister } from '@hooks/useAuth';
 import { performWebAuthnRegister } from '@lib/virto-sdk';
 
 /**
  * Client Registration Page
  *
- * Mirrors backend/views/clients/register.ejs
+ * Figma design: Clean form with email and name inputs and submit button.
  * Collects email + name, performs WebAuthn registration via Virto SDK,
  * then sends preparedData to the backend API for account creation.
  */
@@ -60,79 +57,171 @@ export default function ClientRegisterPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background p-4">
-      <div className="w-full max-w-md">
-        <Card>
-          <CardHeader className="space-y-1">
-            <CardTitle className="text-2xl">Create Client Account</CardTitle>
-            <CardDescription>Enter your email below to create your account</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <Input
-                type="email"
-                label="Email"
-                name="email"
-                placeholder="your-email@example.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                disabled={isRegistering}
-              />
+    <div className="w-full">
+      <div className="mb-6">
+        <h1
+          className="font-bold mb-2"
+          style={{
+            fontSize: '24px',
+            color: 'var(--text-dark-primary, #f5f5f5)',
+          }}
+        >
+          Create Client Account
+        </h1>
+        <p
+          style={{
+            fontSize: '14px',
+            color: 'var(--text-dark-secondary, rgba(255,255,255,0.7))',
+          }}
+        >
+          Enter your email below to create your account
+        </p>
+      </div>
 
-              <Input
-                type="text"
-                label="Username"
-                name="name"
-                placeholder="Name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                required
-                disabled={isRegistering}
-              />
+      <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Email Input */}
+        <div>
+          <label
+            htmlFor="email"
+            className="block mb-2"
+            style={{
+              fontSize: '16px',
+              color: 'var(--text-dark-secondary, rgba(255,255,255,0.7))',
+            }}
+          >
+            Email
+          </label>
+          <input
+            id="email"
+            type="email"
+            name="email"
+            placeholder="your-email@example.com"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            disabled={isRegistering}
+            className="w-full font-medium"
+            style={{
+              height: '44px',
+              padding: '0 16px',
+              fontSize: '16px',
+              backgroundColor: 'var(--base-surface-1, #141414)',
+              border: '1px solid var(--base-border, #3d3d3d)',
+              borderRadius: '12px',
+              color: 'var(--text-dark-primary, #f5f5f5)',
+              outline: 'none',
+            }}
+          />
+        </div>
 
-              {error && (
-                <div className="rounded-md bg-red-500/15 border border-red-500/30 p-3">
-                  <p className="text-sm text-red-400">{error}</p>
-                </div>
-              )}
+        {/* Name Input */}
+        <div>
+          <label
+            htmlFor="name"
+            className="block mb-2"
+            style={{
+              fontSize: '16px',
+              color: 'var(--text-dark-secondary, rgba(255,255,255,0.7))',
+            }}
+          >
+            Name
+          </label>
+          <input
+            id="name"
+            type="text"
+            name="name"
+            placeholder="Your Name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            required
+            disabled={isRegistering}
+            className="w-full font-medium"
+            style={{
+              height: '44px',
+              padding: '0 16px',
+              fontSize: '16px',
+              backgroundColor: 'var(--base-surface-1, #141414)',
+              border: '1px solid var(--base-border, #3d3d3d)',
+              borderRadius: '12px',
+              color: 'var(--text-dark-primary, #f5f5f5)',
+              outline: 'none',
+            }}
+          />
+        </div>
 
-              <Button type="submit" className="w-full" isLoading={isRegistering} disabled={isRegistering}>
-                {isRegistering ? 'Registering...' : 'Register'}
-              </Button>
+        {error && (
+          <div
+            className="p-3"
+            style={{
+              backgroundColor: 'rgba(239, 68, 68, 0.15)',
+              border: '1px solid rgba(239, 68, 68, 0.3)',
+              borderRadius: '12px',
+            }}
+          >
+            <p style={{ fontSize: '14px', color: '#ef4444' }}>{error}</p>
+          </div>
+        )}
 
-              {status && !error && (
-                <p className="text-center text-sm text-muted-foreground">
-                  {status}
-                </p>
-              )}
-            </form>
+        {/* Submit Button */}
+        <button
+          type="submit"
+          disabled={isRegistering}
+          className="w-full font-semibold transition-opacity hover:opacity-90 disabled:opacity-50"
+          style={{
+            height: '44px',
+            fontSize: '16px',
+            backgroundColor: 'var(--state-brand-active, #36d399)',
+            color: 'var(--text-light-primary, #141414)',
+            borderRadius: '12px',
+            border: 'none',
+            cursor: isRegistering ? 'not-allowed' : 'pointer',
+          }}
+        >
+          {isRegistering ? 'Registering...' : 'Register'}
+        </button>
 
-            <div className="mt-6 space-y-4">
-              <div className="relative">
-                <div className="absolute inset-0 flex items-center">
-                  <span className="w-full border-t" />
-                </div>
-                <div className="relative flex justify-center text-xs uppercase">
-                  <span className="bg-card px-2 text-muted-foreground">Or</span>
-                </div>
-              </div>
+        {status && !error && (
+          <p
+            className="text-center"
+            style={{
+              fontSize: '14px',
+              color: 'var(--text-dark-secondary, rgba(255,255,255,0.7))',
+            }}
+          >
+            {status}
+          </p>
+        )}
+      </form>
 
-              <div className="text-center text-sm">
-                <Link to="/register" className="text-muted-foreground hover:text-primary">
-                  Back to role selection
-                </Link>
-              </div>
+      <div className="mt-8 space-y-4">
+        <div className="text-center">
+          <Link
+            to="/register"
+            className="hover:underline"
+            style={{
+              fontSize: '14px',
+              color: 'var(--text-dark-secondary, rgba(255,255,255,0.7))',
+            }}
+          >
+            Back to role selection
+          </Link>
+        </div>
 
-              <div className="text-center text-sm">
-                <span className="text-muted-foreground">Already have an account? </span>
-                <Link to="/login/client" className="font-medium text-primary hover:underline">
-                  Log in
-                </Link>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+        <div className="text-center">
+          <span style={{ fontSize: '14px', color: 'var(--text-dark-secondary, rgba(255,255,255,0.7))' }}>
+            Already have an account?{' '}
+          </span>
+          <Link
+            to="/login/client"
+            className="font-medium hover:underline"
+            style={{
+              fontSize: '14px',
+              color: 'var(--state-brand-active, #36d399)',
+            }}
+          >
+            Log in
+          </Link>
+        </div>
       </div>
     </div>
   );

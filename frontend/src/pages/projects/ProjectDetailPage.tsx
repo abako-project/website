@@ -1,20 +1,17 @@
 /**
  * ProjectDetailPage - Single project detail view
  *
- * Displays the complete project information including:
+ * Displays the complete project information with tabbed navigation matching
+ * the Figma design (112:8790).
+ *
+ * Features:
  * - Project header with title, summary, state badge
+ * - TabsLine component for switching views (Details, Milestones, Activity)
  * - Client and consultant info
  * - Project scope: description, delivery time, budget, project type
  * - Milestones list with individual states
  * - Action panel based on project state and user role
  * - Scope builder for consultants when in scoping state
- *
- * Mirrors the EJS views:
- * - projects/showProjectInformation.ejs
- * - projects/headers/_project.ejs
- * - proposals/info/_bodyProposals.ejs
- * - milestones/info/_showMilestones.ejs
- * - projects/actions/body/_all.ejs
  */
 
 import { useState, useCallback } from 'react';
@@ -29,12 +26,15 @@ import { ScopeBuilder } from '@components/features/projects/ScopeBuilder';
 import { MilestoneList } from '@components/features/milestones/MilestoneList';
 import type { Project } from '@/types/index';
 
+type TabValue = 'details' | 'milestones' | 'activity';
+
 export default function ProjectDetailPage() {
   const { id } = useParams<{ id: string }>();
   const user = useAuthStore((state) => state.user);
   const { data, isLoading, error, refetch } = useProject(id);
 
   const [showScopeBuilder, setShowScopeBuilder] = useState(false);
+  const [activeTab, setActiveTab] = useState<TabValue>('details');
 
   const handleScopeBuilderShow = useCallback(() => {
     setShowScopeBuilder(true);
@@ -51,7 +51,7 @@ export default function ProjectDetailPage() {
       <div className="flex items-center justify-center min-h-[60vh]">
         <div className="flex flex-col items-center gap-4">
           <Spinner size="lg" />
-          <p className="text-[#9B9B9B]">Loading project...</p>
+          <p className="text-[var(--text-dark-secondary,rgba(255,255,255,0.7))]">Loading project...</p>
         </div>
       </div>
     );
@@ -60,25 +60,25 @@ export default function ProjectDetailPage() {
   // Error state
   if (error || !data) {
     return (
-      <div className="px-8 lg:px-14 py-10">
-        <div className="max-w-2xl mx-auto p-8 rounded-xl bg-[#231F1F] border border-red-500/30 text-center">
+      <div className="px-8 lg:px-[var(--spacing-22,112px)] py-10">
+        <div className="max-w-2xl mx-auto p-8 rounded-[var(--radi-6,12px)] bg-[var(--base-surface-2,#231f1f)] border border-red-500/30 text-center">
           <i className="ri-error-warning-line text-4xl text-red-400 mb-3 block" />
-          <h2 className="text-xl font-bold text-[#F5F5F5] mb-2">
+          <h2 className="text-xl font-bold text-[var(--text-dark-primary,#f5f5f5)] mb-2">
             Failed to load project
           </h2>
-          <p className="text-[#9B9B9B] mb-4">
+          <p className="text-[var(--text-dark-secondary,rgba(255,255,255,0.7))] mb-4">
             {error?.message ?? 'Project not found or you do not have access.'}
           </p>
           <div className="flex justify-center gap-3">
             <button
               onClick={() => void refetch()}
-              className="px-4 py-2 rounded-lg bg-[#36D399] text-[#141414] font-medium hover:shadow-lg transition-shadow"
+              className="px-4 py-2 rounded-[var(--radi-6,12px)] bg-[var(--state-brand-active,#36d399)] text-[var(--text-light-primary,#141414)] font-medium hover:shadow-lg transition-shadow"
             >
               Retry
             </button>
             <Link
               to="/projects"
-              className="px-4 py-2 rounded-lg border border-[#3D3D3D] text-[#9B9B9B] hover:border-[#555] transition-colors"
+              className="px-4 py-2 rounded-[var(--radi-6,12px)] border border-[var(--base-border,#3d3d3d)] text-[var(--text-dark-secondary,rgba(255,255,255,0.7))] hover:border-[#555] transition-colors"
             >
               Back to Projects
             </Link>
@@ -100,14 +100,14 @@ export default function ProjectDetailPage() {
       projectState === ProjectState.ScopeRejected);
 
   return (
-    <div className="px-8 lg:px-14 py-10">
+    <div className="min-h-screen bg-[var(--base-surface-1,#141414)] px-8 lg:px-[var(--spacing-22,112px)] py-10">
       {/* Breadcrumb */}
-      <nav className="mb-6 text-sm text-[#9B9B9B]">
-        <Link to="/projects" className="hover:text-[#F5F5F5] transition-colors">
+      <nav className="mb-6 text-sm text-[var(--text-dark-secondary,rgba(255,255,255,0.7))]">
+        <Link to="/projects" className="hover:text-[var(--text-dark-primary,#f5f5f5)] transition-colors">
           Projects
         </Link>
         <span className="mx-2">/</span>
-        <span className="text-[#F5F5F5]">{project.title}</span>
+        <span className="text-[var(--text-dark-primary,#f5f5f5)]">{project.title}</span>
       </nav>
 
       {/* Project Header */}
@@ -118,38 +118,60 @@ export default function ProjectDetailPage() {
         allProjectTypes={allProjectTypes}
       />
 
+      {/* TabsLine for navigation */}
+      <div className="mt-6 mb-8">
+        <TabsLine activeTab={activeTab} onTabChange={setActiveTab} />
+      </div>
+
       {/* Main content grid */}
-      <div className="mt-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Left column: Project info + Milestones */}
         <div className="lg:col-span-2 space-y-8">
-          {/* Project Scope / Description */}
-          <ProjectScopeInfo
-            project={project}
-            allBudgets={allBudgets}
-            allDeliveryTimes={allDeliveryTimes}
-            allProjectTypes={allProjectTypes}
-          />
+          {/* Details Tab Content */}
+          {activeTab === 'details' && (
+            <>
+              {/* Project Scope / Description */}
+              <ProjectScopeInfo
+                project={project}
+                allBudgets={allBudgets}
+                allDeliveryTimes={allDeliveryTimes}
+                allProjectTypes={allProjectTypes}
+              />
 
-          {/* Scope Builder (shown inline when active) */}
-          {canShowScopeBuilder && showScopeBuilder && (
-            <ScopeBuilder
-              projectId={project.id}
-              existingMilestones={
-                project.milestones.length > 0
-                  ? project.milestones
-                  : undefined
-              }
-              onSubmitted={handleScopeSubmitted}
-              onCancel={() => setShowScopeBuilder(false)}
-            />
+              {/* Scope Builder (shown inline when active) */}
+              {canShowScopeBuilder && showScopeBuilder && (
+                <ScopeBuilder
+                  projectId={project.id}
+                  existingMilestones={
+                    project.milestones.length > 0
+                      ? project.milestones
+                      : undefined
+                  }
+                  onSubmitted={handleScopeSubmitted}
+                  onCancel={() => setShowScopeBuilder(false)}
+                />
+              )}
+            </>
           )}
 
-          {/* Milestones */}
-          {project.milestones.length > 0 && (
+          {/* Milestones Tab Content */}
+          {activeTab === 'milestones' && project.milestones.length > 0 && (
             <MilestoneList
               milestones={project.milestones}
               allDeliveryTimes={allDeliveryTimes}
             />
+          )}
+
+          {/* Activity Tab Content */}
+          {activeTab === 'activity' && (
+            <div className="rounded-[var(--radi-6,12px)] border border-[var(--base-border,#3d3d3d)] bg-[var(--base-surface-2,#231f1f)] p-6">
+              <h3 className="text-lg font-semibold text-[var(--text-dark-primary,#f5f5f5)] mb-4">
+                Activity
+              </h3>
+              <p className="text-sm text-[var(--text-dark-secondary,rgba(255,255,255,0.7))]">
+                Activity log coming soon...
+              </p>
+            </div>
           )}
         </div>
 
@@ -175,6 +197,46 @@ export default function ProjectDetailPage() {
 // ---------------------------------------------------------------------------
 
 /**
+ * TabsLine - Tabbed navigation component matching Figma design.
+ */
+interface TabsLineProps {
+  activeTab: TabValue;
+  onTabChange: (tab: TabValue) => void;
+}
+
+function TabsLine({ activeTab, onTabChange }: TabsLineProps) {
+  const tabs: Array<{ value: TabValue; label: string }> = [
+    { value: 'details', label: 'Details' },
+    { value: 'milestones', label: 'Milestones' },
+    { value: 'activity', label: 'Activity' },
+  ];
+
+  return (
+    <div className="border-b border-[var(--base-border,#3d3d3d)]">
+      <div className="flex gap-8">
+        {tabs.map((tab) => (
+          <button
+            key={tab.value}
+            onClick={() => onTabChange(tab.value)}
+            className={`relative pb-3 px-1 text-sm font-medium transition-colors ${
+              activeTab === tab.value
+                ? 'text-[var(--state-brand-active,#36d399)]'
+                : 'text-[var(--text-dark-secondary,rgba(255,255,255,0.7))] hover:text-[var(--text-dark-primary,#f5f5f5)]'
+            }`}
+            style={{ fontFamily: 'Inter' }}
+          >
+            {tab.label}
+            {activeTab === tab.value && (
+              <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[var(--state-brand-active,#36d399)]" />
+            )}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/**
  * ProjectHeader - Title, summary, client info, state badge.
  * Mirrors projects/headers/_project.ejs.
  */
@@ -190,18 +252,18 @@ function ProjectHeader({
   allProjectTypes: Array<{ id: number; description: string }>;
 }) {
   return (
-    <div className="rounded-xl border border-[#3D3D3D] bg-[#231F1F] p-6">
+    <div className="rounded-[var(--radi-6,12px)] border border-[var(--base-border,#3d3d3d)] bg-[var(--base-surface-2,#231f1f)] p-[var(--spacing-10,24px)]">
       <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
         {/* Left: Title + summary */}
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-3 flex-wrap mb-2">
-            <h1 className="text-2xl font-bold text-[#F5F5F5]">
+            <h1 className="text-2xl font-bold text-[var(--text-dark-primary,#f5f5f5)]" style={{ fontFamily: 'Inter' }}>
               {project.title}
             </h1>
             <ProjectStateBadge project={project} />
           </div>
           {project.summary && (
-            <p className="text-sm text-[#9B9B9B] max-w-2xl">
+            <p className="text-sm text-[var(--text-dark-secondary,rgba(255,255,255,0.7))] max-w-2xl" style={{ fontFamily: 'Inter' }}>
               {project.summary}
             </p>
           )}
@@ -211,7 +273,7 @@ function ProjectHeader({
         {project.client && (
           <div className="flex items-center gap-3 shrink-0">
             <img
-              className="h-10 w-10 rounded-full object-cover border border-[#3D3D3D]"
+              className="h-10 w-10 rounded-full object-cover border border-[var(--base-border,#3d3d3d)]"
               src={`/clients/${project.clientId}/attachment`}
               alt={project.client.name}
               onError={(e) => {
@@ -219,11 +281,11 @@ function ProjectHeader({
               }}
             />
             <div>
-              <p className="text-sm font-medium text-[#F5F5F5]">
+              <p className="text-sm font-medium text-[var(--text-dark-primary,#f5f5f5)]" style={{ fontFamily: 'Inter' }}>
                 {project.client.name}
               </p>
               {project.client.website && (
-                <p className="text-xs text-[#9B9B9B] flex items-center gap-1">
+                <p className="text-xs text-[var(--text-dark-secondary,rgba(255,255,255,0.7))] flex items-center gap-1" style={{ fontFamily: 'Inter' }}>
                   <i className="ri-global-fill" />
                   {project.client.website}
                 </p>
@@ -235,9 +297,9 @@ function ProjectHeader({
 
       {/* Consultant info (if assigned) */}
       {project.consultant && (
-        <div className="mt-4 pt-4 border-t border-[#3D3D3D] flex items-center gap-3">
+        <div className="mt-4 pt-4 border-t border-[var(--base-border,#3d3d3d)] flex items-center gap-3">
           <img
-            className="h-8 w-8 rounded-full object-cover border border-[#3D3D3D]"
+            className="h-8 w-8 rounded-full object-cover border border-[var(--base-border,#3d3d3d)]"
             src={`/developers/${project.consultantId}/attachment`}
             alt={project.consultant.name}
             onError={(e) => {
@@ -245,8 +307,8 @@ function ProjectHeader({
             }}
           />
           <div>
-            <p className="text-xs text-[#9B9B9B]">Project Consultant</p>
-            <p className="text-sm font-medium text-[#F5F5F5]">
+            <p className="text-xs text-[var(--text-dark-secondary,rgba(255,255,255,0.7))]" style={{ fontFamily: 'Inter' }}>Project Consultant</p>
+            <p className="text-sm font-medium text-[var(--text-dark-primary,#f5f5f5)]" style={{ fontFamily: 'Inter' }}>
               {project.consultant.name}
             </p>
           </div>
@@ -283,24 +345,24 @@ function ProjectScopeInfo({
   );
 
   return (
-    <div className="rounded-xl border border-[#3D3D3D] bg-[#231F1F] p-6">
-      <h3 className="text-lg font-semibold text-[#F5F5F5] mb-4">
+    <div className="rounded-[var(--radi-6,12px)] border border-[var(--base-border,#3d3d3d)] bg-[var(--base-surface-2,#231f1f)] p-[var(--spacing-10,24px)]">
+      <h3 className="text-lg font-semibold text-[var(--text-dark-primary,#f5f5f5)] mb-4" style={{ fontFamily: 'Inter' }}>
         Project Scope
       </h3>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
         {/* Delivery Time */}
         <div>
-          <h6 className="text-xs font-medium text-[#9B9B9B] uppercase tracking-wider mb-1">
+          <h6 className="text-xs font-medium text-[var(--text-dark-secondary,rgba(255,255,255,0.7))] uppercase tracking-wider mb-1" style={{ fontFamily: 'Inter' }}>
             Delivery Time
           </h6>
-          <p className="text-sm text-[#F5F5F5]">
+          <p className="text-sm text-[var(--text-dark-primary,#f5f5f5)]" style={{ fontFamily: 'Inter' }}>
             {deliveryTimeLabel}
           </p>
           {project.deliveryTime !== undefined &&
             String(project.deliveryTime) === '3' &&
             project.deliveryDate && (
-              <p className="text-xs text-[#9B9B9B] mt-0.5">
+              <p className="text-xs text-[var(--text-dark-secondary,rgba(255,255,255,0.7))] mt-0.5" style={{ fontFamily: 'Inter' }}>
                 ({new Date(project.deliveryDate).toLocaleDateString()})
               </p>
             )}
@@ -308,31 +370,32 @@ function ProjectScopeInfo({
 
         {/* Budget */}
         <div>
-          <h6 className="text-xs font-medium text-[#9B9B9B] uppercase tracking-wider mb-1">
+          <h6 className="text-xs font-medium text-[var(--text-dark-secondary,rgba(255,255,255,0.7))] uppercase tracking-wider mb-1" style={{ fontFamily: 'Inter' }}>
             Total Available Budget
           </h6>
-          <p className="text-sm text-[#F5F5F5]">{budgetLabel}</p>
+          <p className="text-sm text-[var(--text-dark-primary,#f5f5f5)]" style={{ fontFamily: 'Inter' }}>{budgetLabel}</p>
         </div>
 
         {/* Project Type */}
         <div>
-          <h6 className="text-xs font-medium text-[#9B9B9B] uppercase tracking-wider mb-1">
+          <h6 className="text-xs font-medium text-[var(--text-dark-secondary,rgba(255,255,255,0.7))] uppercase tracking-wider mb-1" style={{ fontFamily: 'Inter' }}>
             Project Type
           </h6>
-          <p className="text-sm text-[#F5F5F5]">{projectTypeLabel}</p>
+          <p className="text-sm text-[var(--text-dark-primary,#f5f5f5)]" style={{ fontFamily: 'Inter' }}>{projectTypeLabel}</p>
         </div>
 
         {/* URL */}
         {project.url && (
           <div>
-            <h6 className="text-xs font-medium text-[#9B9B9B] uppercase tracking-wider mb-1">
+            <h6 className="text-xs font-medium text-[var(--text-dark-secondary,rgba(255,255,255,0.7))] uppercase tracking-wider mb-1" style={{ fontFamily: 'Inter' }}>
               Project URL
             </h6>
             <a
               href={project.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-sm text-[#36D399] hover:underline break-all"
+              className="text-sm text-[var(--state-brand-active,#36d399)] hover:underline break-all"
+              style={{ fontFamily: 'Inter' }}
             >
               {project.url}
             </a>
@@ -343,10 +406,10 @@ function ProjectScopeInfo({
       {/* Description */}
       {project.description && (
         <div>
-          <h6 className="text-xs font-medium text-[#9B9B9B] uppercase tracking-wider mb-1">
+          <h6 className="text-xs font-medium text-[var(--text-dark-secondary,rgba(255,255,255,0.7))] uppercase tracking-wider mb-1" style={{ fontFamily: 'Inter' }}>
             Project Description
           </h6>
-          <p className="text-sm text-[#C0C0C0] leading-relaxed whitespace-pre-wrap">
+          <p className="text-sm text-[var(--text-dark-primary,#f5f5f5)] leading-relaxed whitespace-pre-wrap" style={{ fontFamily: 'Inter' }}>
             {project.description}
           </p>
         </div>
@@ -355,10 +418,10 @@ function ProjectScopeInfo({
       {/* Objectives */}
       {project.objectives.length > 0 && (
         <div className="mt-6">
-          <h6 className="text-xs font-medium text-[#9B9B9B] uppercase tracking-wider mb-2">
+          <h6 className="text-xs font-medium text-[var(--text-dark-secondary,rgba(255,255,255,0.7))] uppercase tracking-wider mb-2" style={{ fontFamily: 'Inter' }}>
             Key Objectives
           </h6>
-          <ul className="list-disc list-inside space-y-1 text-sm text-[#C0C0C0]">
+          <ul className="list-disc list-inside space-y-1 text-sm text-[var(--text-dark-primary,#f5f5f5)]" style={{ fontFamily: 'Inter' }}>
             {project.objectives.map((obj, i) => (
               <li key={i}>{obj}</li>
             ))}
@@ -369,10 +432,10 @@ function ProjectScopeInfo({
       {/* Constraints */}
       {project.constraints.length > 0 && (
         <div className="mt-6">
-          <h6 className="text-xs font-medium text-[#9B9B9B] uppercase tracking-wider mb-2">
+          <h6 className="text-xs font-medium text-[var(--text-dark-secondary,rgba(255,255,255,0.7))] uppercase tracking-wider mb-2" style={{ fontFamily: 'Inter' }}>
             Constraints
           </h6>
-          <ul className="list-disc list-inside space-y-1 text-sm text-[#C0C0C0]">
+          <ul className="list-disc list-inside space-y-1 text-sm text-[var(--text-dark-primary,#f5f5f5)]" style={{ fontFamily: 'Inter' }}>
             {project.constraints.map((c, i) => (
               <li key={i}>{c}</li>
             ))}

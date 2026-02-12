@@ -1,15 +1,27 @@
 import { NavLink } from 'react-router-dom';
 import { useAuthStore } from '@stores/authStore';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { cn } from '@lib/cn';
 
 /**
- * Sidebar - Main navigation sidebar
+ * Sidebar - Left navigation sidebar matching Figma design
  *
- * Displays navigation links based on user role:
- * - Client: Dashboard, My Projects, Profile
- * - Developer: Dashboard, Projects, Profile
+ * Figma specs:
+ * - w-[200px], full height
+ * - bg-[var(--base-surface-2,#231f1f)]
+ * - border-right: 1px solid var(--base-border,#3d3d3d)
+ * - Padding: 16px
  *
- * Matches the styling from components/_mainSidebar.sass
+ * TOP: Logo + Notification bell with indicator
+ * NAV MENU:
+ *   - Each item: flex row, gap-12px, px-16px, py-12px, rounded-12px
+ *   - Active: bg-[var(--base-fill-1,#333)], text-[var(--state-brand-active,#36d399)]
+ *   - Inactive: text-[var(--text-dark-primary,#f5f5f5)], hover bg-[var(--base-fill-1)]
+ *   - Icon (24px) + Label text (Inter Medium, 16px)
+ *
+ * BOTTOM: User avatar + name + role with online dot
+ *
+ * Matches Figma component from Team Definition screen (1039:10096)
  */
 export function Sidebar() {
   const user = useAuthStore((state) => state.user);
@@ -17,13 +29,16 @@ export function Sidebar() {
 
   const isClient = !!user?.clientId;
   const isDeveloper = !!user?.developerId;
+  const role = isClient ? 'Client' : isDeveloper ? 'Developer' : 'User';
 
+  // Navigation links based on role
   const navLinks = isClient
     ? [
         { to: '/dashboard', label: 'Dashboard', icon: 'ri-dashboard-line' },
-        { to: '/projects', label: 'My Projects', icon: 'ri-folder-line' },
+        { to: '/projects', label: 'Projects', icon: 'ri-folder-line' },
         { to: '/payments', label: 'Payments', icon: 'ri-money-dollar-circle-line' },
         { to: '/profile', label: 'Profile', icon: 'ri-user-line' },
+        { to: '/settings', label: 'Settings', icon: 'ri-settings-line' },
       ]
     : isDeveloper
     ? [
@@ -31,46 +46,63 @@ export function Sidebar() {
         { to: '/projects', label: 'Projects', icon: 'ri-folder-line' },
         { to: '/payments', label: 'Payments', icon: 'ri-money-dollar-circle-line' },
         { to: '/profile', label: 'Profile', icon: 'ri-user-line' },
+        { to: '/settings', label: 'Settings', icon: 'ri-settings-line' },
       ]
     : [];
 
+  // Close sidebar on Escape key
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isOpen) setIsOpen(false);
+    };
+    document.addEventListener('keydown', handleEscape);
+    return () => document.removeEventListener('keydown', handleEscape);
+  }, [isOpen]);
+
   return (
     <>
-      {/* Mobile hamburger button */}
+      {/* Mobile hamburger button - positioned top-left */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="lg:hidden fixed top-4 left-4 z-50 p-2 rounded-lg bg-[#231F1F] border border-[#3D3D3D] text-[#F5F5F5]"
-        aria-label="Toggle menu"
+        className="lg:hidden fixed top-4 left-4 z-50 w-11 h-11 flex items-center justify-center rounded-lg bg-[var(--base-surface-2,#231f1f)] border border-[var(--base-border,#3d3d3d)] text-[var(--text-dark-primary,#f5f5f5)]"
+        aria-label={isOpen ? 'Close navigation menu' : 'Open navigation menu'}
+        aria-expanded={isOpen}
+        aria-controls="sidebar-nav"
       >
-        <i className={isOpen ? 'ri-close-line text-xl' : 'ri-menu-line text-xl'}></i>
+        <i className={cn('text-2xl', isOpen ? 'ri-close-line' : 'ri-menu-line')}></i>
       </button>
 
       {/* Sidebar */}
       <aside
-        className={`
-          fixed lg:sticky top-0 left-0 h-screen
-          w-[200px] min-w-[200px]
-          p-4 flex flex-col gap-4
-          bg-[#231F1F] border-r border-[#3D3D3D]
-          transition-transform duration-300 z-40
-          ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
-        `}
+        id="sidebar-nav"
+        className={cn(
+          'fixed lg:sticky top-0 left-0 h-screen',
+          'w-[200px] min-w-[200px]',
+          'p-4 flex flex-col',
+          'bg-[var(--base-surface-2,#231f1f)] border-r border-[var(--base-border,#3d3d3d)]',
+          'transition-transform duration-300 z-40',
+          isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
+        )}
       >
-        {/* Logo / Brand */}
-        <div className="flex items-center justify-between">
-          <div className="h-8 flex items-center gap-2">
-            <span className="text-[#F5F5F5] font-bold text-lg">W3S</span>
+        {/* TOP - Logo + Notification */}
+        <div className="flex items-center justify-between mb-6">
+          {/* Logo */}
+          <div className="flex items-center gap-2">
+            <span className="text-[var(--text-dark-primary,#f5f5f5)] font-bold text-lg">W3S</span>
           </div>
-          {/* Notification dot placeholder */}
-          <div className="relative">
-            <i className="ri-notification-line text-[#F5F5F5] text-xl"></i>
-            {/* Uncomment when notifications are implemented
-            <span className="absolute top-0 right-0 w-2.5 h-2.5 bg-[#36D399] rounded-full border-2 border-[#141414]"></span>
-            */}
-          </div>
+
+          {/* Notification bell with indicator */}
+          <button
+            className="relative w-8 h-8 flex items-center justify-center"
+            aria-label="Notifications"
+          >
+            <i className="ri-notification-line text-xl text-[var(--text-dark-primary,#f5f5f5)]"></i>
+            {/* Green indicator dot */}
+            <span className="absolute top-0 right-0 w-[10px] h-[10px] bg-[var(--state-success-active,#85efac)] rounded-full border-2 border-[var(--base-surface-2,#231f1f)]"></span>
+          </button>
         </div>
 
-        {/* Navigation Menu */}
+        {/* NAV MENU */}
         <nav className="flex-1">
           <ul className="space-y-1">
             {navLinks.map((link) => (
@@ -78,37 +110,45 @@ export function Sidebar() {
                 <NavLink
                   to={link.to}
                   className={({ isActive }) =>
-                    `flex items-center gap-3 px-4 py-3 rounded-xl transition-colors ${
+                    cn(
+                      'flex items-center gap-3',
+                      'px-4 py-3',
+                      'rounded-[var(--radi-6,12px)]',
+                      'font-medium text-base',
+                      'transition-colors',
                       isActive
-                        ? 'bg-[#333333] text-[#36D399]'
-                        : 'text-[#F5F5F5] hover:bg-[#333333]'
-                    }`
+                        ? 'bg-[var(--base-fill-1,#333)] text-[var(--state-brand-active,#36d399)]'
+                        : 'text-[var(--text-dark-primary,#f5f5f5)] hover:bg-[var(--base-fill-1,#333)]'
+                    )
                   }
                 >
-                  <i className={`${link.icon} text-xl`}></i>
-                  <span className="font-medium">{link.label}</span>
+                  <i className={cn(link.icon, 'text-2xl')}></i>
+                  <span>{link.label}</span>
                 </NavLink>
               </li>
             ))}
           </ul>
         </nav>
 
-        {/* User section at bottom */}
-        <div className="border-t border-[#3D3D3D] pt-4">
+        {/* BOTTOM - User section */}
+        <div className="border-t border-[var(--base-border,#3d3d3d)] pt-4">
           <div className="flex items-center gap-3 px-2">
+            {/* Avatar with online dot */}
             <div className="relative">
-              <div className="w-8 h-8 rounded-full bg-[#3D3D3D] flex items-center justify-center">
-                <i className="ri-user-line text-[#F5F5F5]"></i>
+              <div className="w-8 h-8 rounded-full bg-[var(--base-fill-1,#333)] border border-[var(--base-border,#3d3d3d)] flex items-center justify-center overflow-hidden">
+                <i className="ri-user-smile-line text-base text-[var(--text-dark-primary,#f5f5f5)]"></i>
               </div>
               {/* Online status dot */}
-              <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-[#36D399] rounded-full border-2 border-[#231F1F]"></span>
+              <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-[var(--state-brand-active,#36d399)] rounded-full border-2 border-[var(--base-surface-2,#231f1f)]"></span>
             </div>
+
+            {/* Name + Role */}
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-[#F5F5F5] truncate">
+              <p className="text-sm font-medium text-[var(--text-dark-primary,#f5f5f5)] truncate">
                 {user?.name || 'User'}
               </p>
-              <p className="text-xs text-[#9B9B9B] truncate">
-                {isClient ? 'Client' : isDeveloper ? 'Developer' : 'User'}
+              <p className="text-xs text-[var(--text-dark-secondary,rgba(255,255,255,0.7))] truncate">
+                {role}
               </p>
             </div>
           </div>
