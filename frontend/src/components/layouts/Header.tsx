@@ -3,6 +3,7 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '@stores/authStore';
 import { useLogout } from '@hooks/useAuth';
 import { cn } from '@lib/cn';
+import { W3SLogo } from '@components/ui/W3SLogo';
 
 /**
  * Header - Top navbar component matching Figma design
@@ -59,9 +60,8 @@ export function Header() {
         <div className="flex items-center gap-8">
           {/* Logo */}
           <NavLink to="/dashboard" className="flex items-center gap-2">
-            <div className="w-6 h-6 flex items-center justify-center">
-              <span className="text-[var(--text-dark-primary,#f5f5f5)] font-bold text-lg">W3S</span>
-            </div>
+            <W3SLogo size={20} />
+            <span className="text-[var(--text-dark-primary,#f5f5f5)] font-semibold text-base">work3spaces</span>
           </NavLink>
 
           {/* Desktop Menu */}
@@ -103,7 +103,7 @@ export function Header() {
             className="relative w-11 h-11 flex items-center justify-center rounded-full hover:bg-[var(--base-fill-1,#333)] transition-colors"
             aria-label="Notifications"
           >
-            <i className="ri-notification-line text-2xl text-[var(--text-dark-primary,#f5f5f5)]"></i>
+            <i className="ri-notification-2-line text-2xl text-[var(--text-dark-primary,#f5f5f5)]"></i>
             {/* Green indicator dot */}
             <span className="absolute top-1 right-1 w-[14px] h-[14px] bg-[var(--state-success-active,#85efac)] rounded-full border-2 border-[var(--base-surface-1,#141414)]"></span>
           </button>

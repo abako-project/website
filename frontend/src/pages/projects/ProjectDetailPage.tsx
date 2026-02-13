@@ -100,7 +100,7 @@ export default function ProjectDetailPage() {
       projectState === ProjectState.ScopeRejected);
 
   return (
-    <div className="min-h-screen bg-[var(--base-surface-1,#141414)] px-8 lg:px-[var(--spacing-22,112px)] py-10">
+    <div className="min-h-screen bg-[var(--base-surface-1,#141414)] px-8 lg:px-[var(--spacing-17,56px)] py-10">
       {/* Breadcrumb */}
       <nav className="mb-6 text-sm text-[var(--text-dark-secondary,rgba(255,255,255,0.7))]">
         <Link to="/projects" className="hover:text-[var(--text-dark-primary,#f5f5f5)] transition-colors">
@@ -252,12 +252,12 @@ function ProjectHeader({
   allProjectTypes: Array<{ id: number; description: string }>;
 }) {
   return (
-    <div className="rounded-[var(--radi-6,12px)] border border-[var(--base-border,#3d3d3d)] bg-[var(--base-surface-2,#231f1f)] p-[var(--spacing-10,24px)]">
+    <div className="rounded-[var(--radi-6,12px)] border border-[var(--base-border,#3d3d3d)] bg-[var(--base-surface-2,#231f1f)] pt-[var(--spacing-12,32px)] pb-[var(--spacing-14,40px)] px-[var(--spacing-17,56px)]">
       <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
         {/* Left: Title + summary */}
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-3 flex-wrap mb-2">
-            <h1 className="text-2xl font-bold text-[var(--text-dark-primary,#f5f5f5)]" style={{ fontFamily: 'Inter' }}>
+            <h1 className="text-[30px] font-bold leading-[42px] text-[var(--text-dark-primary,#f5f5f5)]" style={{ fontFamily: 'Inter' }}>
               {project.title}
             </h1>
             <ProjectStateBadge project={project} />
@@ -346,17 +346,17 @@ function ProjectScopeInfo({
 
   return (
     <div className="rounded-[var(--radi-6,12px)] border border-[var(--base-border,#3d3d3d)] bg-[var(--base-surface-2,#231f1f)] p-[var(--spacing-10,24px)]">
-      <h3 className="text-lg font-semibold text-[var(--text-dark-primary,#f5f5f5)] mb-4" style={{ fontFamily: 'Inter' }}>
+      <h3 className="text-xl font-semibold text-[var(--text-dark-primary,#f5f5f5)] mb-4" style={{ fontFamily: 'Inter' }}>
         Project Scope
       </h3>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
         {/* Delivery Time */}
         <div>
-          <h6 className="text-xs font-medium text-[var(--text-dark-secondary,rgba(255,255,255,0.7))] uppercase tracking-wider mb-1" style={{ fontFamily: 'Inter' }}>
+          <h6 className="text-base font-normal text-[var(--text-dark-secondary,rgba(255,255,255,0.7))] mb-1" style={{ fontFamily: 'Inter' }}>
             Delivery Time
           </h6>
-          <p className="text-sm text-[var(--text-dark-primary,#f5f5f5)]" style={{ fontFamily: 'Inter' }}>
+          <p className="text-lg text-[var(--text-dark-primary,#f5f5f5)]" style={{ fontFamily: 'Inter' }}>
             {deliveryTimeLabel}
           </p>
           {project.deliveryTime !== undefined &&
@@ -370,24 +370,24 @@ function ProjectScopeInfo({
 
         {/* Budget */}
         <div>
-          <h6 className="text-xs font-medium text-[var(--text-dark-secondary,rgba(255,255,255,0.7))] uppercase tracking-wider mb-1" style={{ fontFamily: 'Inter' }}>
+          <h6 className="text-base font-normal text-[var(--text-dark-secondary,rgba(255,255,255,0.7))] mb-1" style={{ fontFamily: 'Inter' }}>
             Total Available Budget
           </h6>
-          <p className="text-sm text-[var(--text-dark-primary,#f5f5f5)]" style={{ fontFamily: 'Inter' }}>{budgetLabel}</p>
+          <p className="text-lg text-[var(--text-dark-primary,#f5f5f5)]" style={{ fontFamily: 'Inter' }}>{budgetLabel}</p>
         </div>
 
         {/* Project Type */}
         <div>
-          <h6 className="text-xs font-medium text-[var(--text-dark-secondary,rgba(255,255,255,0.7))] uppercase tracking-wider mb-1" style={{ fontFamily: 'Inter' }}>
+          <h6 className="text-base font-normal text-[var(--text-dark-secondary,rgba(255,255,255,0.7))] mb-1" style={{ fontFamily: 'Inter' }}>
             Project Type
           </h6>
-          <p className="text-sm text-[var(--text-dark-primary,#f5f5f5)]" style={{ fontFamily: 'Inter' }}>{projectTypeLabel}</p>
+          <p className="text-lg text-[var(--text-dark-primary,#f5f5f5)]" style={{ fontFamily: 'Inter' }}>{projectTypeLabel}</p>
         </div>
 
         {/* URL */}
         {project.url && (
           <div>
-            <h6 className="text-xs font-medium text-[var(--text-dark-secondary,rgba(255,255,255,0.7))] uppercase tracking-wider mb-1" style={{ fontFamily: 'Inter' }}>
+            <h6 className="text-base font-normal text-[var(--text-dark-secondary,rgba(255,255,255,0.7))] mb-1" style={{ fontFamily: 'Inter' }}>
               Project URL
             </h6>
             <a
@@ -406,10 +406,10 @@ function ProjectScopeInfo({
       {/* Description */}
       {project.description && (
         <div>
-          <h6 className="text-xs font-medium text-[var(--text-dark-secondary,rgba(255,255,255,0.7))] uppercase tracking-wider mb-1" style={{ fontFamily: 'Inter' }}>
+          <h6 className="text-base font-normal text-[var(--text-dark-secondary,rgba(255,255,255,0.7))] mb-1" style={{ fontFamily: 'Inter' }}>
             Project Description
           </h6>
-          <p className="text-sm text-[var(--text-dark-primary,#f5f5f5)] leading-relaxed whitespace-pre-wrap" style={{ fontFamily: 'Inter' }}>
+          <p className="text-lg text-[var(--text-dark-primary,#f5f5f5)] leading-[var(--line-height-lg,28px)] whitespace-pre-wrap" style={{ fontFamily: 'Inter' }}>
             {project.description}
           </p>
         </div>
@@ -418,10 +418,10 @@ function ProjectScopeInfo({
       {/* Objectives */}
       {project.objectives.length > 0 && (
         <div className="mt-6">
-          <h6 className="text-xs font-medium text-[var(--text-dark-secondary,rgba(255,255,255,0.7))] uppercase tracking-wider mb-2" style={{ fontFamily: 'Inter' }}>
+          <h6 className="text-base font-normal text-[var(--text-dark-secondary,rgba(255,255,255,0.7))] mb-2" style={{ fontFamily: 'Inter' }}>
             Key Objectives
           </h6>
-          <ul className="list-disc list-inside space-y-1 text-sm text-[var(--text-dark-primary,#f5f5f5)]" style={{ fontFamily: 'Inter' }}>
+          <ul className="list-disc list-inside space-y-1 text-lg text-[var(--text-dark-primary,#f5f5f5)]" style={{ fontFamily: 'Inter' }}>
             {project.objectives.map((obj, i) => (
               <li key={i}>{obj}</li>
             ))}
@@ -432,10 +432,10 @@ function ProjectScopeInfo({
       {/* Constraints */}
       {project.constraints.length > 0 && (
         <div className="mt-6">
-          <h6 className="text-xs font-medium text-[var(--text-dark-secondary,rgba(255,255,255,0.7))] uppercase tracking-wider mb-2" style={{ fontFamily: 'Inter' }}>
+          <h6 className="text-base font-normal text-[var(--text-dark-secondary,rgba(255,255,255,0.7))] mb-2" style={{ fontFamily: 'Inter' }}>
             Constraints
           </h6>
-          <ul className="list-disc list-inside space-y-1 text-sm text-[var(--text-dark-primary,#f5f5f5)]" style={{ fontFamily: 'Inter' }}>
+          <ul className="list-disc list-inside space-y-1 text-lg text-[var(--text-dark-primary,#f5f5f5)]" style={{ fontFamily: 'Inter' }}>
             {project.constraints.map((c, i) => (
               <li key={i}>{c}</li>
             ))}

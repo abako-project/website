@@ -2,6 +2,7 @@ import { NavLink } from 'react-router-dom';
 import { useAuthStore } from '@stores/authStore';
 import { useState, useEffect } from 'react';
 import { cn } from '@lib/cn';
+import { W3SLogo } from '@components/ui/W3SLogo';
 
 /**
  * Sidebar - Left navigation sidebar matching Figma design
@@ -77,8 +78,8 @@ export function Sidebar() {
         id="sidebar-nav"
         className={cn(
           'fixed lg:sticky top-0 left-0 h-screen',
-          'w-[200px] min-w-[200px]',
-          'p-4 flex flex-col',
+          'w-[256px] min-w-[256px]',
+          'px-[var(--spacing-7,12px)] py-[var(--spacing-8,16px)] flex flex-col',
           'bg-[var(--base-surface-2,#231f1f)] border-r border-[var(--base-border,#3d3d3d)]',
           'transition-transform duration-300 z-40',
           isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
@@ -88,7 +89,8 @@ export function Sidebar() {
         <div className="flex items-center justify-between mb-6">
           {/* Logo */}
           <div className="flex items-center gap-2">
-            <span className="text-[var(--text-dark-primary,#f5f5f5)] font-bold text-lg">W3S</span>
+            <W3SLogo size={18} />
+            <span className="text-[var(--text-dark-primary,#f5f5f5)] font-semibold text-base">work3spaces</span>
           </div>
 
           {/* Notification bell with indicator */}
@@ -111,8 +113,8 @@ export function Sidebar() {
                   to={link.to}
                   className={({ isActive }) =>
                     cn(
-                      'flex items-center gap-3',
-                      'px-4 py-3',
+                      'flex items-center gap-[var(--spacing-7,12px)]',
+                      'pl-[var(--spacing-8,16px)] pr-[var(--spacing-5,8px)] py-[var(--spacing-7,12px)]',
                       'rounded-[var(--radi-6,12px)]',
                       'font-medium text-base',
                       'transition-colors',
@@ -132,25 +134,32 @@ export function Sidebar() {
 
         {/* BOTTOM - User section */}
         <div className="border-t border-[var(--base-border,#3d3d3d)] pt-4">
-          <div className="flex items-center gap-3 px-2">
-            {/* Avatar with online dot */}
-            <div className="relative">
-              <div className="w-8 h-8 rounded-full bg-[var(--base-fill-1,#333)] border border-[var(--base-border,#3d3d3d)] flex items-center justify-center overflow-hidden">
-                <i className="ri-user-smile-line text-base text-[var(--text-dark-primary,#f5f5f5)]"></i>
+          <div className="flex items-center justify-between gap-3 px-2">
+            <div className="flex items-center gap-3">
+              {/* Avatar with online dot */}
+              <div className="relative">
+                <div className="w-8 h-8 rounded-full bg-[var(--base-fill-1,#333)] border border-[var(--base-border,#3d3d3d)] flex items-center justify-center overflow-hidden">
+                  <i className="ri-user-smile-line text-base text-[var(--text-dark-primary,#f5f5f5)]"></i>
+                </div>
+                {/* Online status dot */}
+                <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-[var(--state-brand-active,#36d399)] rounded-full border-2 border-[var(--base-surface-2,#231f1f)]"></span>
               </div>
-              {/* Online status dot */}
-              <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-[var(--state-brand-active,#36d399)] rounded-full border-2 border-[var(--base-surface-2,#231f1f)]"></span>
+
+              {/* Name + Role */}
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium text-[var(--text-dark-primary,#f5f5f5)] truncate">
+                  {user?.name || 'User'}
+                </p>
+                <p className="text-xs text-[var(--text-dark-secondary,rgba(255,255,255,0.7))] truncate">
+                  {role}
+                </p>
+              </div>
             </div>
 
-            {/* Name + Role */}
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-[var(--text-dark-primary,#f5f5f5)] truncate">
-                {user?.name || 'User'}
-              </p>
-              <p className="text-xs text-[var(--text-dark-secondary,rgba(255,255,255,0.7))] truncate">
-                {role}
-              </p>
-            </div>
+            {/* Logout button */}
+            <button className="shrink-0" aria-label="Logout">
+              <i className="ri-logout-box-r-line text-2xl text-[var(--text-dark-secondary,rgba(255,255,255,0.7))]"></i>
+            </button>
           </div>
         </div>
       </aside>

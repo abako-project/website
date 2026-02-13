@@ -120,11 +120,11 @@ export default function DashboardPage() {
   // ------- Loading state -------
   if (isLoading) {
     return (
-      <div className="px-8 lg:px-14 py-10">
+      <div className="px-8 lg:px-[var(--spacing-22,112px)] py-10">
         <div className="flex items-center justify-center py-24">
           <div className="flex flex-col items-center gap-4">
             <Spinner size="lg" />
-            <p className="text-muted-foreground">Loading dashboard...</p>
+            <p className="text-[var(--text-dark-secondary,rgba(255,255,255,0.7))]">Loading dashboard...</p>
           </div>
         </div>
       </div>
@@ -134,19 +134,19 @@ export default function DashboardPage() {
   // ------- Error state -------
   if (isError) {
     return (
-      <div className="px-8 lg:px-14 py-10">
+      <div className="px-8 lg:px-[var(--spacing-22,112px)] py-10">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-foreground mb-2">Dashboard</h1>
+          <h1 className="text-[30px] font-bold leading-[42px] text-[var(--text-dark-primary,#f5f5f5)] mb-2">Dashboard</h1>
         </div>
         <Card className="max-w-2xl mx-auto">
           <CardContent className="p-8 text-center">
             <div className="w-14 h-14 mx-auto mb-4 rounded-full bg-red-500/15 flex items-center justify-center">
               <i className="ri-error-warning-line text-2xl text-red-400" />
             </div>
-            <h2 className="text-xl font-semibold text-foreground mb-2">
+            <h2 className="text-xl font-semibold text-[var(--text-dark-primary,#f5f5f5)] mb-2">
               Failed to load dashboard
             </h2>
-            <p className="text-muted-foreground mb-4">
+            <p className="text-[var(--text-dark-secondary,rgba(255,255,255,0.7))] mb-4">
               {error?.message || 'An unexpected error occurred.'}
             </p>
             <Button
@@ -164,7 +164,7 @@ export default function DashboardPage() {
   // ------- Empty state -------
   if (totalProjects === 0) {
     return (
-      <div className="px-8 lg:px-14 py-10">
+      <div className="px-8 lg:px-[var(--spacing-22,112px)] py-10">
         <DashboardHeader
           isClient={isClient}
           totalProjects={0}
@@ -193,7 +193,7 @@ export default function DashboardPage() {
 
   // ------- Main dashboard -------
   return (
-    <div className="px-8 lg:px-14 py-10">
+    <div className="px-8 lg:px-[var(--spacing-22,112px)] py-10">
       <DashboardHeader
         isClient={isClient}
         totalProjects={totalProjects}
@@ -238,8 +238,8 @@ function DashboardHeader({
   return (
     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8 gap-4">
       <div>
-        <h1 className="text-3xl font-bold text-foreground mb-1">Dashboard</h1>
-        <p className="text-muted-foreground">
+        <h1 className="text-[30px] font-bold leading-[42px] text-[var(--text-dark-primary,#f5f5f5)] mb-1">Dashboard</h1>
+        <p className="text-[var(--text-dark-secondary,rgba(255,255,255,0.7))]">
           {totalProjects === 0
             ? 'Your project overview'
             : `${totalProjects} project${totalProjects === 1 ? '' : 's'} total`}
@@ -281,9 +281,9 @@ function StateGroupSection({
   return (
     <section>
       <div className="flex items-center gap-2 mb-4">
-        <i className={`${icon} text-lg text-muted-foreground`} />
-        <h2 className="text-lg font-semibold text-foreground">{title}</h2>
-        <span className="ml-1 text-sm text-muted-foreground">
+        <i className={`${icon} text-lg text-[var(--text-dark-secondary,rgba(255,255,255,0.7))]`} />
+        <h2 className="text-lg font-semibold text-[var(--text-dark-primary,#f5f5f5)]">{title}</h2>
+        <span className="ml-1 text-sm text-[var(--text-dark-secondary,rgba(255,255,255,0.7))]">
           ({projects.length})
         </span>
       </div>
@@ -331,20 +331,20 @@ function ProjectCard({ project, onClick, isClient }: ProjectCardProps) {
 
   return (
     <Card
-      className="cursor-pointer hover:border-primary/40 transition-colors group"
+      className="cursor-pointer hover:border-[var(--state-brand-active,#36d399)]/40 transition-colors group"
       onClick={onClick}
     >
       <CardContent className="p-5">
         {/* Title and badge */}
         <div className="flex items-start justify-between gap-3 mb-3">
-          <h3 className="text-base font-semibold text-foreground leading-snug line-clamp-2 group-hover:text-primary transition-colors">
+          <h3 className="text-base font-semibold text-[var(--text-dark-primary,#f5f5f5)] leading-snug line-clamp-2 group-hover:text-[var(--state-brand-active,#36d399)] transition-colors">
             {project.title}
           </h3>
           <ProjectStateBadge project={project} className="shrink-0" />
         </div>
 
         {/* Users */}
-        <div className="flex items-center gap-4 mb-4 text-sm text-muted-foreground">
+        <div className="flex items-center gap-4 mb-4 text-sm text-[var(--text-dark-secondary,rgba(255,255,255,0.7))]">
           {isClient ? (
             <div className="flex items-center gap-1.5">
               <i className="ri-user-star-line text-base" />
@@ -359,7 +359,7 @@ function ProjectCard({ project, onClick, isClient }: ProjectCardProps) {
         </div>
 
         {/* Metadata */}
-        <div className="flex items-center gap-4 text-sm text-muted-foreground">
+        <div className="flex items-center gap-4 text-sm text-[var(--text-dark-secondary,rgba(255,255,255,0.7))]">
           <div className="flex items-center gap-1.5">
             <i className="ri-money-dollar-circle-line text-base" />
             <span className="truncate">{budgetDisplay}</span>
@@ -372,7 +372,7 @@ function ProjectCard({ project, onClick, isClient }: ProjectCardProps) {
 
         {/* Milestones count */}
         {project.milestones.length > 0 && (
-          <div className="mt-3 pt-3 border-t border-border flex items-center gap-1.5 text-sm text-muted-foreground">
+          <div className="mt-3 pt-3 border-t border-[var(--base-border,#3d3d3d)] flex items-center gap-1.5 text-sm text-[var(--text-dark-secondary,rgba(255,255,255,0.7))]">
             <i className="ri-list-check-2 text-base" />
             <span>
               {project.milestones.length} milestone

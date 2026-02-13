@@ -19,3 +19,4 @@ export { StepperNumeric } from './StepperNumeric';
 export { TextArea } from './TextArea';
 export { Combobox } from './Combobox';
 export { CardWidget } from './CardWidget';
+export { W3SLogo } from './W3SLogo';

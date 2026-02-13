@@ -161,7 +161,7 @@ export default function ProjectsPage() {
               Projects
             </h1>
             <p className="text-base text-[var(--text-dark-secondary,rgba(255,255,255,0.7))] mb-2" style={{ fontFamily: 'Inter' }}>
-              Find out the progress of all your projects
+              Find out the progress your projects, documents, milestones and the latest activities.
             </p>
             <a
               href="#"
@@ -300,7 +300,7 @@ function ProjectCardWidget({ project, onClick }: ProjectCardWidgetProps) {
       <div className="flex items-center justify-between mb-4">
         {/* Left badge: pending tasks (success style) */}
         {pendingTasksCount > 0 && (
-          <span className="inline-flex items-center px-3 py-1 bg-[var(--state-success-active,#85efac)] text-[var(--text-light-primary,#141414)] text-xs font-medium rounded-[var(--radi-6,12px)]" style={{ fontFamily: 'Inter' }}>
+          <span className="inline-flex items-center px-3 py-1 bg-[var(--state-success-active,#85efac)] text-[var(--text-light-primary,#141414)] text-base font-semibold rounded-[var(--radi-6,12px)]" style={{ fontFamily: 'Inter' }}>
             {pendingTasksCount} Pending Task{pendingTasksCount !== 1 ? 's' : ''}
           </span>
         )}
@@ -336,11 +336,11 @@ function ProgressSegmented({ percentage }: ProgressSegmentedProps) {
 
   return (
     <div className="space-y-2">
-      <div className="flex gap-1">
+      <div className="flex gap-[var(--spacing-5,8px)]">
         {Array.from({ length: segments }).map((_, index) => (
           <div
             key={index}
-            className={`h-2 flex-1 rounded-full ${
+            className={`h-3 flex-1 rounded-[var(--radi-2,4px)] ${
               index < filledSegments
                 ? 'bg-[var(--state-brand-active,#36d399)]'
                 : 'bg-[var(--base-fill-2,#3d3d3d)]'
@@ -349,7 +349,7 @@ function ProgressSegmented({ percentage }: ProgressSegmentedProps) {
         ))}
       </div>
       <div className="flex justify-end">
-        <span className="text-xs font-medium text-[var(--text-dark-secondary,rgba(255,255,255,0.7))]" style={{ fontFamily: 'Inter' }}>
+        <span className="text-base font-medium text-[var(--text-dark-secondary,rgba(255,255,255,0.7))]" style={{ fontFamily: 'Inter' }}>
           {percentage}%
         </span>
       </div>
