@@ -10,6 +10,7 @@
 
 const sedaError = require("./error");
 
+const sedaAuth = require("./auth");
 const sedaProject = require("./project");
 const sedaProposal = require("./proposal");
 const sedaObjective = require("./objective");
@@ -26,6 +27,7 @@ const sedaCalendar = require("./calendar");
 
 module.exports = exports = {
     ...sedaError,
+    ...sedaAuth,
     ...sedaProject,
     ...sedaProposal,
     ...sedaObjective,

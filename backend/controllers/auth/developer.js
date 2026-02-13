@@ -1,13 +1,11 @@
-
 const seda = require("../../models/seda");
 
 exports.registerCreate = async (req, res, next) => {
 
-    const {email, name, preparedData: json} = req.body;
+    const {email, name} = req.body;
 
     try {
-        preparedData = JSON.parse(decodeURIComponent(json));
-        await seda.developerCreate(email, name, preparedData);
+        await seda.developerCreate(email, name);
 
         req.flash("success", '✅ Registrado correctamente');
         console.log("[Controlador developers] Desarrollador Registrado correctamente");
@@ -26,21 +24,12 @@ exports.loginCreate = async (req, res, next) => {
     const {email, token} = req.body;
 
     try {
-          let {id: developerId, name} = await seda.developerFindByEmail(email);
+        let {id: developerId, name} = await seda.developerFindByEmail(email);
 
         // Guardar la zona horaria del navegador y del servidor en la session
         let browserTimezoneOffset = Number(req.query.browserTimezoneOffset ?? 0);
         req.session.browserTimezoneOffset = Number.isNaN(browserTimezoneOffset) ? 0 : browserTimezoneOffset;
         req.session.serverTimezoneOffset = new Date().getTimezoneOffset() * 60 * 1000;
-
-        // console.log("************ loginCreate");
-        // console.log({
-        //     email: email,
-        //     name: name,
-        //     clientId: undefined,
-        //     developerId: developerId,
-        //     token
-        // });
 
         // Create req.session.loginUser.
         // The existence of req.session.loginUser indicates that the session exists.
@@ -55,7 +44,6 @@ exports.loginCreate = async (req, res, next) => {
         req.flash("success", 'Developer authentication completed.');
 
         res.redirect(`/developers/${developerId}/projects`);
-
     } catch (error) {
         req.flash("error", 'Authentication has failed. Retry it again.');
         req.flash("error", `❌ Login error: ${error instanceof Error ? error.message : 'Unknown error'}`);

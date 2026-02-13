@@ -5,11 +5,10 @@ const seda = require("../../models/seda");
 
 exports.registerCreate = async (req, res, next) => {
 
-    const {email, name, preparedData: json} = req.body;
+    const {email, name} = req.body;
 
     try {
-        preparedData = JSON.parse(decodeURIComponent(json));
-        await seda.clientCreate(email, name, preparedData);
+        await seda.clientCreate(email, name);
 
         req.flash("success", '✅ Registrado correctamente');
         console.log("[Controlador clientes] Cliente registrado correctamente");
@@ -21,8 +20,6 @@ exports.registerCreate = async (req, res, next) => {
         res.redirect('/auth/register/client/new');
     }
 };
-
-
 
 exports.loginCreate = async (req, res, next) => {
 

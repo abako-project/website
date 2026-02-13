@@ -10,7 +10,7 @@
             <h1>Developer Login</h1>
             <div class="form-group">
                 <label for="email">Email</label>
-                <input type="text" id="email" name="email" placeholder="email" required />
+                <input type="text" id="email" name="email" placeholder="email" required/>
             </div>
 
             <input type="hidden" id="token" name="token"/>
@@ -39,29 +39,7 @@
     const loginButton = document.getElementById("loginButton");
     const statusElement = document.getElementById("status");
 
-    function initializeSDK() {
-        try {
-            const sdk = new SDK({
-                federate_server: "https://dev.abako.xyz/api",
-                provider_url: "wss://dev.abako.xyz/kreivo",
-                config: {
-                    wallet: "polkadot",
-                },
-            });
-
-            console.log("Developer login: SDK initialized successfully");
-            return sdk;
-        } catch (error) {
-            console.log(
-                `Developer login: Error initializing SDK: ${
-                    error instanceof Error ? error.message : "Unknown error"
-                }`,
-                "error"
-            );
-            throw error;
-        }
-    }
-
+    let sdk;
 
     document
         .getElementById("loginForm")
@@ -81,64 +59,15 @@
 
                 showWaitModal();
 
-                const sdk = initializeSDK();
+                sdk = initializeSDK();
+                await checkIsRegistered();
+                await prepareConnection()
+                const {extrinsic, token} = await customConnect();
+                await signExtrinsic(extrinsic);
 
-                console.log("Checking if user is registered...");
-                const registered = await sdk.auth.isRegistered(emailElement.value);
-                if (!registered) {
-                    throw new Error("Developer needs to register first");
-                }
-                console.log("The developer is registered.");
-
-                statusElement.innerHTML = "Generating certificate for login";
-
-                const preparedData = await promiseWithTimeout(sdk.auth.prepareConnection(emailElement.value), 60000, "Timeout waiting for server to prepare login data");
-                if (!preparedData) {
-                    throw new Error("Error: Login data was not generated");
-                }
-
-                // TODO SPG: Move this to server
-                statusElement.innerHTML = "Getting extrinsic from server";
-                // Llamar al servidor para obtener el extrinsic
-                const response = await fetch(`/proxy/auth/custom-connect`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        userId: emailElement.value
-                    })
-                });
-                // console.log("response", response);
-                if (!response.ok) {
-                    throw new Error(`Server responded with status: ${response.status}`);
-                }
-                const result = await response.json();
-                console.log('Connection completed successfully on the server:', 'success');
-                //console.log(JSON.stringify(result, null, 2));
-                if (!result.extrinsic) {
-                    throw new Error("Extrinsic was not received from server");
-                }
-                if (!result.token) {
-                    throw new Error("Token was not received from server");
-                }
-
-                statusElement.innerHTML = "Signing transaction";
-                // User signs the transaction that initiates the session on the server
-                const signedResult = await sdk.auth.sign(result.extrinsic);
-                // console.log("signedResult", signedResult);
-                if (!signedResult.ok) {
-                    throw new Error("Error: Could not sign the extrinsic");
-                }
-
-                // console.log("=================================================================================================================");
-                // console.log("==== TOKEN ====", result.token);
-                // console.log("=================================================================================================================");
-
-                tokenElement.value = result.token;
+                tokenElement.value = token;
 
                 statusElement.innerHTML = "Waiting for server response";
-
 
                 this.submit();
             } catch (error) {
@@ -152,4 +81,81 @@
                 statusElement.innerHTML = "Login failed";
             }
         });
+
+
+    function initializeSDK() {
+        try {
+            const sdk = new SDK({
+                federate_server: "https://dev.abako.xyz/api",
+                provider_url: "wss://dev.abako.xyz/kreivo",
+                config: {
+                    wallet: "polkadot",
+                },
+            });
+
+            console.log("Developer login: SDK initialized successfully");
+            return sdk;
+        } catch (error) {
+            console.log(`Developer login: Error initializing SDK: ${error instanceof Error ? error.message : "Unknown error"}`);
+            throw error;
+        }
+    }
+
+    async function checkIsRegistered() {
+        console.log("Checking if user is registered...");
+        const registered = await sdk.auth.isRegistered(emailElement.value);
+        if (!registered) {
+            throw new Error("Developer needs to register first");
+        }
+        console.log("The developer is registered.");
+    }
+
+    async function prepareConnection() {
+        statusElement.innerHTML = "Generating certificate for login";
+
+        const preparedData = await promiseWithTimeout(sdk.auth.prepareConnection(emailElement.value), 60000, "Timeout waiting for server to prepare login data");
+        if (!preparedData) {
+            throw new Error("Error: Login data was not generated");
+        }
+    }
+
+    async function customConnect() {
+        // TODO SPG: Move this to server
+        statusElement.innerHTML = "Getting extrinsic from server";
+        // Llamar al servidor para obtener el extrinsic
+        const response = await fetch(`/proxy/auth/custom-connect`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                userId: emailElement.value
+            })
+        });
+        // console.log("response", response);
+        if (!response.ok) {
+            throw new Error(`Server responded with status: ${response.status}`);
+        }
+        const {extrinsic, token} = await response.json();
+        console.log('Connection completed successfully on the server:');
+
+        if (!extrinsic) {
+            throw new Error("Extrinsic was not received from server");
+        }
+        if (!token) {
+            throw new Error("Token was not received from server");
+        }
+
+        return {extrinsic, token};
+    }
+
+    async function signExtrinsic(extrinsic) {
+        statusElement.innerHTML = "Signing transaction";
+        // User signs the transaction that initiates the session on the server
+        const signedResult = await sdk.auth.sign(extrinsic);
+        // console.log("signedResult", signedResult);
+        if (!signedResult.ok) {
+            throw new Error("Error: Could not sign the extrinsic");
+        }
+    }
 </script>

@@ -3,50 +3,6 @@ const {adapterAPI} = require('../adapter');
 
 //-----------------------------------------------------------
 
-exports.developerConnect = async (email) => {
-
-    try {
-        if (!email) {
-            throw new Error('El campo email es obligatorio para loguear un developer.');
-        }
-
-        if (!preparedData) {
-            throw new Error('El campo preparedData es obligatorio para loguear un developer.');
-        }
-
-        console.log('[SEDA Developer Connect] Step 1: customConnect');
-
-        const response = await adapterAPI.customConnect({userId: email});
-
-        console.log('[SEDA Developer Connect] Step 1: customConnect', response);
-
-        if (response.success) {
-            console.log('[SEDA Developer] customConnect is successfull.');
-        } else {
-            console.log('[SEDA Developer] customConnect has failed:', response.error);
-            throw new Error(response.error);
-        }
-
-        console.log('[SEDA Developer Connect] Step 2: Obtener nombre');
-
-        const developer = await adapterAPI.findDeveloperByEmail(email);
-        // const developer = (await adapterAPI.getDevelopers()).developers.find(d => d.email === email);
-
-        console.log('[SEDA Developer Connect] Step 3: Fin');
-
-        return {
-            developerId: developer?.id,
-            token: response.token,
-            name: developer.name
-        };
-    } catch (error) {
-        console.error('[SEDA Developer] Error connecting developer:', error);
-        throw error;
-    }
-};
-
-//-----------------------------------------------------------
-
 /**
  * Devuelve un listado de todos los desarrolladores registrados,
  * incluyendo su información de usuario, adjunto, lenguajes, rol y habilidades.
@@ -134,60 +90,6 @@ exports.developers = async projectId => {
     return developers;
 };
 
-
-//-----------------------------------------------------------
-
-/**
- * Registra un nuevo desarrollador y crea el usuario asociado.
- *
- * @async
- * @function developerCreate
- * @param {string} email - Email del desarrollador.
- * @param {string} name - Nombre del desarrollador.
- * @param {object} preparedData - Datos para registar a un usuario en Virto.
- * @throws {Error} Si falta algún parámetro obligatorio.
- */
-exports.developerCreate = async (email, name, preparedData) => {
-
-    if (!email) {
-        throw new Error('El campo email es obligatorio para registrar un developer.');
-    }
-
-    if (!name) {
-        throw new Error('El campo name es obligatorio para registrar un developer.');
-    }
-
-    if (!preparedData) {
-        throw new Error('El campo preparedData es obligatorio para registrar un developer.');
-    }
-
-    try {
-        // ------ PASO 1: Crear la cuenta base con /adapter/v1/custom-register
-
-        console.log('[SEDA Developer] Step 1: Creating account with custom-register');
-
-        const response = await adapterAPI.customRegister(preparedData);
-
-        if (response.success) {
-            console.log('[SEDA Developer] Account creation is successfull:', response.message);
-        } else {
-            console.log('[SEDA Developer] Account creation has failed:', response.error);
-            throw new Error(response.error);
-        }
-
-        // ------ PASO 2: Completar el perfil de developer con /adapter/v1/developers
-
-        console.log('[SEDA Developer] Step 2: Completing developer profile');
-
-        const response2 = await adapterAPI.createDeveloper(email, name);
-        console.log('[SEDA Developer] Developer profile completed:', response2);
-
-    } catch (error) {
-        console.error('[SEDA Developer] Error creating developer:', error);
-        throw error;
-    }
-
-}
 
 //-----------------------------------------------------------
 
