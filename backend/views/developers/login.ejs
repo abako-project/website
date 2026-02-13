@@ -100,7 +100,7 @@
                 // TODO SPG: Move this to server
                 statusElement.innerHTML = "Getting extrinsic from server";
                 // Llamar al servidor para obtener el extrinsic
-                const response = await fetch(`https://dev.abako.xyz/adapter/v1/auth/custom-connect`, {
+                const response = await fetch(`/proxy/auth/custom-connect`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'

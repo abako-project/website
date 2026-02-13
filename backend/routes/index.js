@@ -10,6 +10,7 @@ const projectsRouter = require('./projects');
 const backdoorRouter = require('./backdoor');
 const paymentsRouter = require('./payments');
 const votesRouter = require('./votes');
+const proxyRouter = require('./proxy');
 
 
 router.use('/auth', authRouter);
@@ -21,5 +22,6 @@ router.use('/projects', projectsRouter);
 router.use('/backdoor', backdoorRouter);
 router.use('/payments', paymentsRouter);
 router.use('/projects', votesRouter);
+router.use('/proxy', proxyRouter);
 
 module.exports = router;
