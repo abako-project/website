@@ -54,8 +54,8 @@
             <td><%= developer.portfolioUrl ? "Yes" : "No" %></td>
             <td><%= developer.location %></td>
             <td><%= developer.availability %></td>
-            <td><%= developer.languages.join(", ") %></td>
-            <td><%= developer.skills.join(", ") %></td>
+            <td><%= developer.languages?.join(", ") %></td>
+            <td><%= developer.skills?.join(", ") %></td>
         </tr>
     <% }) %>
     </tbody>

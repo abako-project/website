@@ -2,10 +2,12 @@ const seda = require("../../models/seda");
 
 exports.registerCreate = async (req, res, next) => {
 
-    const {email, name} = req.body;
+    const {email, name, githubUsername, portfolioUrl} = req.body;
+
+    const image = req.file?.buffer || null;
 
     try {
-        await seda.developerCreate(email, name);
+        await seda.developerCreate(email, name, githubUsername, portfolioUrl, image);
 
         req.flash("success", '✅ Registrado correctamente');
         console.log("[Controlador developers] Desarrollador Registrado correctamente");

@@ -4,11 +4,22 @@
     <section id="appRight" class="onboarding__right">
         <%- include('../layouts/onboarding/_onboardingBackButton', {message: "Already have an account?", buttonText: "Log in", href: "/auth/login/"}) %>
 
-        <form id="registerForm" class="content" action="/auth/register/developer" method="POST">
-            <h1 class="content__title">Create Developer Account</h1>
-            <p class="content__subtitle">
-                Enter your email below to create your account
-            </p>
+        <form id="registerForm" class="content" action="/auth/register/developer" enctype="multipart/form-data" method="POST">
+            <h1 class="content__title">Personal Information</h1>
+
+            <div class="profileCard__section">
+                <h3> New Photo (Max size 2MB):</h3>
+                <label class="fileInput">
+                    <span>Select file…</span>
+                    <input type="file" id="img" name="image"/>
+                </label>
+                <img id="photoPreview">
+            </div>
+
+            <div class="form-group">
+                <label for="name">Name</label>
+                <input type="text" id="name" name="name" placeholder="Name"/>
+            </div>
 
             <div class="form-group">
                 <label for="email">Email</label>
@@ -21,14 +32,23 @@
                 />
             </div>
 
-            <div class="form-group">
-                <label for="name">Username</label>
-                <input type="text" id="name" name="name" placeholder="Name"/>
+            <div class="profileCard__section">
+                <h3>Github Username:</h3>
+                <input type="text" id="githubUsername" name="githubUsername" value=""
+                       placeholder="Github Username" autocomplete="off" required />
+            </div>
+
+            <div class="profileCard__section">
+                <h3>Portfolio Url:</h3>
+                <input type="text" id="portfolioUrl" name="portfolioUrl" value=""
+                       placeholder="Portfolio Url" autocomplete="off" required />
             </div>
 
             <div class="form-group">
+                <a href="/auth/register" class="btn">Back</a>
+
                 <button class="btn btn_primary" type="submit" id="registrationButton">
-                    Register
+                    Continue
                 </button>
             </div>
 
@@ -156,3 +176,6 @@
         }
     }
 </script>
+
+<script src="/javascripts/forms/img.js"></script>
+

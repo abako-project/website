@@ -2,6 +2,12 @@
 const express = require("express");
 const router = express.Router();
 
+const multer = require('multer');
+const storage = multer.memoryStorage()
+const upload = multer({
+    storage: storage,
+    limits: {fileSize: 20 * 1024 * 1024}});
+
 const authController = require("../controllers/auth");
 
 // =========================================================================
@@ -17,7 +23,9 @@ router.post('/register/client', authController.registerClientCreate);
 
 // --------- Registrar un desarrollador
 router.get('/register/developer/new', authController.registerDeveloperNew);
-router.post('/register/developer', authController.registerDeveloperCreate);
+router.post('/register/developer',
+    upload.single('image'),
+    authController.registerDeveloperCreate);
 
 
 // =========================================================================

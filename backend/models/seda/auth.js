@@ -12,7 +12,7 @@ const {adapterAPI} = require('../adapter');
  * @param {string} name - Nombre del desarrollador.
  * @throws {Error} Si falta algún parámetro obligatorio.
  */
-exports.developerCreate = async (email, name) => {
+exports.developerCreate = async (email, name, githubUsername, portfolioUrl, image) => {
 
     if (!email) {
         throw new Error('The email field is required to register a developer.');
@@ -24,7 +24,7 @@ exports.developerCreate = async (email, name) => {
 
     try {
         console.log('[SEDA Developer] Completing developer profile');
-        const response2 = await adapterAPI.createDeveloper(email, name);
+        const response2 = await adapterAPI.createDeveloper(email, name, githubUsername, portfolioUrl, image);
         console.log('[SEDA Developer] Developer profile completed:', response2);
     } catch (error) {
         console.error('[SEDA Developer] Error creating developer:', error);
