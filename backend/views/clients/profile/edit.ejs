@@ -57,7 +57,7 @@
 
                     <div class="profileCard__section">
                         <h3>Languages:</h3>
-                        <select id="clientLanguages" name="languages[]" multiple size="6">
+                        <select id="languages" name="languages[]" multiple size="6">
                             <% allLanguages.forEach(lang => {
                                 const selected = (client.languages || []).includes(lang.code); %>
                             <option value="<%= lang.code %>" <%= selected ? "selected" : "" %>>
@@ -90,7 +90,8 @@
     </div>
 </div>
 
-<script src="/javascripts/perfil.js"></script>
+<script src="/javascripts/forms/languages.js"></script>
+<script src="/javascripts/forms/img.js"></script>
 
 
 
