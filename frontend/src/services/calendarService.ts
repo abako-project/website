@@ -28,7 +28,7 @@ import { getUserAddress as virtoGetUserAddress } from '@/api/virto';
 
 interface ApiResponse {
   success: boolean;
-  workers?: string[];
+  response?: string[];
   [key: string]: unknown;
 }
 
@@ -89,7 +89,7 @@ export async function ensureWorkerRegistered(userId: string, token: string): Pro
   if (!apiResponse.success) {
     throw new Error('Cannot get registered workers from calendar contract.');
   }
-  const registeredWorkers = apiResponse.workers || [];
+  const registeredWorkers = apiResponse.response || [];
 
   // Get worker address
   const address = await getWorkerAddress(userId);
@@ -155,7 +155,7 @@ export async function registerMultipleWorkers(
  */
 export async function setWorkerAvailability(
   availability: string,
-  weeklyHours: number,
+  weeklyHours: number | undefined,
   token: string
 ): Promise<Record<string, unknown>> {
   try {

@@ -14,12 +14,14 @@
 
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { useClientProfile, useUpdateClientProfile, useUploadProfileImage } from '@hooks/useProfile';
+import { useClientRatings } from '@hooks/useRatings';
 import { useLanguages } from '@hooks/useEnums';
 import { Button } from '@components/ui/Button';
 import { Input } from '@components/ui/Input';
 import { Label } from '@components/ui/Label';
 import { Card, CardContent, CardHeader, CardTitle } from '@components/ui/Card';
 import { Spinner } from '@components/ui/Spinner';
+import { ReviewsList } from '@components/features/ratings/ReviewsList';
 import type { ClientUpdateData, LanguagesMap } from '@/types/index';
 
 // ---------------------------------------------------------------------------
@@ -39,6 +41,7 @@ export default function ClientProfilePage({ clientId, startInEditMode }: ClientP
   const [isEditing, setIsEditing] = useState(startInEditMode ?? false);
 
   const { data, isLoading, isError, error } = useClientProfile(clientId);
+  const { data: ratingsData, isLoading: isLoadingRatings } = useClientRatings(clientId);
   const { data: languagesMap } = useLanguages();
   const updateMutation = useUpdateClientProfile();
   const uploadMutation = useUploadProfileImage();
@@ -248,6 +251,14 @@ export default function ClientProfilePage({ clientId, startInEditMode }: ClientP
           </div>
         </CardContent>
       </Card>
+
+      {/* Reviews section - ratings given by this client */}
+      <ReviewsList
+        ratings={ratingsData?.ratings ?? []}
+        totalCount={ratingsData?.totalRatings ?? 0}
+        isLoading={isLoadingRatings}
+        resolveReviewerName={(r) => `Developer ${r.developerId}`}
+      />
     </div>
   );
 }

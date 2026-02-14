@@ -26,7 +26,10 @@ import {
   createProposal,
   updateProposal,
   rejectProposal,
+  assignProjectTeam,
+  setProjectCalendarContract,
 } from '@/services';
+import { assignCoordinator } from '@/api/adapter';
 import { useAuthStore } from '@/stores/authStore';
 import { BUDGETS, DELIVERY_TIMES, PROJECT_TYPES } from '@/types';
 import type {
@@ -377,6 +380,157 @@ export function useRejectProposal() {
       });
       void queryClient.invalidateQueries({ queryKey: projectKeys.lists() });
       void queryClient.invalidateQueries({ queryKey: projectKeys.dashboard() });
+    },
+  });
+}
+
+// ---------------------------------------------------------------------------
+// useAssignCoordinator
+// ---------------------------------------------------------------------------
+
+/** Input for the assign coordinator mutation. */
+interface AssignCoordinatorInput {
+  contractAddress: string;
+}
+
+/** Response shape for assign coordinator. */
+interface AssignCoordinatorResponse {
+  contractAddress: string;
+  message: string;
+}
+
+/**
+ * Mutation for assigning a coordinator to a project.
+ *
+ * On success, invalidates the project detail, list, and dashboard queries.
+ */
+export function useAssignCoordinator() {
+  const queryClient = useQueryClient();
+
+  return useMutation<AssignCoordinatorResponse, Error, AssignCoordinatorInput>({
+    mutationFn: async ({ contractAddress }: AssignCoordinatorInput) => {
+      const { token } = useAuthStore.getState();
+
+      if (!token) {
+        throw new Error('Authentication token not found');
+      }
+
+      await assignCoordinator(contractAddress, token);
+
+      return {
+        contractAddress,
+        message: 'Coordinator assigned successfully',
+      };
+    },
+    onSuccess: (_data, variables) => {
+      void queryClient.invalidateQueries({
+        queryKey: projectKeys.detail(variables.contractAddress),
+      });
+      void queryClient.invalidateQueries({ queryKey: projectKeys.lists() });
+      void queryClient.invalidateQueries({ queryKey: projectKeys.dashboard() });
+    },
+  });
+}
+
+// ---------------------------------------------------------------------------
+// useAssignTeam
+// ---------------------------------------------------------------------------
+
+/** Input for the assign team mutation. */
+interface AssignTeamInput {
+  contractAddress: string;
+  teamSize: number;
+}
+
+/** Response shape for assign team. */
+interface AssignTeamResponse {
+  contractAddress: string;
+  message: string;
+}
+
+/**
+ * Mutation for assigning a team to a project.
+ *
+ * On success, invalidates the project detail, list, and dashboard queries.
+ */
+export function useAssignTeam() {
+  const queryClient = useQueryClient();
+
+  return useMutation<AssignTeamResponse, Error, AssignTeamInput>({
+    mutationFn: async ({ contractAddress, teamSize }: AssignTeamInput) => {
+      const { token } = useAuthStore.getState();
+
+      if (!token) {
+        throw new Error('Authentication token not found');
+      }
+
+      await assignProjectTeam(contractAddress, teamSize, token);
+
+      return {
+        contractAddress,
+        message: 'Team assigned successfully',
+      };
+    },
+    onSuccess: (_data, variables) => {
+      void queryClient.invalidateQueries({
+        queryKey: projectKeys.detail(variables.contractAddress),
+      });
+      void queryClient.invalidateQueries({ queryKey: projectKeys.lists() });
+      void queryClient.invalidateQueries({ queryKey: projectKeys.dashboard() });
+    },
+  });
+}
+
+// ---------------------------------------------------------------------------
+// useSetCalendarContract
+// ---------------------------------------------------------------------------
+
+/** Input for the set calendar contract mutation. */
+interface SetCalendarContractInput {
+  contractAddress: string;
+  calendarContractAddress: string;
+}
+
+/** Response shape for set calendar contract. */
+interface SetCalendarContractResponse {
+  contractAddress: string;
+  message: string;
+}
+
+/**
+ * Mutation for setting a calendar contract on a project.
+ *
+ * On success, invalidates the project detail query.
+ */
+export function useSetCalendarContract() {
+  const queryClient = useQueryClient();
+
+  return useMutation<SetCalendarContractResponse, Error, SetCalendarContractInput>({
+    mutationFn: async ({
+      contractAddress,
+      calendarContractAddress,
+    }: SetCalendarContractInput) => {
+      const { token } = useAuthStore.getState();
+
+      if (!token) {
+        throw new Error('Authentication token not found');
+      }
+
+      await setProjectCalendarContract(
+        contractAddress,
+        calendarContractAddress,
+        token
+      );
+
+      return {
+        contractAddress,
+        message: 'Calendar contract set successfully',
+      };
+    },
+    onSuccess: (_data, variables) => {
+      void queryClient.invalidateQueries({
+        queryKey: projectKeys.detail(variables.contractAddress),
+      });
     },
   });
 }

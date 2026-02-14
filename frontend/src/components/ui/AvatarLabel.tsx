@@ -11,14 +11,14 @@ export interface AvatarLabelProps extends Omit<AvatarProps, 'size'> {
 const AvatarLabel = React.forwardRef<HTMLDivElement, AvatarLabelProps>(
   ({ className, name, subtitle, size = 'md', ...avatarProps }, ref) => {
     return (
-      <div ref={ref} className={cn('flex items-center gap-2', className)}>
+      <div ref={ref} className={cn('flex items-center gap-3', className)}>
         <Avatar size={size} {...avatarProps} />
-        <div className="flex flex-col">
+        <div className="flex flex-col gap-0.5">
           <span className="font-inter text-sm font-medium leading-[22px] text-[var(--text-dark-primary,#f5f5f5)]">
             {name}
           </span>
           {subtitle && (
-            <span className="font-inter text-xs font-normal leading-[18px] text-[var(--text-dark-secondary,rgba(255,255,255,0.7))]">
+            <span className="font-inter text-sm font-normal leading-[22px] text-[var(--text-dark-tertiary,rgba(255,255,255,0.36))]">
               {subtitle}
             </span>
           )}

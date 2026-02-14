@@ -80,6 +80,13 @@ export {
   rejectScope,
 } from './scopeService';
 
+// Rating service
+export {
+  getDeveloperRatings,
+  getClientRatings,
+  getProjectRatings,
+} from './ratingService';
+
 // Calendar service
 export {
   getRegisteredWorkers,

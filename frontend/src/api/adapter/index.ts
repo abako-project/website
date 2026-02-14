@@ -71,6 +71,13 @@ export {
   deleteMilestone,
 } from './milestones';
 
+// Rating operations
+export {
+  getRatingsByClient,
+  getRatingsByDeveloper,
+  getRatingsByProject,
+} from './ratings';
+
 // Calendar operations
 export {
   registerWorker,

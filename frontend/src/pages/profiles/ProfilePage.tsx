@@ -67,21 +67,9 @@ export default function ProfilePage() {
     );
   }
 
-  // Developer profile
+  // Developer profile (renders its own full-width layout matching Figma)
   if (user.developerId) {
-    return (
-      <div className="px-8 lg:px-14 py-10">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-foreground mb-2">Profile</h1>
-          <p className="text-muted-foreground">
-            Manage your developer profile and settings
-          </p>
-        </div>
-        <div className="max-w-4xl">
-          <DeveloperProfilePage developerId={user.developerId} startInEditMode={startInEditMode} />
-        </div>
-      </div>
-    );
+    return <DeveloperProfilePage developerId={user.developerId} startInEditMode={startInEditMode} />;
   }
 
   // User has neither client nor developer profile

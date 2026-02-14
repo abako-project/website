@@ -5,62 +5,8 @@
  * Ported from backend/models/adapter.js (registerWorker, setAvailability, getAvailableWorkers, etc.)
  */
 
-import axios from 'axios';
-import { adapterConfig, API_TIMEOUT } from '../config';
-import { useAuthStore } from '@stores/authStore';
-
-// Create dedicated axios instance for adapter API
-const adapterClient = axios.create({
-  baseURL: adapterConfig.baseURL,
-  timeout: API_TIMEOUT,
-  headers: {
-    'Content-Type': 'application/json',
-    Accept: 'application/json'
-  },
-});
-
-// Add auth interceptor
-adapterClient.interceptors.request.use((config) => {
-  const { token, user } = useAuthStore.getState();
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-  if (user?.email) {
-    config.headers['x-user-email'] = user.email;
-  }
-  return config;
-});
-
-// ---------------------------------------------------------------------------
-// Error handling helper
-// ---------------------------------------------------------------------------
-
-function handleApiError(error: unknown, context: string): never {
-  if (axios.isAxiosError(error)) {
-    console.error(`[Adapter API Error] ${context}:`, {
-      message: error.message,
-      status: error.response?.status,
-      data: error.response?.data,
-      url: error.config?.url,
-    });
-
-    const errorMessage =
-      error.response?.data?.message ||
-      error.message ||
-      'Unknown API error';
-
-    const enhancedError = new Error(errorMessage) as Error & {
-      statusCode?: number;
-      context: string;
-    };
-    enhancedError.statusCode = error.response?.status || 500;
-    enhancedError.context = context;
-
-    throw enhancedError;
-  }
-
-  throw error;
-}
+import { adapterClient, handleApiError } from './client';
+import { adapterConfig } from '../config';
 
 // ---------------------------------------------------------------------------
 // Type definitions
@@ -142,10 +88,13 @@ export async function registerWorker(worker: string, token: string): Promise<Reg
 
 /**
  * Set availability for the current user.
+ *
+ * Payload format matches the old Express backend (adapter.js on main):
+ *   { availability: { type: availabilityType, value: weeklyHours } }
  */
 export async function setAvailability(
   availability: string,
-  weeklyHours: number,
+  weeklyHours: number | undefined,
   token: string
 ): Promise<SetAvailabilityResponse> {
   try {

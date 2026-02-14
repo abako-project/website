@@ -80,6 +80,13 @@ export type {
   SubmitVotesResponse,
 } from './payment';
 
+// Ratings
+export type {
+  RatingResponse,
+  DeveloperRatingsResponse,
+  ClientRatingsResponse,
+} from './rating';
+
 // API response types
 export type {
   ApiError,

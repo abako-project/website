@@ -14,7 +14,10 @@ import {
   submitMilestoneForReview,
   acceptMilestoneSubmission,
   rejectMilestoneSubmission,
+  updateMilestone,
+  destroyMilestone,
 } from '@/services';
+import type { MilestoneFormData } from '@/types';
 import { useAuthStore } from '@/stores/authStore';
 
 // ---------------------------------------------------------------------------
@@ -159,6 +162,87 @@ export function useRejectMilestone() {
         projectId,
         milestoneId,
         message: 'Milestone rejected successfully',
+      };
+    },
+    onSuccess: (_data, variables) => {
+      void queryClient.invalidateQueries({
+        queryKey: projectKeys.detail(variables.projectId),
+      });
+      void queryClient.invalidateQueries({ queryKey: projectKeys.lists() });
+      void queryClient.invalidateQueries({ queryKey: projectKeys.dashboard() });
+    },
+  });
+}
+
+// ---------------------------------------------------------------------------
+// useUpdateMilestone
+// ---------------------------------------------------------------------------
+
+/** Input for the update milestone mutation. */
+export interface UpdateMilestoneInput {
+  projectId: string;
+  milestoneId: string;
+  data: MilestoneFormData;
+}
+
+/**
+ * Mutation for updating milestone data.
+ *
+ * Used by coordinators/developers to update milestone details (title, budget, etc.).
+ * On success, invalidates the project detail and dashboard queries.
+ */
+export function useUpdateMilestone() {
+  const queryClient = useQueryClient();
+
+  return useMutation<MilestoneActionResponse, Error, UpdateMilestoneInput>({
+    mutationFn: async ({ projectId, milestoneId, data }: UpdateMilestoneInput) => {
+      const token = useAuthStore.getState().token || '';
+      await updateMilestone(projectId, milestoneId, data, token);
+      return {
+        projectId,
+        milestoneId,
+        message: 'Milestone updated successfully',
+      };
+    },
+    onSuccess: (_data, variables) => {
+      void queryClient.invalidateQueries({
+        queryKey: projectKeys.detail(variables.projectId),
+      });
+      void queryClient.invalidateQueries({
+        queryKey: milestoneKeys.detail(variables.projectId, variables.milestoneId),
+      });
+      void queryClient.invalidateQueries({ queryKey: projectKeys.dashboard() });
+    },
+  });
+}
+
+// ---------------------------------------------------------------------------
+// useDestroyMilestone
+// ---------------------------------------------------------------------------
+
+/** Input for the destroy milestone mutation. */
+export interface DestroyMilestoneInput {
+  projectId: string;
+  milestoneId: string;
+}
+
+/**
+ * Mutation for deleting a milestone.
+ *
+ * Used by coordinators to remove a milestone from a project.
+ * On success, invalidates the project detail and dashboard queries.
+ */
+export function useDestroyMilestone() {
+  const queryClient = useQueryClient();
+
+  return useMutation<MilestoneActionResponse, Error, DestroyMilestoneInput>({
+    mutationFn: async ({ projectId, milestoneId }: DestroyMilestoneInput) => {
+      const token = useAuthStore.getState().token || '';
+      await destroyMilestone(projectId, milestoneId, token);
+      return {
+        projectId,
+        milestoneId,
+        message: 'Milestone deleted successfully',
       };
     },
     onSuccess: (_data, variables) => {

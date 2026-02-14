@@ -70,6 +70,11 @@ export const adapterConfig = {
           `/projects/${projectId}/milestones/${milestoneId}`,
       },
     },
+    ratings: {
+      byClient: (clientId: string) => `/ratings/client/${clientId}`,
+      byDeveloper: (developerId: string) => `/ratings/developer/${developerId}`,
+      byProject: (projectId: string) => `/ratings/project/${projectId}`,
+    },
     calendar: {
       deploy: (version: string) => `/calendar/deploy/${version}`,
       registerWorker: `/calendar/${CALENDAR_ADDRESS}/register_worker`,

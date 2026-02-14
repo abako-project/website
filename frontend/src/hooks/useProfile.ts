@@ -281,14 +281,15 @@ function buildDeveloperUpdatePayload(
     proficiency: data.proficiency || null,
   };
 
-  // Skills and languages default to ["none"] if empty
+  // Skills and languages default to ["none"] if empty.
+  // Flatten in case the API returned nested arrays from a previous buggy save.
   payload.skills =
     Array.isArray(data.skills) && data.skills.length > 0
-      ? data.skills
+      ? data.skills.flat(Infinity).filter((s): s is string => typeof s === 'string')
       : ['none'];
   payload.languages =
     Array.isArray(data.languages) && data.languages.length > 0
-      ? data.languages
+      ? data.languages.flat(Infinity).filter((l): l is string => typeof l === 'string')
       : ['none'];
 
   // Availability logic matching old backend
@@ -338,7 +339,9 @@ export function useUpdateDeveloperProfile() {
         }
         await setWorkerAvailability(
           payload.availability as string,
-          (payload.availableHoursPerWeek as number) || 0,
+          payload.availability === 'WeeklyHours'
+            ? (payload.availableHoursPerWeek as number) || 0
+            : undefined,
           authToken
         );
       } catch (calendarError) {

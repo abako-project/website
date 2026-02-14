@@ -1,27 +1,28 @@
 /**
  * DeveloperProfilePage - Developer profile view and edit
  *
- * Displays a developer's profile information with an edit mode toggle.
- * Mirrors the EJS views at backend/views/developers/profile/show.ejs
- * and backend/views/developers/profile/edit.ejs.
+ * Show mode matches Figma node 1350:15713:
+ *   - Full-width header: avatar (72px), name (30px bold), ID hash, toggle, rating
+ *   - Two-column layout: profile card (left) + reviews (right)
+ *   - Profile card: role/proficiency, bio, background, skills, info items
  *
- * Fields displayed:
- *   - Name, email, bio, background, role, proficiency
- *   - Skills, languages, availability
- *   - GitHub username, portfolio URL, location
- *   - Profile image with upload support
+ * Edit mode: card-based form (wrapped in its own padded container).
  *
  * Uses React Query hooks for data fetching and mutations.
  */
 
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { useDeveloperProfile, useUpdateDeveloperProfile, useUploadProfileImage } from '@hooks/useProfile';
+import { useDeveloperRatings } from '@hooks/useRatings';
 import { useEnums } from '@hooks/useEnums';
 import { Button } from '@components/ui/Button';
 import { Input } from '@components/ui/Input';
 import { Label } from '@components/ui/Label';
 import { Card, CardContent, CardHeader, CardTitle } from '@components/ui/Card';
 import { Spinner } from '@components/ui/Spinner';
+import { ToggleSwitch } from '@components/ui/ToggleSwitch';
+import { StarRating } from '@components/features/ratings/StarRating';
+import { ReviewsList } from '@components/features/ratings/ReviewsList';
 import type { DeveloperUpdateData, LanguagesMap } from '@/types/index';
 
 // ---------------------------------------------------------------------------
@@ -34,22 +35,18 @@ export interface DeveloperProfilePageProps {
 }
 
 // ---------------------------------------------------------------------------
-// Availability display helper
+// Info item helper (used in show mode profile card)
 // ---------------------------------------------------------------------------
 
-function formatAvailability(availability: string | undefined, hours: number | undefined): string {
-  switch (availability) {
-    case 'FullTime':
-      return 'Full-time';
-    case 'PartTime':
-      return 'Part-time';
-    case 'NotAvailable':
-      return 'Not available';
-    case 'WeeklyHours':
-      return `${hours ?? 0} hours/week`;
-    default:
-      return 'No availability';
-  }
+function InfoItem({ icon, text }: { icon: string; text: string }) {
+  return (
+    <div className="flex items-center gap-[13px]">
+      <i className={`${icon} text-2xl leading-none text-[var(--text-dark-primary,#f5f5f5)]`} />
+      <span className="text-sm font-medium leading-[22px] text-[var(--text-dark-primary,#f5f5f5)]">
+        {text}
+      </span>
+    </div>
+  );
 }
 
 // ---------------------------------------------------------------------------
@@ -60,6 +57,7 @@ export default function DeveloperProfilePage({ developerId, startInEditMode }: D
   const [isEditing, setIsEditing] = useState(startInEditMode ?? false);
 
   const { data, isLoading, isError, error } = useDeveloperProfile(developerId);
+  const { data: ratingsData, isLoading: isLoadingRatings } = useDeveloperRatings(developerId);
   const { data: enums } = useEnums();
   const updateMutation = useUpdateDeveloperProfile();
   const uploadMutation = useUploadProfileImage();
@@ -187,10 +185,37 @@ export default function DeveloperProfilePage({ developerId, startInEditMode }: D
 
   const isSaving = updateMutation.isPending || uploadMutation.isPending;
 
+  // Toggle availability in show mode (must be before early returns to respect hooks rules)
+  const handleToggleAvailability = useCallback(
+    (checked: boolean) => {
+      const dev = data?.developer;
+      if (!dev) return;
+      updateMutation.mutate({
+        id: developerId,
+        data: {
+          name: dev.name,
+          bio: dev.bio,
+          background: dev.background,
+          role: dev.role,
+          proficiency: dev.proficiency,
+          githubUsername: dev.githubUsername,
+          portfolioUrl: dev.portfolioUrl,
+          location: dev.location,
+          skills: dev.skills,
+          languages: dev.languages,
+          availability: checked ? 'FullTime' : 'NotAvailable',
+          availableHoursPerWeek: checked ? dev.availableHoursPerWeek : 0,
+          isAvailableForHire: checked,
+        },
+      });
+    },
+    [developerId, data?.developer, updateMutation]
+  );
+
   // ------- Loading state -------
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center py-24">
+      <div className="flex items-center justify-center py-24 px-14">
         <div className="flex flex-col items-center gap-4">
           <Spinner size="lg" />
           <p className="text-muted-foreground">Loading profile...</p>
@@ -202,22 +227,24 @@ export default function DeveloperProfilePage({ developerId, startInEditMode }: D
   // ------- Error state -------
   if (isError) {
     return (
-      <Card className="max-w-2xl mx-auto">
-        <CardContent className="p-8 text-center">
-          <div className="w-14 h-14 mx-auto mb-4 rounded-full bg-red-500/15 flex items-center justify-center">
-            <i className="ri-error-warning-line text-2xl text-red-400" />
-          </div>
-          <h2 className="text-xl font-semibold text-foreground mb-2">
-            Failed to load profile
-          </h2>
-          <p className="text-muted-foreground mb-4">
-            {error?.message || 'An unexpected error occurred.'}
-          </p>
-          <Button variant="outline" onClick={() => window.location.reload()}>
-            Try Again
-          </Button>
-        </CardContent>
-      </Card>
+      <div className="px-14 py-10">
+        <Card className="max-w-2xl mx-auto">
+          <CardContent className="p-8 text-center">
+            <div className="w-14 h-14 mx-auto mb-4 rounded-full bg-red-500/15 flex items-center justify-center">
+              <i className="ri-error-warning-line text-2xl text-red-400" />
+            </div>
+            <h2 className="text-xl font-semibold text-foreground mb-2">
+              Failed to load profile
+            </h2>
+            <p className="text-muted-foreground mb-4">
+              {error?.message || 'An unexpected error occurred.'}
+            </p>
+            <Button variant="outline" onClick={() => window.location.reload()}>
+              Try Again
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
     );
   }
 
@@ -228,144 +255,181 @@ export default function DeveloperProfilePage({ developerId, startInEditMode }: D
   // ------- Edit mode -------
   if (isEditing) {
     return (
-      <DeveloperProfileEdit
-        formData={formData}
-        developerEmail={developer.email}
-        avatarUrl={avatarUrl}
-        imagePreview={imagePreview}
-        isAvailableForHire={isAvailableForHire}
-        allRoles={enums?.roles}
-        allProficiencies={enums?.proficiency}
-        allSkills={enums?.skills}
-        allAvailability={enums?.availability}
-        languagesMap={enums?.languages}
-        fileInputRef={fileInputRef}
-        isSaving={isSaving}
-        saveError={updateMutation.error?.message || uploadMutation.error?.message || null}
-        onFieldChange={handleFieldChange}
-        onSkillToggle={handleSkillToggle}
-        onLanguageToggle={handleLanguageToggle}
-        onAvailabilityToggle={handleAvailabilityToggle}
-        onFileChange={handleFileChange}
-        onSave={handleSave}
-        onCancel={handleCancelEdit}
-      />
+      <div className="px-14 py-10">
+        <div className="max-w-4xl">
+          <DeveloperProfileEdit
+            formData={formData}
+            developerEmail={developer.email}
+            avatarUrl={avatarUrl}
+            imagePreview={imagePreview}
+            isAvailableForHire={isAvailableForHire}
+            allRoles={enums?.roles}
+            allProficiencies={enums?.proficiency}
+            allSkills={enums?.skills}
+            allAvailability={enums?.availability}
+            languagesMap={enums?.languages}
+            fileInputRef={fileInputRef}
+            isSaving={isSaving}
+            saveError={updateMutation.error?.message || uploadMutation.error?.message || null}
+            onFieldChange={handleFieldChange}
+            onSkillToggle={handleSkillToggle}
+            onLanguageToggle={handleLanguageToggle}
+            onAvailabilityToggle={handleAvailabilityToggle}
+            onFileChange={handleFileChange}
+            onSave={handleSave}
+            onCancel={handleCancelEdit}
+          />
+        </div>
+      </div>
     );
   }
 
-  // ------- Show mode -------
-  const availabilityLabel = formatAvailability(developer.availability, developer.availableHoursPerWeek);
+  // ------- Show mode (matches Figma node 1350:15713) -------
   const isAvailable = developer.availability !== 'NotAvailable';
 
   return (
-    <div className="space-y-6">
-      {/* Profile Header */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-6">
-          <img
-            className="w-20 h-20 rounded-full object-cover border-2 border-border bg-muted"
-            src={avatarUrl}
-            alt={developer.name}
-            onError={(e) => {
-              (e.target as HTMLImageElement).src = '/images/none.png';
-            }}
-          />
-          <div>
-            <h2 className="text-2xl font-bold text-foreground">{developer.name}</h2>
-            <p className="text-muted-foreground">{developer.email}</p>
-          </div>
-        </div>
+    <div className="flex flex-col gap-10 w-full">
+      {/* Profile Header - full width, surface-2 bg, border-bottom */}
+      <div className="w-full bg-[var(--base-surface-2,#231f1f)] border-b border-[var(--base-border,#3d3d3d)] px-14 py-8">
+        <div className="flex flex-wrap items-end gap-y-6">
+          <div className="flex flex-1 items-center min-w-0">
+            <div className="flex flex-1 items-center gap-6 pl-4 min-w-0">
+              {/* Avatar 72px */}
+              <div className="relative shrink-0 w-[72px] h-[72px] rounded-full border border-[var(--base-border,#3d3d3d)] overflow-hidden flex items-center justify-center">
+                {/* Fallback icon (always rendered, hidden by image when loaded) */}
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="w-6 h-6 text-[var(--text-dark-secondary,rgba(255,255,255,0.7))]"
+                >
+                  <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+                  <circle cx="12" cy="7" r="4" />
+                </svg>
+                {avatarUrl && (
+                  <img
+                    src={avatarUrl}
+                    alt={developer.name}
+                    className="absolute inset-0 w-full h-full object-cover"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).style.display = 'none';
+                    }}
+                  />
+                )}
+              </div>
 
-        {/* Availability badge */}
-        <div
-          className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-sm ${
-            isAvailable
-              ? 'bg-green-500/15 text-green-400 border border-green-500/30'
-              : 'bg-muted text-muted-foreground border border-border'
-          }`}
-        >
-          <div className={`w-2 h-2 rounded-full ${isAvailable ? 'bg-green-400' : 'bg-muted-foreground'}`} />
-          <span>{isAvailable ? 'Available for Work' : 'Not Available'}</span>
+              {/* Name + ID hash */}
+              <div className="flex-1 min-w-0">
+                <div className="flex items-baseline gap-4">
+                  <span className="text-[30px] font-bold leading-[42px] text-[var(--text-dark-primary,#f5f5f5)] truncate">
+                    {developer.name}
+                  </span>
+                  <span className="text-xs font-medium leading-[18px] text-[var(--text-dark-tertiary,rgba(255,255,255,0.36))] shrink-0">
+                    #{String(developerId).slice(0, 13)}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Right: toggle + rating */}
+            <div className="flex items-center gap-8 shrink-0">
+              <div className="flex items-center gap-3">
+                <ToggleSwitch
+                  checked={isAvailable}
+                  onChange={handleToggleAvailability}
+                  disabled={updateMutation.isPending}
+                />
+                <span className="text-sm font-medium leading-[22px] text-[var(--text-dark-primary,#f5f5f5)] whitespace-nowrap">
+                  Available for Work
+                </span>
+              </div>
+              <StarRating rating={ratingsData?.averageRating ?? 0} size="md" />
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* Profile Card */}
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between">
-          <div>
-            <CardTitle>{developer.role || ''} Developer</CardTitle>
-            <p className="text-sm text-muted-foreground mt-1">
-              {developer.proficiency || 'No proficiency level set'}
-            </p>
-          </div>
-          <Button variant="outline" onClick={handleEnterEdit}>
-            <i className="ri-user-line mr-2" />
-            Edit Profile
-          </Button>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          {/* Bio */}
-          <div>
-            <h3 className="text-sm font-semibold text-foreground mb-1">Bio</h3>
-            <p className="text-muted-foreground">{developer.bio || 'No bio available.'}</p>
-          </div>
+      {/* Content: two columns */}
+      <div className="flex gap-14 items-start px-14 pb-8 w-full">
+        {/* Left column: Profile card */}
+        <div className="flex-1 min-w-0 bg-[var(--base-surface-2,#231f1f)] border border-[var(--base-border,#3d3d3d)] rounded-xl shadow-[0.5px_0.5px_3px_0px_rgba(255,255,255,0.08)] px-8 py-6">
+          <div className="flex flex-col gap-6">
+            {/* Card header: role + edit button */}
+            <div className="flex items-center justify-between">
+              <div className="flex flex-col gap-1">
+                <span className="text-lg font-medium leading-7 text-[var(--text-dark-primary,#f5f5f5)]">
+                  {developer.role || 'Developer'}
+                </span>
+                <span className="text-xs font-normal leading-[18px] text-[var(--text-dark-secondary,rgba(255,255,255,0.7))]">
+                  {developer.proficiency || 'No proficiency level'}
+                </span>
+              </div>
+              <button
+                onClick={handleEnterEdit}
+                className="h-9 px-3 rounded-xl border border-[var(--base-border,#3d3d3d)] bg-[var(--base-surface-2,#231f1f)] text-sm font-semibold leading-[22px] text-[var(--text-dark-primary,#f5f5f5)] hover:bg-[var(--base-fill-1,#333)] transition-colors"
+              >
+                Edit Information
+              </button>
+            </div>
 
-          {/* Background */}
-          <div>
-            <h3 className="text-sm font-semibold text-foreground mb-1">Background</h3>
-            <p className="text-muted-foreground">{developer.background || 'No background information.'}</p>
-          </div>
+            {/* Bio */}
+            <div className="flex flex-col gap-1">
+              <span className="text-sm font-medium leading-[22px] text-[var(--text-dark-tertiary,rgba(255,255,255,0.36))]">
+                Bio
+              </span>
+              <p className="text-sm font-medium leading-[22px] text-[var(--text-dark-primary,#f5f5f5)]">
+                {developer.bio || 'No bio available.'}
+              </p>
+            </div>
 
-          {/* Skills */}
-          <div>
-            <h3 className="text-sm font-semibold text-foreground mb-2">Skills</h3>
-            <div className="flex flex-wrap gap-2">
-              {developer.skills && developer.skills.length > 0 ? (
-                developer.skills.map((skill) => (
+            {/* Background */}
+            <div className="flex flex-col gap-1">
+              <span className="text-sm font-medium leading-[22px] text-[var(--text-dark-tertiary,rgba(255,255,255,0.36))]">
+                Background
+              </span>
+              <p className="text-sm font-medium leading-[22px] text-[var(--text-dark-primary,#f5f5f5)]">
+                {developer.background || 'No background information.'}
+              </p>
+            </div>
+
+            {/* Skills chips */}
+            {developer.skills && developer.skills.length > 0 && (
+              <div className="flex flex-wrap gap-2">
+                {developer.skills.map((skill) => (
                   <span
                     key={skill}
-                    className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-primary/15 text-primary border border-primary/30"
+                    className="inline-flex items-center h-8 px-3 rounded-full text-sm font-medium leading-[22px] text-[var(--text-dark-primary,#f5f5f5)] bg-[var(--base-surface-2,#231f1f)] border border-[var(--base-border,#3d3d3d)] shadow-[0.5px_0.5px_3px_0px_rgba(255,255,255,0.08)]"
                   >
                     {skill}
                   </span>
-                ))
-              ) : (
-                <span className="text-sm text-muted-foreground">No skills listed.</span>
-              )}
+                ))}
+              </div>
+            )}
+
+            {/* Info items */}
+            <div className="flex flex-col gap-4">
+              <InfoItem icon="ri-translate-2" text={languageNames.length > 0 ? languageNames.join(', ') : 'No languages'} />
+              <InfoItem icon="ri-map-pin-line" text={developer.location || 'No location'} />
+              <InfoItem icon="ri-earth-line" text={developer.portfolioUrl || 'No portfolio URL'} />
+              <InfoItem icon="ri-github-line" text={developer.githubUsername || 'No GitHub account'} />
+              <InfoItem icon="ri-mail-line" text={developer.email || 'No email'} />
             </div>
           </div>
+        </div>
 
-          {/* Info list */}
-          <div>
-            <ul className="space-y-3 text-sm text-muted-foreground">
-              <li className="flex items-center gap-2">
-                <i className="ri-translate-2 text-base" />
-                <span>{languageNames.length > 0 ? languageNames.join(', ') : 'No languages'}</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <i className="ri-map-pin-line text-base" />
-                <span>{developer.location || 'No location'}</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <i className="ri-earth-line text-base" />
-                <span>{developer.portfolioUrl || 'No portfolio URL'}</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <i className="ri-github-line text-base" />
-                <span>{developer.githubUsername || 'No GitHub account'}</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <i className="ri-mail-line text-base" />
-                <span>{developer.email || 'No email'}</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <i className="ri-time-line text-base" />
-                <span>{availabilityLabel}</span>
-              </li>
-            </ul>
-          </div>
-        </CardContent>
-      </Card>
+        {/* Right column: Reviews */}
+        <ReviewsList
+          ratings={ratingsData?.ratings ?? []}
+          totalCount={ratingsData?.totalRatings ?? 0}
+          isLoading={isLoadingRatings}
+          resolveReviewerName={(r) => `Client ${r.clientId}`}
+          className="flex-1 min-w-0"
+        />
+      </div>
     </div>
   );
 }

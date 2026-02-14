@@ -5,7 +5,7 @@
  * All hooks use direct service calls (no Express backend).
  *
  * Flow:
- *   - Login: clientConnect/developerConnect → Zustand store
+ *   - Login: findByEmail + token from WebAuthn → Zustand store
  *   - Register: createClient/createDeveloper → Zustand store
  *   - Logout: Clear Zustand store (no server call)
  *   - CurrentUser: Validate persisted user via findByEmail
@@ -14,8 +14,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useAuthStore } from '@stores/authStore';
 import {
-  clientConnect,
-  developerConnect,
   createClient,
   createDeveloper,
   findClientByEmail,
@@ -87,8 +85,8 @@ export function useCurrentUser(options?: { enabled?: boolean }) {
 /**
  * Login mutation that calls SEDA services directly.
  *
- * Calls clientConnect or developerConnect depending on the role,
- * then updates the Zustand auth store with user and token.
+ * Uses the token already obtained from performWebAuthnLogin and looks
+ * up the user profile via findByEmail, then updates the Zustand store.
  */
 export function useLogin() {
   const queryClient = useQueryClient();
@@ -96,26 +94,33 @@ export function useLogin() {
 
   return useMutation<LoginResponse, Error, LoginCredentials>({
     mutationFn: async (credentials: LoginCredentials) => {
-      const { email, role } = credentials;
+      const { email, token, role } = credentials;
+
+      // IMPORTANT: We must use the token from performWebAuthnLogin (passed in
+      // credentials.token).  That token's session key was authorized and funded
+      // when sdk.auth.sign(extrinsic) was called during the WebAuthn flow.
+      // Making a second custom-connect call would generate a NEW session key
+      // whose extrinsic was never signed, leaving the account unfunded and
+      // causing "InvalidTxError: Payment" on any subsequent blockchain write.
 
       if (role === 'client') {
-        const result = await clientConnect(email);
+        const client = await findClientByEmail(email);
         const user: User = {
           email,
-          name: result.name ?? email,
-          clientId: result.clientId,
+          name: client?.name ?? email,
+          clientId: client?.id,
         };
-        return { user, token: result.token };
+        return { user, token };
       }
 
       // role === 'developer'
-      const result = await developerConnect(email);
+      const developer = await findDeveloperByEmail(email);
       const user: User = {
         email,
-        name: result.name ?? email,
-        developerId: result.developerId,
+        name: developer?.name ?? email,
+        developerId: developer?.id,
       };
-      return { user, token: result.token };
+      return { user, token };
     },
     onSuccess: (data) => {
       login(data.user, data.token);

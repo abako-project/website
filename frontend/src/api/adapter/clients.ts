@@ -6,62 +6,9 @@
  */
 
 import axios from 'axios';
-import { adapterConfig, API_TIMEOUT } from '../config';
-import { useAuthStore } from '@stores/authStore';
+import { adapterClient, handleApiError } from './client';
+import { adapterConfig } from '../config';
 import type { Client } from '@/types/client';
-
-// Create dedicated axios instance for adapter API
-const adapterClient = axios.create({
-  baseURL: adapterConfig.baseURL,
-  timeout: API_TIMEOUT,
-  headers: {
-    'Content-Type': 'application/json',
-    Accept: 'application/json'
-  },
-});
-
-// Add auth interceptor
-adapterClient.interceptors.request.use((config) => {
-  const { token, user } = useAuthStore.getState();
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-  if (user?.email) {
-    config.headers['x-user-email'] = user.email;
-  }
-  return config;
-});
-
-// ---------------------------------------------------------------------------
-// Error handling helper
-// ---------------------------------------------------------------------------
-
-function handleApiError(error: unknown, context: string): never {
-  if (axios.isAxiosError(error)) {
-    console.error(`[Adapter API Error] ${context}:`, {
-      message: error.message,
-      status: error.response?.status,
-      data: error.response?.data,
-      url: error.config?.url,
-    });
-
-    const errorMessage =
-      error.response?.data?.message ||
-      error.message ||
-      'Unknown API error';
-
-    const enhancedError = new Error(errorMessage) as Error & {
-      statusCode?: number;
-      context: string;
-    };
-    enhancedError.statusCode = error.response?.status || 500;
-    enhancedError.context = context;
-
-    throw enhancedError;
-  }
-
-  throw error;
-}
 
 // ---------------------------------------------------------------------------
 // Type definitions
