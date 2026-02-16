@@ -28,6 +28,8 @@ import {
   getTaskCompletionStatus,
   updateProject,
   setCalendarContract,
+  submitCoordinatorRatings as apiSubmitCoordinatorRatings,
+  submitDeveloperRating as apiSubmitDeveloperRating,
 } from '@/api/adapter';
 
 import type { Project, Milestone, Client, Developer } from '@/types';
@@ -80,7 +82,18 @@ export async function getProject(projectId: string): Promise<Project> {
   let milestones: Array<Record<string, unknown>> = [];
   if (project.creationStatus === 'created') {
     const response = await getAllTasks(projectId);
-    milestones = (response.milestones || []) as Array<Record<string, unknown>>;
+    const allMilestones = (response.milestones || []) as Array<Record<string, unknown>>;
+
+    // Filter milestones to only those that exist in the contract's current scope.
+    // The backend may accumulate stale milestones from previous scope proposals.
+    const contractTasks = (response as Record<string, unknown>).response as Array<{ id: number }> | undefined;
+    if (contractTasks && contractTasks.length > 0) {
+      const contractTaskIds = new Set(contractTasks.map((t) => Number(t.id)));
+      milestones = allMilestones.filter((m) => contractTaskIds.has(Number(m.id)));
+    } else {
+      milestones = allMilestones;
+    }
+
     milestones.forEach(cleanMilestone);
   }
 
@@ -88,19 +101,19 @@ export async function getProject(projectId: string): Promise<Project> {
   cleanProject(project);
 
   // 5. Enrich: Add client reference
-  project.client = clients.find((c: Client) => c.id === project.clientId);
+  project.client = clients.find((c: Client) => String(c.id) === String(project.clientId));
 
   // 6. Enrich: Add consultant reference (if assigned)
   if (project.consultantId) {
     project.consultant = developers.find(
-      (d: Developer) => d.id === project.consultantId
+      (d: Developer) => String(d.id) === String(project.consultantId)
     );
   }
 
   // 7. Enrich: Add developer references to milestones
   milestones.forEach((m) => {
     if (m.developerId) {
-      m.developer = developers.find((d: Developer) => d.id === m.developerId);
+      m.developer = developers.find((d: Developer) => String(d.id) === String(m.developerId));
     }
   });
 
@@ -194,9 +207,12 @@ export async function getProjectsIndex(
       );
 
       // Filter: developer is consultant OR developer in milestones
+      // Use String() for consultantId comparison because the backend stores it
+      // as a string (via .toString()) while the developer's id from mongoose-sequence
+      // is a number at runtime, causing strict equality to fail ("1" === 1 → false).
       projects = projects.filter(
         (proj) =>
-          proj.consultantId === developerId || developerProjectIds.includes(proj._id as string)
+          String(proj.consultantId) === String(developerId) || developerProjectIds.includes(proj._id as string)
       );
     }
   }
@@ -217,22 +233,31 @@ export async function getProjectsIndex(
     cleanProject(project);
 
     // Enrich: Add client reference
-    project.client = clients.find((c: Client) => c.id === project.clientId);
+    project.client = clients.find((c: Client) => String(c.id) === String(project.clientId));
 
     // Enrich: Add consultant reference
     if (project.consultantId) {
       project.consultant = developers.find(
-        (d: Developer) => d.id === project.consultantId
+        (d: Developer) => String(d.id) === String(project.consultantId)
       );
     }
 
-    // Enrich: Add milestones
+    // Enrich: Add milestones (filtered to contract's current scope)
     const milestoneResult = milestoneResults[index];
     let milestones: Array<Record<string, unknown>> = [];
     if (milestoneResult && milestoneResult.status === 'fulfilled') {
       const value = milestoneResult.value;
       if (value && 'milestones' in value && Array.isArray(value.milestones)) {
-        milestones = value.milestones as Array<Record<string, unknown>>;
+        let allMilestones = value.milestones as Array<Record<string, unknown>>;
+
+        // Filter to only milestones that exist in the contract
+        const contractTasks = (value as Record<string, unknown>).response as Array<{ id: number }> | undefined;
+        if (contractTasks && contractTasks.length > 0) {
+          const contractTaskIds = new Set(contractTasks.map((t) => Number(t.id)));
+          allMilestones = allMilestones.filter((m) => contractTaskIds.has(Number(m.id)));
+        }
+
+        milestones = allMilestones;
         milestones.forEach((m) => {
           cleanMilestone(m);
           if (m.developerId) {
@@ -303,14 +328,15 @@ export async function rejectProposal(
 }
 
 /**
- * Mark a project as completed with optional ratings.
+ * Mark a project as completed with ratings and coordinator rating.
  */
 export async function projectCompleted(
   projectId: string,
-  ratings?: unknown[],
+  ratings: unknown[] | undefined,
+  coordinatorRating: number,
   token?: string
 ): Promise<void> {
-  await markCompleted(projectId, ratings || [], token || '');
+  await markCompleted(projectId, ratings || [], coordinatorRating, token || '');
 }
 
 /**
@@ -363,7 +389,15 @@ export async function getProjectAllTasks(
 ): Promise<Milestone[]> {
   try {
     const response = await getAllTasks(contractAddress);
-    const milestones: Array<Record<string, unknown>> = (response.milestones || []) as Array<Record<string, unknown>>;
+    let milestones: Array<Record<string, unknown>> = (response.milestones || []) as Array<Record<string, unknown>>;
+
+    // Filter to only milestones that exist in the contract's current scope
+    const contractTasks = (response as Record<string, unknown>).response as Array<{ id: number }> | undefined;
+    if (contractTasks && contractTasks.length > 0) {
+      const contractTaskIds = new Set(contractTasks.map((t) => Number(t.id)));
+      milestones = milestones.filter((m) => contractTaskIds.has(Number(m.id)));
+    }
+
     milestones.forEach(cleanMilestone);
     return milestones as unknown as Milestone[];
   } catch (error) {
@@ -458,4 +492,27 @@ export async function setProjectCalendarContract(
     );
     throw error;
   }
+}
+
+/**
+ * Submit coordinator ratings for client and team members.
+ */
+export async function submitCoordinatorRatings(
+  projectId: string,
+  clientRating: number,
+  teamRatings: Array<[string, number]>,
+  token: string
+): Promise<void> {
+  await apiSubmitCoordinatorRatings(projectId, clientRating, teamRatings, token);
+}
+
+/**
+ * Submit developer rating for coordinator.
+ */
+export async function submitDeveloperRating(
+  projectId: string,
+  coordinatorRating: number,
+  token: string
+): Promise<void> {
+  await apiSubmitDeveloperRating(projectId, coordinatorRating, token);
 }

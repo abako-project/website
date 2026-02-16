@@ -78,6 +78,10 @@ export type {
   VotesResponse,
   VoteEntry,
   SubmitVotesResponse,
+  SubmitCoordinatorRatingsInput,
+  SubmitCoordinatorRatingsResponse,
+  SubmitDeveloperRatingInput,
+  SubmitDeveloperRatingResponse,
 } from './payment';
 
 // Ratings

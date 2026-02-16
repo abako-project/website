@@ -61,6 +61,8 @@ export {
   getAllTasks,
   updateProject,
   coordinatorRejectProject,
+  submitCoordinatorRatings,
+  submitDeveloperRating,
 } from './projects';
 
 // Milestone operations

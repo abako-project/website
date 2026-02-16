@@ -313,15 +313,19 @@ export function useUpdateProject() {
  * Used by consultants to approve a client's project proposal.
  * On success, invalidates the relevant queries.
  *
- * NOTE: Backend seda.approveProposal is a stub that throws "Not yet implemented".
- * This hook is kept as a stub for future implementation.
+ * The old backend's seda.approveProposal() was a no-op (empty function).
+ * The real action was initializing req.session.scope, which the caller
+ * handles via the onSuccess callback by setting local scope state.
  */
 export function useApproveProposal() {
   const queryClient = useQueryClient();
 
   return useMutation<ApproveProposalResponse, Error, string>({
-    mutationFn: async (_projectId: string) => {
-      throw new Error('Approve proposal is not yet implemented');
+    mutationFn: async (projectId: string) => {
+      return {
+        projectId,
+        message: 'Proposal approved',
+      };
     },
     onSuccess: (_data, projectId) => {
       void queryClient.invalidateQueries({

@@ -16,8 +16,8 @@ import {
   submitScope,
   acceptScope,
   rejectScope,
-  getProject,
 } from '@/services';
+import { getAllTasks } from '@/api/adapter';
 import { useAuthStore } from '@/stores/authStore';
 
 // ---------------------------------------------------------------------------
@@ -100,8 +100,9 @@ export interface AcceptScopeInput {
 /**
  * Mutation for accepting the proposed scope.
  *
- * Used by clients to accept the proposed scope. The backend will fetch
- * the milestone IDs internally.
+ * Uses the contract's actual task IDs (from get_all_tasks response) instead
+ * of MongoDB milestone IDs, because the backend may accumulate stale
+ * milestones from previous scope proposals that the contract no longer knows about.
  *
  * On success, invalidates the project detail and list queries.
  */
@@ -115,13 +116,18 @@ export function useAcceptScope() {
     }: AcceptScopeInput) => {
       const token = useAuthStore.getState().token || '';
 
-      // Fetch project to get milestone IDs
-      const project = await getProject(projectId);
-      const milestoneIds = project.milestones
-        .map((m) => m.id)
-        .filter((id): id is string => !!id);
+      // Fetch task IDs from the contract (not MongoDB milestones which may include stale entries)
+      const tasksData = await getAllTasks(projectId);
+      const contractTasks = (tasksData as Record<string, unknown>).response as Array<{ id: number }> | undefined;
+      const taskIds = (contractTasks || [])
+        .map((t) => Number(t.id))
+        .filter((id) => !isNaN(id));
 
-      await acceptScope(projectId, milestoneIds, clientResponse || '', token);
+      if (taskIds.length === 0) {
+        throw new Error('No tasks found in the contract to approve');
+      }
+
+      await acceptScope(projectId, taskIds, clientResponse || '', token);
 
       return {
         projectId,

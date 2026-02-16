@@ -117,6 +117,7 @@ export function usePayment(projectId: string | undefined) {
 export interface ReleasePaymentInput {
   projectId: string;
   rating?: Array<[string, number]>;
+  coordinatorRating: number;
 }
 
 /**
@@ -131,9 +132,9 @@ export function useReleasePayment() {
   const queryClient = useQueryClient();
 
   return useMutation<ReleasePaymentResponse, Error, ReleasePaymentInput>({
-    mutationFn: async ({ projectId, rating }: ReleasePaymentInput) => {
+    mutationFn: async ({ projectId, rating, coordinatorRating }: ReleasePaymentInput) => {
       const token = useAuthStore.getState().token || '';
-      await projectCompleted(projectId, rating, token);
+      await projectCompleted(projectId, rating, coordinatorRating, token);
       return {
         projectId,
         message: 'Payment released successfully',

@@ -15,16 +15,23 @@ import {
 } from '@tanstack/react-query';
 import { projectKeys } from '@hooks/useProjects';
 import { paymentKeys } from '@hooks/usePayments';
+import { ratingKeys } from '@hooks/useRatings';
 import type {
   VotesResponse,
   VoteEntry,
   SubmitVotesResponse,
+  SubmitCoordinatorRatingsInput,
+  SubmitCoordinatorRatingsResponse,
+  SubmitDeveloperRatingInput,
+  SubmitDeveloperRatingResponse,
 } from '@/types/index';
 import {
   getProject,
   getProjectDevelopers,
   getDeveloperAttachment,
   projectCompleted,
+  submitCoordinatorRatings,
+  submitDeveloperRating,
 } from '@/services';
 import { useAuthStore } from '@/stores/authStore';
 import { adapterConfig } from '@/api/config';
@@ -104,6 +111,7 @@ export function useVoteMembers(projectId: string | undefined) {
 export interface SubmitVotesInput {
   projectId: string;
   votes: VoteEntry[];
+  coordinatorRating: number;
 }
 
 /**
@@ -116,14 +124,14 @@ export function useSubmitVotes() {
   const queryClient = useQueryClient();
 
   return useMutation<SubmitVotesResponse, Error, SubmitVotesInput>({
-    mutationFn: async ({ projectId, votes }: SubmitVotesInput) => {
+    mutationFn: async ({ projectId, votes, coordinatorRating }: SubmitVotesInput) => {
       const token = useAuthStore.getState().token || '';
 
       // Convert votes to the format expected by the service
       // Ensure scores are numeric (form inputs may produce strings at runtime)
       const voteTuples: Array<[string, number]> = votes.map((v) => [v.userId, Number(v.score)]);
 
-      await projectCompleted(projectId, voteTuples, token);
+      await projectCompleted(projectId, voteTuples, coordinatorRating, token);
 
       return {
         projectId,
@@ -140,6 +148,78 @@ export function useSubmitVotes() {
       void queryClient.invalidateQueries({ queryKey: projectKeys.lists() });
       void queryClient.invalidateQueries({ queryKey: projectKeys.dashboard() });
       void queryClient.invalidateQueries({ queryKey: paymentKeys.lists() });
+      void queryClient.invalidateQueries({ queryKey: ratingKeys.all });
+    },
+  });
+}
+
+// ---------------------------------------------------------------------------
+// useSubmitCoordinatorRatings
+// ---------------------------------------------------------------------------
+
+/**
+ * Mutation for submitting coordinator ratings (coordinator rates client + team).
+ *
+ * On success, invalidates project and vote queries.
+ */
+export function useSubmitCoordinatorRatings() {
+  const queryClient = useQueryClient();
+
+  return useMutation<SubmitCoordinatorRatingsResponse, Error, SubmitCoordinatorRatingsInput>({
+    mutationFn: async ({ projectId, clientRating, teamRatings }: SubmitCoordinatorRatingsInput) => {
+      const token = useAuthStore.getState().token || '';
+
+      await submitCoordinatorRatings(projectId, clientRating, teamRatings, token);
+
+      return {
+        projectId,
+        message: 'Coordinator ratings submitted successfully',
+      };
+    },
+    onSuccess: (_data, variables) => {
+      void queryClient.invalidateQueries({
+        queryKey: voteKeys.members(variables.projectId),
+      });
+      void queryClient.invalidateQueries({
+        queryKey: projectKeys.detail(variables.projectId),
+      });
+      void queryClient.invalidateQueries({ queryKey: projectKeys.lists() });
+      void queryClient.invalidateQueries({ queryKey: projectKeys.dashboard() });
+      void queryClient.invalidateQueries({ queryKey: ratingKeys.all });
+    },
+  });
+}
+
+// ---------------------------------------------------------------------------
+// useSubmitDeveloperRating
+// ---------------------------------------------------------------------------
+
+/**
+ * Mutation for submitting developer rating (developer rates coordinator).
+ *
+ * On success, invalidates project queries.
+ */
+export function useSubmitDeveloperRating() {
+  const queryClient = useQueryClient();
+
+  return useMutation<SubmitDeveloperRatingResponse, Error, SubmitDeveloperRatingInput>({
+    mutationFn: async ({ projectId, coordinatorRating }: SubmitDeveloperRatingInput) => {
+      const token = useAuthStore.getState().token || '';
+
+      await submitDeveloperRating(projectId, coordinatorRating, token);
+
+      return {
+        projectId,
+        message: 'Developer rating submitted successfully',
+      };
+    },
+    onSuccess: (_data, variables) => {
+      void queryClient.invalidateQueries({
+        queryKey: projectKeys.detail(variables.projectId),
+      });
+      void queryClient.invalidateQueries({ queryKey: projectKeys.lists() });
+      void queryClient.invalidateQueries({ queryKey: projectKeys.dashboard() });
+      void queryClient.invalidateQueries({ queryKey: ratingKeys.all });
     },
   });
 }

@@ -17,6 +17,7 @@ import {
   updateMilestone,
   destroyMilestone,
 } from '@/services';
+import { updateMilestone as apiUpdateMilestone } from '@/api/adapter';
 import type { MilestoneFormData } from '@/types';
 import { useAuthStore } from '@/stores/authStore';
 
@@ -48,6 +49,8 @@ export const milestoneKeys = {
 export interface SubmitMilestoneInput {
   projectId: string;
   milestoneId: string;
+  documentation?: string;
+  links?: string;
 }
 
 /**
@@ -62,8 +65,12 @@ export function useSubmitMilestone() {
   const queryClient = useQueryClient();
 
   return useMutation<MilestoneActionResponse, Error, SubmitMilestoneInput>({
-    mutationFn: async ({ projectId, milestoneId }: SubmitMilestoneInput) => {
+    mutationFn: async ({ projectId, milestoneId, documentation, links }: SubmitMilestoneInput) => {
       const token = useAuthStore.getState().token || '';
+      // Save documentation/links to the milestone before submitting
+      if (documentation || links) {
+        await apiUpdateMilestone(projectId, milestoneId, { documentation, links }, token);
+      }
       await submitMilestoneForReview(projectId, milestoneId, token);
       return {
         projectId,

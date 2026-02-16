@@ -53,7 +53,7 @@ export function MilestoneActions({
     <div className="mt-3 pl-6">
       {/* Consultant/Developer: Submit work for review */}
       {isConsultant && state === MilestoneState.MilestoneInProgress && (
-        <SubmitWorkAction projectId={projectId} milestoneId={milestoneId} />
+        <SubmitWorkAction projectId={projectId} milestoneId={milestoneId} milestone={milestone} />
       )}
 
       {/* Client: Accept or reject submitted work */}
@@ -69,11 +69,14 @@ export function MilestoneActions({
         </div>
       )}
 
-      {/* Consultant: Submission rejected notice */}
+      {/* Consultant: Submission rejected - show resubmit form */}
       {isConsultant && state === MilestoneState.SubmissionRejectedByClient && (
-        <div className="flex items-center gap-2 text-xs text-red-400">
-          <i className="ri-error-warning-line" />
-          <span>Client rejected this submission. You may resubmit after addressing feedback.</span>
+        <div className="space-y-3">
+          <div className="flex items-center gap-2 text-xs text-red-400">
+            <i className="ri-error-warning-line" />
+            <span>Client rejected this submission. Please address the feedback and resubmit.</span>
+          </div>
+          <SubmitWorkAction projectId={projectId} milestoneId={milestoneId} milestone={milestone} />
         </div>
       )}
     </div>
@@ -85,62 +88,132 @@ export function MilestoneActions({
 // ---------------------------------------------------------------------------
 
 /**
- * Submit work button for the consultant/developer.
+ * Submit work form for the consultant/developer.
+ * Matches the Figma design with milestone summary, documentation, and links fields.
  */
 function SubmitWorkAction({
   projectId,
   milestoneId,
+  milestone,
 }: {
   projectId: string;
   milestoneId: string;
+  milestone: Milestone;
 }) {
-  const [showConfirm, setShowConfirm] = useState(false);
+  const [showForm, setShowForm] = useState(false);
+  const [documentation, setDocumentation] = useState(milestone.documentation ?? '');
+  const [links, setLinks] = useState(milestone.links ?? '');
   const submitMutation = useSubmitMilestone();
 
   const handleSubmit = useCallback(() => {
-    submitMutation.mutate({ projectId, milestoneId });
-  }, [submitMutation, projectId, milestoneId]);
+    submitMutation.mutate({
+      projectId,
+      milestoneId,
+      documentation: documentation.trim() || undefined,
+      links: links.trim() || undefined,
+    });
+  }, [submitMutation, projectId, milestoneId, documentation, links]);
 
-  if (!showConfirm) {
+  if (!showForm) {
     return (
       <Button
         variant="primary"
         size="sm"
-        onClick={() => setShowConfirm(true)}
+        onClick={() => setShowForm(true)}
         className="text-xs"
       >
         <i className="ri-upload-2-line mr-1" />
-        Submit Work for Review
+        Submit for Review
       </Button>
     );
   }
 
+  const budgetDisplay =
+    milestone.budget !== undefined && milestone.budget !== null
+      ? `${milestone.budget} USD`
+      : 'Budget Pending';
+
   return (
-    <div className="space-y-2 p-3 rounded-lg border border-[#3D3D3D] bg-[#231F1F]">
-      <p className="text-xs text-[#9B9B9B]">
-        Are you sure you want to submit this milestone for client review?
-        The client will be notified to accept or reject the delivery.
-      </p>
+    <div className="space-y-4 p-4 rounded-lg border border-[#3D3D3D] bg-[#231F1F]">
+      {/* Milestone summary */}
+      <div>
+        <h4 className="text-sm font-semibold text-[#F5F5F5] mb-3">
+          Your Submission
+        </h4>
+        <div className="rounded-lg border border-[#3D3D3D] bg-[#1A1A1A] p-3 space-y-2">
+          <div className="flex items-center justify-between">
+            <span className="text-sm font-medium text-[#F5F5F5]">
+              {milestone.title}
+            </span>
+            <span className="text-xs font-medium text-[#36D399]">
+              {budgetDisplay}
+            </span>
+          </div>
+          {milestone.description && (
+            <p className="text-xs text-[#9B9B9B] leading-relaxed">
+              {milestone.description}
+            </p>
+          )}
+          {milestone.developer && (
+            <div className="flex items-center gap-2 text-xs text-[#9B9B9B]">
+              <img
+                className="h-5 w-5 rounded-full object-cover"
+                src={`/developers/${milestone.developerId}/attachment`}
+                alt={milestone.developer.name ?? 'Developer'}
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src = '/images/none.png';
+                }}
+              />
+              <span>{milestone.developer.name}</span>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Documentation field */}
+      <div>
+        <label className="block text-xs font-medium text-[#9B9B9B] mb-1.5">
+          Documentation
+        </label>
+        <Input
+          value={documentation}
+          onChange={(e) => setDocumentation(e.target.value)}
+          placeholder="Provide a link to your documentation"
+        />
+      </div>
+
+      {/* Other Links field */}
+      <div>
+        <label className="block text-xs font-medium text-[#9B9B9B] mb-1.5">
+          Other Links
+        </label>
+        <Input
+          value={links}
+          onChange={(e) => setLinks(e.target.value)}
+          placeholder="Add links to supporting documents"
+        />
+      </div>
+
+      {/* Actions */}
       <div className="flex gap-2">
         <Button
           variant="primary"
-          size="sm"
           onClick={handleSubmit}
           isLoading={submitMutation.isPending}
           disabled={submitMutation.isPending}
-          className="text-xs"
+          className="flex-1"
         >
-          Confirm Submit
+          Submit Milestone
         </Button>
         <Button
           variant="ghost"
-          size="sm"
-          onClick={() => setShowConfirm(false)}
-          className="text-xs"
+          onClick={() => setShowForm(false)}
+          className="flex-1"
         >
           Cancel
         </Button>
       </div>
+
       {submitMutation.error && (
         <p className="text-xs text-red-400">{submitMutation.error.message}</p>
       )}

@@ -120,3 +120,40 @@ export interface SubmitVotesResponse {
   projectId: string;
   message: string;
 }
+
+// ---------------------------------------------------------------------------
+// Cross-rating submission types
+// ---------------------------------------------------------------------------
+
+/**
+ * Input for submitting coordinator ratings (coordinator rates client + team).
+ */
+export interface SubmitCoordinatorRatingsInput {
+  projectId: string;
+  clientRating: number;
+  teamRatings: Array<[string, number]>;
+}
+
+/**
+ * Response from submitting coordinator ratings.
+ */
+export interface SubmitCoordinatorRatingsResponse {
+  projectId: string;
+  message: string;
+}
+
+/**
+ * Input for submitting developer rating (developer rates coordinator).
+ */
+export interface SubmitDeveloperRatingInput {
+  projectId: string;
+  coordinatorRating: number;
+}
+
+/**
+ * Response from submitting developer rating.
+ */
+export interface SubmitDeveloperRatingResponse {
+  projectId: string;
+  message: string;
+}

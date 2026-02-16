@@ -135,6 +135,16 @@ interface CoordinatorRejectProjectResponse {
   [key: string]: unknown;
 }
 
+interface SubmitCoordinatorRatingsResponse {
+  success: boolean;
+  [key: string]: unknown;
+}
+
+interface SubmitDeveloperRatingResponse {
+  success: boolean;
+  [key: string]: unknown;
+}
+
 // ---------------------------------------------------------------------------
 // Project API methods
 // ---------------------------------------------------------------------------
@@ -218,12 +228,13 @@ export async function assignTeam(
 export async function markCompleted(
   contractAddress: string,
   ratings: unknown,
+  coordinatorRating: number,
   token: string
 ): Promise<MarkCompletedResponse> {
   try {
     const response = await adapterClient.post<MarkCompletedResponse>(
       adapterConfig.endpoints.projects.markCompleted(contractAddress),
-      { ratings },
+      { ratings, coordinatorRating },
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -295,7 +306,7 @@ export async function proposeScope(
  */
 export async function approveScope(
   projectId: string,
-  approvedTaskIds: string[],
+  approvedTaskIds: number[],
   token: string
 ): Promise<ApproveScopeResponse> {
   try {
@@ -563,5 +574,54 @@ export async function coordinatorRejectProject(
     return response.data;
   } catch (error) {
     handleApiError(error, `coordinatorRejectProject(${contractAddress})`);
+  }
+}
+
+/**
+ * Submit coordinator ratings for client and team members.
+ */
+export async function submitCoordinatorRatings(
+  projectId: string,
+  clientRating: number,
+  teamRatings: Array<[string, number]>,
+  token: string
+): Promise<SubmitCoordinatorRatingsResponse> {
+  try {
+    const response = await adapterClient.post<SubmitCoordinatorRatingsResponse>(
+      adapterConfig.endpoints.projects.submitCoordinatorRatings(projectId),
+      { clientRating, teamRatings },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    handleApiError(error, `submitCoordinatorRatings(${projectId})`);
+  }
+}
+
+/**
+ * Submit developer rating for coordinator.
+ */
+export async function submitDeveloperRating(
+  projectId: string,
+  coordinatorRating: number,
+  token: string
+): Promise<SubmitDeveloperRatingResponse> {
+  try {
+    const response = await adapterClient.post<SubmitDeveloperRatingResponse>(
+      adapterConfig.endpoints.projects.submitDeveloperRating(projectId),
+      { coordinatorRating },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    handleApiError(error, `submitDeveloperRating(${projectId})`);
   }
 }

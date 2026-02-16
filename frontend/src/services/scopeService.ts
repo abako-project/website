@@ -62,7 +62,7 @@ export async function submitScope(
  */
 export async function acceptScope(
   projectId: string,
-  approvedTaskIds: string[],
+  approvedTaskIds: number[],
   _clientResponse: string,
   token: string
 ): Promise<void> {

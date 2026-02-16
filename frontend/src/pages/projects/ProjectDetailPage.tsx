@@ -24,7 +24,7 @@ import { ProjectStateBadge } from '@components/shared/ProjectStateBadge';
 import { ProjectActions } from '@components/features/projects/ProjectActions';
 import { ScopeBuilder } from '@components/features/projects/ScopeBuilder';
 import { MilestoneList } from '@components/features/milestones/MilestoneList';
-import type { Project } from '@/types/index';
+import type { Project, ScopeSession } from '@/types/index';
 
 type TabValue = 'details' | 'milestones' | 'activity';
 
@@ -35,6 +35,7 @@ export default function ProjectDetailPage() {
 
   const [showScopeBuilder, setShowScopeBuilder] = useState(false);
   const [activeTab, setActiveTab] = useState<TabValue>('details');
+  const [scope, setScope] = useState<ScopeSession | undefined>(undefined);
 
   const handleScopeBuilderShow = useCallback(() => {
     setShowScopeBuilder(true);
@@ -42,8 +43,16 @@ export default function ProjectDetailPage() {
 
   const handleScopeSubmitted = useCallback(() => {
     setShowScopeBuilder(false);
+    setScope(undefined);
     void refetch();
   }, [refetch]);
+
+  const handleApproveProposal = useCallback(
+    (projectId: string) => {
+      setScope({ projectId, milestones: [] });
+    },
+    []
+  );
 
   // Loading state
   if (isLoading) {
@@ -89,11 +98,11 @@ export default function ProjectDetailPage() {
   }
 
   const { project, allBudgets, allDeliveryTimes, allProjectTypes } = data;
-  const projectState = flowProjectState(project);
+  const projectState = flowProjectState(project, scope);
 
   // Determine if the scope builder should be accessible
   const isConsultant =
-    !!user?.developerId && user.developerId === project.consultantId;
+    !!user?.developerId && String(user.developerId) === String(project.consultantId);
   const canShowScopeBuilder =
     isConsultant &&
     (projectState === ProjectState.ScopingInProgress ||
@@ -159,6 +168,10 @@ export default function ProjectDetailPage() {
             <MilestoneList
               milestones={project.milestones}
               allDeliveryTimes={allDeliveryTimes}
+              projectId={project.id}
+              user={user ?? undefined}
+              isClient={!!user?.clientId && String(user.clientId) === String(project.clientId)}
+              isConsultant={isConsultant}
             />
           )}
 
@@ -181,9 +194,11 @@ export default function ProjectDetailPage() {
             <ProjectActions
               project={project}
               user={user}
+              scope={scope}
               onShowScopeBuilder={
                 canShowScopeBuilder ? handleScopeBuilderShow : undefined
               }
+              onApproveProposal={handleApproveProposal}
             />
           )}
         </div>

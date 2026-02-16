@@ -26,6 +26,8 @@ export {
   getProjectTaskCompletionStatus,
   updateProjectData,
   setProjectCalendarContract,
+  submitCoordinatorRatings,
+  submitDeveloperRating,
 } from './projectService';
 
 // Proposal service
