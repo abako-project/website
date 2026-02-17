@@ -17,9 +17,11 @@ import DashboardPage from '@pages/dashboard/DashboardPage';
 import ProjectsPage from '@pages/projects/ProjectsPage';
 import CreateProjectPage from '@pages/projects/CreateProjectPage';
 import ProjectDetailPage from '@pages/projects/ProjectDetailPage';
+import ScopeReviewPage from '@pages/projects/ScopeReviewPage';
 import ProfilePage from '@pages/profiles/ProfilePage';
 import PaymentsPage from '@pages/payments/PaymentsPage';
 import PaymentDetailPage from '@pages/payments/PaymentDetailPage';
+import PaymentFundPage from '@pages/payments/PaymentFundPage';
 
 /**
  * App - Main application router
@@ -65,10 +67,12 @@ export default function App() {
             <Route path="/projects" element={<ProjectsPage />} />
             <Route path="/projects/new" element={<CreateProjectPage />} />
             <Route path="/projects/:id" element={<ProjectDetailPage />} />
+            <Route path="/projects/:id/review-scope" element={<ScopeReviewPage />} />
 
             {/* Payments */}
             <Route path="/payments" element={<PaymentsPage />} />
             <Route path="/payments/:id" element={<PaymentDetailPage />} />
+            <Route path="/payments/:id/fund" element={<PaymentFundPage />} />
 
             {/* Profile */}
             <Route path="/profile" element={<ProfilePage />} />

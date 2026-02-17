@@ -32,24 +32,14 @@ export function Sidebar() {
   const isDeveloper = !!user?.developerId;
   const role = isClient ? 'Client' : isDeveloper ? 'Developer' : 'User';
 
-  // Navigation links based on role
-  const navLinks = isClient
-    ? [
-        { to: '/dashboard', label: 'Dashboard', icon: 'ri-dashboard-line' },
-        { to: '/projects', label: 'Projects', icon: 'ri-folder-line' },
-        { to: '/payments', label: 'Payments', icon: 'ri-money-dollar-circle-line' },
-        { to: '/profile', label: 'Profile', icon: 'ri-user-line' },
-        { to: '/settings', label: 'Settings', icon: 'ri-settings-line' },
-      ]
-    : isDeveloper
-    ? [
-        { to: '/dashboard', label: 'Dashboard', icon: 'ri-dashboard-line' },
-        { to: '/projects', label: 'Projects', icon: 'ri-folder-line' },
-        { to: '/payments', label: 'Payments', icon: 'ri-money-dollar-circle-line' },
-        { to: '/profile', label: 'Profile', icon: 'ri-user-line' },
-        { to: '/settings', label: 'Settings', icon: 'ri-settings-line' },
-      ]
-    : [];
+  // Navigation links - always shown for authenticated users
+  const navLinks = [
+    { to: '/dashboard', label: 'Dashboard', icon: 'ri-dashboard-line' },
+    { to: '/projects', label: 'Projects', icon: 'ri-folder-line' },
+    { to: '/payments', label: 'Payments', icon: 'ri-money-dollar-circle-line' },
+    { to: '/profile', label: 'Profile', icon: 'ri-user-line' },
+    { to: '/settings', label: 'Settings', icon: 'ri-settings-line' },
+  ];
 
   // Close sidebar on Escape key
   useEffect(() => {

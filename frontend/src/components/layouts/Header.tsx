@@ -38,20 +38,12 @@ export function Header() {
     }
   };
 
-  // Navigation items based on role
-  const navItems = isClient
-    ? [
-        { to: '/projects', label: 'Projects' },
-        { to: '/payments', label: 'Payments' },
-        { to: '/profile', label: 'Profile' },
-      ]
-    : isDeveloper
-    ? [
-        { to: '/projects', label: 'Projects' },
-        { to: '/payments', label: 'Payments' },
-        { to: '/profile', label: 'Profile' },
-      ]
-    : [];
+  // Navigation items - always shown for authenticated users
+  const navItems = [
+    { to: '/projects', label: 'Projects' },
+    { to: '/payments', label: 'Payments' },
+    { to: '/profile', label: 'Profile' },
+  ];
 
   return (
     <header className="sticky top-0 z-50 h-[68px] bg-[var(--base-surface-1,#141414)] border-b border-[var(--base-border,#3d3d3d)]">

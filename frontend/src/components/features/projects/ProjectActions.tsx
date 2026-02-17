@@ -13,9 +13,9 @@
  */
 
 import { useState, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button, Input, Spinner } from '@components/ui';
 import { useApproveProposal, useRejectProposal, useAssignTeam } from '@hooks/useProjects';
-import { useAcceptScope, useRejectScope } from '@hooks/useScope';
 import { useVoteMembers, useSubmitVotes, useSubmitCoordinatorRatings, useSubmitDeveloperRating } from '@hooks/useVotes';
 import {
   flowProjectState,
@@ -102,17 +102,17 @@ export function ProjectActions({
         </div>
       )}
 
-      {/* Project In Progress: consultant sees completion form when all milestones done */}
+      {/* Project In Progress: client sees completion form when all milestones done */}
       {state === ProjectState.ProjectInProgress && (
-        allMilestonesCompleted && isConsultant ? (
+        allMilestonesCompleted && isClient ? (
           <ProjectCompletionForm project={project} />
         ) : (
           <div className="rounded-lg border border-[#3D3D3D] bg-[#231F1F] p-5">
             <div className="flex items-center gap-2 text-sm text-[#36D399]">
               <i className="ri-play-circle-line" />
               <span>
-                {allMilestonesCompleted && isClient
-                  ? 'All milestones have been completed. The coordinator will finalize the project.'
+                {allMilestonesCompleted && isConsultant
+                  ? 'All milestones have been completed. Waiting for the client to finalize the project and release payments.'
                   : 'Project is in progress. Check milestones below for individual task status.'}
               </span>
             </div>
@@ -490,7 +490,7 @@ function RatingRow({
 }
 
 // ---------------------------------------------------------------------------
-// Consultant: Complete project with team ratings (all milestones done)
+// Client: Complete project with team ratings (all milestones done)
 // ---------------------------------------------------------------------------
 
 function ProjectCompletionForm({ project }: { project: Project }) {
@@ -766,31 +766,18 @@ function DeveloperRatingForm({ project }: { project: Project }) {
 // ---------------------------------------------------------------------------
 
 /**
- * Client scope response section - accept or reject the proposed scope.
+ * Client scope response section.
+ *
+ * Navigates to the dedicated ScopeReviewPage (/projects/:id/review-scope)
+ * which handles the full flow: review milestones → accept/reject → escrow
+ * modal → funding page. This mirrors the old EJS flow where scope acceptance
+ * redirected to /projects/:id/escrow.
  */
 function ClientScopeResponse({ project }: { project: Project }) {
-  const [clientResponse, setClientResponse] = useState('');
-  const [showConfirm, setShowConfirm] = useState<'accept' | 'reject' | null>(null);
-
-  const acceptMutation = useAcceptScope();
-  const rejectMutation = useRejectScope();
+  const navigate = useNavigate();
 
   const consultantComment =
     project.comments?.[0]?.consultantComment ?? 'Comments pending';
-
-  const handleAccept = useCallback(() => {
-    acceptMutation.mutate({
-      projectId: project.id,
-      clientResponse,
-    });
-  }, [acceptMutation, project.id, clientResponse]);
-
-  const handleReject = useCallback(() => {
-    rejectMutation.mutate({
-      projectId: project.id,
-      clientResponse,
-    });
-  }, [rejectMutation, project.id, clientResponse]);
 
   return (
     <div className="rounded-lg border border-[#3D3D3D] bg-[#231F1F] p-5 space-y-4">
@@ -804,72 +791,18 @@ function ClientScopeResponse({ project }: { project: Project }) {
         <p className="text-sm text-[#C0C0C0]">{consultantComment}</p>
       </div>
 
-      {/* Client response input */}
-      <Input
-        label="Your Response"
-        value={clientResponse}
-        onChange={(e) => setClientResponse(e.target.value)}
-        placeholder="Enter your response"
-      />
+      <p className="text-sm text-[#9B9B9B]">
+        Review the proposed milestones, costs, and delivery timeline before accepting or rejecting the scope.
+      </p>
 
-      {showConfirm === null ? (
-        <div className="flex gap-3">
-          <Button
-            variant="primary"
-            onClick={() => setShowConfirm('accept')}
-            disabled={acceptMutation.isPending || rejectMutation.isPending}
-            className="flex-1"
-          >
-            Accept Scope
-          </Button>
-          <Button
-            variant="destructive"
-            onClick={() => setShowConfirm('reject')}
-            disabled={acceptMutation.isPending || rejectMutation.isPending}
-            className="flex-1"
-          >
-            Reject Scope
-          </Button>
-        </div>
-      ) : (
-        <div className="space-y-3 border-t border-[#3D3D3D] pt-3">
-          <p className="text-sm text-[#9B9B9B]">
-            {showConfirm === 'accept'
-              ? 'Are you sure you want to accept this scope? The project will proceed to team assignment.'
-              : 'Are you sure you want to reject this scope? The consultant will need to revise the milestones.'}
-          </p>
-          <div className="flex gap-2">
-            <Button
-              variant={showConfirm === 'accept' ? 'primary' : 'destructive'}
-              onClick={showConfirm === 'accept' ? handleAccept : handleReject}
-              isLoading={
-                showConfirm === 'accept'
-                  ? acceptMutation.isPending
-                  : rejectMutation.isPending
-              }
-              className="flex-1"
-            >
-              {showConfirm === 'accept'
-                ? 'Confirm Accept'
-                : 'Confirm Reject'}
-            </Button>
-            <Button
-              variant="ghost"
-              onClick={() => setShowConfirm(null)}
-              className="flex-1"
-            >
-              Cancel
-            </Button>
-          </div>
-        </div>
-      )}
-
-      {/* Error display */}
-      {(acceptMutation.error || rejectMutation.error) && (
-        <p className="text-sm text-red-400">
-          {acceptMutation.error?.message ?? rejectMutation.error?.message}
-        </p>
-      )}
+      <Button
+        variant="primary"
+        onClick={() => navigate(`/projects/${project.id}/review-scope`)}
+        className="w-full gap-2"
+      >
+        <i className="ri-file-search-line" aria-hidden="true" />
+        Review Scope &amp; Milestones
+      </Button>
     </div>
   );
 }

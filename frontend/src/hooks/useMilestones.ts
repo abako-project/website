@@ -17,7 +17,8 @@ import {
   updateMilestone,
   destroyMilestone,
 } from '@/services';
-import { updateMilestone as apiUpdateMilestone } from '@/api/adapter';
+// Note: apiUpdateMilestone from '@/api/adapter' is available but not currently
+// used in useSubmitMilestone because the backend does not accept documentation/links fields.
 import type { MilestoneFormData } from '@/types';
 import { useAuthStore } from '@/stores/authStore';
 
@@ -65,12 +66,11 @@ export function useSubmitMilestone() {
   const queryClient = useQueryClient();
 
   return useMutation<MilestoneActionResponse, Error, SubmitMilestoneInput>({
-    mutationFn: async ({ projectId, milestoneId, documentation, links }: SubmitMilestoneInput) => {
+    mutationFn: async ({ projectId, milestoneId }: SubmitMilestoneInput) => {
       const token = useAuthStore.getState().token || '';
-      // Save documentation/links to the milestone before submitting
-      if (documentation || links) {
-        await apiUpdateMilestone(projectId, milestoneId, { documentation, links }, token);
-      }
+      // Note: documentation/links fields are not yet supported by the backend
+      // milestone update endpoint. When backend adds support, re-enable the
+      // apiUpdateMilestone call here.
       await submitMilestoneForReview(projectId, milestoneId, token);
       return {
         projectId,

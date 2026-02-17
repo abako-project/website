@@ -196,24 +196,41 @@ export async function getProjectsIndex(
 
     // Filter by developerId if provided
     if (developerId) {
-      // Get milestones where this developer is assigned
-      const { milestones: developerMilestones } = await getDeveloperMilestones(
-        developerId
+      // Get this developer's direct projects and milestones in parallel
+      const [directProjects, { milestones: developerMilestones }] = await Promise.all([
+        getDeveloperProjects(developerId).catch(() => [] as unknown[]),
+        getDeveloperMilestones(developerId),
+      ]);
+
+      // IDs of projects directly assigned to this developer
+      const directProjectIds = new Set(
+        (directProjects as Array<Record<string, unknown>>).map(
+          (p) => String(p._id ?? p.id)
+        )
       );
 
-      // Extract project IDs where developer is assigned
-      const developerProjectIds = (developerMilestones as Array<Record<string, unknown>>).map(
-        (m) => (m.project as Record<string, unknown>)?._id as string
+      // Extract project IDs from milestones where this developer is assigned.
+      // m.project may be a string (unpopulated ObjectId ref) or an object ({ _id }).
+      const milestoneProjectIds = new Set(
+        (developerMilestones as Array<Record<string, unknown>>)
+          .map((m) => {
+            if (typeof m.project === 'string') return m.project;
+            if (m.project && typeof m.project === 'object')
+              return String((m.project as Record<string, unknown>)._id);
+            return undefined;
+          })
+          .filter(Boolean) as string[]
       );
 
-      // Filter: developer is consultant OR developer in milestones
-      // Use String() for consultantId comparison because the backend stores it
-      // as a string (via .toString()) while the developer's id from mongoose-sequence
-      // is a number at runtime, causing strict equality to fail ("1" === 1 → false).
-      projects = projects.filter(
-        (proj) =>
-          String(proj.consultantId) === String(developerId) || developerProjectIds.includes(proj._id as string)
-      );
+      // Filter: developer is consultant, has direct projects, or has milestones
+      projects = projects.filter((proj) => {
+        const projId = String(proj._id ?? proj.id);
+        return (
+          String(proj.consultantId) === String(developerId) ||
+          directProjectIds.has(projId) ||
+          milestoneProjectIds.has(projId)
+        );
+      });
     }
   }
 
