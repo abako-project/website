@@ -1,8 +1,9 @@
 import { NavLink } from 'react-router-dom';
 import { useAuthStore } from '@stores/authStore';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { cn } from '@lib/cn';
 import { W3SLogo } from '@components/ui/W3SLogo';
+import { AvailabilityPopover } from '@components/features/availability/AvailabilityPopover';
 
 /**
  * Sidebar - Left navigation sidebar matching Figma design
@@ -27,6 +28,10 @@ import { W3SLogo } from '@components/ui/W3SLogo';
 export function Sidebar() {
   const user = useAuthStore((state) => state.user);
   const [isOpen, setIsOpen] = useState(false);
+
+  const [availabilityOpen, setAvailabilityOpen] = useState(false);
+  const toggleAvailability = useCallback(() => setAvailabilityOpen((v) => !v), []);
+  const closeAvailability = useCallback(() => setAvailabilityOpen(false), []);
 
   const isClient = !!user?.clientId;
   const isDeveloper = !!user?.developerId;
@@ -123,11 +128,17 @@ export function Sidebar() {
         </nav>
 
         {/* BOTTOM - User section */}
-        <div className="border-t border-[var(--base-border,#3d3d3d)] pt-4">
+        <div className="relative border-t border-[var(--base-border,#3d3d3d)] pt-4">
           <div className="flex items-center justify-between gap-3 px-2">
-            <div className="flex items-center gap-3">
+            {/* Clickable user area - opens availability popover for developers */}
+            <button
+              className="flex items-center gap-3 min-w-0 text-left"
+              onClick={isDeveloper ? toggleAvailability : undefined}
+              aria-haspopup={isDeveloper ? 'dialog' : undefined}
+              aria-expanded={isDeveloper ? availabilityOpen : undefined}
+            >
               {/* Avatar with online dot */}
-              <div className="relative">
+              <div className="relative shrink-0">
                 <div className="w-8 h-8 rounded-full bg-[var(--base-fill-1,#333)] border border-[var(--base-border,#3d3d3d)] flex items-center justify-center overflow-hidden">
                   <i className="ri-user-smile-line text-base text-[var(--text-dark-primary,#f5f5f5)]"></i>
                 </div>
@@ -135,22 +146,27 @@ export function Sidebar() {
                 <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-[var(--state-brand-active,#36d399)] rounded-full border-2 border-[var(--base-surface-2,#231f1f)]"></span>
               </div>
 
-              {/* Name + Role */}
+              {/* Name + Availability status */}
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium text-[var(--text-dark-primary,#f5f5f5)] truncate">
                   {user?.name || 'User'}
                 </p>
                 <p className="text-xs text-[var(--text-dark-secondary,rgba(255,255,255,0.7))] truncate">
-                  {role}
+                  {isDeveloper ? 'Available for Hire' : role}
                 </p>
               </div>
-            </div>
+            </button>
 
             {/* Logout button */}
             <button className="shrink-0" aria-label="Logout">
               <i className="ri-logout-box-r-line text-2xl text-[var(--text-dark-secondary,rgba(255,255,255,0.7))]"></i>
             </button>
           </div>
+
+          {/* Availability popover (developers only) */}
+          {isDeveloper && (
+            <AvailabilityPopover open={availabilityOpen} onClose={closeAvailability} />
+          )}
         </div>
       </aside>
 
