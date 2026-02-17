@@ -15,6 +15,7 @@ import { useState, useCallback, useRef, useEffect } from 'react';
 import { useDeveloperProfile, useUpdateDeveloperProfile, useUploadProfileImage } from '@hooks/useProfile';
 import { useDeveloperRatings } from '@hooks/useRatings';
 import { useEnums } from '@hooks/useEnums';
+import { useMembershipNFT } from '@hooks/useMembership';
 import { Button } from '@components/ui/Button';
 import { Input } from '@components/ui/Input';
 import { Label } from '@components/ui/Label';
@@ -23,6 +24,7 @@ import { Spinner } from '@components/ui/Spinner';
 import { ToggleSwitch } from '@components/ui/ToggleSwitch';
 import { StarRating } from '@components/features/ratings/StarRating';
 import { ReviewsList } from '@components/features/ratings/ReviewsList';
+import { MembershipNFTCard } from '@components/features/profile/MembershipNFTCard';
 import type { DeveloperUpdateData, LanguagesMap } from '@/types/index';
 
 // ---------------------------------------------------------------------------
@@ -61,6 +63,11 @@ export default function DeveloperProfilePage({ developerId, startInEditMode }: D
   const { data: enums } = useEnums();
   const updateMutation = useUpdateDeveloperProfile();
   const uploadMutation = useUploadProfileImage();
+
+  // Membership NFT: resolve blockchain address from the developer's email.
+  // We call this unconditionally (hooks must not be conditional) and pass
+  // undefined until the profile data has loaded.
+  const { data: membership } = useMembershipNFT(data?.developer?.email);
 
   // ------- Form state -------
   const [formData, setFormData] = useState<DeveloperUpdateData>({});
@@ -352,6 +359,17 @@ export default function DeveloperProfilePage({ developerId, startInEditMode }: D
           </div>
         </div>
       </div>
+
+      {/* Membership NFT Card - only shown when the developer holds a verified membership */}
+      {membership?.isMember === true && (
+        <div className="px-14">
+          <MembershipNFTCard
+            membershipId={membership.membershipId}
+            joinedAt={membership.joinedAt}
+            address={membership.address}
+          />
+        </div>
+      )}
 
       {/* Content: two columns */}
       <div className="flex gap-14 items-start px-14 pb-8 w-full">
