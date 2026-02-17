@@ -11,11 +11,9 @@ exports.test = async (req, res, next) => {
 
 exports.customRegister = async (req, res, next) => {
 
-    const {preparedData: json} = req.body;
+    const preparedData = req.body;
 
     try {
-        preparedData = JSON.parse(decodeURIComponent(json));
-
         const response = await adapterAPI.customRegister(preparedData);
 
         res.json(response);

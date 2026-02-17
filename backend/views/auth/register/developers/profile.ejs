@@ -1,0 +1,273 @@
+<!-- Choices.js CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css">
+<!-- Choices.js JS -->
+<script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+
+
+<div class="onboarding">
+    <%- include('../../../layouts/onboarding/_appLeft') %>
+
+    <section id="appRight" class="onboarding__right">
+
+        <form id="profileForm" class="content" action="/auth/register/developer/<%= developer.id %>/profile?_method=PUT" method="POST">
+            <h1 class="content__title">Tell us about yourself</h1>
+
+            <div class="profileCard__section">
+                <h3>Bio:</h3>
+                <textarea id="bio" name="bio" required ></textarea>
+            </div>
+
+            <div class="profileCard__section">
+                <h3>Background:</h3>
+                <textarea id="background" name="background" required ></textarea>
+            </div>
+
+            <div class="profileCard__section">
+                <h3>Role:</h3>
+                <select id="role" name="role" required>
+                    <option value="">None</option>
+                    <% allRoles.forEach(role => { %>
+                        <option value="<%= role %>" >
+                            <%= role %>
+                        </option>
+                    <% }) %>
+                </select>
+            </div>
+            <div class="profileCard__section">
+                <h3>Proficiency:</h3>
+                <select id="proficiency" name="proficiency" required >
+                    <option value="">None</option>
+                    <% allProficiencies.forEach(prof => { %>
+                        <option value="<%= prof %>"  >
+                            <%= prof %>
+                        </option>
+                    <% }) %>
+                </select>
+            </div>
+
+
+
+            <div class="profileCard__section">
+                <h3>Location:</h3>
+                <input type="text" id="location" name="location" value="" placeholder="Location"
+                       autocomplete="off" required />
+            </div>
+
+            <div class="profileCard__section">
+                <h3>Skills: </h3>
+                <select id="skills" name="skills[]" multiple>
+                    <% allSkills.forEach(skill => { %>
+                    <option value="<%= skill %>" >
+                        <%= skill %>
+                    </option>
+                    <% }) %>
+                </select>
+            </div>
+
+
+            <div class="profileCard__section">
+                <h3>Languages:</h3>
+                <select id="languages" name="languages[]" multiple size="6">
+                    <% allLanguages.forEach(lang => { %>
+
+                    <option value="<%= lang.code %>" >
+                        <%= lang.code %> - <%= lang.name %>
+                    </option>
+
+                    <% }) %>
+                </select>
+            </div>
+
+            <div class="profileCard__section">
+                <h3>Availability:</h3>
+                <div class="availabilityRow">
+                    <input id="availableToggle"
+                           type="checkbox"
+                           name="isAvailableForHire"
+                           value="1" />
+                    <p>Show “Available for Work” on profile</p>
+                </div>
+
+                <div id="availabilityOptions" style="display:none">
+                    <h3>Work Mode:</h3>
+
+                    <select id="availabilityType" name="availability">
+                        <% availabilityOptions.forEach(option => { %>
+                            <option value="<%= option %>" >
+                                <%= option %>
+                            </option>
+                        <% }) %>
+                    </select>
+                </div>
+
+                <div id="hourlyInput" style = "display:none">
+                    <h3>Hours per week:</h3>
+                    <input type="number"
+                           name="availableHoursPerWeek"
+                           value=""
+                           min="0" />
+                </div>
+            </div>
+
+            <input type="hidden" id="email" name="email" value="<%= developer.email %>" />
+            <input type="hidden" id="name" name="name" value="<%= developer.name %>" />
+            <input type="hidden" id="githubUsername" name="githubUsername" value="<%= developer.githubUsername %>" />
+
+            <input type="hidden" id="token" name="token"/>
+
+
+            <div class="form-group">
+                <a href="/auth/register/developer/done" class="btn">Skip</a>
+
+                <button class="btn btn_primary" type="submit" id="continueButton">
+                    Continue
+                </button>
+            </div>
+
+            <div class="form-group">
+                <p id="status"></p>
+            </div>
+        </form>
+    </section>
+</div>
+
+
+<script type="module">
+
+    console.log("Developer profile: Script starting.");
+
+    import SDK from 'https://cdn.jsdelivr.net/npm/@virtonetwork/sdk@0.0.4-alpha.36/dist/esm/index.js';
+
+    const tokenElement = document.getElementById("token");
+    const continueButton = document.getElementById("continueButton");
+    const statusElement = document.getElementById("status");
+
+    let sdk;
+
+    document
+        .getElementById("profileForm")
+        .addEventListener("submit", async function (event) {
+            event.preventDefault(); // Prevent automatic form submission
+
+            try {
+                console.log("Creating developer profile ...");
+
+                continueButton.disabled = true;
+                continueButton.innerHTML = ". . .";
+                statusElement.innerHTML = "Starting profile creation ";
+
+                showWaitModal();
+
+                <% if (!process.env.VIRTO_MOCK) { %>
+                sdk = initializeSDK();
+                await checkIsRegistered();
+                await prepareConnection()
+                const {extrinsic, token} = await customConnect();
+                await signExtrinsic(extrinsic);
+
+                tokenElement.value = token;
+                <% } else {%>
+                tokenElement.value = "MOCK_TOKEN";
+                <% } %>
+
+                statusElement.innerHTML = "Waiting for server response";
+
+                this.submit();
+            } catch (error) {
+                hideWaitModal();
+
+                statusElement.innerHTML = "Profile creation has failed";
+                alert(`Profile error: ${error instanceof Error ? error.message : "Unknown error"}`);
+                console.log(`Profile error: ${error instanceof Error ? error.message : "Unknown error"}`);
+                continueButton.disabled = false;
+                continueButton.innerHTML = "Continue";
+            }
+        });
+
+
+    function initializeSDK() {
+        try {
+            const sdk = new SDK({
+                federate_server: "https://dev.abako.xyz/api",
+                provider_url: "wss://dev.abako.xyz/kreivo",
+                config: {
+                    wallet: "polkadot",
+                },
+            });
+
+            console.log("Developer profile: SDK initialized successfully");
+            return sdk;
+        } catch (error) {
+            console.log(`Developer profile: Error initializing SDK: ${error instanceof Error ? error.message : "Unknown error"}`);
+            throw error;
+        }
+    }
+
+    async function checkIsRegistered() {
+        console.log("Checking if user is registered...");
+        const registered = await sdk.auth.isRegistered("<%= developer.email %>");
+        if (!registered) {
+            throw new Error("Developer needs to register first");
+        }
+        console.log("The developer is registered.");
+    }
+
+    async function prepareConnection() {
+        console.log("Preparing connection ...");
+        statusElement.innerHTML = "Generating certificate";
+
+        const preparedData = await promiseWithTimeout(sdk.auth.prepareConnection("<%= developer.email %>"), 60000, "Timeout waiting for server to prepare login data");
+        if (!preparedData) {
+            throw new Error("Error: Certificate data was not generated");
+        }
+        console.log("Connection prepared.");
+    }
+
+    async function customConnect() {
+        console.log("Getting extrinsic from server ...");
+
+        statusElement.innerHTML = "Getting extrinsic from server";
+        // Llamar al servidor para obtener el extrinsic
+        const response = await fetch(`/proxy/auth/custom-connect`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                userId: "<%= developer.email %>"
+            })
+        });
+        // console.log("response", response);
+        if (!response.ok) {
+            throw new Error(`Server responded with status: ${response.status}`);
+        }
+        const {extrinsic, token} = await response.json();
+        console.log('Connection completed successfully on the server:');
+
+        if (!extrinsic) {
+            throw new Error("Extrinsic was not received from server");
+        }
+        if (!token) {
+            throw new Error("Token was not received from server");
+        }
+
+        return {extrinsic, token};
+    }
+
+    async function signExtrinsic(extrinsic) {
+        console.log("Signning extrinsic  ...");
+
+        statusElement.innerHTML = "Signing transaction";
+        // User signs the transaction that initiates the session on the server
+        const signedResult = await sdk.auth.sign(extrinsic);
+        // console.log("signedResult", signedResult);
+        if (!signedResult.ok) {
+            throw new Error("Error: Could not sign the extrinsic");
+        }
+    }
+</script>
+
+
+<script src="/javascripts/forms/availability.js"></script>
+<script src="/javascripts/forms/skills.js"></script>
+<script src="/javascripts/forms/languages.js"></script>

@@ -238,15 +238,17 @@ const adapterAPI = {
 
     async createDeveloper(email, name, githubUsername, portfolioUrl, image) {
         try {
+            const FormData = require("form-data");
             const formData = new FormData();
             formData.append("email", email);
             formData.append("name", name);
             formData.append("githubUsername", githubUsername || "githubUsername");
             formData.append("portfolioUrl", portfolioUrl || "portfolioUrl");
-            if (image) formData.append("image", image);
+            if (image) formData.append("image", image, { filename: "upload.jpg" });
 
             const response = await adapterClient.post(apiConfig.adapterAPI.endpoints.developers.create, formData, {
                 headers: {
+                    ...formData.getHeaders(), // necesario para multipart/form-data en Node.js
                     'Accept': 'application/json'
                 }
             });

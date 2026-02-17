@@ -1,7 +1,6 @@
 "use strict";
 
 const seda = require("../models/seda");
-const {DataTypes} = require("sequelize");
 
 const languagesMap = require('../models/enums/languages.json');
 const allSkills = require('../models/enums/skills.json');

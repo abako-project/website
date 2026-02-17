@@ -128,7 +128,7 @@ exports.adapterAPI = {
         };
         developers.push(developer);
         save();
-        return {...developer};
+        return {developerId: developer.id};
     },
 
     async updateDeveloper(developerId, data, image) {

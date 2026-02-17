@@ -6,10 +6,10 @@ const authDeveloper = require("./developer");
 
 // --------- AREAS: Seleccionar cliente o desarrollador
 exports.registerAreas = (req, res) => {
-    res.render('areas/register', {layout: "layouts/layout"});
+    res.render('auth/areas/register', {layout: "layouts/layout"});
 };
 exports.loginAreas = (req, res) => {
-    res.render('areas/login', {layout: "layouts/layout"});
+    res.render('auth/areas/login', {layout: "layouts/layout"});
 };
 
 //  --------- Registro de clientes:
@@ -25,15 +25,14 @@ exports.loginClientNew = (req, res) => {
 exports.loginClientCreate = authClient.loginCreate;
 
 //  --------- Registro de desarrollador:
-exports.registerDeveloperNew = (req, res) => {
-    res.render('developers/register', {layout: "layouts/layout"});
-};
+exports.registerDeveloperNew = authDeveloper.registerNew;
 exports.registerDeveloperCreate = authDeveloper.registerCreate;
+exports.registerDeveloperProfileEdit = authDeveloper.registerProfileEdit;
+exports.registerDeveloperProfileUpdate = authDeveloper.registerProfileUpdate;
+exports.registerDeveloperDone = authDeveloper.registerDone;
 
 //  --------- Login de desarrollador:
-exports.loginDeveloperNew = (req, res) => {
-    res.render('developers/login', {layout: "layouts/layout"});
-};
+exports.loginDeveloperNew = authDeveloper.loginNew;
 exports.loginDeveloperCreate = authDeveloper.loginCreate;
 
 

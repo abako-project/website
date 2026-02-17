@@ -1,8 +1,8 @@
 <div class="onboarding">
-  <%- include('../layouts/onboarding/_appLeft') %>
+  <%- include('../../layouts/onboarding/_appLeft', {title: "Wellcome to W3S", subtitle: ""}) %>
   
   <section class="onboarding__right">
-    <%- include('../layouts/onboarding/_onboardingBackButton', {message: "Don't have an account yet?", buttonText: "Sign up", href: "/auth/register/"}) %>
+    <%- include('../../layouts/onboarding/_onboardingBackButton', {message: "Don't have an account yet?", buttonText: "Sign up", href: "/auth/register/"}) %>
     
     <div class="content">
       <div class="card">

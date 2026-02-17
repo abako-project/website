@@ -124,8 +124,8 @@ exports.developers = async projectId => {
 exports.developerUpdate = async (developerId, data, image) => {
     try {
 
-        const updatedDeveloper = await adapterAPI.updateDeveloper(developerId, data, image);
-        return updatedDeveloper;
+        const response = await adapterAPI.updateDeveloper(developerId, data, image);
+        return response;
 
     } catch (error) {
         console.error("[SEDA developerUpdate] Error updating developer:", error);

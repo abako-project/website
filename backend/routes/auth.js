@@ -21,12 +21,21 @@ router.get('/register', authController.registerAreas);
 router.get('/register/client/new', authController.registerClientNew);
 router.post('/register/client', authController.registerClientCreate);
 
-// --------- Registrar un desarrollador
-router.get('/register/developer/new', authController.registerDeveloperNew);
+// --------- Registrar un desarrollador:
+
+router.get('/register/developer/new',
+    authController.registerDeveloperNew);
 router.post('/register/developer',
     upload.single('image'),
     authController.registerDeveloperCreate);
 
+router.get('/register/developer/:developerId(\\d+)/profile/edit',
+    authController.registerDeveloperProfileEdit);
+router.put('/register/developer/:developerId(\\d+)/profile',
+    authController.registerDeveloperProfileUpdate);
+
+router.get('/register/developer/done',
+    authController.registerDeveloperDone);
 
 // =========================================================================
 //   LOGIN

@@ -26,6 +26,7 @@ exports.developerCreate = async (email, name, githubUsername, portfolioUrl, imag
         console.log('[SEDA Developer] Completing developer profile');
         const response2 = await adapterAPI.createDeveloper(email, name, githubUsername, portfolioUrl, image);
         console.log('[SEDA Developer] Developer profile completed:', response2);
+        return response2;
     } catch (error) {
         console.error('[SEDA Developer] Error creating developer:', error);
         throw error;
