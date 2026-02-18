@@ -1,10 +1,10 @@
 <!-- Login Client -->
 
 <div class="onboarding">
-    <%- include('../layouts/onboarding/_appLeft', {title: "Wellcome to W3S", subtitle: ""}) %>
+    <%- include('../../../layouts/onboarding/_appLeft', {title: "Wellcome to W3S", subtitle: ""}) %>
 
     <section class="onboarding__right">
-        <%- include('../layouts/onboarding/_onboardingBackButton', {message: "Don't have an account yet?", buttonText: "Sign up", href: "/auth/register/"}) %>
+        <%- include('../../../layouts/onboarding/_onboardingBackButton', {message: "Don't have an account yet?", buttonText: "Sign up", href: "/auth/register/"}) %>
 
         <form is="form-with-tzo" id="loginForm" class="content" action="/auth/login/client" method="POST">
             <h1>Client Login</h1>
@@ -80,8 +80,6 @@
                 <% } %>
 
                 statusElement.innerHTML = "Waiting for server response";
-
-                console.log(">>>>>>>>>>>>>>>>>>>>>>.0");
 
                 this.submit();
             } catch (error) {

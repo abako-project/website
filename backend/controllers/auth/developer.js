@@ -122,7 +122,7 @@ exports.registerDone = async (req, res, next) => {
 
 
 exports.loginNew = async (req, res, next) => {
-    res.render('auth/login/developers/new', {layout: "layouts/layout"});
+    res.render('auth/login/developers/login', {layout: "layouts/layout"});
 };
 
 exports.loginCreate = async (req, res, next) => {

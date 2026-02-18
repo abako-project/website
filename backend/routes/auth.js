@@ -18,8 +18,18 @@ const authController = require("../controllers/auth");
 router.get('/register', authController.registerAreas);
 
 // --------- Registrar un cliente
+
 router.get('/register/client/new', authController.registerClientNew);
 router.post('/register/client', authController.registerClientCreate);
+
+router.get('/register/client/:clientId(\\d+)/profile/edit',
+    authController.registerClientProfileEdit);
+router.put('/register/client/:clientId(\\d+)/profile',
+    upload.single('image'),
+    authController.registerClientProfileUpdate);
+
+router.get('/register/client/done',
+    authController.registerClientDone);
 
 // --------- Registrar un desarrollador:
 

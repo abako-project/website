@@ -1,4 +1,3 @@
-
 const fs = require("fs");
 
 function save() {
@@ -22,17 +21,21 @@ const dump = (title, v) => {
     console.log("=======================================");
 }
 
-let {clients, developers, projects, milestones} = JSON.parse(fs.readFileSync(__dirname + "/all.json",{flag: "a+"}).toString());
+let {
+    clients,
+    developers,
+    projects,
+    milestones
+} = JSON.parse(fs.readFileSync(__dirname + "/all.json", {flag: "a+"}).toString());
 
 if (!clients) {
-     clients = require('./clients.json');
-     developers = require('./developers.json');
+    clients = require('./clients.json');
+    developers = require('./developers.json');
 
-     projects = require('./projects.json');
-     milestones = require('./milestones.json');
+    projects = require('./projects.json');
+    milestones = require('./milestones.json');
 
-     save();
-     dumpAll()
+    save();
 }
 
 dumpAll()
@@ -64,14 +67,14 @@ exports.adapterAPI = {
         return {client: clients.find(client => client.id == clientId)};
     },
 
-    async createClient(email, name, company = "", department = "", website= "", description= "", location = "", languages = [], image) {
+    async createClient(email, name, company = "", department = "", website = "", description = "", location = "", languages = [], image) {
         let client = {
             id: clients.length + 1,
             email, name, company, department, website, description, location, languages, image
         };
         clients.push(client);
         save();
-        return {...client};
+        return {clientId: client.id};
     },
 
     async updateClient(clientId, data, image) {
@@ -79,9 +82,6 @@ exports.adapterAPI = {
         if (index > -1) {
             clients[index] = {...clients[index], ...data};
             if (image) {
-                console.log("----updateClient---------image---------");
-                console.log(image);
-                console.log("----------------------");
                 clients[index].image = image;
             }
             save();
@@ -236,7 +236,7 @@ exports.adapterAPI = {
         try {
             const response = await adapterClient.post(
                 apiConfig.adapterAPI.endpoints.projects.assignTeam(contractAddress),
-                { _team_size: teamSize },
+                {_team_size: teamSize},
                 {
                     headers: {
                         'Authorization': `Bearer ${token}`
@@ -254,7 +254,7 @@ exports.adapterAPI = {
         try {
             const response = await adapterClient.post(
                 apiConfig.adapterAPI.endpoints.projects.markCompleted(contractAddress),
-                { ratings },
+                {ratings},
                 {
                     headers: {
                         'Authorization': `Bearer ${token}`
@@ -272,7 +272,7 @@ exports.adapterAPI = {
         try {
             const response = await adapterClient.post(
                 apiConfig.adapterAPI.endpoints.projects.setCalendarContract(contractAddress),
-                { calendar_contract: calendarContractAddress },
+                {calendar_contract: calendarContractAddress},
                 {
                     headers: {
                         'Authorization': `Bearer ${token}`
@@ -287,7 +287,7 @@ exports.adapterAPI = {
 
     async proposeScope(projectId, milestones, advancePaymentPercentage, documentHash, token) {
 
-        milestones[projectId] = milestones.map((m,i) => ({...m, state: "pending", _id: i+1}));
+        milestones[projectId] = milestones.map((m, i) => ({...m, state: "pending", _id: i + 1}));
 
         let index = projects.findIndex(project => project._id == projectId);
         if (index > -1) {
@@ -318,7 +318,7 @@ exports.adapterAPI = {
         try {
             const response = await adapterClient.post(
                 apiConfig.adapterAPI.endpoints.projects.rejectScope(projectId),
-                { clientResponse },
+                {clientResponse},
                 {
                     headers: {
                         'Authorization': `Bearer ${token}`
@@ -336,7 +336,7 @@ exports.adapterAPI = {
         try {
             const response = await adapterClient.post(
                 apiConfig.adapterAPI.endpoints.projects.submitTaskForReview(projectId),
-                { task_id: taskId },
+                {task_id: taskId},
                 {
                     headers: {
                         'Authorization': `Bearer ${token}`
@@ -354,7 +354,7 @@ exports.adapterAPI = {
         try {
             const response = await adapterClient.post(
                 apiConfig.adapterAPI.endpoints.projects.completeTask(projectId),
-                { task_id: taskId },
+                {task_id: taskId},
                 {
                     headers: {
                         'Authorization': `Bearer ${token}`
@@ -372,7 +372,7 @@ exports.adapterAPI = {
         try {
             const response = await adapterClient.post(
                 apiConfig.adapterAPI.endpoints.projects.rejectTask(projectId, taskId),
-                { rejectionReason: reason },
+                {rejectionReason: reason},
                 {
                     headers: {
                         'Authorization': `Bearer ${token}`
@@ -426,7 +426,7 @@ exports.adapterAPI = {
         throw new Error("MOCK: Method not implemented.")
         try {
             const response = await adapterClient.get(apiConfig.adapterAPI.endpoints.projects.getTask(contractAddress), {
-                params: { task_id: taskId }
+                params: {task_id: taskId}
             });
             return response.data;
         } catch (error) {
@@ -438,7 +438,7 @@ exports.adapterAPI = {
         throw new Error("MOCK: Method not implemented.")
         try {
             const response = await adapterClient.get(apiConfig.adapterAPI.endpoints.projects.getTaskCompletion(contractAddress), {
-                params: { task_id: taskId }
+                params: {task_id: taskId}
             });
             return response.data;
         } catch (error) {
@@ -476,7 +476,7 @@ exports.adapterAPI = {
         try {
             const response = await adapterClient.post(
                 apiConfig.adapterAPI.endpoints.projects.coordinatorReject(contractAddress),
-                { rejectionReason },
+                {rejectionReason},
                 {
                     headers: {
                         'Authorization': `Bearer ${token}`

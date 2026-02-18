@@ -1,0 +1,225 @@
+<!-- Choices.js CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css">
+<!-- Choices.js JS -->
+<script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+
+<% const client = c; %>
+
+<div class="onboarding">
+    <%- include('../../../layouts/onboarding/_appLeft') %>
+
+    <section id="appRight" class="onboarding__right">
+
+        <form id="profileForm" class="content" action="/auth/register/client/<%= client.id %>/profile?_method=PUT" enctype="multipart/form-data" method="POST">
+            <h1 class="content__title">Your profile</h1>
+
+
+
+
+            <div class="profileCard__section">
+                <h3>Description:</h3>
+                <textarea id="description" name="description" required ></textarea>
+            </div>
+
+            <div class="profileCard__section">
+                <h3>Company:</h3>
+                <input type="text" id="company" name="company" value="" placeholder="Company" autocomplete="off" class="smallInput" required />
+            </div>
+
+            <div class="profileCard__section">
+                <h3>Department:</h3>
+                <input type="text" id="department" name="department" value="" placeholder="Department" autocomplete="off" class="smallInput" required />
+            </div>
+
+            <div class="profileCard__section">
+                <h3>Web site:</h3>
+                <input type="text" id="website" name="website" value="" placeholder="Web Site" autocomplete="off" required />
+            </div>
+
+            <div class="profileCard__section">
+                <h3>Location:</h3>
+                <input type="text" id="location" name="location" value="" placeholder="Location" autocomplete="off" required />
+            </div>
+
+            <div class="profileCard__section">
+                <h3>Languages:</h3>
+                <select id="languages" name="languages[]" multiple size="6">
+                    <% allLanguages.forEach(lang => { %>
+
+                    <option value="<%= lang.code %>" >
+                        <%= lang.code %> - <%= lang.name %>
+                    </option>
+                    <% }) %>
+                </select>
+            </div>
+
+            <div class="profileCard__section">
+                <h3> New Photo (Max size 2MB):</h3>
+                <label class="fileInput">
+                    <span>Select file…</span>
+                    <input type="file" id="img" name="image"/>
+                </label>
+                <img id="photoPreview">
+            </div>
+
+
+            <input type="hidden" id="email" name="email" value="<%= client.email %>" />
+            <input type="hidden" id="name" name="name" value="<%= client.name %>" />
+
+            <input type="hidden" id="token" name="token"/>
+
+            <div class="form-group">
+                <a href="/auth/register/client/done" class="btn">Skip</a>
+
+                <button class="btn btn_primary" type="submit" id="continueButton">
+                    Continue
+                </button>
+            </div>
+
+            <div class="form-group">
+                <p id="status"></p>
+            </div>
+        </form>
+    </section>
+</div>
+
+
+<script type="module">
+
+    console.log("Client profile: Script starting.");
+
+    import SDK from 'https://cdn.jsdelivr.net/npm/@virtonetwork/sdk@0.0.4-alpha.36/dist/esm/index.js';
+
+    const tokenElement = document.getElementById("token");
+    const continueButton = document.getElementById("continueButton");
+    const statusElement = document.getElementById("status");
+
+    let sdk;
+
+    document
+        .getElementById("profileForm")
+        .addEventListener("submit", async function (event) {
+            event.preventDefault(); // Prevent automatic form submission
+
+            try {
+                console.log("Creating client profile ...");
+
+                continueButton.disabled = true;
+                continueButton.innerHTML = ". . .";
+                statusElement.innerHTML = "Starting profile creation ";
+
+                showWaitModal();
+
+                <% if (!process.env.VIRTO_MOCK) { %>
+                sdk = initializeSDK();
+                await checkIsRegistered();
+                await prepareConnection()
+                const {extrinsic, token} = await customConnect();
+                await signExtrinsic(extrinsic);
+
+                tokenElement.value = token;
+                <% } else {%>
+                tokenElement.value = "MOCK_TOKEN";
+                <% } %>
+
+                statusElement.innerHTML = "Waiting for server response";
+
+                this.submit();
+            } catch (error) {
+                hideWaitModal();
+
+                statusElement.innerHTML = "Profile creation has failed";
+                alert(`Profile error: ${error instanceof Error ? error.message : "Unknown error"}`);
+                console.log(`Profile error: ${error instanceof Error ? error.message : "Unknown error"}`);
+                continueButton.disabled = false;
+                continueButton.innerHTML = "Continue";
+            }
+        });
+
+
+    function initializeSDK() {
+        try {
+            const sdk = new SDK({
+                federate_server: "https://dev.abako.xyz/api",
+                provider_url: "wss://dev.abako.xyz/kreivo",
+                config: {
+                    wallet: "polkadot",
+                },
+            });
+
+            console.log("Client profile: SDK initialized successfully");
+            return sdk;
+        } catch (error) {
+            console.log(`Client profile: Error initializing SDK: ${error instanceof Error ? error.message : "Unknown error"}`);
+            throw error;
+        }
+    }
+
+    async function checkIsRegistered() {
+        console.log("Checking if user is registered...");
+        const registered = await sdk.auth.isRegistered("<%= client.email %>");
+        if (!registered) {
+            throw new Error("Client needs to register first");
+        }
+        console.log("The client is registered.");
+    }
+
+    async function prepareConnection() {
+        console.log("Preparing connection ...");
+        statusElement.innerHTML = "Generating certificate";
+
+        const preparedData = await promiseWithTimeout(sdk.auth.prepareConnection("<%= client.email %>"), 60000, "Timeout waiting for server to prepare login data");
+        if (!preparedData) {
+            throw new Error("Error: Certificate data was not generated");
+        }
+        console.log("Connection prepared.");
+    }
+
+    async function customConnect() {
+        console.log("Getting extrinsic from server ...");
+
+        statusElement.innerHTML = "Getting extrinsic from server";
+        // Llamar al servidor para obtener el extrinsic
+        const response = await fetch(`/proxy/auth/custom-connect`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                userId: "<%= client.email %>"
+            })
+        });
+        // console.log("response", response);
+        if (!response.ok) {
+            throw new Error(`Server responded with status: ${response.status}`);
+        }
+        const {extrinsic, token} = await response.json();
+        console.log('Connection completed successfully on the server:');
+
+        if (!extrinsic) {
+            throw new Error("Extrinsic was not received from server");
+        }
+        if (!token) {
+            throw new Error("Token was not received from server");
+        }
+
+        return {extrinsic, token};
+    }
+
+    async function signExtrinsic(extrinsic) {
+        console.log("Signning extrinsic  ...");
+
+        statusElement.innerHTML = "Signing transaction";
+        // User signs the transaction that initiates the session on the server
+        const signedResult = await sdk.auth.sign(extrinsic);
+        // console.log("signedResult", signedResult);
+        if (!signedResult.ok) {
+            throw new Error("Error: Could not sign the extrinsic");
+        }
+    }
+</script>
+
+
+
+<script src="/javascripts/forms/languages.js"></script>
+<script src="/javascripts/forms/img.js"></script>

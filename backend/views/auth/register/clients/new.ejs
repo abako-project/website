@@ -1,8 +1,8 @@
 <div id="" class="onboarding">
-    <%- include('../layouts/onboarding/_appLeft') %>
+    <%- include('../../../layouts/onboarding/_appLeft') %>
 
     <section id="appRight" class="onboarding__right">
-        <%- include('../layouts/onboarding/_onboardingBackButton', {message: "Already have an account?", buttonText: "Log in", href: "/auth/login/"}) %>
+        <%- include('../../../layouts/onboarding/_onboardingBackButton', {message: "Already have an account?", buttonText: "Log in", href: "/auth/login/"}) %>
 
         <form id="registerForm" class="content" action="/auth/register/client" method="POST">
             <h1 class="content__title">Create Client Account</h1>
@@ -22,13 +22,13 @@
             </div>
 
             <div class="form-group">
-                <label for="name">Username</label>
-                <input type="text" id="name" name="name" placeholder="Name"/>
+                <label for="name">Name</label>
+                <input type="text" id="name" name="name" placeholder="Name" required/>
             </div>
 
             <div class="form-group">
                 <button class="btn btn_primary" type="submit" id="registrationButton">
-                    Register
+                    Continue
                 </button>
             </div>
 
@@ -67,19 +67,21 @@
                     throw new Error("Error: Email is required");
                 }
 
+                showWaitModal();
+
                 <% if (!process.env.VIRTO_MOCK) { %>
                     sdk = initializeSDK();
                     await checkIsRegistered();
-                    const preparedData = await fillPreparedData();
+                    const preparedData = await fetchPreparedData();
                     await customRegister(preparedData);
                 <% } %>
 
                 statusElement.innerHTML = "Waiting for server response";
 
-                showWaitModal();
 
                 this.submit();
             } catch (error) {
+                hideWaitModal();
                 alert(`❌ Registration error: ${error instanceof Error ? error.message : "Unknown error"}`);
                 console.log(`Registration error: ${error instanceof Error ? error.message : "Unknown error"}`);
                 registrationButton.disabled = false;
@@ -98,7 +100,7 @@
                 },
             });
 
-            console.log("Client registration: SDK initialized successfully", "success");
+            console.log("Client registration: SDK initialized successfully");
             return sdk;
         } catch (error) {
             console.log(`Client registration: Error initializing SDK: ${error instanceof Error ? error.message : "Unknown error"}`);
@@ -115,7 +117,7 @@
         console.log("The client is not registered.");
     }
 
-    async function fillPreparedData() {
+    async function fetchPreparedData() {
         const userData = {
             profile: {
                 id: emailElement.value,

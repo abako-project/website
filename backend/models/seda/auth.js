@@ -45,7 +45,7 @@ exports.developerCreate = async (email, name, githubUsername, portfolioUrl, imag
  * @param {string} name - Nombre del cliente.
  * @throws {Error} Si el email o el password no están definidos.
  */
-exports.clientCreate = async (email, name) => {
+exports.clientCreate = async (email, name, image) => {
 
     if (!email) {
         throw new Error('The email field is required to register a client.');
@@ -57,8 +57,9 @@ exports.clientCreate = async (email, name) => {
 
     try {
         console.log('[SEDA Client] Step 2: Completing client profile');
-        const response2 = await adapterAPI.createClient(email, name);
+        const response2 = await adapterAPI.createClient(email, name, image);
         console.log('[SEDA Client] Client profile completed:', response2);
+        return response2;
     } catch (error) {
         console.error('[SEDA Client] Error creating client:', error);
         throw error;

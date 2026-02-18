@@ -122,6 +122,7 @@ const adapterAPI = {
 
     async createClient(email, name, company, department, website, description, location, languages, image) {
         try {
+            const FormData = require("form-data");
             const formData = new FormData();
             formData.append("email", email);
             formData.append("name", name);
@@ -131,10 +132,11 @@ const adapterAPI = {
             formData.append("description", description || "description");
             formData.append("location", location || "location");
             if (languages) formData.append("languages", languages);
-            if (image) formData.append("image", image);
+            if (image) formData.append("image", image, { filename: "upload.jpg" });
 
             const response = await adapterClient.post(apiConfig.adapterAPI.endpoints.clients.create, formData, {
                 headers: {
+                    ...formData.getHeaders(), // necesario para multipart/form-data en Node.js
                     'Accept': 'application/json'
                 }
             });
