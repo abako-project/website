@@ -434,11 +434,11 @@ exports.assignTeam = async (req, res, next) => {
         const res1 = await seda.assignTeam(projectId, 2, req.session.loginUser.token);
         // require("../helpers/logs").log(res1, "Assign Team");
 
-        const res2 = await seda.getTeam(projectId);
+        // const res2 = await seda.getTeam(projectId);
         // require("../helpers/logs").log(res2, "Get Team");
 
 
-        const res3 = await seda.getScopeInfo(projectId);
+        // const res3 = await seda.getScopeInfo(projectId);
        // require("../helpers/logs").log(res3, "Get Scope Info");
 
 

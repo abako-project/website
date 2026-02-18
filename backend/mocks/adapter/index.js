@@ -1,4 +1,5 @@
 const fs = require("fs");
+const {milestone} = require("../../models/seda");
 
 function save() {
     fs.writeFile(__dirname + "/all.json",
@@ -162,7 +163,17 @@ exports.adapterAPI = {
     },
 
     async getDeveloperMilestones(developerId) {
-        return {milestones: []};
+
+        let developerMilestones = [];
+
+        projects.forEach(project => {
+            milestones[project._id]?.forEach(milestone => {
+                if (milestone.developerId == developerId) {
+                    developerMilestones.push({...milestone, project: {...project}});
+                }
+            })
+        })
+        return {milestones: developerMilestones};
     },
 
     async findDeveloperByEmail(email) {
@@ -231,22 +242,20 @@ exports.adapterAPI = {
         }
     },
 
-    async assignTeam(contractAddress, teamSize, token) {
-        throw new Error("MOCK: Method not implemented.")
-        try {
-            const response = await adapterClient.post(
-                apiConfig.adapterAPI.endpoints.projects.assignTeam(contractAddress),
-                {_team_size: teamSize},
-                {
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
-                }
-            );
-            return response.data;
-        } catch (error) {
-            handleError(error, `assignTeam(${contractAddress})`);
+    async assignTeam(projectId, teamSize, token) {
+
+        (milestones[projectId] ?? []).forEach((milestone, index) => {
+            milestone.state = "task_in_progress";
+            milestone.developerId = index + 1;
+        })
+
+        let index = projects.findIndex(project => project._id == projectId);
+        if (index > -1) {
+            projects[index].state = "team_assigned";
         }
+
+        save();
+
     },
 
     async markCompleted(contractAddress, ratings, token) {
@@ -285,17 +294,16 @@ exports.adapterAPI = {
         }
     },
 
-    async proposeScope(projectId, milestones, advancePaymentPercentage, documentHash, token) {
+    async proposeScope(projectId, _milestones, advancePaymentPercentage, documentHash, token) {
 
-        milestones[projectId] = milestones.map((m, i) => ({...m, state: "pending", _id: i + 1}));
+        milestones[projectId] = _milestones.map((m, i) => ({...m, state: "pending", id: i + 1}));
 
         let index = projects.findIndex(project => project._id == projectId);
         if (index > -1) {
 
             projects[index].state = "scope_proposed";
-            save();
         }
-
+        save();
     },
 
     async approveScope(projectId, approvedTaskIds, token) {
@@ -332,56 +340,29 @@ exports.adapterAPI = {
     },
 
     async submitTaskForReview(projectId, taskId, token) {
-        throw new Error("MOCK: Method not implemented.")
-        try {
-            const response = await adapterClient.post(
-                apiConfig.adapterAPI.endpoints.projects.submitTaskForReview(projectId),
-                {task_id: taskId},
-                {
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
-                }
-            );
-            return response.data;
-        } catch (error) {
-            handleError(error, `submitTaskForReview(${projectId},${taskId})`);
+
+        let index = (milestones[projectId] ?? []).findIndex(milestone => milestone.id == taskId);
+        if (index > -1) {
+            milestones[projectId][index].state = "in_review";
+            save();
         }
     },
 
     async completeTask(projectId, taskId, token) {
-        throw new Error("MOCK: Method not implemented.")
-        try {
-            const response = await adapterClient.post(
-                apiConfig.adapterAPI.endpoints.projects.completeTask(projectId),
-                {task_id: taskId},
-                {
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
-                }
-            );
-            return response.data;
-        } catch (error) {
-            handleError(error, `completeTask(${projectId},${taskId})`);
+
+        let index = (milestones[projectId] ?? []).findIndex(milestone => milestone.id == taskId);
+        if (index > -1) {
+            milestones[projectId][index].state = "completed";
+            save();
         }
     },
 
     async rejectTask(projectId, taskId, reason, token) {
-        throw new Error("MOCK: Method not implemented.")
-        try {
-            const response = await adapterClient.post(
-                apiConfig.adapterAPI.endpoints.projects.rejectTask(projectId, taskId),
-                {rejectionReason: reason},
-                {
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
-                }
-            );
-            return response.data;
-        } catch (error) {
-            handleError(error, `rejectTask(${projectId},${taskId},"${reason}")`);
+
+        let index = (milestones[projectId] ?? []).findIndex(milestone => milestone.id == taskId);
+        if (index > -1) {
+            milestones[projectId][index].state = "rejected";
+            save();
         }
     },
 
