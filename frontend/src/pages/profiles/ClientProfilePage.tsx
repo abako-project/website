@@ -13,6 +13,7 @@
  */
 
 import { useState, useCallback, useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useClientProfile, useUpdateClientProfile, useUploadProfileImage } from '@hooks/useProfile';
 import { useClientRatings } from '@hooks/useRatings';
 import { useLanguages } from '@hooks/useEnums';
@@ -38,6 +39,7 @@ export interface ClientProfilePageProps {
 // ---------------------------------------------------------------------------
 
 export default function ClientProfilePage({ clientId, startInEditMode }: ClientProfilePageProps) {
+  const navigate = useNavigate();
   const [isEditing, setIsEditing] = useState(startInEditMode ?? false);
 
   const { data, isLoading, isError, error } = useClientProfile(clientId);
@@ -216,10 +218,20 @@ export default function ClientProfilePage({ clientId, startInEditMode }: ClientP
               {client.company || 'No company'} / {client.department || 'No department'}
             </p>
           </div>
-          <Button variant="outline" onClick={handleEnterEdit}>
-            <i className="ri-user-line mr-2" />
-            Edit Profile
-          </Button>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => navigate('/profile/dao')}
+              className="flex items-center gap-1.5 h-9 px-3 rounded-xl border border-[var(--state-brand-active,#36d399)] bg-[rgba(54,211,153,0.08)] text-sm font-semibold leading-[22px] text-[var(--state-brand-active,#36d399)] hover:bg-[rgba(54,211,153,0.15)] transition-colors"
+            >
+              <i className="ri-government-line text-base leading-none" aria-hidden="true" />
+              DAO View
+            </button>
+            <Button variant="outline" onClick={handleEnterEdit}>
+              <i className="ri-user-line mr-2" />
+              Edit Profile
+            </Button>
+          </div>
         </CardHeader>
         <CardContent className="space-y-6">
           {/* Description */}

@@ -26,6 +26,19 @@ export default defineConfig({
     hmr: {
       port: 5173,
     },
+    proxy: {
+      // Proxy Kreivo JSON-RPC calls to avoid CORS (Substrate nodes don't send CORS headers)
+      '/api/kreivo-rpc': {
+        target: 'https://kreivo.io',
+        changeOrigin: true,
+        rewrite: () => '/',
+        configure: (proxy) => {
+          proxy.on('proxyReq', (proxyReq) => {
+            proxyReq.setHeader('Content-Type', 'application/json');
+          });
+        },
+      },
+    },
   },
   build: {
     outDir: 'dist',

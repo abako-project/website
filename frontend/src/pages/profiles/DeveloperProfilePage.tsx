@@ -12,6 +12,7 @@
  */
 
 import { useState, useCallback, useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useDeveloperProfile, useUpdateDeveloperProfile, useUploadProfileImage } from '@hooks/useProfile';
 import { useDeveloperRatings } from '@hooks/useRatings';
 import { useEnums } from '@hooks/useEnums';
@@ -56,6 +57,7 @@ function InfoItem({ icon, text }: { icon: string; text: string }) {
 // ---------------------------------------------------------------------------
 
 export default function DeveloperProfilePage({ developerId, startInEditMode }: DeveloperProfilePageProps) {
+  const navigate = useNavigate();
   const [isEditing, setIsEditing] = useState(startInEditMode ?? false);
 
   const { data, isLoading, isError, error } = useDeveloperProfile(developerId);
@@ -342,8 +344,18 @@ export default function DeveloperProfilePage({ developerId, startInEditMode }: D
               </div>
             </div>
 
-            {/* Right: toggle + rating */}
+            {/* Right: DAO View button + toggle + rating */}
             <div className="flex items-center gap-8 shrink-0">
+              {/* DAO View button */}
+              <button
+                type="button"
+                onClick={() => navigate('/profile/dao')}
+                className="flex items-center gap-1.5 h-9 px-3 rounded-xl border border-[var(--state-brand-active,#36d399)] bg-[rgba(54,211,153,0.08)] text-sm font-semibold leading-[22px] text-[var(--state-brand-active,#36d399)] hover:bg-[rgba(54,211,153,0.15)] transition-colors"
+              >
+                <i className="ri-government-line text-base leading-none" aria-hidden="true" />
+                DAO View
+              </button>
+
               <div className="flex items-center gap-3">
                 <ToggleSwitch
                   checked={isAvailable}

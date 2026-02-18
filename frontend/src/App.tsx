@@ -1,8 +1,10 @@
+import { lazy, Suspense } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { ErrorBoundary } from '@components/shared/ErrorBoundary';
 import { ProtectedRoute } from '@components/shared/ProtectedRoute';
 import { AppLayout } from '@components/layouts/AppLayout';
 import { AuthLayout } from '@components/layouts/AuthLayout';
+import { Spinner } from '@components/ui/Spinner';
 
 // Auth Pages
 import LoginPage from '@pages/auth/LoginPage';
@@ -22,6 +24,9 @@ import ProfilePage from '@pages/profiles/ProfilePage';
 import PaymentsPage from '@pages/payments/PaymentsPage';
 import PaymentDetailPage from '@pages/payments/PaymentDetailPage';
 import PaymentFundPage from '@pages/payments/PaymentFundPage';
+
+// Lazy-loaded: DAO View (Kreivo chain data, ~15 KB isolated chunk)
+const DaoViewPage = lazy(() => import('@pages/profiles/DaoViewPage'));
 
 /**
  * App - Main application router
@@ -77,6 +82,7 @@ export default function App() {
             {/* Profile */}
             <Route path="/profile" element={<ProfilePage />} />
             <Route path="/profile/edit" element={<ProfilePage />} />
+            <Route path="/profile/dao" element={<Suspense fallback={<div className="flex items-center justify-center py-24"><Spinner size="lg" /></div>}><DaoViewPage /></Suspense>} />
           </Route>
         </Route>
 
