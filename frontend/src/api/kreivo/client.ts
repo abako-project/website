@@ -1,12 +1,11 @@
 /**
  * Kreivo chain JSON-RPC HTTP client.
  *
- * Sends JSON-RPC 2.0 requests to the Kreivo node over HTTP POST.
+ * Sends JSON-RPC 2.0 requests to the chain node over HTTP POST.
  * No WebSocket, no polkadot-api, no RxJS — just fetch.
  *
- * Requests are proxied through Vite dev server (or Express in production)
- * at /api/kreivo-rpc to avoid CORS issues — Substrate nodes don't send
- * Access-Control-Allow-Origin headers.
+ * Default endpoint: dev.abako.xyz/kreivo (local test network with CORS enabled).
+ * Override via VITE_KREIVO_RPC_URL env variable to point to production.
  */
 
 import type { JsonRpcRequest, JsonRpcResponse } from './types';
@@ -15,9 +14,7 @@ import type { JsonRpcRequest, JsonRpcResponse } from './types';
 // Configuration
 // ---------------------------------------------------------------------------
 
-// In dev: Vite proxies /api/kreivo-rpc → https://kreivo.io/
-// In prod: Express (or nginx) must do the same proxy.
-const KREIVO_RPC_URL = import.meta.env.VITE_KREIVO_RPC_URL || '/api/kreivo-rpc';
+const KREIVO_RPC_URL = import.meta.env.VITE_KREIVO_RPC_URL || 'https://dev.abako.xyz/kreivo';
 const REQUEST_TIMEOUT_MS = 10_000;
 
 let requestId = 0;
