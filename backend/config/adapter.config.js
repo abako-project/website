@@ -20,7 +20,7 @@ module.exports = {
             // ---------------- AUTH ----------------
             //
             auth: {
-                checkRegistered: (id) => `/auth/check-registered/${id}`,
+                checkRegistered: (userId) => `/auth/check-registered/${userId}`,
                 customRegister: '/auth/custom-register',
                 customConnect: '/auth/custom-connect',
                 sign: '/auth/sign',
@@ -32,10 +32,10 @@ module.exports = {
             clients: {
                 create: '/clients',
                 list: '/clients',
-                get: (id) => `/clients/${id}`,
-                update: (id) => `/clients/${id}`,
-                attachment: (id) => `/clients/${id}/attachment`,
-                projects: (id) => `/clients/${id}/projects`
+                get: (clientId) => `/clients/${clientId}`,
+                update: (clientId) => `/clients/${clientId}`,
+                attachment: (clientId) => `/clients/${clientId}/attachment`,
+                projects: (clientId) => `/clients/${clientId}/projects`
             },
             //
             // ---------------- DEVELOPERS ----------------
@@ -43,43 +43,45 @@ module.exports = {
             developers: {
                 create: '/developers',
                 list: '/developers',
-                get: (id) => `/developers/${id}`,
-                update: (id) => `/developers/${id}`,
-                attachment: (id) => `/developers/${id}/attachment`,
-                projects: (id) => `/developers/${id}/projects`,
-                milestones: (id) => `/developers/${id}/milestones`
+                get: (developerId) => `/developers/${developerId}`,
+                update: (developerId) => `/developers/${developerId}`,
+                attachment: (developerId) => `/developers/${developerId}/attachment`,
+                projects: (developerId) => `/developers/${developerId}/projects`,
+                milestones: (developerId) => `/developers/${developerId}/milestones`
             },
             //
             // ---------------- PROJECTS ----------------
             //
             projects: {
-                update: (addr) => `/projects/${addr}`,
+                update: (projectId) => `/projects/${projectId}`,
                 deploy: (version) => `/projects/deploy/${version}`,
                 // POST Methods
-                assignCoordinator:   (addr) => `/projects/${addr}/assign_coordinator`,
-                assignTeam:          (addr) => `/projects/${addr}/assign_team`,
-                markCompleted:       (addr) => `/projects/${addr}/mark_completed`,
-                setCalendarContract: (addr) => `/projects/${addr}/set_calendar_contract`,
-                proposeScope:        (id) => `/projects/${id}/propose_scope`,
-                approveScope:        (id) => `/projects/${id}/approve_scope`,
-                rejectScope:         (id) => `/projects/${id}/reject_scope`,
-                coordinatorReject:   (addr) => `/projects/${addr}/coordinator_reject`,
-                submitTaskForReview: (id) => `/projects/${id}/submit_task_for_review`,
-                completeTask:        (id) => `/projects/${id}/complete_task`,
+                assignCoordinator:   (projectId) => `/projects/${projectId}/assign_coordinator`,
+                assignTeam:          (projectId) => `/projects/${projectId}/assign_team`,
+                markCompleted:       (projectId) => `/projects/${projectId}/mark_completed`,
+                submitCoordinatorRatings: (projectId) => `/projects/${projectId}/submit_coordinator_ratings`,
+                submitDeveloperRating:    (projectId) => `/projects/${projectId}/submit_developer_rating`,
+                setCalendarContract: (projectId) => `/projects/${projectId}/set_calendar_contract`,
+                proposeScope:        (projectId) => `/projects/${projectId}/propose_scope`,
+                approveScope:        (projectId) => `/projects/${projectId}/approve_scope`,
+                rejectScope:         (projectId) => `/projects/${projectId}/reject_scope`,
+                coordinatorReject:   (projectId) => `/projects/${projectId}/coordinator_reject`,
+                submitTaskForReview: (projectId) => `/projects/${projectId}/submit_task_for_review`,
+                completeTask:        (projectId) => `/projects/${projectId}/complete_task`,
                 rejectTask:          (projectId, milestoneId) => `/projects/${projectId}/milestones/${milestoneId}/reject`,
                 //GET Methods
-                getProjectInfo:      (id) => `/projects/${id}/get_project_info`,
-                getTeam:             (addr) => `/projects/${addr}/get_team`,
-                getScopeInfo:        (id) => `/projects/${id}/get_scope_info`,
-                getTask:             (addr) => `/projects/${addr}/get_task`,
-                getTaskCompletion:   (addr) => `/projects/${addr}/get_task_completion_status`,
-                getAllTasks:         (id) => `/projects/${id}/get_all_tasks`,
+                getProjectInfo:      (projectId) => `/projects/${projectId}/get_project_info`,
+                getTeam:             (projectId) => `/projects/${projectId}/get_team`,
+                getScopeInfo:        (projectId) => `/projects/${projectId}/get_scope_info`,
+                getTask:             (projectId) => `/projects/${projectId}/get_task`,
+                getTaskCompletion:   (projectId) => `/projects/${projectId}/get_task_completion_status`,
+                getAllTasks:         (projectId) => `/projects/${projectId}/get_all_tasks`,
 
                 // Milestones
                 milestones: {
-                    list:      (projectId) => `/projects/${projectId}/milestones`,
-                    create:    (projectId) => `/projects/${projectId}/milestones`,
-                    get:       (projectId, milestoneId) => `/projects/${projectId}/milestones/${milestoneId}`,
+                    list:      (projectId) => `/projects/${projectId}/milestones`,  // NO EXISTE
+                    create:    (projectId) => `/projects/${projectId}/milestones`,  // NO EXISTE
+                    get:       (projectId, milestoneId) => `/projects/${projectId}/milestones/${milestoneId}`,  // NO EXISTE
                     update:    (proyectId, milestoneId) => `/projects/${proyectId}/milestones/${milestoneId}`,
                     remove:    (proyectId, milestoneId) => `/projects/${proyectId}/milestones/${milestoneId}`
                 }
@@ -100,6 +102,14 @@ module.exports = {
                 getAvailableWorkers:   `/calendar/${calendarAddress}/get_available_workers`,
                 getRegisteredWorkers:  `/calendar/${calendarAddress}/get_registered_workers`,
                 getAllWorkersAvailability: `/calendar/${calendarAddress}/get_all_workers_availability`
+            },
+            //
+            // ---------------- RATINGS ----------------
+            //
+            ratings: {
+                getClientRatings:     (clientId) =>    `/ratings/client/${clientId}`,
+                getDeveloperRatings:  (developerId) => `/ratings/developer/${developerId}`,
+                getProjectRatings:    (projectId) =>   `/ratings/project/${projectId}`,
             }
         }
     },

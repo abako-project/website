@@ -1,5 +1,6 @@
 
 const {adapterAPI} = require('../adapter');
+const seda = require("./index");
 
 //-----------------------------------------------------------
 
@@ -73,21 +74,36 @@ exports.developers = async projectId => {
 
     const seda = require("./index");
 
-    const team = (await seda.getTeam(projectId)).response.map(item => item.account_id);
 
-   // require("../../helpers/logs").log(team, "team");
+    // PARCHE hasta que funcione getTeam
+    if (true) {
+        const {milestones} = await adapterAPI.getAllTasks(projectId);
+        const developerIds = await milestones.map(m => m.developerId);
 
-    let developers = await seda.developerIndex();
+        let developers = await seda.developerIndex();
 
-    for (const developer of developers) {
-        const developerWorkerAddress = await seda.getWorkerAddress(developer.email);
-        developer.developerWorkerAddress = developerWorkerAddress;
+        developers = developers.filter(developer => developerIds.includes(developer.id));
+
+        return developers;
+
+    } else {
+        const team = (await seda.getTeam(projectId)).response.map(item => item.account_id);
+
+
+        // require("../../helpers/logs").log(team, "team");
+
+        let developers = await seda.developerIndex();
+
+        for (const developer of developers) {
+            const developerWorkerAddress = await seda.getWorkerAddress(developer.email);
+            developer.developerWorkerAddress = developerWorkerAddress;
+        }
+        developers = developers.filter(developer => team.includes(developer.developerWorkerAddress));
+        // require("../../helpers/logs").log(developers, "developers");
+
+
+        return developers;
     }
-    developers = developers.filter(developer => team.includes(developer.developerWorkerAddress));
-    // require("../../helpers/logs").log(developers, "developers");
-
-
-    return developers;
 };
 
 

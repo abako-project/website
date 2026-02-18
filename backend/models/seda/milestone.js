@@ -9,7 +9,7 @@ exports.milestones = async (projectId) => {
 
     const {milestones} = await adapterAPI.getAllTasks(projectId);
 
-    require("../../helpers/logs").log(milestones, "getAllTasks(" + projectId + ")");
+    require("../../helpers/logs").log(milestones, "adapterAPI.getAllTasks(" + projectId + ")");
 
     milestones.forEach(milestone => {
         exports.cleanMilestone(milestone);

@@ -402,10 +402,10 @@ const adapterAPI = {
         }
     },
 
-    async markCompleted(contractAddress, ratings, token) {
+    async markCompleted(projectId, ratings, token) {
         try {
             const response = await adapterClient.post(
-                apiConfig.adapterAPI.endpoints.projects.markCompleted(contractAddress),
+                apiConfig.adapterAPI.endpoints.projects.markCompleted(projectId),
                 { ratings },
                 {
                     headers: {
@@ -415,7 +415,55 @@ const adapterAPI = {
             );
             return response.data;
         } catch (error) {
-            handleError(error, `markCompleted(${contractAddress})`);
+            handleError(error, `markCompleted(${projectId})`);
+        }
+    },
+
+    /*
+     Coordinator submits the client rating and the developer team ratings.
+     rating:
+      { "clientRating": 9,
+        "teamRatings": [
+           [ "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY", 8 ]
+        ]
+      }
+     */
+    async submitCoordinatorRatings(projectId, ratings, token) {
+        try {
+            const response = await adapterClient.post(
+                apiConfig.adapterAPI.endpoints.projects.submitCoordinatorRatings(projectId),
+                { ratings },
+                {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                }
+            );
+            return response.data;
+        } catch (error) {
+            handleError(error, `submitCoordinatorRatings(${projectId})`);
+        }
+    },
+
+    /*
+     Developer submits the coordinator rating.
+     rating:
+       { "coordinatorRating": 9 }
+     */
+    async submitDeveloperRating(projectId, rating, token) {
+        try {
+            const response = await adapterClient.post(
+                apiConfig.adapterAPI.endpoints.projects.submitDeveloperRating(projectId),
+                { rating },
+                {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                }
+            );
+            return response.data;
+        } catch (error) {
+            handleError(error, `submitDeveloperRating(${projectId})`);
         }
     },
 
@@ -560,15 +608,16 @@ const adapterAPI = {
         }
     },
 
-    async getTeam(contractAddress) {
+    async getTeam(projectId) {
         try {
-            const response = await adapterClient.get(apiConfig.adapterAPI.endpoints.projects.getTeam(contractAddress));
+            const response = await adapterClient.get(apiConfig.adapterAPI.endpoints.projects.getTeam(projectId));
             return response.data;
         } catch (error) {
-            handleError(error, `getTeam(${contractAddress})`);
+            handleError(error, `getTeam(${projectId})`);
         }
     },
 
+    // Este metodo devuelve una informacion interna que no le sive al front para nada
     async getScopeInfo(projectId) {
         try {
             const response = await adapterClient.get(apiConfig.adapterAPI.endpoints.projects.getScopeInfo(projectId));

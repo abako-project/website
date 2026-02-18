@@ -19,8 +19,8 @@ if (locals.loginUser.developerId && locals.loginUser.developerId == project.cons
 
     if (locals.flowProjectState(project, locals.scope) === locals.ProjectState.ProjectInProgress && project.milestones.every(milestone => milestone.state === "completed")) {
         actions.push({
-            title: "Evaluate Teammates",
-            callback: "/projects/" + project.id + "/votations",
+            title: "Evaluate Client and Teammates",
+            callback: "/projects/" + project.id + "/consultantRatings",
             classes: "btn_primary btn_href"
         });
     }

@@ -1,0 +1,22 @@
+[
+  {
+    "userId": "c1@mock.es",
+    "address": "AAAAAAAA"
+  },
+  {
+    "userid": "c2@mock.es",
+    "address": "BBBBBBBB"
+  },
+  {
+    "userId": "d1@mock.es",
+    "address": "CCCCCCCC"
+  },
+  {
+    "userId": "d2@mock.es",
+    "address": "DDDDDDDD"
+  },
+  {
+    "userId": "d3@mock.es",
+    "address": "EEEEEEEE"
+  }
+]

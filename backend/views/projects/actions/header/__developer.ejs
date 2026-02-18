@@ -1,0 +1,23 @@
+<%
+const actions = [];
+
+
+if (locals.loginUser.developerId) {
+
+    if (locals.flowProjectState(project, locals.scope) === locals.ProjectState.ProjectInProgress) {
+
+        if (project.milestones.some(milestone => milestone.state === "completed" && milestone.developerId == locals.loginUser.developerId)) {
+
+            actions.push({
+                title: "Evaluate Consultant",
+                callback: "/projects/" + project.id + "/developerRating",
+                classes: "btn_primary btn_href"
+            });
+        }
+    }
+}
+%>
+
+<%- include("./__render", {actions}) %>
+
+

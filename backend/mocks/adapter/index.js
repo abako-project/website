@@ -3,7 +3,7 @@ const {milestone} = require("../../models/seda");
 
 function save() {
     fs.writeFile(__dirname + "/all.json",
-        JSON.stringify({clients, developers, projects, milestones}, undefined, 2),
+        JSON.stringify({users, clients, developers, projects, milestones}, undefined, 2),
         function (err) {
             console.log(err);
         });
@@ -11,7 +11,7 @@ function save() {
 
 function dumpAll() {
     dump(">>>>>>>> Apapter MOCK Data <<<<<<<<<",
-        {clients, developers, projects, milestones});
+        {users, clients, developers, projects, milestones});
 }
 
 
@@ -22,7 +22,17 @@ const dump = (title, v) => {
     console.log("=======================================");
 }
 
+function generarString(largo = 8) {
+    const caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let resultado = '';
+    for (let i = 0; i < largo; i++) {
+        resultado += caracteres.charAt(Math.floor(Math.random() * caracteres.length));
+    }
+    return resultado;
+}
+
 let {
+    users,
     clients,
     developers,
     projects,
@@ -30,6 +40,7 @@ let {
 } = JSON.parse(fs.readFileSync(__dirname + "/all.json", {flag: "a+"}).toString());
 
 if (!clients) {
+    users =  require('./users.json');
     clients = require('./clients.json');
     developers = require('./developers.json');
 
@@ -74,6 +85,9 @@ exports.adapterAPI = {
             email, name, company, department, website, description, location, languages, image
         };
         clients.push(client);
+
+        users.push({userId: email, address: generarString()});
+
         save();
         return {clientId: client.id};
     },
@@ -128,6 +142,9 @@ exports.adapterAPI = {
             email, name, githubUsername, portfolioUrl, image
         };
         developers.push(developer);
+
+        users.push({userId: email, address: generarString()});
+
         save();
         return {developerId: developer.id};
     },
@@ -582,7 +599,7 @@ exports.adapterAPI = {
     async getRegisteredWorkers() {
         return {
             success: true,
-            response: ["address"]
+            response: users.map(user => user.address)
         };
     },
 
@@ -596,4 +613,10 @@ exports.adapterAPI = {
 };
 
 
+exports.getWorkerAddress = async (email) => {
 
+    let index = users.findIndex(user => user.userId == email);
+    if (index > -1) {
+        return users[index].address;
+    }
+};

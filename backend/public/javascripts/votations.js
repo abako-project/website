@@ -12,6 +12,7 @@ function initializeVotations() {
 // initialization of each votation card
 function setupCard(card) {
     if (card.dataset.readonly === "true") return;
+
     const stars = card.querySelectorAll(".star");
     const scoreElement = card.querySelector(".votationCard__score");
     const memberId = card.dataset.memberId;
@@ -41,7 +42,7 @@ function updateStars(stars, rating) {
 function handleSubmit() {
     const allRated = Array.from(cards).every(card => parseInt(card.dataset.rating || "0") > 0);
     if (!allRated) {
-        alert("Please rate all team members before submitting!");
+        alert("Please rate everybody before submitting!");
         return;
     }
     submitFormById("voteForm");

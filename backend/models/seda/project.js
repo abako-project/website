@@ -19,7 +19,7 @@ exports.project = async projectId => {
 
     let project = await adapterAPI.getProjectInfo(projectId);
 
-    require("../../helpers/logs").log(project, "project(" + projectId + ")");
+    require("../../helpers/logs").log(project, "adapterAPI.getProjectInfo(" + projectId + ")");
 
     const clients = await seda.clientIndex();
     const developers = await seda.developerIndex();
@@ -335,6 +335,23 @@ exports.projectCompleted = async (projectId, ratings, token) => {
 
 };
 
+
+//-----------------------------------------------------------
+
+exports.submitConsultantRatings = async (projectId, ratings, token) => {
+
+    await adapterAPI.submitCoordinatorRatings(projectId, ratings, token);
+
+};
+
+//-----------------------------------------------------------
+
+exports.submitDeveloperRating = async (projectId, rating, token) => {
+
+    await adapterAPI.submitDeveloperRating(projectId, rating, token);
+
+};
+
 //-----------------------------------------------------------
 
 /**
@@ -366,9 +383,14 @@ exports.assignTeam = async (contractAddress, teamSize, token) => {
  * @param {string} contractAddress - Contract address del proyecto.
  * @returns {Promise<Object>} Información del equipo.
  */
-exports.getTeam = async (contractAddress) => {
+exports.getTeam = async (projectId) => {
     try {
-        return await adapterAPI.getTeam(contractAddress);
+        const res =  await adapterAPI.getTeam(projectId);
+
+        require("../../helpers/logs").log(projectId, "projectId de getTeam");
+        require("../../helpers/logs").log(res, "getTeam");
+
+        return res;
     } catch (error) {
         console.error(`[SEDA Project] Error getting team:`, error.message);
         throw error;
@@ -387,7 +409,11 @@ exports.getTeam = async (contractAddress) => {
  */
 exports.getScopeInfo = async (contractAddress) => {
     try {
-        return await adapterAPI.getScopeInfo(contractAddress);
+        const res = await adapterAPI.getScopeInfo(contractAddress);
+
+        require("../../helpers/logs").log(res, "getScopeInfo");
+
+        return res;
     } catch (error) {
         console.error(`[SEDA Project] Error getting scope info:`, error.message);
         throw error;

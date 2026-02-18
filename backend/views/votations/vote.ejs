@@ -16,8 +16,8 @@
       <i class="ri-arrow-left-line"></i>
       <span> <%= voteData.project.title %> </span>
     </small>
-    <h1 class="appHeader__title">Evaluate team members</h1>
-    <p class="appHeader__subtitle">Choose the evaluation for each team member</p>
+    <h1 class="appHeader__title"><%= voteData.title %></h1>
+    <p class="appHeader__subtitle"><%= voteData.subtitle %></p>
   </div>
 
   <div class="appHeader__right">
@@ -26,12 +26,43 @@
 
 </div>
 
-<section class="votations">
-  <form id="voteForm" action="/projects/<%= voteData.project.id %>/votations" method="POST">
-    <% voteData.members.forEach((member, index) => { %>
-      <%- include('votationCard', { member, score: 0, readonly: false }) %>
-    <% }) %>
-  </form>
-</section>
+<% if (voteData.clientRating) { %>
+    <section class="votations">
+        <form id="voteForm" action="/projects/<%= voteData.project.id %>/clientRating" method="POST">
+            <h1>Choose the evaluation for Consultant:</h1>
+            <%- include('votationCard', { target: "consultant", member: voteData.clientRating.consultant, score: 0, readonly: false }) %>
+
+            // Quitar si cliente no vota a developers
+            <h1>Choose the evaluation for each Developer:</h1>
+            <% voteData.clientRating.developers.forEach((member, index) => { %>
+                <%- include('votationCard', {  target: "developer", member, score: 0, readonly: false }) %>
+            <% }) %>
+        </form>
+    </section>
+<% } %>
+
+<% if (voteData.consultantRatings) { %>
+    <section class="votations">
+        <form id="voteForm" action="/projects/<%= voteData.project.id %>/consultantRatings" method="POST">
+            <h1>Choose the evaluation for Client:</h1>
+            <%- include('votationCard', {  target: "client", member: voteData.consultantRatings.client, score: 0, readonly: false }) %>
+
+            <h1>Choose the evaluation for each Developer:</h1>
+            <% voteData.consultantRatings.developers.forEach((member, index) => { %>
+                <%- include('votationCard', {  target: "developer", member, score: 0, readonly: false }) %>
+            <% }) %>
+        </form>
+    </section>
+<% } %>
+
+<% if (voteData.developerRating) { %>
+    <section class="votations">
+        <form id="voteForm" action="/projects/<%= voteData.project.id %>/developerRating" method="POST">
+            <h1>Choose the evaluation for Consultant:</h1>
+            <%- include('votationCard', {  target: "consultant", member: voteData.developerRating.consultant, score: 0, readonly: false }) %>
+        </form>
+    </section>
+<% } %>
+
 
 <script src="/javascripts/votations.js"></script>
