@@ -1,5 +1,5 @@
 
-const {adapterAPI} = require('../adapter');
+const {adapterAPI, getWorkerAddress} = require('../adapter');
 
 
 //-----------------------------------------------------------
@@ -32,17 +32,7 @@ exports.workersAvailability = async () => {
  */
 exports.getWorkerAddress = async (email) => {
 
-    if (process.env.VIRTO_MOCK) {
-        return "address"
-    }
-
-    // Peticion al servidor federado:
-    const url = `https://dev.abako.xyz/api/get-user-address?userId=${email}`;
-
-    const response = await fetch(url);
-    const {address} = await response.json();
-
-    return address;
+    return await getWorkerAddress(email);
 };
 
 //-----------------------------------------------------------

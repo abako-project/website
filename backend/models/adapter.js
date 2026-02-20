@@ -1232,6 +1232,16 @@ const contractsAPI = {
     }
 };
 
+const getWorkerAddress = async (email) => {
+
+    // Peticion al servidor federado:
+    const url = `${apiConfig.baseURL}/api/get-user-address?userId=${email}`;
+
+    const response = await fetch(url);
+    const {address} = await response.json();
+
+    return address;
+};
 
 const dump = (title, v) => {
     console.log("===========", title, "===============");
@@ -1249,5 +1259,8 @@ module.exports = {
         adapter: adapterClient,
         virto: virtoClient,
         contracts: contractsClient
-    }
+    },
+    getWorkerAddress
 };
+
+
