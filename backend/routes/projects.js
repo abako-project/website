@@ -30,7 +30,7 @@ router.post('/',
 
 // Mostrar detalles de un proyecto (o propuesta)
 router.get('/:projectId',
-  permissionController.isAuthenticated,
+    permissionController.isAuthenticated,
     projectController.showInformation);
 
 // Mostrar la pantalla que ofrece publicar  (submit) una propuesta nueva o rechazada

@@ -406,7 +406,7 @@ exports.getScopeInfo = async (contractAddress) => {
  */
 exports.getAllTasks = async (contractAddress) => {
     try {
-        return await adapterAPI.getAllTasks(contractAddress);
+        return (await adapterAPI.getAllTasks(contractAddress))?.milestones;
     } catch (error) {
         console.error(`[SEDA Project] Error getting all tasks:`, error.message);
         throw error;

@@ -103,10 +103,21 @@ exports.projectConsultantRequired = async (req, res, next) => {
 
 
 // MW that allows actions only if the logged in user is a project task developer.
-exports.projectDeveloperRequired = (req, res, next) => {
-  // PENDIENTE DE IMPLEMENTAR
-  console.log('Prohibited operation: The logged in user is not a task developer.');
-  next(new Error('Prohibited operation: The logged in user is not a task developer.'));
+exports.projectDeveloperRequired =  async (req, res, next) => {
+    const projectId = req.params.projectId;
+    const loggedDeveloperId = req.session.loginUser?.developerId;
+
+    const developerIsLogged = !!loggedDeveloperId;
+
+    if (developerIsLogged) {
+        const milestones = await seda.getAllTasks(projectId);
+        if (milestones.some(milestone => milestone.developerId == loggedDeveloperId)) {
+            return next();
+        }
+    }
+
+    console.log('Prohibited operation: The logged in user is not a task developer.');
+    next(new Error('Prohibited operation: The logged in user is not a task developer.'));
 };
 
 
@@ -170,9 +181,18 @@ exports.userTypesRequired = ({
     }
   }
 
-  if (projectDeveloper) {
-    // PENDIENTE
-  }
+    if (projectDeveloper) {
+        const projectId = req.params.projectId;
+        const loggedDeveloperId = req.session.loginUser?.developerId;
+        const developerIsLogged = !!loggedDeveloperId;
+
+        if (developerIsLogged) {
+            const milestones = await seda.getAllTasks(projectId);
+            if (milestones.some(milestone => milestone.developerId == loggedDeveloperId)) {
+                return next();
+            }
+        }
+    }
 
   if (projectConsultant) {
     const developerIsLogged = !!req.session.loginUser?.developerId;
