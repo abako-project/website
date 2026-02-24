@@ -17,12 +17,14 @@ import { useNavigate } from 'react-router-dom';
 import { useClientProfile, useUpdateClientProfile, useUploadProfileImage } from '@hooks/useProfile';
 import { useClientRatings } from '@hooks/useRatings';
 import { useLanguages } from '@hooks/useEnums';
+import { useMembershipNFT } from '@hooks/useMembership';
 import { Button } from '@components/ui/Button';
 import { Input } from '@components/ui/Input';
 import { Label } from '@components/ui/Label';
 import { Card, CardContent, CardHeader, CardTitle } from '@components/ui/Card';
 import { Spinner } from '@components/ui/Spinner';
 import { ReviewsList } from '@components/features/ratings/ReviewsList';
+import { MembershipNFTCard } from '@components/features/profile/MembershipNFTCard';
 import type { ClientUpdateData, LanguagesMap } from '@/types/index';
 
 // ---------------------------------------------------------------------------
@@ -47,6 +49,9 @@ export default function ClientProfilePage({ clientId, startInEditMode }: ClientP
   const { data: languagesMap } = useLanguages();
   const updateMutation = useUpdateClientProfile();
   const uploadMutation = useUploadProfileImage();
+
+  // Membership NFT: resolve blockchain address from the client's email.
+  const { data: membership } = useMembershipNFT(data?.client?.email);
 
   // ------- Form state -------
   const [formData, setFormData] = useState<ClientUpdateData>({});
@@ -208,6 +213,15 @@ export default function ClientProfilePage({ clientId, startInEditMode }: ClientP
           <p className="text-muted-foreground">{client.email}</p>
         </div>
       </div>
+
+      {/* Membership NFT Card */}
+      {membership?.isMember === true && (
+        <MembershipNFTCard
+          membershipId={membership.membershipId}
+          joinedAt={membership.joinedAt}
+          address={membership.address}
+        />
+      )}
 
       {/* Profile Card */}
       <Card>

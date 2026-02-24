@@ -77,6 +77,13 @@ export const adapterConfig = {
       byDeveloper: (developerId: string) => `/ratings/developer/${developerId}`,
       byProject: (projectId: string) => `/ratings/project/${projectId}`,
     },
+    bramp: {
+      createUser: '/bramp/users',
+      getUserByEmail: '/bramp/users',
+      requestDeposit: '/bramp/deposit',
+      confirmDeposit: (depositId: string) => `/bramp/deposit/${depositId}/confirm`,
+      createWithdrawal: '/bramp/withdrawal',
+    },
     calendar: {
       deploy: (version: string) => `/calendar/deploy/${version}`,
       registerWorker: `/calendar/${CALENDAR_ADDRESS}/register_worker`,

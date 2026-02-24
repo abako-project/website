@@ -80,6 +80,21 @@ export {
   getRatingsByProject,
 } from './ratings';
 
+// Bramp on/off-ramp operations
+export {
+  createBrampUser,
+  getBrampUserByEmail,
+  requestDeposit,
+  confirmDeposit,
+  createWithdrawal,
+} from './bramp';
+export type {
+  BrampUser,
+  DepositResponse,
+  ConfirmDepositResponse,
+  WithdrawalResponse,
+} from './bramp';
+
 // Calendar operations
 export {
   registerWorker,
