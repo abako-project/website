@@ -17,9 +17,9 @@ import {
   acceptScope,
   rejectScope,
 } from '@/services';
-import { getAllTasks } from '@/api/adapter';
+import { getAllTasks, updateProject } from '@/api/adapter';
 import { useAuthStore } from '@/stores/authStore';
-import { dusdToPlanck, parseBudget } from '@lib/dusdUnits';
+import { dusdToPlanck, parseBudget, planckToDusd } from '@lib/dusdUnits';
 
 // ---------------------------------------------------------------------------
 // Response types
@@ -134,6 +134,20 @@ export function useAcceptScope() {
 
       if (taskIds.length === 0) {
         throw new Error('No tasks found in the contract to approve');
+      }
+
+      // Sync project.budget with the actual sum of milestone budgets so the
+      // backend's approve_scope sends the correct value to the contract.
+      // Milestone budgets are stored in planck; project.budget is human DUSD.
+      const milestones = (tasksData as Record<string, unknown>).milestones as
+        Array<{ budget?: string | number | null }> | undefined;
+      if (milestones && milestones.length > 0) {
+        const totalPlanck = milestones.reduce(
+          (sum, m) => sum + parseBudget(m.budget),
+          0
+        );
+        const totalHumanDusd = planckToDusd(totalPlanck);
+        await updateProject(projectId, { budget: totalHumanDusd }, token);
       }
 
       const result = await acceptScope(projectId, taskIds, clientResponse || '', token);
