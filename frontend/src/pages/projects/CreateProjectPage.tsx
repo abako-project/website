@@ -494,17 +494,10 @@ function Step2({
         <div className="space-y-8">
           {/* Key Objectives */}
           <div>
-            <div className="mb-2 flex items-center justify-between">
+            <div className="mb-2">
               <h2 className="text-base font-semibold text-[#f5f5f5]">
                 Key Objectives
               </h2>
-              <button
-                type="button"
-                className="flex items-center gap-1.5 text-sm text-[var(--state-brand-active,#36d399)] hover:underline"
-              >
-                <i className="ri-sparkling-2-line" />
-                Autofill with AI
-              </button>
             </div>
             <p className="mb-4 text-sm text-[rgba(255,255,255,0.5)]">
               Write these in terms of user value or outcomes. For example:

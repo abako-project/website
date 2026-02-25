@@ -21,6 +21,7 @@ import CreateProjectPage from '@pages/projects/CreateProjectPage';
 import ProjectDetailPage from '@pages/projects/ProjectDetailPage';
 import ScopeReviewPage from '@pages/projects/ScopeReviewPage';
 import ProfilePage from '@pages/profiles/ProfilePage';
+import SettingsPage from '@pages/settings/SettingsPage';
 import PaymentsPage from '@pages/payments/PaymentsPage';
 import PaymentDetailPage from '@pages/payments/PaymentDetailPage';
 import PaymentFundPage from '@pages/payments/PaymentFundPage';
@@ -82,6 +83,9 @@ export default function App() {
             {/* Profile */}
             <Route path="/profile" element={<ProfilePage />} />
             <Route path="/profile/edit" element={<ProfilePage />} />
+
+            {/* Settings */}
+            <Route path="/settings" element={<SettingsPage />} />
             <Route path="/profile/dao" element={<Suspense fallback={<div className="flex items-center justify-center py-24"><Spinner size="lg" /></div>}><DaoViewPage /></Suspense>} />
           </Route>
         </Route>
