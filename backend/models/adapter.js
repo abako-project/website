@@ -406,7 +406,7 @@ const adapterAPI = {
         try {
             const response = await adapterClient.post(
                 apiConfig.adapterAPI.endpoints.projects.markCompleted(projectId),
-                { ratings },
+                ratings,
                 {
                     headers: {
                         'Authorization': `Bearer ${token}`
@@ -432,7 +432,7 @@ const adapterAPI = {
         try {
             const response = await adapterClient.post(
                 apiConfig.adapterAPI.endpoints.projects.submitCoordinatorRatings(projectId),
-                { ratings },
+                ratings,
                 {
                     headers: {
                         'Authorization': `Bearer ${token}`
@@ -454,7 +454,7 @@ const adapterAPI = {
         try {
             const response = await adapterClient.post(
                 apiConfig.adapterAPI.endpoints.projects.submitDeveloperRating(projectId),
-                { rating },
+                rating,
                 {
                     headers: {
                         'Authorization': `Bearer ${token}`
@@ -918,7 +918,37 @@ const adapterAPI = {
         } catch (error) {
             handleError(error, `deployCalendar(${version})`);
         }
+    },
+
+    // ========= Rating =================================
+
+    async getClientRatings(clientId) {
+        try {
+            const response = await adapterClient.get(apiConfig.adapterAPI.endpoints.ratings.clientRatings(clientId));
+            return response.data;
+        } catch (error) {
+            handleError(error, `getClientRatings(${clientId})`);
+        }
+    },
+
+    async getDeveloperRatings(developerId) {
+        try {
+            const response = await adapterClient.get(apiConfig.adapterAPI.endpoints.ratings.developerRatings(developerId));
+            return response.data;
+        } catch (error) {
+            handleError(error, `getDeveloperRatings(${developerId})`);
+        }
+    },
+
+    async getProjectRatings(projectId) {
+        try {
+            const response = await adapterClient.get(apiConfig.adapterAPI.endpoints.ratings.projectRatings(projectId));
+            return response.data;
+        } catch (error) {
+            handleError(error, `getProjectRatings(${projectId})`);
+        }
     }
+
 };
 
 

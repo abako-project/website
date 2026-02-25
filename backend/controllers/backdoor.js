@@ -90,6 +90,22 @@ exports.loginDeveloper1 = async (req, res) => {
 exports.wild = async (req, res, next) => {
     try {
 
+        const projectId = "699dccafbab690e9336dfcb9";
+
+        console.log(">>>> PROYECTO");
+        await seda.getProjectRatings(projectId);
+
+
+        console.log(">>>> CLIENTE 2");
+        await seda.getClientRatings(2);
+
+        console.log(">>>> DEVELOPER 3");
+        await seda.getDeveloperRatings(3);
+
+        console.log(">>>> DEVELOPER 4");
+        await seda.getDeveloperRatings(4);
+
+        console.log(">>>> w.9");
 
         res.redirect('/backdoor');
     } catch (error) {

@@ -19,12 +19,16 @@ if (locals.loginUser.clientId && locals.loginUser.clientId == project.clientId) 
         });
     }
 
-    if (locals.flowProjectState(project, locals.scope) === locals.ProjectState.ProjectInProgress && project.milestones.every(milestone => milestone.state === "completed")) {
-        actions.push({
-            title: "Evaluate Consultant",
-            callback: "/projects/" + project.id + "/clientRating",
-            classes: "btn_primary btn_href"
-        });
+    if (locals.flowProjectState(project, locals.scope) === locals.ProjectState.ProjectInProgress) {
+
+        if (project.milestones.every(milestone => milestone.state === "completed")) {
+
+            actions.push({
+                title: "Evaluate Consultant",
+                callback: "/projects/" + project.id + "/clientRating",
+                classes: "btn_primary btn_href"
+            });
+        }
     }
 }
 %>

@@ -24,6 +24,7 @@ const sedaBudget = require("./budget");
 const sedaDeliveryTime = require("./deliveryTime");
 const sedaProjectType = require("./projectType");
 const sedaCalendar = require("./calendar");
+const sedaRating = require("./rating");
 
 module.exports = exports = {
     ...sedaError,
@@ -40,5 +41,6 @@ module.exports = exports = {
     ...sedaBudget,
     ...sedaDeliveryTime,
     ...sedaProjectType,
-    ...sedaCalendar
+    ...sedaCalendar,
+    ...sedaRating
 };

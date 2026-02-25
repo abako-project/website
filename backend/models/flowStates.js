@@ -42,7 +42,7 @@ const ProjectState = {
 
 
  //   DisputeOpen: "disputeOpen", // por la entrega o el scope
-    Completed: "completed", // entregado, aceptado, votado y pagado
+    Completed: "completed", // entregado, aceptado, valorado por el cliente
  //   Cancelled: "cancelled", // cancelado por el cliente
 
  //   ToBeDone: "ToBeDone",  // Estado que marca algo pendiente de desarrollar

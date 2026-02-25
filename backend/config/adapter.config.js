@@ -107,9 +107,9 @@ module.exports = {
             // ---------------- RATINGS ----------------
             //
             ratings: {
-                getClientRatings:     (clientId) =>    `/ratings/client/${clientId}`,
-                getDeveloperRatings:  (developerId) => `/ratings/developer/${developerId}`,
-                getProjectRatings:    (projectId) =>   `/ratings/project/${projectId}`,
+                clientRatings:     (clientId) =>    `/ratings/client/${clientId}`,
+                developerRatings:  (developerId) => `/ratings/developer/${developerId}`,
+                projectRatings:    (projectId) =>   `/ratings/project/${projectId}`,
             }
         }
     },
