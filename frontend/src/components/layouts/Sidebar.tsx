@@ -1,5 +1,6 @@
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '@stores/authStore';
+import { useLogout } from '@hooks/useAuth';
 import { useState, useEffect, useCallback } from 'react';
 import { cn } from '@lib/cn';
 import { W3SLogo } from '@components/ui/W3SLogo';
@@ -27,6 +28,8 @@ import { AvailabilityPopover } from '@components/features/availability/Availabil
  */
 export function Sidebar() {
   const user = useAuthStore((state) => state.user);
+  const navigate = useNavigate();
+  const { mutate: logout } = useLogout();
   const [isOpen, setIsOpen] = useState(false);
 
   const [availabilityOpen, setAvailabilityOpen] = useState(false);
@@ -158,7 +161,11 @@ export function Sidebar() {
             </button>
 
             {/* Logout button */}
-            <button className="shrink-0" aria-label="Logout">
+            <button
+              className="shrink-0"
+              aria-label="Logout"
+              onClick={() => logout(undefined, { onSuccess: () => navigate('/login') })}
+            >
               <i className="ri-logout-box-r-line text-2xl text-[var(--text-dark-secondary,rgba(255,255,255,0.7))]"></i>
             </button>
           </div>
