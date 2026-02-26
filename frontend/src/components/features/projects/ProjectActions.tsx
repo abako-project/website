@@ -33,6 +33,8 @@ interface ProjectActionsProps {
   onShowScopeBuilder?: () => void;
   /** Called when the consultant approves the proposal. */
   onApproveProposal?: (projectId: string) => void;
+  /** Called to switch to the milestones tab. */
+  onSwitchToMilestones?: () => void;
 }
 
 export function ProjectActions({
@@ -41,6 +43,7 @@ export function ProjectActions({
   scope,
   onShowScopeBuilder,
   onApproveProposal,
+  onSwitchToMilestones,
 }: ProjectActionsProps) {
   const state = flowProjectState(project, scope);
 
@@ -109,15 +112,21 @@ export function ProjectActions({
         allMilestonesCompleted && isClient ? (
           <ProjectCompletionForm project={project} />
         ) : (
-          <div className="rounded-lg border border-[#3D3D3D] bg-[#231F1F] p-5">
+          <div className="rounded-lg border border-[#3D3D3D] bg-[#231F1F] p-5 space-y-3">
             <div className="flex items-center gap-2 text-sm text-[#36D399]">
               <i className="ri-play-circle-line" />
               <span>
                 {allMilestonesCompleted && isConsultant
                   ? 'All milestones have been completed. Waiting for the client to finalize the project and release payments.'
-                  : 'Project is in progress. Check milestones below for individual task status.'}
+                  : 'Project is in progress. Check milestones for individual task status.'}
               </span>
             </div>
+            {onSwitchToMilestones && !allMilestonesCompleted && (
+              <Button variant="outline" size="sm" onClick={onSwitchToMilestones} className="w-full">
+                <i className="ri-list-check-2 mr-1" />
+                View Milestones
+              </Button>
+            )}
           </div>
         )
       )}
