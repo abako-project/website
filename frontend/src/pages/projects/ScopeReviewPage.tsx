@@ -169,15 +169,11 @@ export default function ScopeReviewPage(): React.JSX.Element {
     // Check if user has enough DUSD
     const hasFunds = dusdBalance.data?.hasSufficientFunds(totalCost) ?? false;
     if (!hasFunds) {
-      // Calculate how much more the user needs to deposit
-      const currentBalance = dusdBalance.data?.dusdFree
-        ? parseFloat(dusdBalance.data.dusdFree)
-        : 0;
-      const shortfall = Math.max(0, totalCost - currentBalance);
-
-      // Navigate to on-ramp page — user needs to deposit DUSD first
+      // Navigate to on-ramp page — user needs to deposit the full project cost.
+      // Using the total (not the difference) avoids issues when the balance
+      // changes between navigation and the on-ramp API call.
       if (isEscrowModalDismissed()) {
-        navigate(`/payments/${id}/fund`, { state: { totalCost, currentBalance, shortfall } });
+        navigate(`/payments/${id}/fund`, { state: { totalCost } });
       } else {
         setShowEscrowModal(true);
       }
@@ -198,16 +194,10 @@ export default function ScopeReviewPage(): React.JSX.Element {
 
   function handleEscrowModalClose(): void {
     setShowEscrowModal(false);
-    const currentBalance = dusdBalance.data?.dusdFree
-      ? parseFloat(dusdBalance.data.dusdFree)
-      : 0;
-    const shortfall = data
-      ? Math.max(0, data.project.milestones.reduce((acc, m) => acc + budgetPlanckToHuman(m.budget), 0) - currentBalance)
-      : 0;
     const totalCostForModal = data
       ? data.project.milestones.reduce((acc, m) => acc + budgetPlanckToHuman(m.budget), 0)
       : 0;
-    navigate(`/payments/${id}/fund`, { state: { totalCost: totalCostForModal, currentBalance, shortfall } });
+    navigate(`/payments/${id}/fund`, { state: { totalCost: totalCostForModal } });
   }
 
   // --------------------------------------------------------------------------

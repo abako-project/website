@@ -25,6 +25,8 @@ import SettingsPage from '@pages/settings/SettingsPage';
 import PaymentsPage from '@pages/payments/PaymentsPage';
 import PaymentDetailPage from '@pages/payments/PaymentDetailPage';
 import PaymentFundPage from '@pages/payments/PaymentFundPage';
+import MilestoneReviewPage from '@pages/milestones/MilestoneReviewPage';
+import TeamEvaluationPage from '@pages/projects/TeamEvaluationPage';
 
 // Lazy-loaded: DAO View (Kreivo chain data, ~15 KB isolated chunk)
 const DaoViewPage = lazy(() => import('@pages/profiles/DaoViewPage'));
@@ -74,6 +76,8 @@ export default function App() {
             <Route path="/projects/new" element={<CreateProjectPage />} />
             <Route path="/projects/:id" element={<ProjectDetailPage />} />
             <Route path="/projects/:id/review-scope" element={<ScopeReviewPage />} />
+            <Route path="/projects/:projectId/milestones/:milestoneId/review" element={<MilestoneReviewPage />} />
+            <Route path="/projects/:id/evaluate" element={<TeamEvaluationPage />} />
 
             {/* Payments */}
             <Route path="/payments" element={<PaymentsPage />} />

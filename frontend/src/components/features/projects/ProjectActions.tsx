@@ -16,7 +16,7 @@ import { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button, Input, Spinner } from '@components/ui';
 import { useApproveProposal, useRejectProposal, useAssignTeam } from '@hooks/useProjects';
-import { useVoteMembers, useSubmitVotes, useSubmitCoordinatorRatings, useSubmitDeveloperRating } from '@hooks/useVotes';
+import { useVoteMembers, useSubmitCoordinatorRatings, useSubmitDeveloperRating } from '@hooks/useVotes';
 import { useReleaseEscrow, useClaimPayment } from '@hooks/useEscrow';
 import { usePaymentStatus, getStoredPaymentId } from '@hooks/usePaymentStatus';
 import {
@@ -33,8 +33,6 @@ interface ProjectActionsProps {
   onShowScopeBuilder?: () => void;
   /** Called when the consultant approves the proposal. */
   onApproveProposal?: (projectId: string) => void;
-  /** Called to switch to the milestones tab. */
-  onSwitchToMilestones?: () => void;
 }
 
 export function ProjectActions({
@@ -43,7 +41,6 @@ export function ProjectActions({
   scope,
   onShowScopeBuilder,
   onApproveProposal,
-  onSwitchToMilestones,
 }: ProjectActionsProps) {
   const state = flowProjectState(project, scope);
 
@@ -107,12 +104,12 @@ export function ProjectActions({
         </div>
       )}
 
-      {/* Project In Progress: client sees completion form when all milestones done */}
+      {/* Project In Progress: client navigates to evaluation page when all milestones done */}
       {state === ProjectState.ProjectInProgress && (
         allMilestonesCompleted && isClient ? (
-          <ProjectCompletionForm project={project} />
+          <ProjectCompletionPrompt projectId={project.id} />
         ) : (
-          <div className="rounded-lg border border-[#3D3D3D] bg-[#231F1F] p-5 space-y-3">
+          <div className="rounded-lg border border-[#3D3D3D] bg-[#231F1F] p-5">
             <div className="flex items-center gap-2 text-sm text-[#36D399]">
               <i className="ri-play-circle-line" />
               <span>
@@ -121,12 +118,6 @@ export function ProjectActions({
                   : 'Project is in progress. Check milestones for individual task status.'}
               </span>
             </div>
-            {onSwitchToMilestones && !allMilestonesCompleted && (
-              <Button variant="outline" size="sm" onClick={onSwitchToMilestones} className="w-full">
-                <i className="ri-list-check-2 mr-1" />
-                View Milestones
-              </Button>
-            )}
           </div>
         )
       )}
@@ -508,35 +499,11 @@ function RatingRow({
 }
 
 // ---------------------------------------------------------------------------
-// Client: Complete project with team ratings (all milestones done)
+// Client: Prompt to navigate to the full-page team evaluation
 // ---------------------------------------------------------------------------
 
-function ProjectCompletionForm({ project }: { project: Project }) {
-  const { data: voteData, isLoading: loadingMembers } = useVoteMembers(project.id);
-  const submitVotes = useSubmitVotes();
-
-  const [coordinatorRating, setCoordinatorRating] = useState(0);
-  const [memberRatings, setMemberRatings] = useState<Record<string, number>>({});
-
-  const handleMemberRating = useCallback((userId: string, score: number) => {
-    setMemberRatings((prev) => ({ ...prev, [userId]: score }));
-  }, []);
-
-  const handleSubmit = useCallback(() => {
-    const votes = (voteData?.members ?? [])
-      .filter((m): m is VoteMember & { userId: string } => !!m.userId)
-      .map((m) => ({
-        userId: m.userId,
-        score: memberRatings[m.userId] ?? 0,
-      }));
-    submitVotes.mutate({ projectId: project.id, votes, coordinatorRating });
-  }, [submitVotes, project.id, voteData, memberRatings, coordinatorRating]);
-
-  const allRated =
-    coordinatorRating > 0 &&
-    (voteData?.members ?? []).every(
-      (m) => !m.userId || (memberRatings[m.userId] ?? 0) > 0
-    );
+function ProjectCompletionPrompt({ projectId }: { projectId: string }) {
+  const navigate = useNavigate();
 
   return (
     <div className="rounded-lg border border-[#3D3D3D] bg-[#231F1F] p-5 space-y-4">
@@ -552,55 +519,14 @@ function ProjectCompletionForm({ project }: { project: Project }) {
         Rate the team members to complete the project and release payments.
       </p>
 
-      {/* Coordinator self-rating */}
-      <div className="border-t border-[#3D3D3D] pt-3">
-        <p className="text-xs text-[#9B9B9B] mb-2">Coordinator Rating</p>
-        <RatingRow
-          label="Self Assessment"
-          sublabel="Rate your own coordination"
-          value={coordinatorRating}
-          onChange={setCoordinatorRating}
-        />
-      </div>
-
-      {/* Team member ratings */}
-      {loadingMembers ? (
-        <div className="flex justify-center py-3">
-          <Spinner size="sm" />
-        </div>
-      ) : (
-        (voteData?.members ?? []).length > 0 && (
-          <div className="border-t border-[#3D3D3D] pt-3 space-y-1">
-            <p className="text-xs text-[#9B9B9B] mb-2">Team Members</p>
-            {voteData!.members.map((member) =>
-              member.userId ? (
-                <RatingRow
-                  key={member.userId}
-                  label={member.name}
-                  sublabel={member.role ?? undefined}
-                  avatarUrl={member.imageUrl}
-                  value={memberRatings[member.userId] ?? 0}
-                  onChange={(score) => handleMemberRating(member.userId!, score)}
-                />
-              ) : null
-            )}
-          </div>
-        )
-      )}
-
       <Button
         variant="primary"
-        onClick={handleSubmit}
-        isLoading={submitVotes.isPending}
-        disabled={submitVotes.isPending || !allRated}
-        className="w-full"
+        onClick={() => navigate(`/projects/${projectId}/evaluate`)}
+        className="w-full gap-2"
       >
-        Complete Project
+        <i className="ri-star-line" aria-hidden="true" />
+        Evaluate Team
       </Button>
-
-      {submitVotes.error && (
-        <p className="text-xs text-red-400">{submitVotes.error.message}</p>
-      )}
     </div>
   );
 }

@@ -34,7 +34,7 @@ export default function ProjectDetailPage() {
   const { data, isLoading, error, refetch } = useProject(id);
 
   const [showScopeBuilder, setShowScopeBuilder] = useState(false);
-  const [activeTab, setActiveTab] = useState<TabValue>('milestones');
+  const [activeTab, setActiveTab] = useState<TabValue>('details');
   const [scope, setScope] = useState<ScopeSession | undefined>(undefined);
 
   const handleScopeBuilderShow = useCallback(() => {
@@ -53,10 +53,6 @@ export default function ProjectDetailPage() {
     },
     []
   );
-
-  const handleSwitchToMilestones = useCallback(() => {
-    setActiveTab('milestones');
-  }, []);
 
   // Loading state
   if (isLoading) {
@@ -192,7 +188,6 @@ export default function ProjectDetailPage() {
                 canShowScopeBuilder ? handleScopeBuilderShow : undefined
               }
               onApproveProposal={handleApproveProposal}
-              onSwitchToMilestones={handleSwitchToMilestones}
             />
           )}
         </div>
@@ -215,8 +210,8 @@ interface TabsLineProps {
 
 function TabsLine({ activeTab, onTabChange }: TabsLineProps) {
   const tabs: Array<{ value: TabValue; label: string }> = [
-    { value: 'milestones', label: 'Milestones' },
     { value: 'details', label: 'Details' },
+    { value: 'milestones', label: 'Milestones' },
   ];
 
   return (
