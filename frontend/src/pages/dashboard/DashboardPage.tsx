@@ -262,7 +262,7 @@ export default function DashboardPage() {
           title="No projects yet"
           description={
             isClient
-              ? 'Create your first project proposal to get started with Work3Spaces.'
+              ? 'Create your first project proposal to get started with Abako.'
               : 'You have not been assigned to any projects yet. Projects will appear here once you are assigned as a consultant or developer.'
           }
           action={

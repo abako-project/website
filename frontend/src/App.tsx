@@ -27,6 +27,8 @@ import PaymentDetailPage from '@pages/payments/PaymentDetailPage';
 import PaymentFundPage from '@pages/payments/PaymentFundPage';
 import MilestoneReviewPage from '@pages/milestones/MilestoneReviewPage';
 import TeamEvaluationPage from '@pages/projects/TeamEvaluationPage';
+import DeveloperEvaluationPage from '@pages/projects/DeveloperEvaluationPage';
+import ConsultantEvaluationPage from '@pages/projects/ConsultantEvaluationPage';
 
 // Lazy-loaded: DAO View (Kreivo chain data, ~15 KB isolated chunk)
 const DaoViewPage = lazy(() => import('@pages/profiles/DaoViewPage'));
@@ -78,6 +80,8 @@ export default function App() {
             <Route path="/projects/:id/review-scope" element={<ScopeReviewPage />} />
             <Route path="/projects/:projectId/milestones/:milestoneId/review" element={<MilestoneReviewPage />} />
             <Route path="/projects/:id/evaluate" element={<TeamEvaluationPage />} />
+            <Route path="/projects/:id/evaluate/developer" element={<DeveloperEvaluationPage />} />
+            <Route path="/projects/:id/evaluate/consultant" element={<ConsultantEvaluationPage />} />
 
             {/* Payments */}
             <Route path="/payments" element={<PaymentsPage />} />
@@ -94,8 +98,8 @@ export default function App() {
           </Route>
         </Route>
 
-        {/* Catch-all - redirect to login if no match */}
-        <Route path="*" element={<Navigate to="/login" replace />} />
+        {/* Catch-all - redirect to register (default entry point) */}
+        <Route path="*" element={<Navigate to="/register" replace />} />
       </Routes>
     </ErrorBoundary>
   );

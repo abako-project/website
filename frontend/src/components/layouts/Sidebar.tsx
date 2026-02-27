@@ -3,7 +3,7 @@ import { useAuthStore } from '@stores/authStore';
 import { useLogout } from '@hooks/useAuth';
 import { useState, useEffect, useCallback } from 'react';
 import { cn } from '@lib/cn';
-import { W3SLogo } from '@components/ui/W3SLogo';
+import { AbakoLogo } from '@components/ui/AbakoLogo';
 import { AvailabilityPopover } from '@components/features/availability/AvailabilityPopover';
 
 /**
@@ -87,8 +87,8 @@ export function Sidebar() {
         <div className="flex items-center justify-between mb-6">
           {/* Logo */}
           <div className="flex items-center gap-2">
-            <W3SLogo size={18} />
-            <span className="text-[var(--text-dark-primary,#f5f5f5)] font-semibold text-base">work3spaces</span>
+            <AbakoLogo size={18} />
+            <span className="text-[var(--text-dark-primary,#f5f5f5)] font-semibold text-base">Abako</span>
           </div>
 
           {/* Notification bell with indicator */}

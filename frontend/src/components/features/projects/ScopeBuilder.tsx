@@ -20,6 +20,7 @@ import { Button, Input, Label, Card, CardContent } from '@components/ui';
 import { useEnums } from '@hooks/useEnums';
 import { useSubmitScope } from '@hooks/useScope';
 import { budgetPlanckToHuman } from '@lib/dusdUnits';
+import { getMilestoneDefault } from '@/config/milestoneDefaults';
 import type { Milestone } from '@/types/index';
 
 interface ScopeBuilderProps {
@@ -32,8 +33,30 @@ interface ScopeBuilderProps {
   onCancel?: () => void;
 }
 
-/** Empty milestone template for adding new entries. */
-function createEmptyMilestone(): MilestoneFormState {
+/**
+ * Creates a milestone form state for the given slot index.
+ *
+ * If a pre-fill default exists for this index in `milestone-defaults.json`,
+ * it is used. Otherwise every field starts blank (original behavior).
+ *
+ * @param slotIndex - Zero-based position in the milestone list.
+ */
+function createMilestoneAtIndex(slotIndex: number): MilestoneFormState {
+  const preset = getMilestoneDefault(slotIndex);
+  if (preset !== undefined) {
+    return {
+      title: preset.title,
+      description: preset.description,
+      budget: preset.budget,
+      deliveryTime: preset.deliveryTime,
+      deliveryDate: preset.deliveryDate,
+      role: preset.role,
+      proficiency: preset.proficiency,
+      skills: [...preset.skills],
+      availability: preset.availability,
+      neededHours: preset.neededHours,
+    };
+  }
   return {
     title: '',
     description: '',
@@ -123,12 +146,14 @@ export function ScopeBuilder({
   onSubmitted,
   onCancel,
 }: ScopeBuilderProps) {
-  // Initialize milestones from existing data or start empty
+  // Initialize milestones from existing data or from pre-fill defaults.
+  // When there are no existing milestones (fresh scope), slot 0 is populated
+  // from milestone-defaults.json[0] if an entry exists, otherwise blank.
   const [milestones, setMilestones] = useState<MilestoneFormState[]>(() => {
     if (existingMilestones && existingMilestones.length > 0) {
       return existingMilestones.map(milestoneToFormState);
     }
-    return [createEmptyMilestone()];
+    return [createMilestoneAtIndex(0)];
   });
 
   const [consultantComment, setConsultantComment] = useState('');
@@ -144,8 +169,12 @@ export function ScopeBuilder({
   // -------------------------------------------------------------------
 
   const addMilestone = useCallback(() => {
-    setMilestones((prev) => [...prev, createEmptyMilestone()]);
-    setEditingIndex(milestones.length);
+    // The new milestone's slot index equals the current list length (before push).
+    // If a default exists for that index in milestone-defaults.json it will be
+    // used; otherwise the form starts blank.
+    const nextIndex = milestones.length;
+    setMilestones((prev) => [...prev, createMilestoneAtIndex(nextIndex)]);
+    setEditingIndex(nextIndex);
   }, [milestones.length]);
 
   const removeMilestone = useCallback(

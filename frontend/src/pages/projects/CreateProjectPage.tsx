@@ -737,7 +737,7 @@ function Step3({
           Ready to share this with our team?
         </h1>
         <p className="mt-1 text-sm text-[rgba(255,255,255,0.7)]">
-          Once submitted, your project will be reviewed by our W3S team.
+          Once submitted, your project will be reviewed by our Abako team.
         </p>
       </div>
 
