@@ -10,6 +10,11 @@
  */
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import {
+  SCOPE_SUBMITTED,
+  SCOPE_ACCEPTED,
+  SCOPE_REJECTED,
+} from '@/constants/messages';
 import { projectKeys } from '@hooks/useProjects';
 import type { Milestone } from '@/types/index';
 import {
@@ -83,7 +88,7 @@ export function useSubmitScope() {
 
       return {
         projectId,
-        message: 'Scope submitted successfully',
+        message: SCOPE_SUBMITTED,
       };
     },
     onSuccess: (_data, variables) => {
@@ -165,7 +170,7 @@ export function useAcceptScope() {
 
       return {
         projectId,
-        message: 'Scope accepted successfully',
+        message: SCOPE_ACCEPTED,
       };
     },
     onSuccess: (_data, variables) => {
@@ -208,7 +213,7 @@ export function useRejectScope() {
       await rejectScope(projectId, clientResponse || '', token);
       return {
         projectId,
-        message: 'Scope rejected successfully',
+        message: SCOPE_REJECTED,
       };
     },
     onSuccess: (_data, variables) => {
