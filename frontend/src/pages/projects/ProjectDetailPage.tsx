@@ -20,6 +20,7 @@ import { useProject } from '@hooks/useProjects';
 import { useAuthStore } from '@stores/authStore';
 import { flowProjectState, ProjectState } from '@lib/flowStates';
 import { Spinner } from '@components/ui';
+import { Breadcrumbs } from '@components/shared/Breadcrumbs';
 import { ProjectStateBadge } from '@components/shared/ProjectStateBadge';
 import { ProjectActions } from '@components/features/projects/ProjectActions';
 import { ScopeBuilder } from '@components/features/projects/ScopeBuilder';
@@ -110,14 +111,14 @@ export default function ProjectDetailPage() {
 
   return (
     <div className="min-h-screen bg-[var(--base-surface-1,#141414)] px-8 lg:px-[var(--spacing-17,56px)] py-10">
-      {/* Breadcrumb */}
-      <nav className="mb-6 text-sm text-[var(--text-dark-secondary,rgba(255,255,255,0.7))]">
-        <Link to="/projects" className="hover:text-[var(--text-dark-primary,#f5f5f5)] transition-colors">
-          Projects
-        </Link>
-        <span className="mx-2">/</span>
-        <span className="text-[var(--text-dark-primary,#f5f5f5)]">{project.title}</span>
-      </nav>
+      <Breadcrumbs
+        items={[
+          { label: 'Dashboard', to: '/dashboard' },
+          { label: 'Projects', to: '/projects' },
+          { label: project.title },
+        ]}
+        className="text-[var(--text-dark-secondary,rgba(255,255,255,0.7))]"
+      />
 
       {/* Project Header */}
       <ProjectHeader

@@ -13,6 +13,7 @@ import { useParams, Link } from 'react-router-dom';
 import { usePayment } from '@hooks/usePayments';
 import { computeProjectPaymentSummary, isAdvancePaid, isFullyPaid, isZeroPaid } from '@lib/paymentUtils';
 import { Spinner, Card, CardContent } from '@components/ui';
+import { Breadcrumbs } from '@components/shared/Breadcrumbs';
 import { MilestoneStatusBadge } from '@components/features/projects/MilestoneStatusBadge';
 import type { Milestone } from '@/types/index';
 
@@ -72,14 +73,14 @@ export default function PaymentDetailPage() {
 
   return (
     <div className="px-8 lg:px-14 py-10">
-      {/* Breadcrumb */}
-      <nav className="mb-6 text-sm text-[#9B9B9B]">
-        <Link to="/payments" className="hover:text-[#F5F5F5] transition-colors">
-          Payments
-        </Link>
-        <span className="mx-2">/</span>
-        <span className="text-[#F5F5F5]">{project.title}</span>
-      </nav>
+      <Breadcrumbs
+        items={[
+          { label: 'Dashboard', to: '/dashboard' },
+          { label: 'Payments', to: '/payments' },
+          { label: project.title },
+        ]}
+        className="text-[#9B9B9B]"
+      />
 
       {/* Project Header */}
       <div className="mb-8">

@@ -17,6 +17,7 @@ import { useProject } from '@hooks/useProjects';
 import { useAcceptScope } from '@hooks/useScope';
 import { useRejectScope } from '@hooks/useScope';
 import { Button, Card, CardContent, Spinner } from '@components/ui';
+import { Breadcrumbs } from '@components/shared/Breadcrumbs';
 import {
   EscrowPaymentModal,
   isEscrowModalDismissed,
@@ -239,16 +240,14 @@ export default function ScopeReviewPage() {
         className="min-h-screen px-8 py-10 lg:px-14"
         style={{ background: 'var(--base-surface-1, #141414)' }}
       >
-        {/* Back navigation */}
-        <nav className="mb-6">
-          <Link
-            to={`/projects/${project.id}`}
-            className="inline-flex items-center gap-1.5 text-sm text-[rgba(255,255,255,0.7)] transition-colors hover:text-[#f5f5f5]"
-          >
-            <i className="ri-arrow-left-line" aria-hidden="true" />
-            {project.title}
-          </Link>
-        </nav>
+        <Breadcrumbs
+          items={[
+            { label: 'Dashboard', to: '/dashboard' },
+            { label: 'Projects', to: '/projects' },
+            { label: project.title, to: `/projects/${project.id}` },
+            { label: 'Review Scope' },
+          ]}
+        />
 
         {/* Page header with title + accept/reject controls */}
         <div className="mb-8 flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">

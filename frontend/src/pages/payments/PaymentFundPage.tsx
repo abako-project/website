@@ -32,6 +32,7 @@ import {
   EscrowPaymentModal,
   isEscrowModalDismissed,
 } from '@components/features/payments/EscrowPaymentModal';
+import { Breadcrumbs } from '@components/shared/Breadcrumbs';
 import { cn } from '@lib/cn';
 import type { Milestone } from '@/types/index';
 import type { Tab } from '@components/ui/TabsLine';
@@ -213,24 +214,14 @@ export default function PaymentFundPage() {
         className="min-h-screen px-8 py-10 lg:px-14"
         style={{ background: 'var(--base-surface-1, #141414)' }}
       >
-        {/* Breadcrumb */}
-        <nav className="mb-6 text-sm text-[rgba(255,255,255,0.5)]">
-          <Link
-            to="/payments"
-            className="transition-colors hover:text-[#f5f5f5]"
-          >
-            Payments
-          </Link>
-          <span className="mx-2">/</span>
-          <Link
-            to={`/payments/${project.id}`}
-            className="transition-colors hover:text-[#f5f5f5]"
-          >
-            {project.title}
-          </Link>
-          <span className="mx-2">/</span>
-          <span className="text-[#f5f5f5]">Fund Escrow</span>
-        </nav>
+        <Breadcrumbs
+          items={[
+            { label: 'Dashboard', to: '/dashboard' },
+            { label: 'Payments', to: '/payments' },
+            { label: project.title, to: `/payments/${project.id}` },
+            { label: 'Fund Escrow' },
+          ]}
+        />
 
         {/* Two-column layout */}
         <form onSubmit={handleSubmit}>
